@@ -1,0 +1,186 @@
+﻿body, #maincontainer {
+    margin: 0;
+    padding: 0;
+    line-height: 1.5em;
+    width: 100%;
+    height: 100%;
+    min-width: 380px;
+    min-height: 100%;
+}
+
+body > #maincontainer {
+		height: 100%;
+		width: 100%;
+        min-height: 100%;
+	}
+
+#maincontainer {
+    margin: 0 auto;
+    position: relative;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+b {
+    font-size: 110%;
+}
+
+em {
+    color: red;
+}
+
+.topsection {
+    background: #EAEAEA;
+    height: 90px; /*Height of top section*/
+    border-style: solid;
+    border-width: 1px;
+    min-width: 800px !important;
+}
+
+.topsection h1 {
+    margin: 0;
+    text-align: center;
+    padding-top: 0px;
+    color: #fff;
+    
+    font: 50px 'ChunkFiveRegular';
+}
+
+
+#contentwrapper {
+    float: left;
+    width: 100%;
+    height: auto;
+    min-width: 360px;
+}
+
+
+#contentcolumn {
+    margin-left: 200px; /*Set left margin to LeftColumnWidth*/
+}
+
+#leftcolumn {
+
+}
+
+.footer {
+    clear: left;
+    width: 100%;
+    background: white;
+    color: black;
+    text-align: center;
+    padding: 4px 0;
+    font-family: Book Antiqua;
+    /*border-style:solid;
+border-width: 1px;*/
+}
+
+.footer a {
+    color: black;
+    font-family: Book Antiqua;
+    text-decoration: none;
+}
+
+.innertube {
+    margin: 10px; /*Margins for inner DIV inside each column (to provide padding)*/
+    margin-top: 0;
+    width: 100%;
+    height: auto;
+}
+
+.innertube #Image3 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    top: 0px;
+}
+
+.innertube #Image1 {
+    float: right;
+    margin-top: -80px;
+}
+
+.forradmenu {
+    width: 150px;
+    height: auto;
+    float: none;
+    margin-top: 1px;
+    float: left;
+    position: absolute;
+}
+
+#currPagePostion {
+    text-align: left;
+    margin-left: 10%;
+    z-index: 9999;
+    margin-top: -20px;
+    color: #5195D8;
+}
+
+#currPagePostion #lblPostionPath {
+    font-weight: bolder;
+    color: #3366CC;
+}
+
+label {
+    margin-top: 4px;
+    float: left;
+    font-family: "Segoe UI",Arial,Helvetica,sans-serif;
+}
+
+span {
+    font-family: "Segoe UI",Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+
+.exampleWrapper {
+    width: 737px;
+    height: 528px;
+    margin-top: 4px;
+}
+
+.uebersichtDiv {
+    margin-top: 5px;
+}
+
+.vlaidationSummary {
+    font-family: "Segoe UI",Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+
+.validators input {
+    margin-bottom: 3px;
+}
+
+.groupWrapper {
+    width: 410px;
+    margin: 0 2%;
+    height: 350px;
+    float: left;
+}
+
+.fieldRow {
+    margin-top: 4px;
+}
+
+.fieldRow label {
+    width: 140px;
+    display: block;
+    float: left;
+}
+
+.RadForm_MetroTouch .mtFix {
+    margin-top: 50px;
+}
+
+.validatorStyle {
+    position: absolute;
+    z-index: 1000;
+    background: White;
+    color: Red;
+    font-weight: bold;
+    font-size: larger;
+    margin-left: 15px;
+}

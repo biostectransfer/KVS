@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="KVSWebApplication.AccessDenied">
+    <Position X="11.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>AccessDenied.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.AllOrders">
+    <Position X="0.75" Y="0.5" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AEABQCMASBABAIAEAAMAAQAAQIBAABAAAQABAIIBCBA=</HashCode>
+      <FileName>AllOrders.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.ChangePassword">
+    <Position X="5.25" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAARAAADAAEABAQAAIEAAkAAEAAAQAQAAAAMABgA=</HashCode>
+      <FileName>ChangePassword.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication._default">
+    <Position X="8.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>default.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Default">
+    <Position X="9.75" Y="2.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAgAAKAAAAABAAAAAAIAAFIhgBAAAAgAoBAkA=</HashCode>
+      <FileName>Default.Master.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.EmptyStringIfNull">
+    <Position X="5.5" Y="5.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAIAAAAAAASAABACAAAAAAAgAABAAAAAAAAICAAA=</HashCode>
+      <FileName>EmptyStringIfNull.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.login">
+    <Position X="2.25" Y="7.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAgAQABAAAAAEAAAAAAAQEAAAAQBAIAAAA=</HashCode>
+      <FileName>login.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="KVSWebApplication.Auftragsbearbeitung_Neuzulassung.AuftragsbearbeitungNeuzulassung">
+    <Position X="0.5" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAASBAAAIAEhAAlBAAAAAADAAAAAAAACAAJAAAA=</HashCode>
+      <FileName>Auftragsbearbeitung_Neuzulassung\AuftragsbearbeitungNeuzulassung.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragsbearbeitung_Neuzulassung.Zulassungsstelle">
+    <Position X="10" Y="6.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>RjEBgmItdBEhMKARAAZQEABRQrBAEjgAARQQJIKl2B4=</HashCode>
+      <FileName>Auftragsbearbeitung_Neuzulassung\Zulassungsstelle.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragsbearbeitung_Neuzulassung.FehlerhaftZulassung">
+    <Position X="10.5" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAQAEgABAAAFIAAAAAAAEAACABIQAABCIBAFA=</HashCode>
+      <FileName>Auftragsbearbeitung_Neuzulassung\FehlerhaftZulassung.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragsbearbeitung_Neuzulassung.Lieferscheine">
+    <Position X="0.5" Y="5.75" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>BCBEDEAAEAAAABgAQAEAIEAQAAAKAGABAAEBBAYAAAY=</HashCode>
+      <FileName>Auftragsbearbeitung_Neuzulassung\Lieferscheine.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragsbearbeitung_Neuzulassung.OffenNeuzulassung">
+    <Position X="5.5" Y="0.5" Width="4" />
+    <TypeIdentifier>
+      <HashCode>QmUBACIBaAEBAeAVAIKQkTgACuBAAjABAQAFJAKhUBI=</HashCode>
+      <FileName>Auftragsbearbeitung_Neuzulassung\OffenNeuzulassung.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragsbearbeitung_Neuzulassung.VersandZulassung">
+    <Position X="0.75" Y="13.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>ICQAUDAEBAYBAgBAQAEAAAAAAhAAgAARCAAAAIICAAA=</HashCode>
+      <FileName>Auftragsbearbeitung_Neuzulassung\VersandZulassung.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

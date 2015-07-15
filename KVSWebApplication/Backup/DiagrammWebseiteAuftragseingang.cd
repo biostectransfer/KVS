@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="KVSWebApplication.Auftragseingang.AbmeldungGrosskunde1">
+    <Position X="0.5" Y="4.5" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>THYrpdDdfnXjQf02BCbdo8DR+PcCfy3Mx5MRZw7Pn5U=</HashCode>
+      <FileName>Auftragseingang\AbmeldungGrosskunde.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragseingang.AbmeldungGrosskunde">
+    <Position X="0.75" Y="0.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAIEABAgEAAAAAAABAACAAAAACAAIBAAA=</HashCode>
+      <FileName>Auftragseingang\AbmeldungGrosskunde.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragseingang.AbmeldungLaufkunde1">
+    <Position X="28.25" Y="0.5" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>XHY7pdBdPnXrjf03FCfZY+DRaPcq/3vM15MbZw7Pn9U=</HashCode>
+      <FileName>Auftragseingang\AbmeldungLaufkunde.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragseingang.AbmeldungLaufkunde">
+    <Position X="4.75" Y="0.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAIEABAAEAAAAAAABAACAAAAASAAIBAAA=</HashCode>
+      <FileName>Auftragseingang\AbmeldungLaufkunde.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragseingang.Auftragseingang">
+    <Position X="19.25" Y="4.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAoEEBAAEAAAAABABAAAAAAAAKEAIBAAA=</HashCode>
+      <FileName>Auftragseingang\Auftragseingang.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragseingang.AuftragseingangAbmeldung">
+    <Position X="14.5" Y="0.5" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>THYrpdDdfnXjAf02BCbdI8DRePcCfy3Mx5MRZy7Pn5U=</HashCode>
+      <FileName>Auftragseingang\AuftragseingangAbmeldung.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragseingang.AuftragseingangZulassung">
+    <Position X="5.25" Y="4.75" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>jHYppdDdPnXjAd00FCbda8jReP8Sf61Oz5MR5S6Pl5U=</HashCode>
+      <FileName>Auftragseingang\AuftragseingangZulassung.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragseingang.NeuzulassungGrosskunde1">
+    <Position X="23.25" Y="0.5" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>jHYppdDdPnXjQd00FCbd68jR+P8Sf61Mz5MR5Q6Pn5U=</HashCode>
+      <FileName>Auftragseingang\NeuzulassungGrosskunde.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragseingang.NeuzulassungGrosskunde">
+    <Position X="19.25" Y="0.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAoEABAgEAAAAABABAACAAAAACAAIBAAA=</HashCode>
+      <FileName>Auftragseingang\NeuzulassungGrosskunde.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragseingang.NeuzulassungLaufkunde">
+    <Position X="9.75" Y="0.5" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>nnY5pdBdPnXjjf01FCfZa+jZeP86/7tM35Mb5R6Pl9U=</HashCode>
+      <FileName>Auftragseingang\NeuzulassungLaufkunde.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Auftragseingang.ZulassungLaufkunde">
+    <Position X="19.25" Y="9.25" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAoEABAAEAAAAABABAACAAAAACAAIBBAA=</HashCode>
+      <FileName>Auftragseingang\ZulassungLaufkunde.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

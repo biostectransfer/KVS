@@ -1,0 +1,454 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+Diese Datei wird vom Veröffentlichungs-/Packvorgang Ihres Webprojekts verwendet. Sie können das Verhalten dieses Vorgangs anpassen,
+indem Sie diese MSBuild-Datei bearbeiten. Besuchen Sie "http://go.microsoft.com/fwlink/?LinkID=208121", um weitere Informationen zu erhalten. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile>2014-09-22T15:49:24.0000000+02:00</TimeStampOfAssociatedLegacyPublishXmlFile>
+    <_PublishTargetUrl>C:\Users\Hedin\Desktop\KVS</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="Abrechnung/Abrechnung.aspx">
+      <publishTime>05/06/2014 11:17:34</publishTime>
+    </File>
+    <File Include="Abrechnung/AbrechnungErstellen.ascx">
+      <publishTime>08/08/2014 11:56:58</publishTime>
+    </File>
+    <File Include="Abrechnung/AbrechnungSave.ascx">
+      <publishTime>09/19/2014 13:41:38</publishTime>
+    </File>
+    <File Include="Abrechnung/InvoiceRun.ascx">
+      <publishTime>07/14/2015 16:59:27</publishTime>
+    </File>
+    <File Include="Abrechnung/stateRequest.aspx">
+      <publishTime>05/06/2014 11:17:34</publishTime>
+    </File>
+    <File Include="Abrechnung/StornierteRechnungen.ascx">
+      <publishTime>05/06/2014 11:17:34</publishTime>
+    </File>
+    <File Include="AccessDenied.aspx">
+      <publishTime>05/06/2014 11:17:34</publishTime>
+    </File>
+    <File Include="AllOrders.aspx">
+      <publishTime>05/06/2014 11:17:28</publishTime>
+    </File>
+    <File Include="App_Browsers/browsers.browser">
+      <publishTime>03/23/2015 11:21:12</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/0.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/1.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/2.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/3.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/4.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/5.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/6.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/7.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/8.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/9.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/A.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/B.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/C.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/D.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/E.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/F.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/G.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/H.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/I.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/J.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/K.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/L.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/M.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/N.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/O.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/P.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/Q.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/R.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/S.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/T.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/U.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/V.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/W.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/X.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/Y.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="App_Data/RadCaptcha/Z.wav">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="Auftragsbearbeitung_Neuzulassung/AuftragsbearbeitungNeuzulassung.aspx">
+      <publishTime>07/14/2015 17:00:01</publishTime>
+    </File>
+    <File Include="Auftragsbearbeitung_Neuzulassung/FehlerhaftZulassung.ascx">
+      <publishTime>05/06/2014 11:17:32</publishTime>
+    </File>
+    <File Include="Auftragsbearbeitung_Neuzulassung/Lieferscheine.ascx">
+      <publishTime>05/06/2014 11:17:32</publishTime>
+    </File>
+    <File Include="Auftragsbearbeitung_Neuzulassung/OffenNeuzulassung.ascx">
+      <publishTime>09/03/2014 17:02:38</publishTime>
+    </File>
+    <File Include="Auftragsbearbeitung_Neuzulassung/VersandZulassung.ascx">
+      <publishTime>09/19/2014 10:41:34</publishTime>
+    </File>
+    <File Include="Auftragsbearbeitung_Neuzulassung/Zulassungsstelle.ascx">
+      <publishTime>09/19/2014 11:06:48</publishTime>
+    </File>
+    <File Include="Auftragseingang/AbmeldungGrosskunde.ascx">
+      <publishTime>08/04/2014 16:33:32</publishTime>
+    </File>
+    <File Include="Auftragseingang/AbmeldungGrosskunde.aspx">
+      <publishTime>05/06/2014 11:17:30</publishTime>
+    </File>
+    <File Include="Auftragseingang/AbmeldungLaufkunde.ascx">
+      <publishTime>08/27/2014 11:17:24</publishTime>
+    </File>
+    <File Include="Auftragseingang/AbmeldungLaufkunde.aspx">
+      <publishTime>05/06/2014 11:17:30</publishTime>
+    </File>
+    <File Include="Auftragseingang/Auftragseingang.aspx">
+      <publishTime>05/06/2014 11:17:30</publishTime>
+    </File>
+    <File Include="Auftragseingang/AuftragseingangAbmeldung.ascx">
+      <publishTime>05/06/2014 11:17:30</publishTime>
+    </File>
+    <File Include="Auftragseingang/AuftragseingangZulassung.ascx">
+      <publishTime>05/06/2014 11:17:30</publishTime>
+    </File>
+    <File Include="Auftragseingang/NeuzulassungGrosskunde.ascx">
+      <publishTime>08/04/2014 16:34:42</publishTime>
+    </File>
+    <File Include="Auftragseingang/NeuzulassungGrosskunde.aspx">
+      <publishTime>05/06/2014 11:17:30</publishTime>
+    </File>
+    <File Include="Auftragseingang/NeuzulassungLaufkunde.ascx">
+      <publishTime>08/27/2014 11:19:18</publishTime>
+    </File>
+    <File Include="Auftragseingang/ZulassungLaufkunde.aspx">
+      <publishTime>05/06/2014 11:17:30</publishTime>
+    </File>
+    <File Include="bin/Antlr3.Runtime.dll">
+      <publishTime>06/24/2014 16:37:08</publishTime>
+    </File>
+    <File Include="bin/KVSCommon.dll">
+      <publishTime>07/15/2015 08:46:35</publishTime>
+    </File>
+    <File Include="bin/KVSWebApplication.dll">
+      <publishTime>07/15/2015 08:46:37</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>06/24/2014 16:37:18</publishTime>
+    </File>
+    <File Include="bin/MigraDoc.DocumentObjectModel-WPF.dll">
+      <publishTime>05/06/2014 11:18:00</publishTime>
+    </File>
+    <File Include="bin/MigraDoc.Rendering-WPF.dll">
+      <publishTime>05/06/2014 11:18:00</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>06/24/2014 16:37:22</publishTime>
+    </File>
+    <File Include="bin/PdfSharp-WPF.dll">
+      <publishTime>05/06/2014 11:18:00</publishTime>
+    </File>
+    <File Include="bin/System.Web.Optimization.dll">
+      <publishTime>06/24/2014 16:37:08</publishTime>
+    </File>
+    <File Include="bin/Telerik.Web.Design.dll">
+      <publishTime>02/19/2014 15:38:48</publishTime>
+    </File>
+    <File Include="bin/Telerik.Web.UI.dll">
+      <publishTime>02/19/2014 15:38:35</publishTime>
+    </File>
+    <File Include="bin/Telerik.Web.UI.Skins.dll">
+      <publishTime>02/19/2014 15:38:48</publishTime>
+    </File>
+    <File Include="bin/WebGrease.dll">
+      <publishTime>06/24/2014 16:37:22</publishTime>
+    </File>
+    <File Include="ChangeHistory/ChangeLog.aspx">
+      <publishTime>05/06/2014 11:17:30</publishTime>
+    </File>
+    <File Include="ChangeHistory/OrderHistory.aspx">
+      <publishTime>05/06/2014 11:17:30</publishTime>
+    </File>
+    <File Include="ChangePassword.aspx">
+      <publishTime>05/06/2014 11:17:26</publishTime>
+    </File>
+    <File Include="Customer/AddCustomer.ascx">
+      <publishTime>08/27/2014 10:18:26</publishTime>
+    </File>
+    <File Include="Customer/CostCenter.ascx">
+      <publishTime>09/02/2014 16:37:58</publishTime>
+    </File>
+    <File Include="Customer/CustomerInformation.aspx">
+      <publishTime>05/06/2014 11:17:08</publishTime>
+    </File>
+    <File Include="Customer/LargeCustomerDetails.ascx">
+      <publishTime>08/29/2014 09:54:16</publishTime>
+    </File>
+    <File Include="Customer/Location_Details.ascx">
+      <publishTime>08/29/2014 17:40:08</publishTime>
+    </File>
+    <File Include="Customer/SmallCustomerDetails.ascx">
+      <publishTime>08/29/2014 09:40:24</publishTime>
+    </File>
+    <File Include="default.aspx">
+      <publishTime>09/19/2014 16:31:14</publishTime>
+    </File>
+    <File Include="Default.Master">
+      <publishTime>07/14/2015 18:49:56</publishTime>
+    </File>
+    <File Include="images/background.jpg">
+      <publishTime>04/17/2013 11:52:54</publishTime>
+    </File>
+    <File Include="images/button.gif">
+      <publishTime>04/17/2013 11:52:54</publishTime>
+    </File>
+    <File Include="images/check0.png">
+      <publishTime>03/17/2014 15:28:38</publishTime>
+    </File>
+    <File Include="images/check1.png">
+      <publishTime>03/17/2014 15:28:38</publishTime>
+    </File>
+    <File Include="images/check2.png">
+      <publishTime>03/17/2014 15:28:38</publishTime>
+    </File>
+    <File Include="ImportExport/ExportInvoices.ascx">
+      <publishTime>05/06/2014 11:17:32</publishTime>
+    </File>
+    <File Include="ImportExport/ImportCustomers.ascx">
+      <publishTime>05/06/2014 11:17:32</publishTime>
+    </File>
+    <File Include="ImportExport/ImportExport.aspx">
+      <publishTime>05/06/2014 11:17:32</publishTime>
+    </File>
+    <File Include="ImportExport/test.aspx">
+      <publishTime>05/06/2014 11:17:32</publishTime>
+    </File>
+    <File Include="index.html">
+      <publishTime>05/06/2014 11:17:32</publishTime>
+    </File>
+    <File Include="login.aspx">
+      <publishTime>07/14/2015 15:22:53</publishTime>
+    </File>
+    <File Include="Mailing/Mailing_Details.aspx">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="Nachbearbeitung_Abmeldung/AuftragsbearbeitungAbmeldung.ascx">
+      <publishTime>09/03/2014 17:02:38</publishTime>
+    </File>
+    <File Include="Nachbearbeitung_Abmeldung/Fehlerhaft.ascx">
+      <publishTime>05/06/2014 11:17:36</publishTime>
+    </File>
+    <File Include="Nachbearbeitung_Abmeldung/LieferscheinAbmeldung.ascx">
+      <publishTime>05/06/2014 11:17:36</publishTime>
+    </File>
+    <File Include="Nachbearbeitung_Abmeldung/NachbearbeitungAbmeldung.aspx">
+      <publishTime>05/06/2014 11:17:36</publishTime>
+    </File>
+    <File Include="Nachbearbeitung_Abmeldung/Versand.ascx">
+      <publishTime>09/19/2014 10:20:32</publishTime>
+    </File>
+    <File Include="Nachbearbeitung_Abmeldung/ZulassungNachbearbeitung.ascx">
+      <publishTime>09/19/2014 11:03:40</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>03/06/2014 11:14:18</publishTime>
+    </File>
+    <File Include="Permission/AllPermission.ascx">
+      <publishTime>05/06/2014 11:17:34</publishTime>
+    </File>
+    <File Include="Permission/PermissionProfile.ascx">
+      <publishTime>06/16/2014 16:51:22</publishTime>
+    </File>
+    <File Include="Permission/Permission_Details.aspx">
+      <publishTime>05/06/2014 11:17:34</publishTime>
+    </File>
+    <File Include="Permission/UserPermission.ascx">
+      <publishTime>05/06/2014 11:17:34</publishTime>
+    </File>
+    <File Include="Pictures/achtung.gif">
+      <publishTime>04/23/2014 12:56:30</publishTime>
+    </File>
+    <File Include="Pictures/AddRecord.gif">
+      <publishTime>05/03/2013 09:38:32</publishTime>
+    </File>
+    <File Include="Pictures/back.gif">
+      <publishTime>05/23/2013 14:24:46</publishTime>
+    </File>
+    <File Include="Pictures/bluegradient.gif">
+      <publishTime>04/25/2013 09:52:48</publishTime>
+    </File>
+    <File Include="Pictures/Delete.gif">
+      <publishTime>05/23/2013 11:05:46</publishTime>
+    </File>
+    <File Include="Pictures/ImageLeft.png">
+      <publishTime>05/07/2013 09:07:12</publishTime>
+    </File>
+    <File Include="Pictures/imageMiddle.jpg">
+      <publishTime>04/07/2014 10:24:58</publishTime>
+    </File>
+    <File Include="Pictures/kfz-voll-mit-raste .tif">
+      <publishTime>07/13/2015 13:17:45</publishTime>
+    </File>
+    <File Include="Pictures/logo.jpg">
+      <publishTime>05/14/2013 14:41:32</publishTime>
+    </File>
+    <File Include="Pictures/Logo.png">
+      <publishTime>07/14/2015 09:44:01</publishTime>
+    </File>
+    <File Include="Pictures/LogoForPrinting.png">
+      <publishTime>07/15/2015 00:29:23</publishTime>
+    </File>
+    <File Include="Pictures/our_logo.jpg">
+      <publishTime>04/17/2013 11:15:24</publishTime>
+    </File>
+    <File Include="Pictures/Zulassungsheader.jpg">
+      <publishTime>05/22/2013 16:57:18</publishTime>
+    </File>
+    <File Include="Pictures/Zulassungsheader1.jpg">
+      <publishTime>06/10/2013 10:29:10</publishTime>
+    </File>
+    <File Include="Product/AllProducts.ascx">
+      <publishTime>09/01/2014 11:35:26</publishTime>
+    </File>
+    <File Include="Product/CustomerProducts.ascx">
+      <publishTime>09/01/2014 12:01:08</publishTime>
+    </File>
+    <File Include="Product/Product_Details.aspx">
+      <publishTime>05/06/2014 11:17:34</publishTime>
+    </File>
+    <File Include="RequiredField/RequiredField_Details.aspx">
+      <publishTime>05/06/2014 11:17:34</publishTime>
+    </File>
+    <File Include="Scripts/cssverticalmenu.js">
+      <publishTime>05/06/2014 11:17:26</publishTime>
+    </File>
+    <File Include="Scripts/jquery-1.9.1.js">
+      <publishTime>07/14/2015 17:00:15</publishTime>
+    </File>
+    <File Include="Scripts/jquery-ui.js">
+      <publishTime>05/06/2014 11:17:26</publishTime>
+    </File>
+    <File Include="Scripts/jQUery.js">
+      <publishTime>05/06/2014 11:17:26</publishTime>
+    </File>
+    <File Include="Scripts/lieferscheine_abm.js">
+      <publishTime>05/06/2014 11:17:26</publishTime>
+    </File>
+    <File Include="Scripts/lieferscheine_zul.js">
+      <publishTime>05/06/2014 11:17:26</publishTime>
+    </File>
+    <File Include="Scripts/scripts.js">
+      <publishTime>05/06/2014 11:17:26</publishTime>
+    </File>
+    <File Include="Search/search.aspx">
+      <publishTime>07/14/2015 18:44:08</publishTime>
+    </File>
+    <File Include="Statistic/statistic.aspx">
+      <publishTime>05/06/2014 11:17:30</publishTime>
+    </File>
+    <File Include="Styles/auftragseingang.css">
+      <publishTime>05/06/2014 11:17:26</publishTime>
+    </File>
+    <File Include="Styles/CustomerStyle.css">
+      <publishTime>05/06/2014 11:17:26</publishTime>
+    </File>
+    <File Include="Styles/favicon.ico">
+      <publishTime>05/06/2014 11:17:26</publishTime>
+    </File>
+    <File Include="Styles/jquery-ui.css">
+      <publishTime>07/14/2015 16:58:00</publishTime>
+    </File>
+    <File Include="Styles/nachbearbeitungInfo.css">
+      <publishTime>05/06/2014 11:17:26</publishTime>
+    </File>
+    <File Include="Styles/statisticStyle.css">
+      <publishTime>05/06/2014 11:17:26</publishTime>
+    </File>
+    <File Include="Styles/styles.css">
+      <publishTime>07/14/2015 17:03:29</publishTime>
+    </File>
+    <File Include="Styles/styles_old.css">
+      <publishTime>06/26/2014 12:39:36</publishTime>
+    </File>
+    <File Include="Styles/zulassungstelle.css">
+      <publishTime>05/06/2014 11:17:26</publishTime>
+    </File>
+    <File Include="User/CreateUser.aspx">
+      <publishTime>05/06/2014 11:17:24</publishTime>
+    </File>
+    <File Include="web.config">
+      <publishTime>07/07/2015 15:39:47</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

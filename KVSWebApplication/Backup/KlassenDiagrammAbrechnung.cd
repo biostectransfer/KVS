@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="KVSWebApplication.Abrechnung.Abrechnung">
+    <Position X="0.5" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAACAIEEhCAEAACAAAABAAAAAAAACAAIAAAA=</HashCode>
+      <FileName>Abrechnung\Abrechnung.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Abrechnung.StornierteRechnungen">
+    <Position X="13" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>gAQEACAIAAAiiKAAQAIgEQAgACEAABAAIQQAEAIDAEA=</HashCode>
+      <FileName>Abrechnung\StornierteRechnungen.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Abrechnung.AbrechnungErstellen">
+    <Position X="0.5" Y="5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>ggYGQCAMEGAikKCAYAMkNQggAAEAgjJAoQQAEIIjAkA=</HashCode>
+      <FileName>Abrechnung\AbrechnungErstellen.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Abrechnung.AbrechnungSave">
+    <Position X="4.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>ADAIQGUMNwCgMJAQAAYgAIjDQBEAIMAAgwARISIAgBQ=</HashCode>
+      <FileName>Abrechnung\AbrechnungSave.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Abrechnung.InnerItems">
+    <Position X="9.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQIAAAAAAAAAAAggAAAASAAAwAAAAgAAAAAAAAAAg=</HashCode>
+      <FileName>Abrechnung\InnerItems.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Abrechnung.InvoiceRun">
+    <Position X="9.25" Y="4.25" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAICAAAEAAyAIhAAQIAAgAAAAAQECAAIQAAAAJAIMA=</HashCode>
+      <FileName>Abrechnung\InvoiceRun.ascx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Abrechnung.SelectedInvoiceItems">
+    <Position X="7.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>EEAAAAFAAAABACAAAAAAAACIAAQAgAAEAAgAARAIAAE=</HashCode>
+      <FileName>Abrechnung\SelectedInvoiceItems.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KVSWebApplication.Abrechnung.stateRequest">
+    <Position X="11.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Abrechnung\stateRequest.aspx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

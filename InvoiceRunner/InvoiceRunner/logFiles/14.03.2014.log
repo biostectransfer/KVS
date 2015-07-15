@@ -1,0 +1,355 @@
+[INFO] 14.03.2014 16:37:51: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 16:39:59: Rechnungslauf wurde gestartet
+[Error] 14.03.2014 16:39:59: Fehler beim Rechnungslauf im Standartkonstruktor: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt.
+[INFO] 14.03.2014 16:41:28: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 16:42:26: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 16:42:34: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 16:43:35: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 16:44:24: Rechnungslaufinitialisierung wurde abgeschlossen
+[INFO] 14.03.2014 16:44:54: Beginne das abarbeiten vom Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 16:46:00: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 16:46:12: Beginne das abarbeiten vom Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 16:46:44: Lese aufträge für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 16:46:44: Auslesen erfolgreich:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 16:47:39: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1764
+[INFO] 14.03.2014 16:58:28: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 16:58:44: Beginne das abarbeiten vom Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 16:58:46: Lese aufträge für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 16:58:46: Auslesen erfolgreich:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 16:58:58: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1764
+[INFO] 14.03.2014 17:02:20: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 17:02:26: Beginne das abarbeiten vom Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:02:27: Lese aufträge für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:02:27: Auslesen erfolgreich:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:02:31: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1764
+[INFO] 14.03.2014 17:05:04: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 17:05:10: Beginne das abarbeiten vom Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:05:12: Lese aufträge für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:05:12: Auslesen erfolgreich:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:05:14: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1764
+[INFO] 14.03.2014 17:15:46: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 17:15:51: Beginne das abarbeiten vom Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:15:54: Lese aufträge für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:15:54: Auslesen erfolgreich:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:15:57: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1764
+[INFO] 14.03.2014 17:16:32: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 17:16:37: Beginne das abarbeiten vom Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:16:39: Lese aufträge für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:16:39: Auslesen erfolgreich:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:16:44: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1764
+[INFO] 14.03.2014 17:17:04: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 17:17:08: Beginne das abarbeiten vom Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:17:10: Lese aufträge für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:17:10: Auslesen erfolgreich:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:17:13: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1764
+[INFO] 14.03.2014 17:23:35: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 17:23:41: Beginne das abarbeiten vom Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:23:42: Lese aufträge für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:23:42: Auslesen erfolgreich:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:23:52: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1764
+[INFO] 14.03.2014 17:23:59: Temporäre Rechnung erstellet mit der ID:19275715-e7b4-42a4-be80-ec8f2992a2ae
+[INFO] 14.03.2014 17:24:09: Temporäre Rechnungsposition erstellet mit der ID:c2e5800f-6bd7-400c-bf51-0be34281c52b
+[INFO] 14.03.2014 17:24:28: Temporäre Rechnungsposition erstellet mit der ID:e17457a6-0d3d-406e-9e16-ca6705b42de7
+[INFO] 14.03.2014 17:24:31: Temporäre Rechnungsposition erstellet mit der ID:f038217d-892c-4459-a41b-7e0edc6a52d1
+[INFO] 14.03.2014 17:24:36: Temporäre Rechnungsposition erstellet mit der ID:46e3bfc3-032c-4f7e-a387-592508057e62
+[INFO] 14.03.2014 17:24:36: Temporäre Rechnungsposition erstellet mit der ID:0b68c5a5-152b-4c3b-b786-3e70d3a105cd
+[INFO] 14.03.2014 17:24:36: Temporäre Rechnungsposition erstellet mit der ID:b8871ef4-b954-4804-a3aa-9fc4b56a636a
+[INFO] 14.03.2014 17:24:38: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1764
+[INFO] 14.03.2014 17:24:41: Temporäre Rechnung erstellet mit der ID:c37ac0ff-6332-4930-83e8-48e2137cf11e
+[Error] 14.03.2014 17:24:44: Fehler beim Rechnungslauf in GenerateInvoice: Die Auftragsposition ist bereits abgerechnet.
+[INFO] 14.03.2014 17:25:08: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 17:25:14: Beginne das abarbeiten vom Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:25:15: Lese aufträge für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:25:15: Auslesen erfolgreich:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:25:18: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1756
+[INFO] 14.03.2014 17:25:20: Temporäre Rechnung erstellet mit der ID:5eced00d-d9cf-4042-ba11-745438296dee
+[INFO] 14.03.2014 17:25:24: Temporäre Rechnungsposition erstellet mit der ID:7564e5e4-2973-4395-9699-af5969de8bfa
+[INFO] 14.03.2014 17:25:37: Temporäre Rechnungsposition erstellet mit der ID:59d06a10-6fb0-4aee-94a8-920de4b5ea3e
+[INFO] 14.03.2014 17:25:40: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1756
+[INFO] 14.03.2014 17:25:47: Temporäre Rechnung erstellet mit der ID:625947a0-cf8f-4a34-9483-bd31bdb97746
+[INFO] 14.03.2014 17:27:40: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 17:27:45: Beginne das abarbeiten vom Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:27:47: Lese aufträge für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:27:47: Auslesen erfolgreich:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:27:51: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1753
+[INFO] 14.03.2014 17:27:52: Temporäre Rechnung erstellet mit der ID:6e19d63d-e1d8-4ba2-91e6-78d741ce0ffb
+[INFO] 14.03.2014 17:28:09: Temporäre Rechnungsposition erstellet mit der ID:20a51a77-a84b-400e-be66-85164025dc08
+[INFO] 14.03.2014 17:28:16: Temporäre Rechnungsposition erstellet mit der ID:7ac3627e-e051-4fbc-ae9d-fbfd13524c2f
+[INFO] 14.03.2014 17:28:20: Temporäre Rechnungsposition erstellet mit der ID:d7ad279d-eb9a-4083-a291-4fd784e5db4a
+[INFO] 14.03.2014 17:28:26: Temporäre Rechnungsposition erstellet mit der ID:9363651b-8bb5-4c8f-adec-df93732ce430
+[INFO] 14.03.2014 17:28:44: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1753
+[INFO] 14.03.2014 17:28:50: Temporäre Rechnung erstellet mit der ID:678c18f2-a3dc-4ba1-ad60-28feda993e27
+[INFO] 14.03.2014 17:30:50: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 17:30:55: Beginne das abarbeiten vom Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:30:56: Lese aufträge für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:30:56: Auslesen erfolgreich:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:30:58: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1747
+[INFO] 14.03.2014 17:31:05: Temporäre Rechnung erstellet mit der ID:3f27bf5c-1413-45a3-8d71-2f4f4fab63f3
+[INFO] 14.03.2014 17:31:08: Temporäre Rechnungsposition erstellet mit der ID:22d21605-b3e4-4ec2-aa24-4e49b069d9b3
+[INFO] 14.03.2014 17:31:11: Temporäre Rechnungsposition erstellet mit der ID:6029be2f-6450-48c2-ad7c-3d27fe179258
+[INFO] 14.03.2014 17:31:14: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1747
+[INFO] 14.03.2014 17:31:15: Temporäre Rechnung erstellet mit der ID:232c2dbe-5ac3-4e67-a393-608404f64e1f
+[INFO] 14.03.2014 17:31:22: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1733
+[INFO] 14.03.2014 17:31:23: Temporäre Rechnung erstellet mit der ID:8171ac10-9b36-48e0-9176-39948210d943
+[INFO] 14.03.2014 17:31:31: Temporäre Rechnungsposition erstellet mit der ID:b063451e-b889-4368-b510-35cd412c32c6
+[INFO] 14.03.2014 17:31:34: Temporäre Rechnungsposition erstellet mit der ID:d9e4b3dc-468d-4994-a7cc-c8e8618aae18
+[INFO] 14.03.2014 17:31:57: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1733
+[INFO] 14.03.2014 17:31:59: Temporäre Rechnung erstellet mit der ID:5eeb3e2f-5db6-4acd-8210-755a27688a2a
+[INFO] 14.03.2014 17:32:03: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1725
+[INFO] 14.03.2014 17:32:04: Temporäre Rechnung erstellet mit der ID:671d360d-53e0-42ae-b4e8-4859108006d1
+[INFO] 14.03.2014 17:32:07: Temporäre Rechnungsposition erstellet mit der ID:fbdbb513-0b8f-4aca-9c68-40a1434d6f66
+[INFO] 14.03.2014 17:32:10: Temporäre Rechnungsposition erstellet mit der ID:480a05ba-6765-4e42-86e6-7e928cba7f2e
+[INFO] 14.03.2014 17:32:13: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1725
+[INFO] 14.03.2014 17:32:15: Temporäre Rechnung erstellet mit der ID:0ce6e389-b9a1-4135-967e-ecad8ecb5192
+[INFO] 14.03.2014 17:32:18: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1689
+[INFO] 14.03.2014 17:32:20: Temporäre Rechnung erstellet mit der ID:9e7f7265-1e96-4861-9c96-8469211bb4dd
+[INFO] 14.03.2014 17:32:23: Temporäre Rechnungsposition erstellet mit der ID:4b161a0f-2c7c-4fef-a9aa-9fe60047dc35
+[INFO] 14.03.2014 17:32:26: Temporäre Rechnungsposition erstellet mit der ID:1274916b-0ddc-47ef-9ed5-4522dd93743f
+[INFO] 14.03.2014 17:32:26: Temporäre Rechnungsposition erstellet mit der ID:54467802-558a-444d-8712-880423ccd57d
+[INFO] 14.03.2014 17:32:27: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1689
+[INFO] 14.03.2014 17:32:27: Temporäre Rechnung erstellet mit der ID:8b4a1e66-bf2a-4e03-99cf-76f6622f54d3
+[INFO] 14.03.2014 17:32:32: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1689
+[INFO] 14.03.2014 17:32:57: Temporäre Rechnung erstellet mit der ID:7c5a9cef-0b22-4f99-b526-2351bb3b717c
+[INFO] 14.03.2014 17:33:01: Erstelle Rechnungen für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:33:01: Erstelle Buchungskosten für die Rechnung mit der ID:3f27bf5c-1413-45a3-8d71-2f4f4fab63f3
+[Error] 14.03.2014 17:33:01: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung enthält keine Erlöskontent. Rechnungsid: 3f27bf5c-1413-45a3-8d71-2f4f4fab63f3
+[INFO] 14.03.2014 17:33:01: Erstelle Buchungskosten für die Rechnung mit der ID:232c2dbe-5ac3-4e67-a393-608404f64e1f
+[Error] 14.03.2014 17:33:01: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 232c2dbe-5ac3-4e67-a393-608404f64e1f
+[INFO] 14.03.2014 17:33:01: Erstelle Buchungskosten für die Rechnung mit der ID:8171ac10-9b36-48e0-9176-39948210d943
+[INFO] 14.03.2014 17:33:01: Erstellt Buchungskosten mit der ID:4175383e-08cc-47eb-967f-d77975904a92
+[Error] 14.03.2014 17:33:01: Fehler beim Rechnungslauf in PrintInvoices:Fehler, für diese Rechnungspostion mit der id:b063451e-b889-4368-b510-35cd412c32c6 wurde bereits ein Erlöskonto angelegt! Die Rechnung mit der ID:8171ac10-9b36-48e0-9176-39948210d943 kann nicht erstellt werden.
+[INFO] 14.03.2014 17:33:01: Erstelle Buchungskosten für die Rechnung mit der ID:5eeb3e2f-5db6-4acd-8210-755a27688a2a
+[Error] 14.03.2014 17:33:01: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 5eeb3e2f-5db6-4acd-8210-755a27688a2a
+[INFO] 14.03.2014 17:33:01: Erstelle Buchungskosten für die Rechnung mit der ID:671d360d-53e0-42ae-b4e8-4859108006d1
+[INFO] 14.03.2014 17:33:02: Erstellt Buchungskosten mit der ID:658e25b6-1eb6-421b-a9e0-1d3a7d72fd39
+[Error] 14.03.2014 17:33:02: Fehler beim Rechnungslauf in PrintInvoices:Fehler, für diese Rechnungspostion mit der id:fbdbb513-0b8f-4aca-9c68-40a1434d6f66 wurde bereits ein Erlöskonto angelegt! Die Rechnung mit der ID:671d360d-53e0-42ae-b4e8-4859108006d1 kann nicht erstellt werden.
+[INFO] 14.03.2014 17:33:02: Erstelle Buchungskosten für die Rechnung mit der ID:0ce6e389-b9a1-4135-967e-ecad8ecb5192
+[Error] 14.03.2014 17:33:02: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 0ce6e389-b9a1-4135-967e-ecad8ecb5192
+[INFO] 14.03.2014 17:33:02: Erstelle Buchungskosten für die Rechnung mit der ID:9e7f7265-1e96-4861-9c96-8469211bb4dd
+[Error] 14.03.2014 17:33:02: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung enthält keine Erlöskontent. Rechnungsid: 9e7f7265-1e96-4861-9c96-8469211bb4dd
+[INFO] 14.03.2014 17:33:02: Erstelle Buchungskosten für die Rechnung mit der ID:8b4a1e66-bf2a-4e03-99cf-76f6622f54d3
+[Error] 14.03.2014 17:33:02: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 8b4a1e66-bf2a-4e03-99cf-76f6622f54d3
+[INFO] 14.03.2014 17:33:02: Erstelle Buchungskosten für die Rechnung mit der ID:7c5a9cef-0b22-4f99-b526-2351bb3b717c
+[Error] 14.03.2014 17:33:02: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 7c5a9cef-0b22-4f99-b526-2351bb3b717c
+[Error] 14.03.2014 17:33:02: Fehler beim Rechnungslauf in PrintInvoices: DBContext für das Logging ist nicht gesetzt.
+[INFO] 14.03.2014 17:33:04: Beginne das abarbeiten vom Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:33:04: Lese aufträge für den Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:33:04: Auslesen erfolgreich:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:33:06: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1542
+[INFO] 14.03.2014 17:34:15: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 17:34:20: Beginne das abarbeiten vom Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:34:26: Lese aufträge für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:34:39: Auslesen erfolgreich:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:34:51: Erstelle Rechnungen für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:35:59: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 17:36:03: Beginne das abarbeiten vom Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:36:04: Lese aufträge für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:36:04: Auslesen erfolgreich:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:36:07: Erstelle Rechnungen für den Rechnungslauf:00ef3405-2cd4-4ec6-84f7-277a76e120f0
+[INFO] 14.03.2014 17:36:13: Beginne das abarbeiten vom Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:36:14: Lese aufträge für den Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:36:14: Auslesen erfolgreich:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:36:19: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1542
+[INFO] 14.03.2014 17:36:35: Beginne das abarbeiten vom Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:36:35: Lese aufträge für den Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:36:35: Auslesen erfolgreich:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:36:39: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1542
+[INFO] 14.03.2014 17:36:48: Beginne das abarbeiten vom Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:36:49: Lese aufträge für den Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:36:49: Auslesen erfolgreich:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:36:51: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1542
+[INFO] 14.03.2014 17:37:24: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 17:37:28: Beginne das abarbeiten vom Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:37:30: Lese aufträge für den Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:37:30: Auslesen erfolgreich:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:37:33: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1542
+[INFO] 14.03.2014 17:37:45: Beginne das abarbeiten vom Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:37:46: Lese aufträge für den Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:37:46: Auslesen erfolgreich:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:37:51: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1542
+[INFO] 14.03.2014 17:38:35: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 17:38:40: Beginne das abarbeiten vom Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:38:41: Lese aufträge für den Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:38:41: Auslesen erfolgreich:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:38:44: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1542
+[INFO] 14.03.2014 17:38:57: Beginne das abarbeiten vom Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:38:57: Lese aufträge für den Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:38:57: Auslesen erfolgreich:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:39:00: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1542
+[INFO] 14.03.2014 17:39:53: Beginne das abarbeiten vom Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:39:54: Lese aufträge für den Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:39:54: Auslesen erfolgreich:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:39:55: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1542
+[INFO] 14.03.2014 17:42:26: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 17:42:29: Beginne das abarbeiten vom Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:42:30: Lese aufträge für den Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:42:30: Auslesen erfolgreich:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:42:32: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1542
+[INFO] 14.03.2014 17:42:45: Temporäre Rechnung erstellet mit der ID:3ca4a43a-8f63-4d57-b65f-1162c8b51a32
+[INFO] 14.03.2014 17:42:55: Temporäre Rechnungsposition erstellet mit der ID:101795d9-95e4-4c33-9dbc-0472cd1a38db
+[INFO] 14.03.2014 17:43:02: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1538
+[INFO] 14.03.2014 17:43:09: Temporäre Rechnung erstellet mit der ID:615dbff7-8561-445c-925a-51bc05aac3ab
+[INFO] 14.03.2014 17:43:26: Temporäre Rechnungsposition erstellet mit der ID:73926827-5022-471f-9c9f-59d743e475b9
+[INFO] 14.03.2014 17:43:29: Temporäre Rechnungsposition erstellet mit der ID:bf7e4a56-ee78-4554-91ab-99ad7e4b99d3
+[INFO] 14.03.2014 17:43:33: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1538
+[INFO] 14.03.2014 17:43:35: Temporäre Rechnung erstellet mit der ID:1ea7d863-495f-44b3-bd56-42736d7a318f
+[INFO] 14.03.2014 17:43:38: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1537
+[INFO] 14.03.2014 17:43:39: Temporäre Rechnung erstellet mit der ID:8a7582cc-2740-417f-a5e8-50b0a612eb3e
+[INFO] 14.03.2014 17:43:42: Temporäre Rechnungsposition erstellet mit der ID:8874b435-5ff3-4abb-ac2a-5f8010e21d46
+[INFO] 14.03.2014 17:43:45: Temporäre Rechnungsposition erstellet mit der ID:c4f17207-7d17-4176-8891-1c0bdff52633
+[INFO] 14.03.2014 17:43:48: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1537
+[INFO] 14.03.2014 17:43:50: Temporäre Rechnung erstellet mit der ID:6899db9c-92b6-40c2-8457-be0448174c01
+[INFO] 14.03.2014 17:43:53: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1536
+[INFO] 14.03.2014 17:43:54: Temporäre Rechnung erstellet mit der ID:5f1a76b9-41a1-4b88-8e3c-1bda02d1cf30
+[INFO] 14.03.2014 17:43:58: Temporäre Rechnungsposition erstellet mit der ID:347aa727-4ba6-47cd-95c0-77c0fac736f3
+[INFO] 14.03.2014 17:44:00: Temporäre Rechnungsposition erstellet mit der ID:2a513e2b-3d8c-4fcd-96bf-3a4e2a6da60c
+[INFO] 14.03.2014 17:44:03: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1536
+[INFO] 14.03.2014 17:44:05: Temporäre Rechnung erstellet mit der ID:9cc6cf50-0d61-4e30-b63e-0d6f7ff8eedb
+[INFO] 14.03.2014 17:44:10: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:399
+[INFO] 14.03.2014 17:44:11: Temporäre Rechnung erstellet mit der ID:0a1fc722-fd9a-42f5-aeca-8ded205ba3b7
+[INFO] 14.03.2014 17:44:19: Temporäre Rechnungsposition erstellet mit der ID:fb7ac369-5121-4fd8-bc52-56b5d53a7824
+[INFO] 14.03.2014 17:44:22: Temporäre Rechnungsposition erstellet mit der ID:4097d6a2-0961-4f1b-8a9e-7ba6a5da1f0e
+[INFO] 14.03.2014 17:44:27: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:399
+[INFO] 14.03.2014 17:44:30: Temporäre Rechnung erstellet mit der ID:ba2c4633-769e-4419-9f69-4a06b1b6e820
+[INFO] 14.03.2014 17:44:33: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:364
+[INFO] 14.03.2014 17:44:34: Temporäre Rechnung erstellet mit der ID:6f5bf0cd-35f6-4273-b845-0d26830c0582
+[INFO] 14.03.2014 17:44:38: Temporäre Rechnungsposition erstellet mit der ID:69e9a34a-8f4d-4041-9dc8-3fe1cffebacc
+[INFO] 14.03.2014 17:44:41: Temporäre Rechnungsposition erstellet mit der ID:a097661f-4508-48fa-9b5a-18766a6ee518
+[INFO] 14.03.2014 17:44:44: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:364
+[INFO] 14.03.2014 17:44:45: Temporäre Rechnung erstellet mit der ID:13bae63e-9834-4c21-81e9-a96350effb38
+[INFO] 14.03.2014 17:44:48: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:185
+[INFO] 14.03.2014 17:44:50: Temporäre Rechnung erstellet mit der ID:62ec101b-5551-46b1-9c8f-bdf135f8765e
+[INFO] 14.03.2014 17:44:54: Temporäre Rechnungsposition erstellet mit der ID:4f110ebb-3d71-4df1-9460-9eb608da0179
+[INFO] 14.03.2014 17:44:56: Temporäre Rechnungsposition erstellet mit der ID:37e6e524-27f0-4047-8c0d-a79b2655a973
+[INFO] 14.03.2014 17:44:59: Temporäre Rechnungsposition erstellet mit der ID:27036e95-fd97-4fb4-9d9a-6466f82c259c
+[INFO] 14.03.2014 17:45:02: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:185
+[INFO] 14.03.2014 17:45:03: Temporäre Rechnung erstellet mit der ID:44aa74a3-1384-458e-86c7-73c02246cd0e
+[INFO] 14.03.2014 17:45:06: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:185
+[INFO] 14.03.2014 17:45:08: Temporäre Rechnung erstellet mit der ID:8509db1a-c73b-4fab-95a0-6b3700b72665
+[INFO] 14.03.2014 17:45:34: Erstelle Rechnungen für den Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:45:34: Erstelle Buchungskosten für die Rechnung mit der ID:3ca4a43a-8f63-4d57-b65f-1162c8b51a32
+[Error] 14.03.2014 17:45:34: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung enthält keine Erlöskontent. Rechnungsid: 3ca4a43a-8f63-4d57-b65f-1162c8b51a32
+[INFO] 14.03.2014 17:45:34: Erstelle Buchungskosten für die Rechnung mit der ID:615dbff7-8561-445c-925a-51bc05aac3ab
+[Error] 14.03.2014 17:45:34: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung enthält keine Erlöskontent. Rechnungsid: 615dbff7-8561-445c-925a-51bc05aac3ab
+[INFO] 14.03.2014 17:45:34: Erstelle Buchungskosten für die Rechnung mit der ID:1ea7d863-495f-44b3-bd56-42736d7a318f
+[Error] 14.03.2014 17:45:34: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 1ea7d863-495f-44b3-bd56-42736d7a318f
+[INFO] 14.03.2014 17:45:34: Erstelle Buchungskosten für die Rechnung mit der ID:8a7582cc-2740-417f-a5e8-50b0a612eb3e
+[INFO] 14.03.2014 17:45:34: Erstellt Buchungskosten mit der ID:c3475a96-25c3-4102-b6ae-49aabe83a31f
+[Error] 14.03.2014 17:45:34: Fehler beim Rechnungslauf in PrintInvoices:Fehler, für diese Rechnungspostion mit der id:c4f17207-7d17-4176-8891-1c0bdff52633 wurde bereits ein Erlöskonto angelegt! Die Rechnung mit der ID:8a7582cc-2740-417f-a5e8-50b0a612eb3e kann nicht erstellt werden.
+[INFO] 14.03.2014 17:45:34: Erstelle Buchungskosten für die Rechnung mit der ID:6899db9c-92b6-40c2-8457-be0448174c01
+[Error] 14.03.2014 17:45:34: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 6899db9c-92b6-40c2-8457-be0448174c01
+[INFO] 14.03.2014 17:45:34: Erstelle Buchungskosten für die Rechnung mit der ID:5f1a76b9-41a1-4b88-8e3c-1bda02d1cf30
+[Error] 14.03.2014 17:45:34: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung enthält keine Erlöskontent. Rechnungsid: 5f1a76b9-41a1-4b88-8e3c-1bda02d1cf30
+[INFO] 14.03.2014 17:45:34: Erstelle Buchungskosten für die Rechnung mit der ID:9cc6cf50-0d61-4e30-b63e-0d6f7ff8eedb
+[Error] 14.03.2014 17:45:34: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 9cc6cf50-0d61-4e30-b63e-0d6f7ff8eedb
+[INFO] 14.03.2014 17:45:35: Erstelle Buchungskosten für die Rechnung mit der ID:0a1fc722-fd9a-42f5-aeca-8ded205ba3b7
+[Error] 14.03.2014 17:45:35: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung enthält keine Erlöskontent. Rechnungsid: 0a1fc722-fd9a-42f5-aeca-8ded205ba3b7
+[INFO] 14.03.2014 17:45:35: Erstelle Buchungskosten für die Rechnung mit der ID:ba2c4633-769e-4419-9f69-4a06b1b6e820
+[Error] 14.03.2014 17:45:35: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: ba2c4633-769e-4419-9f69-4a06b1b6e820
+[INFO] 14.03.2014 17:45:35: Erstelle Buchungskosten für die Rechnung mit der ID:6f5bf0cd-35f6-4273-b845-0d26830c0582
+[Error] 14.03.2014 17:45:35: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung enthält keine Erlöskontent. Rechnungsid: 6f5bf0cd-35f6-4273-b845-0d26830c0582
+[INFO] 14.03.2014 17:45:35: Erstelle Buchungskosten für die Rechnung mit der ID:13bae63e-9834-4c21-81e9-a96350effb38
+[Error] 14.03.2014 17:45:35: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 13bae63e-9834-4c21-81e9-a96350effb38
+[INFO] 14.03.2014 17:45:35: Erstelle Buchungskosten für die Rechnung mit der ID:62ec101b-5551-46b1-9c8f-bdf135f8765e
+[Error] 14.03.2014 17:45:35: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung enthält keine Erlöskontent. Rechnungsid: 62ec101b-5551-46b1-9c8f-bdf135f8765e
+[INFO] 14.03.2014 17:45:35: Erstelle Buchungskosten für die Rechnung mit der ID:44aa74a3-1384-458e-86c7-73c02246cd0e
+[Error] 14.03.2014 17:45:35: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 44aa74a3-1384-458e-86c7-73c02246cd0e
+[INFO] 14.03.2014 17:45:35: Erstelle Buchungskosten für die Rechnung mit der ID:8509db1a-c73b-4fab-95a0-6b3700b72665
+[Error] 14.03.2014 17:45:35: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 8509db1a-c73b-4fab-95a0-6b3700b72665
+[INFO] 14.03.2014 17:45:42: Erstelle Rechnungen für den Rechnungslauf:2890e414-98eb-48da-9819-578f2c29c337
+[INFO] 14.03.2014 17:45:44: Erstelle Buchungskosten für die Rechnung mit der ID:3ca4a43a-8f63-4d57-b65f-1162c8b51a32
+[Error] 14.03.2014 17:45:49: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung enthält keine Erlöskontent. Rechnungsid: 3ca4a43a-8f63-4d57-b65f-1162c8b51a32
+[INFO] 14.03.2014 17:45:51: Erstelle Buchungskosten für die Rechnung mit der ID:615dbff7-8561-445c-925a-51bc05aac3ab
+[Error] 14.03.2014 17:45:58: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung enthält keine Erlöskontent. Rechnungsid: 615dbff7-8561-445c-925a-51bc05aac3ab
+[INFO] 14.03.2014 17:46:00: Erstelle Buchungskosten für die Rechnung mit der ID:1ea7d863-495f-44b3-bd56-42736d7a318f
+[Error] 14.03.2014 17:46:08: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 1ea7d863-495f-44b3-bd56-42736d7a318f
+[INFO] 14.03.2014 17:46:10: Erstelle Buchungskosten für die Rechnung mit der ID:8a7582cc-2740-417f-a5e8-50b0a612eb3e
+[INFO] 14.03.2014 17:46:20: Erstellt Buchungskosten mit der ID:2cdbda5d-004e-485d-b539-2c213c89649f
+[Error] 14.03.2014 17:46:41: Fehler beim Rechnungslauf in PrintInvoices:Fehler, für diese Rechnungspostion mit der id:c4f17207-7d17-4176-8891-1c0bdff52633 wurde bereits ein Erlöskonto angelegt! Die Rechnung mit der ID:8a7582cc-2740-417f-a5e8-50b0a612eb3e kann nicht erstellt werden.
+[INFO] 14.03.2014 17:46:43: Erstelle Buchungskosten für die Rechnung mit der ID:6899db9c-92b6-40c2-8457-be0448174c01
+[Error] 14.03.2014 17:46:48: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 6899db9c-92b6-40c2-8457-be0448174c01
+[INFO] 14.03.2014 17:46:50: Erstelle Buchungskosten für die Rechnung mit der ID:5f1a76b9-41a1-4b88-8e3c-1bda02d1cf30
+[Error] 14.03.2014 17:47:26: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung enthält keine Erlöskontent. Rechnungsid: 5f1a76b9-41a1-4b88-8e3c-1bda02d1cf30
+[INFO] 14.03.2014 17:47:28: Erstelle Buchungskosten für die Rechnung mit der ID:9cc6cf50-0d61-4e30-b63e-0d6f7ff8eedb
+[Error] 14.03.2014 17:47:31: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 9cc6cf50-0d61-4e30-b63e-0d6f7ff8eedb
+[INFO] 14.03.2014 17:47:33: Erstelle Buchungskosten für die Rechnung mit der ID:0a1fc722-fd9a-42f5-aeca-8ded205ba3b7
+[Error] 14.03.2014 17:47:37: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung enthält keine Erlöskontent. Rechnungsid: 0a1fc722-fd9a-42f5-aeca-8ded205ba3b7
+[INFO] 14.03.2014 17:47:39: Erstelle Buchungskosten für die Rechnung mit der ID:ba2c4633-769e-4419-9f69-4a06b1b6e820
+[Error] 14.03.2014 17:47:41: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: ba2c4633-769e-4419-9f69-4a06b1b6e820
+[INFO] 14.03.2014 17:47:43: Erstelle Buchungskosten für die Rechnung mit der ID:6f5bf0cd-35f6-4273-b845-0d26830c0582
+[Error] 14.03.2014 17:47:46: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung enthält keine Erlöskontent. Rechnungsid: 6f5bf0cd-35f6-4273-b845-0d26830c0582
+[INFO] 14.03.2014 17:47:48: Erstelle Buchungskosten für die Rechnung mit der ID:13bae63e-9834-4c21-81e9-a96350effb38
+[Error] 14.03.2014 17:47:50: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 13bae63e-9834-4c21-81e9-a96350effb38
+[INFO] 14.03.2014 17:47:52: Erstelle Buchungskosten für die Rechnung mit der ID:62ec101b-5551-46b1-9c8f-bdf135f8765e
+[Error] 14.03.2014 17:47:54: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung enthält keine Erlöskontent. Rechnungsid: 62ec101b-5551-46b1-9c8f-bdf135f8765e
+[INFO] 14.03.2014 17:47:56: Erstelle Buchungskosten für die Rechnung mit der ID:44aa74a3-1384-458e-86c7-73c02246cd0e
+[Error] 14.03.2014 17:47:58: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 44aa74a3-1384-458e-86c7-73c02246cd0e
+[INFO] 14.03.2014 17:48:00: Erstelle Buchungskosten für die Rechnung mit der ID:8509db1a-c73b-4fab-95a0-6b3700b72665
+[Error] 14.03.2014 17:48:00: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 8509db1a-c73b-4fab-95a0-6b3700b72665
+[INFO] 14.03.2014 17:48:00: Beginne das abarbeiten vom Rechnungslauf:82516949-83ba-4fa2-b39c-92e027853e76
+[INFO] 14.03.2014 17:48:00: Lese aufträge für den Rechnungslauf:82516949-83ba-4fa2-b39c-92e027853e76
+[INFO] 14.03.2014 17:48:00: Auslesen erfolgreich:82516949-83ba-4fa2-b39c-92e027853e76
+[INFO] 14.03.2014 17:48:01: Erstelle Rechnungen für den Rechnungslauf:82516949-83ba-4fa2-b39c-92e027853e76
+[INFO] 14.03.2014 17:48:01: Beginne das abarbeiten vom Rechnungslauf:35362ae9-2995-431f-a527-b17191dac7bb
+[INFO] 14.03.2014 17:48:01: Lese aufträge für den Rechnungslauf:35362ae9-2995-431f-a527-b17191dac7bb
+[INFO] 14.03.2014 17:48:01: Auslesen erfolgreich:35362ae9-2995-431f-a527-b17191dac7bb
+[INFO] 14.03.2014 17:48:01: Erstelle Rechnungen für den Rechnungslauf:35362ae9-2995-431f-a527-b17191dac7bb
+[INFO] 14.03.2014 17:48:01: Beginne das abarbeiten vom Rechnungslauf:a7f6cb43-9398-409d-85e4-d67c6c122d5b
+[INFO] 14.03.2014 17:48:01: Lese aufträge für den Rechnungslauf:a7f6cb43-9398-409d-85e4-d67c6c122d5b
+[INFO] 14.03.2014 17:48:01: Auslesen erfolgreich:a7f6cb43-9398-409d-85e4-d67c6c122d5b
+[INFO] 14.03.2014 17:48:02: Erstelle Rechnungen für den Rechnungslauf:a7f6cb43-9398-409d-85e4-d67c6c122d5b
+[INFO] 14.03.2014 18:13:41: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 18:13:47: Lese aufträge für den Rechnungslauf:7fd08585-6558-47d6-b61b-303ac284a6d4
+[INFO] 14.03.2014 18:13:48: Auslesen erfolgreich:7fd08585-6558-47d6-b61b-303ac284a6d4
+[INFO] 14.03.2014 18:13:48: Beginne das abarbeiten vom Rechnungslauf:7fd08585-6558-47d6-b61b-303ac284a6d4
+[INFO] 14.03.2014 18:14:16: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 18:14:21: Lese aufträge für den Rechnungslauf:7fd08585-6558-47d6-b61b-303ac284a6d4
+[INFO] 14.03.2014 18:14:21: Auslesen erfolgreich:7fd08585-6558-47d6-b61b-303ac284a6d4
+[INFO] 14.03.2014 18:14:22: Beginne das abarbeiten vom Rechnungslauf:7fd08585-6558-47d6-b61b-303ac284a6d4
+[INFO] 14.03.2014 18:14:29: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1773
+[INFO] 14.03.2014 18:14:40: Temporäre Rechnung erstellet mit der ID:ed07e74a-6b51-416f-8c61-fd64fe4bc8d5
+[INFO] 14.03.2014 18:14:47: Temporäre Rechnungsposition erstellet mit der ID:f2938b9d-db2e-49a7-b62e-e6bcba8eeb45
+[INFO] 14.03.2014 18:14:47: Temporäre Rechnungsposition erstellet mit der ID:c766909d-b0d2-4767-a2df-5056eeb5459c
+[INFO] 14.03.2014 18:14:47: Temporäre Rechnungsposition erstellet mit der ID:5e6bae00-7612-45e1-a7c7-d8c5449bb151
+[INFO] 14.03.2014 18:14:47: Temporäre Rechnungsposition erstellet mit der ID:20dbe010-6bf9-4658-bc9e-d8406cefe7d5
+[INFO] 14.03.2014 18:14:47: Temporäre Rechnungsposition erstellet mit der ID:4a22c056-59e5-4265-814b-e3250f264cef
+[INFO] 14.03.2014 18:14:47: Temporäre Rechnungsposition erstellet mit der ID:ba02608e-8206-4070-a40a-61c159702626
+[INFO] 14.03.2014 18:14:47: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1773
+[INFO] 14.03.2014 18:14:47: Temporäre Rechnung erstellet mit der ID:73204576-ef7b-41f4-ac95-026f1c6ed8df
+[INFO] 14.03.2014 18:14:47: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1773
+[INFO] 14.03.2014 18:14:47: Temporäre Rechnung erstellet mit der ID:d9bfafe7-c2ba-4a6a-8eb4-cef8c6a5a37d
+[INFO] 14.03.2014 18:14:47: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1773
+[INFO] 14.03.2014 18:14:47: Temporäre Rechnung erstellet mit der ID:fa9182da-e0a9-4737-abea-9252da0a65da
+[INFO] 14.03.2014 18:14:47: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1773
+[INFO] 14.03.2014 18:14:47: Temporäre Rechnung erstellet mit der ID:50712115-87f7-46d7-8103-88987a4d03ad
+[INFO] 14.03.2014 18:14:47: Beginne das abarbeiten vom Auftrag mit der Auftragsnummer:1773
+[INFO] 14.03.2014 18:14:47: Temporäre Rechnung erstellet mit der ID:eeb1f7da-8124-49b4-a657-d74212881274
+[INFO] 14.03.2014 18:15:13: Erstelle Rechnungen für den Rechnungslauf:7fd08585-6558-47d6-b61b-303ac284a6d4
+[INFO] 14.03.2014 18:15:15: Erstelle Buchungskosten für die Rechnung mit der ID:ed07e74a-6b51-416f-8c61-fd64fe4bc8d5
+[INFO] 14.03.2014 18:15:26: Erstellt Buchungskosten mit der ID:695834b7-e113-420d-a067-a28d38633298
+[Error] 14.03.2014 18:15:35: Fehler beim Rechnungslauf in PrintInvoices:Fehler, für diese Rechnungspostion mit der id:c766909d-b0d2-4767-a2df-5056eeb5459c wurde bereits ein Erlöskonto angelegt! Die Rechnung mit der ID:ed07e74a-6b51-416f-8c61-fd64fe4bc8d5 kann nicht erstellt werden.
+[INFO] 14.03.2014 18:15:37: Erstelle Buchungskosten für die Rechnung mit der ID:73204576-ef7b-41f4-ac95-026f1c6ed8df
+[Error] 14.03.2014 18:15:45: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 73204576-ef7b-41f4-ac95-026f1c6ed8df
+[INFO] 14.03.2014 18:15:56: Erstelle Buchungskosten für die Rechnung mit der ID:d9bfafe7-c2ba-4a6a-8eb4-cef8c6a5a37d
+[Error] 14.03.2014 18:16:02: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: d9bfafe7-c2ba-4a6a-8eb4-cef8c6a5a37d
+[INFO] 14.03.2014 18:16:04: Erstelle Buchungskosten für die Rechnung mit der ID:fa9182da-e0a9-4737-abea-9252da0a65da
+[Error] 14.03.2014 18:16:08: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: fa9182da-e0a9-4737-abea-9252da0a65da
+[INFO] 14.03.2014 18:16:13: Erstelle Buchungskosten für die Rechnung mit der ID:50712115-87f7-46d7-8103-88987a4d03ad
+[Error] 14.03.2014 18:16:19: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: 50712115-87f7-46d7-8103-88987a4d03ad
+[INFO] 14.03.2014 18:16:24: Erstelle Buchungskosten für die Rechnung mit der ID:eeb1f7da-8124-49b4-a657-d74212881274
+[Error] 14.03.2014 18:16:29: Fehler beim Rechnungslauf in PrintInvoices:Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden. Rechnungsid: eeb1f7da-8124-49b4-a657-d74212881274
+[INFO] 14.03.2014 18:20:03: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 18:20:09: Lese aufträge für den Rechnungslauf:7fd08585-6558-47d6-b61b-303ac284a6d4
+[INFO] 14.03.2014 18:20:09: Auslesen erfolgreich:7fd08585-6558-47d6-b61b-303ac284a6d4
+[INFO] 14.03.2014 18:20:09: Beginne das abarbeiten vom Rechnungslauf:7fd08585-6558-47d6-b61b-303ac284a6d4
+[INFO] 14.03.2014 18:20:11: Erstelle Rechnungen für den Rechnungslauf:7fd08585-6558-47d6-b61b-303ac284a6d4
+[INFO] 14.03.2014 18:20:13: Lese aufträge für den Rechnungslauf:698a6684-0924-4552-b0a3-d84e89331c5c
+[INFO] 14.03.2014 18:20:13: Auslesen erfolgreich:698a6684-0924-4552-b0a3-d84e89331c5c
+[INFO] 14.03.2014 18:20:14: Beginne das abarbeiten vom Rechnungslauf:698a6684-0924-4552-b0a3-d84e89331c5c
+[INFO] 14.03.2014 18:20:16: Erstelle Rechnungen für den Rechnungslauf:698a6684-0924-4552-b0a3-d84e89331c5c
+[INFO] 14.03.2014 18:21:27: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 18:22:09: Rechnungslauf wurde gestartet
+[INFO] 14.03.2014 18:22:13: Lese aufträge für den Rechnungslauf:cd3be2ff-5527-4af6-950d-70b9bc04453b
+[INFO] 14.03.2014 18:22:13: Auslesen erfolgreich:cd3be2ff-5527-4af6-950d-70b9bc04453b
+[INFO] 14.03.2014 18:22:20: Beginne das abarbeiten vom Rechnungslauf:cd3be2ff-5527-4af6-950d-70b9bc04453b
+[INFO] 14.03.2014 18:22:27: Erstelle Rechnungen für den Rechnungslauf:cd3be2ff-5527-4af6-950d-70b9bc04453b
