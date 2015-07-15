@@ -66,7 +66,7 @@ DataTextField = "Name" DataValueField = "Value" ID = "CustomerDropDownList"
      <td>
       <asp:Button  ID = "btnShowInvoice" Enabled = "false" runat = "server" Text = "Rechnung anzeigen" OnClick = "ShowInvoiceButton_Clicked"></asp:Button >   
       </td>
-      <td>
+      <td style="white-space: nowrap;">
       <asp:CheckBox ID="defaultAccountNumber" runat="server" Checked="true" Text="Standard Erlös-Konto" ToolTip="<%$AppSettings: DefaultAccountNumber %>"  />
       </td>
      </tr>
