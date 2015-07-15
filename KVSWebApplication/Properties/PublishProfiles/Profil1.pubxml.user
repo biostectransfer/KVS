@@ -13,7 +13,7 @@ indem Sie diese MSBuild-Datei bearbeiten. Besuchen Sie "http://go.microsoft.com/
       <publishTime>05/06/2014 11:17:34</publishTime>
     </File>
     <File Include="Abrechnung/AbrechnungErstellen.ascx">
-      <publishTime>08/08/2014 11:56:58</publishTime>
+      <publishTime>07/15/2015 21:09:01</publishTime>
     </File>
     <File Include="Abrechnung/AbrechnungSave.ascx">
       <publishTime>09/19/2014 13:41:38</publishTime>
@@ -199,10 +199,10 @@ indem Sie diese MSBuild-Datei bearbeiten. Besuchen Sie "http://go.microsoft.com/
       <publishTime>06/24/2014 16:37:08</publishTime>
     </File>
     <File Include="bin/KVSCommon.dll">
-      <publishTime>07/15/2015 08:46:35</publishTime>
+      <publishTime>07/15/2015 21:10:48</publishTime>
     </File>
     <File Include="bin/KVSWebApplication.dll">
-      <publishTime>07/15/2015 08:46:37</publishTime>
+      <publishTime>07/15/2015 21:10:50</publishTime>
     </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
       <publishTime>06/24/2014 16:37:18</publishTime>
@@ -244,7 +244,7 @@ indem Sie diese MSBuild-Datei bearbeiten. Besuchen Sie "http://go.microsoft.com/
       <publishTime>05/06/2014 11:17:26</publishTime>
     </File>
     <File Include="Customer/AddCustomer.ascx">
-      <publishTime>08/27/2014 10:18:26</publishTime>
+      <publishTime>07/15/2015 14:27:35</publishTime>
     </File>
     <File Include="Customer/CostCenter.ascx">
       <publishTime>09/02/2014 16:37:58</publishTime>
@@ -253,19 +253,19 @@ indem Sie diese MSBuild-Datei bearbeiten. Besuchen Sie "http://go.microsoft.com/
       <publishTime>05/06/2014 11:17:08</publishTime>
     </File>
     <File Include="Customer/LargeCustomerDetails.ascx">
-      <publishTime>08/29/2014 09:54:16</publishTime>
+      <publishTime>07/15/2015 14:28:16</publishTime>
     </File>
     <File Include="Customer/Location_Details.ascx">
       <publishTime>08/29/2014 17:40:08</publishTime>
     </File>
     <File Include="Customer/SmallCustomerDetails.ascx">
-      <publishTime>08/29/2014 09:40:24</publishTime>
+      <publishTime>07/15/2015 14:28:25</publishTime>
     </File>
     <File Include="default.aspx">
       <publishTime>09/19/2014 16:31:14</publishTime>
     </File>
     <File Include="Default.Master">
-      <publishTime>07/14/2015 18:49:56</publishTime>
+      <publishTime>07/15/2015 20:37:37</publishTime>
     </File>
     <File Include="images/background.jpg">
       <publishTime>04/17/2013 11:52:54</publishTime>
@@ -364,10 +364,10 @@ indem Sie diese MSBuild-Datei bearbeiten. Besuchen Sie "http://go.microsoft.com/
       <publishTime>05/14/2013 14:41:32</publishTime>
     </File>
     <File Include="Pictures/Logo.png">
-      <publishTime>07/14/2015 09:44:01</publishTime>
+      <publishTime>07/15/2015 19:36:17</publishTime>
     </File>
     <File Include="Pictures/LogoForPrinting.png">
-      <publishTime>07/15/2015 00:29:23</publishTime>
+      <publishTime>07/15/2015 19:36:17</publishTime>
     </File>
     <File Include="Pictures/our_logo.jpg">
       <publishTime>04/17/2013 11:15:24</publishTime>
@@ -448,7 +448,7 @@ indem Sie diese MSBuild-Datei bearbeiten. Besuchen Sie "http://go.microsoft.com/
       <publishTime>05/06/2014 11:17:24</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>07/07/2015 15:39:47</publishTime>
+      <publishTime>07/15/2015 21:09:44</publishTime>
     </File>
   </ItemGroup>
 </Project>
