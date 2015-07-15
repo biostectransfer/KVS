@@ -676,31 +676,6 @@
     <None Include="KlassenDiagrammAbrechnung.cd" />
     <None Include="NachbearbeitungAbmeldung.cd" />
     <None Include="Properties\PublishProfiles\Profil1.pubxml" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_04e3b257-5b00-43e5-a0b7-39e0044c381a.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_0bd8ffe8-763e-4009-bf79-d69979fd534a.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_1162b0e5-8b31-4b7c-aca7-c9fdd169899d.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_12350f4a-69e2-4424-8808-7b550492c956.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_17bb77dd-503a-4bb5-b789-b0fdb051c79f.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_17c834d1-308f-42ad-9a6c-d8a7c358d68b.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_275b97d9-2b3a-4342-8a86-fd8088a39019.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_33bd793c-3440-458b-a400-4e44f2d36f06.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_39b27ff5-2755-49ff-b0fc-116854f0329f.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_55bf8566-23eb-42eb-8ee0-c618e175fcde.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_5bc88e35-e5a7-424c-8d64-505dbbae403f.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_64df2753-afe3-41f1-b155-c69fe38224e1.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_66fd875d-89ed-4263-bb1a-6334ccfc430a.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_79a2541e-a4b1-4087-97db-d800d7469249.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_850fa62b-74ef-4f9c-aa1c-cbe225f3f184.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_8f9cf026-cccd-41e0-a570-1790f5df7693.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_9223838b-9555-4cbf-9432-3c43af73c7e3.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_9beb7052-cec5-45b4-a839-226c983a06f2.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_9cfc0158-f773-4c1e-8b1c-968dcc147d4b.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_a8d7f92f-7dca-41ea-b5ac-517c6da2bd49.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_c6be7be8-21a1-4ebd-9b7e-e16541a7260f.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_c946afac-e724-4d73-a483-96504c8e8faf.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_cd126b96-dc6f-40fa-8899-788a7016c041.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_ce15440d-2b59-448a-9182-8fe5313182a7.pdf" />
-    <None Include="UserData\e6232890-b6e9-4aa4-b68c-36cf5c9a0918\Lieferschein_26.02.2014_e2f97f93-f04a-4917-9dd1-f606a7801133.pdf" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -713,6 +688,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_GlobalResources\" />
+    <Folder Include="UserData\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -746,7 +722,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties UseJQuerySupport="True" UseAjaxifiedTemplates="True" />
+      <UserProperties UseAjaxifiedTemplates="True" UseJQuerySupport="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
