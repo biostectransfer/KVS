@@ -136,7 +136,7 @@ namespace KVSCommon.PDF
                     image.RelativeHorizontal = RelativeHorizontal.Margin;
                     image.RelativeVertical = RelativeVertical.Page;
                     image.Top = hf.Document.LastSection.PageSetup.TopMargin - this.LogoHeight;
-                    image.Left = ShapePosition.Left;
+                    image.Left = ShapePosition.Right;
                     image.LockAspectRatio = true;
                     image.Height = this.LogoHeight;
                 }
