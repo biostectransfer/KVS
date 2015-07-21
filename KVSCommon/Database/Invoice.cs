@@ -255,7 +255,7 @@ namespace KVSCommon.Database
                 orderItem.LogDBContext = dbContext;
                 orderItem.Status = (int)OrderItemState.Abgerechnet;
                 var order = orderItem.Order;
-                if (!dbContext.OrderInvoice.Any(q => q.OrderId == order.Id && q.InvoiceId == this.Id))
+                if (!dbContext.OrderInvoice.Any(q => q.OrderNumber == order.OrderNumber && q.InvoiceId == this.Id))
                 {
                     Database.OrderInvoice.CreateOrderInvoice(order, this, dbContext);
                 }

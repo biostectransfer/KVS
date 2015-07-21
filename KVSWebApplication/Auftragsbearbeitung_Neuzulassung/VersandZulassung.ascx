@@ -23,8 +23,8 @@
          <DetailTables>
               <telerik:GridTableView Name="Orders" Width="100%" AllowFilteringByColumn = "false"   EditMode = "PopUp">            
                             <Columns>                                                                            
-                                <telerik:GridBoundColumn ReadOnly = "true"  UniqueName = "OrderIdColumn" SortExpression="OrderId" HeaderText="OrderId" HeaderButtonType="TextButton"
-                                    DataField="OrderId" Display = "false" Visible = "true" ForceExtractValue = "always">
+                                <telerik:GridBoundColumn ReadOnly = "true"  UniqueName = "OrderIdColumn" SortExpression="OrderNumber" HeaderText="OrderNumber" HeaderButtonType="TextButton"
+                                    DataField="OrderNumber" Display = "false" Visible = "true" ForceExtractValue = "always">
                                 </telerik:GridBoundColumn>  
                                  <telerik:GridBoundColumn SortExpression="CustomerName" ItemStyle-Width="200px"  HeaderText="Kundenname" HeaderButtonType="TextButton"
                                     DataField="CustomerName">
@@ -118,8 +118,8 @@
                     <mastertableview CommandItemDisplay = "Top" ShowHeader = "true" autogeneratecolumns="false" Name="Orders" showfooter="true" tablelayout="Auto">                    
                      <CommandItemSettings ShowAddNewRecordButton="false"  ShowRefreshButton="false"  />
                       <Columns>
-                          <telerik:GridBoundColumn ReadOnly = "true"  UniqueName = "OrderIdColumn" SortExpression="OrderId" HeaderText="OrderId" HeaderButtonType="TextButton"
-                                    DataField="OrderId" Display = "false" Visible = "false" ForceExtractValue = "always">
+                          <telerik:GridBoundColumn ReadOnly = "true"  UniqueName = "OrderIdColumn" SortExpression="OrderNumber" HeaderText="OrderNumber" HeaderButtonType="TextButton"
+                                    DataField="OrderNumber" Display = "false" Visible = "false" ForceExtractValue = "always">
                                 </telerik:GridBoundColumn>  
                                  <telerik:GridBoundColumn SortExpression="CustomerName" HeaderText="Kundenname" HeaderButtonType="TextButton"
                                     DataField="CustomerName">

@@ -63,6 +63,11 @@
     <Compile Include="Database\Contact.cs" />
     <Compile Include="Database\CostCenter.cs" />
     <Compile Include="Database\Customer.cs" />
+    <Compile Include="Database\DataClasses11.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataClasses1.dbml</DependentUpon>
+    </Compile>
     <Compile Include="Database\DocketList.cs" />
     <Compile Include="Database\EmptyStringIfNull.cs" />
     <Compile Include="Database\InvoiceHelper.cs" />
@@ -71,11 +76,6 @@
     <Compile Include="Database\LocationOrderJoins.cs" />
     <Compile Include="Database\Mailinglist.cs" />
     <Compile Include="Database\DataClasses1.cs">
-      <DependentUpon>DataClasses1.dbml</DependentUpon>
-    </Compile>
-    <Compile Include="Database\DataClasses1.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>DataClasses1.dbml</DependentUpon>
     </Compile>
     <Compile Include="Database\DeregistrationOrder.cs" />

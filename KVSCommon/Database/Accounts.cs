@@ -104,7 +104,7 @@ namespace KVSCommon.Database
                    _accounts = from inv in dbContext.Invoice
                                join invItem in dbContext.InvoiceItem on inv.Id equals invItem.InvoiceId
                                join ordItem in dbContext.OrderItem on invItem.OrderItemId equals ordItem.Id
-                               join order in dbContext.Order on ordItem.OrderId equals order.Id
+                               join order in dbContext.Order on ordItem.OrderNumber equals order.OrderNumber
                                join pr in dbContext.Price on new { ordItem.ProductId, order.LocationId } equals new { pr.ProductId, pr.LocationId }
                                join priceAccount in dbContext.PriceAccount on pr.Id equals priceAccount.PriceId
                                join Account in dbContext.Accounts on priceAccount.AccountId equals Account.AccountId
@@ -122,7 +122,7 @@ namespace KVSCommon.Database
                    _accounts = from inv in dbContext.Invoice
                                join invItem in dbContext.InvoiceItem on inv.Id equals invItem.InvoiceId
                                join ordItem in dbContext.OrderItem on invItem.OrderItemId equals ordItem.Id
-                               join order in dbContext.Order on ordItem.OrderId equals order.Id
+                               join order in dbContext.Order on ordItem.OrderNumber equals order.OrderNumber
                                join pr in dbContext.Price on new { ordItem.ProductId } equals new { pr.ProductId }
                                join priceAccount in dbContext.PriceAccount on pr.Id equals priceAccount.PriceId
                                join Account in dbContext.Accounts on priceAccount.AccountId equals Account.AccountId

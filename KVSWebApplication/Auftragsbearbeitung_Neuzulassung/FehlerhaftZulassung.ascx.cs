@@ -68,7 +68,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                          join cust in con.Customer on ord.CustomerId equals cust.Id
                                          join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
-                                         join regord in con.RegistrationOrder on ord.Id equals regord.OrderId
+                                         join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
                                          join reg in con.Registration on regord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on regord.VehicleId equals veh.Id
                                          where ord.HasError.GetValueOrDefault(false) != false && ordtype.Name == "Zulassung"
@@ -77,7 +77,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                              OrderId = ord.Id,
                                              CustomerId = cust.Id,
                                              locationId = "",
-                                             OrderNumber = ord.Ordernumber,
+                                             OrderNumber = ord.OrderNumber,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
                                              CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " + cust.SmallCustomer.Person.Name : cust.Name,
@@ -122,7 +122,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          join cust in con.Customer on ord.CustomerId equals cust.Id
                                          join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
                                          join loc in con.Location on ord.LocationId equals loc.Id
-                                         join regord in con.RegistrationOrder on ord.Id equals regord.OrderId
+                                         join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
                                          join reg in con.Registration on regord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on regord.VehicleId equals veh.Id
                                          where ordtype.Name == "Zulassung" && ord.HasError.GetValueOrDefault(false) != false
@@ -131,7 +131,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                              OrderId = ord.Id,
                                              CustomerId = cust.Id,
                                              locationId = loc.Id,
-                                             OrderNumber = ord.Ordernumber,
+                                             OrderNumber = ord.OrderNumber,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
                                              Inspection = reg.GeneralInspectionDate,
@@ -234,7 +234,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             var editButton = sender as Button;
             var item = editButton.NamingContainer as GridEditFormItem;
 
-            var orderId = Int32.Parse(item.SavedOldValues["OrderId"].ToString());
+            var orderId = Int32.Parse(item.SavedOldValues["OrderNumber"].ToString());
             if (RadComboBoxCustomer.SelectedValue == "2")
             {
                 locationId = Int32.Parse(item.SavedOldValues["locationId"].ToString());
@@ -277,7 +277,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         /// <summary>
         /// aktualisiere alle Auftragsdaten
         /// </summary>
-        /// <param name="orderId"></param>
+        /// <param name="OrderNumber"></param>
         /// <param name="locationId"></param>
         /// <param name="vin"></param>
         /// <param name="variant"></param>

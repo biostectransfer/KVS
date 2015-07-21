@@ -58,7 +58,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                      join cust in con.Customer on ord.CustomerId equals cust.Id
                                      join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
                                      join loc in con.Location on ord.LocationId equals loc.Id
-                                     join regord in con.RegistrationOrder on ord.Id equals regord.OrderId
+                                     join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
                                      join reg in con.Registration on regord.RegistrationId equals reg.Id
                                      join veh in con.Vehicle on regord.VehicleId equals veh.Id
                                      where ord.Status == 600 && ordtype.Name == "Zulassung" && (ord.ReadyToSend == false || ord.ReadyToSend == null)
@@ -66,7 +66,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                      {
                                          OrderId = ord.Id,
                                          locationId = loc.Id,
-                                         OrderNumber = ord.Ordernumber,
+                                         OrderNumber = ord.OrderNumber,
                                          CreateDate = ord.CreateDate,
                                          Status = ordst.Name,
                                          CustomerName = cust.Name,
@@ -161,7 +161,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     List<LocationOrderJoins> locationIdList = new List<LocationOrderJoins>();
                     foreach (GridDataItem item in RadGridLieferscheine.SelectedItems)
                     {
-                        var myOrder = dbContext.Order.FirstOrDefault(q => q.Id == Int32.Parse(item["OrderId"].Text));
+                        var myOrder = dbContext.Order.FirstOrDefault(q => q.Id == Int32.Parse(item["OrderNumber"].Text));
                         LocationOrderJoins orJ = new LocationOrderJoins();
                         orJ.LocationId = Int32.Parse(item["locationId"].Text);
                         orJ.Order = myOrder;
@@ -178,7 +178,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         {
                             packingList.AddOrderById(orders.Order.Id, dbContext);
                             orders.Order.LogDBContext = dbContext;
-                            orders.Order.PackingListId = packingList.Id;
+                            orders.Order.PackingListNumber = packingList.PackingListNumber;
                             orders.Order.ReadyToSend = true;
                         }
                     }
@@ -208,7 +208,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             {
 
                 GridDataItem fertigStellenItem = e.Item as GridDataItem;
-                var orderId = Int32.Parse(fertigStellenItem["OrderId"].Text);
+                var orderId = Int32.Parse(fertigStellenItem["OrderNumber"].Text);
                 var customerID = Int32.Parse(fertigStellenItem["customerID"].Text);
                 if (!CheckDienstleistungAndAmtGebuhr(orderId))
                 {
@@ -257,7 +257,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         /// <summary>
         /// Checked if amt.gebühr UND mind.eine Dienstleistung vorhanden ist
         /// </summary>
-        /// <param name="orderId"></param>
+        /// <param name="OrderNumber"></param>
         /// <returns></returns>
         protected bool CheckDienstleistungAndAmtGebuhr(int orderId)
         {
@@ -317,7 +317,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          join cust in con.Customer on ord.CustomerId equals cust.Id
                                          join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
                                          join loc in con.Location on ord.LocationId equals loc.Id
-                                         join regord in con.RegistrationOrder on ord.Id equals regord.OrderId
+                                         join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
                                          join reg in con.Registration on regord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on regord.VehicleId equals veh.Id
                                          where ord.Status == 400 && ordtype.Name == "Zulassung" && loc.Id == locationId
@@ -325,7 +325,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          {
                                              OrderId = ord.Id,
                                              customerID = cust.Id,
-                                             OrderNumber = ord.Ordernumber,
+                                             OrderNumber = ord.OrderNumber,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
                                              CustomerName = cust.Name,
@@ -348,7 +348,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          join cust in con.Customer on ord.CustomerId equals cust.Id
                                          join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
                                          join loc in con.Location on ord.LocationId equals loc.Id
-                                         join regord in con.RegistrationOrder on ord.Id equals regord.OrderId
+                                         join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
                                          join reg in con.Registration on regord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on regord.VehicleId equals veh.Id
                                          where ord.Status == 400 && ordtype.Name == "Zulassung" && loc.Name == LocationIdHiddenField.Value
@@ -356,7 +356,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          {
                                              OrderId = ord.Id,
                                              customerID = cust.Id,
-                                             OrderNumber = ord.Ordernumber,
+                                             OrderNumber = ord.OrderNumber,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
                                              CustomerName = cust.Name,

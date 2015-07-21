@@ -90,17 +90,17 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                          join cust in con.Customer on ord.CustomerId equals cust.Id
                                          join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
-                                         join derord in con.DeregistrationOrder on ord.Id equals derord.OrderId
+                                         join derord in con.DeregistrationOrder on ord.OrderNumber equals derord.OrderNumber
                                          join reg in con.Registration on derord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on derord.VehicleId equals veh.Id
                                          join smc in con.SmallCustomer on cust.Id equals smc.CustomerId
-                                         orderby ord.Ordernumber descending
+                                         orderby ord.OrderNumber descending
                                          where  ord.Status == 400 && ordtype.Name == "Abmeldung" && ord.HasError.GetValueOrDefault(false) != true
                                          select new
                                          {
                                              OrderId = ord.Id,
                                              customerID = ord.CustomerId,
-                                             OrderNumber = ord.Ordernumber,
+                                             OrderNumber = ord.OrderNumber,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
                                              CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " + cust.SmallCustomer.Person.Name : cust.Name,
@@ -128,18 +128,18 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                           join cust in con.Customer on ord.CustomerId equals cust.Id
                                           join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
                                           join loc in con.Location on ord.LocationId equals loc.Id
-                                          join derord in con.DeregistrationOrder on ord.Id equals derord.OrderId
+                                          join derord in con.DeregistrationOrder on ord.OrderNumber equals derord.OrderNumber
                                           join reg in con.Registration on derord.RegistrationId equals reg.Id
                                           join veh in con.Vehicle on derord.VehicleId equals veh.Id
                                           join lmc in con.LargeCustomer on cust.Id equals lmc.CustomerId
-                                          orderby ord.Ordernumber descending
+                                          orderby ord.OrderNumber descending
                                           where  ord.Status == 400 && ordtype.Name == "Abmeldung" && ord.HasError.GetValueOrDefault(false) != true
                                           select new
                                           {
                                               OrderId = ord.Id,
                                               locationId = loc.Id,
                                               customerID = ord.CustomerId,
-                                              OrderNumber = ord.Ordernumber,
+                                              OrderNumber = ord.OrderNumber,
                                               CreateDate = ord.CreateDate,
                                               Status = ordst.Name,
                                               CustomerName = cust.Name,
@@ -547,7 +547,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                             customerID = Int32.Parse(CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue);
                         else
                             customerID = Int32.Parse(item["customerID"].Text);
-                        var orderId = Int32.Parse(item["OrderId"].Text);
+                        var orderId = Int32.Parse(item["OrderNumber"].Text);
                         smallCustomerOrderHiddenField.Value = orderId.ToString();
                         CustomerIdHiddenField.Value = customerID.ToString();
                         try
@@ -695,9 +695,9 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
             GridDataItem item = (GridDataItem)e.DetailTableView.ParentItem;
-            var orderId = Int32.Parse(item["OrderId"].Text);
+            var orderId = Int32.Parse(item["OrderNumber"].Text);
             var positionQuery = from ord in dbContext.Order
-                                join orditem in dbContext.OrderItem on ord.Id equals orditem.OrderId
+                                join orditem in dbContext.OrderItem on ord.OrderNumber equals orditem.OrderNumber
                                 let authCharge = dbContext.OrderItem.FirstOrDefault(s => s.SuperOrderItemId == orditem.Id)
                                 where ord.Id == orderId && (orditem.SuperOrderItemId == null)
                                 select new
@@ -733,7 +733,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 
                 foreach (GridDataItem item in RadGridAbmeldung.SelectedItems)
                 {
-                    var orderId = Int32.Parse(item["OrderId"].Text);
+                    var orderId = Int32.Parse(item["OrderNumber"].Text);
                     KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == Int32.Parse(productDropDown.SelectedValue));
                     if (CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue == "2") // if small customer
                     {
@@ -820,7 +820,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 StornierungErfolgLabel.Visible = false;
                 foreach (GridDataItem item in RadGridAbmeldung.SelectedItems)
                 {
-                    var orderId = Int32.Parse(item["OrderId"].Text);
+                    var orderId = Int32.Parse(item["OrderNumber"].Text);
                     try
                     {
                         DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));

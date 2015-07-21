@@ -57,7 +57,7 @@ namespace KVSWebApplication.Auftragseingang
                            {
                                OrderId = ord.Id,
                                CustomerId = ord.CustomerId,
-                               OrderNumber = ord.Ordernumber,
+                               OrderNumber = ord.OrderNumber,
                            };
             if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
             {
@@ -902,7 +902,7 @@ namespace KVSWebApplication.Auftragseingang
                             try
                             {
                                 DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
-                                var orderId = regOrd.OrderId;
+                                var orderNumber = regOrd.OrderNumber;
                                 Price newPrice;
                                 OrderItem newOrderItem1 = null;
                                 OrderItem newOrderItem2 = null;
@@ -924,7 +924,7 @@ namespace KVSWebApplication.Auftragseingang
                                         if (newPrice == null)
                                             newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == null);
                                     }
-                                    var orderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
+                                    var orderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderNumber);
                                     orderToUpdate.LogDBContext = dbContext;
                                     if (orderToUpdate != null)
                                     {
@@ -978,8 +978,8 @@ namespace KVSWebApplication.Auftragseingang
             try 
             {
                 DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
-                var newOrder = dbContext.Order.Single(q => q.CustomerId == customerId && q.Id == regOrder.OrderId);
-                smallCustomerOrderHiddenField.Value = regOrder.OrderId.ToString();
+                var newOrder = dbContext.Order.Single(q => q.CustomerId == customerId && q.OrderNumber == regOrder.OrderNumber);
+                smallCustomerOrderHiddenField.Value = regOrder.OrderNumber.ToString();
                 //updating order status
                 newOrder.LogDBContext = dbContext;
                 newOrder.Status = 600;

@@ -51,7 +51,7 @@ namespace KVSWebApplication.Search
                               {
                                   OrderId = ord.Id,
                                   CustomerId = ord.CustomerId,
-                                  OrderNumber = ord.Ordernumber,
+                                  OrderNumber = ord.OrderNumber,
                                   PostBackUrl = (dockList != null)? "<a href=" + '\u0022' + dockList.FileName + '\u0022' + " target=" + '\u0022' + "_blank" + '\u0022' + "> Laufzettel öffnen</a>" : "",
                                   CreateDate = ord.CreateDate,
                                   Status = ord.OrderStatus.Name,

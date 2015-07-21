@@ -182,12 +182,12 @@ namespace KVSCommon.Database
             sb.AppendLine("<th>Erledigungsdatum</th>");
             sb.AppendLine("<tr/>");
           
-            foreach (var order in orders.OrderBy(q => q.Ordernumber))
+            foreach (var order in orders.OrderBy(q => q.OrderNumber))
             {
                 var vehicle = order.RegistrationOrder != null ? order.RegistrationOrder.Vehicle : order.DeregistrationOrder.Vehicle;
                 var registration = order.RegistrationOrder != null ? order.RegistrationOrder.Registration : order.DeregistrationOrder.Registration;
                 sb.AppendLine("<tr>");
-                sb.AppendLine("<td>" + order.Ordernumber.ToString() + "</td>");
+                sb.AppendLine("<td>" + order.OrderNumber.ToString() + "</td>");
                 sb.AppendLine("<td>" + vehicle.VIN + "</td>");
                 sb.AppendLine("<td>" + registration.Licencenumber + "</td>");
                 sb.AppendLine("<td>" + (registration.CarOwner != null ? registration.CarOwner.FullName : string.Empty) + "</td>");
@@ -312,7 +312,7 @@ namespace KVSCommon.Database
             };
 
             this.OrderItem.Add(item);
-            dbContext.WriteLogItem("Auftragsposition " + product.Name + " für Auftrag " + this.Ordernumber + " angelegt.", LogTypes.INSERT, item.Id, "OrderItem");
+            dbContext.WriteLogItem("Auftragsposition " + product.Name + " für Auftrag " + this.OrderNumber + " angelegt.", LogTypes.INSERT, item.Id, "OrderItem");
             return item;
         }
         /// <summary>
@@ -341,7 +341,7 @@ namespace KVSCommon.Database
                 if (!authId.HasValue)
                 {
                     var myOrder = (from order in dbContext.Order
-                                   join ordItem in dbContext.OrderItem on order.Id equals ordItem.OrderId
+                                   join ordItem in dbContext.OrderItem on order.OrderNumber equals ordItem.OrderNumber
                                    where ordItem.Id == Int32.Parse(itemId)
                                    select new tempOrder
                                    {
@@ -376,10 +376,10 @@ namespace KVSCommon.Database
         /// Entfernt die LieferscheinId und versetzt den Auftag in den Status Zulassungsstelle
         ///</summary>
         ///<param name="dbContext">DB Kontext</param>
-        ///<param name="packingListId">Lieferschein ID</param>
-        public static void TryToRemovePackingListIdAndSetStateToRegistration(DataClasses1DataContext dbContext, int packingListId)
+        ///<param name="packingListNumber">Lieferschein ID</param>
+        public static void TryToRemovePackingListIdAndSetStateToRegistration(DataClasses1DataContext dbContext, int packingListNumber)
         {
-            var orders = dbContext.Order.Where(q => q.PackingListId == packingListId);
+            var orders = dbContext.Order.Where(q => q.PackingListNumber == packingListNumber);
             foreach(var order in orders)
             {
                 if (order != null)
@@ -392,7 +392,7 @@ namespace KVSCommon.Database
                         order.PackingList.OldOrderId = order.Id;
                         temp_packingListId = order.PackingList.PackingListNumber;
 
-                        dbContext.WriteLogItem("Lieferschein: " + temp_packingListId + " zum Auftrag: " + order.Ordernumber + "  wurde gelöscht. ", LogTypes.UPDATE, 
+                        dbContext.WriteLogItem("Lieferschein: " + temp_packingListId + " zum Auftrag: " + order.OrderNumber + "  wurde gelöscht. ", LogTypes.UPDATE, 
                             order.PackingList.Id, "PackingList");
 
                     }
@@ -408,7 +408,7 @@ namespace KVSCommon.Database
 
                     }
 
-                    dbContext.WriteLogItem("Auftrag: " + order.Ordernumber + "  wurde wieder in die Zulassungsstelle versetzt.", LogTypes.UPDATE, order.Id, "Order");
+                    dbContext.WriteLogItem("Auftrag: " + order.OrderNumber + "  wurde wieder in die Zulassungsstelle versetzt.", LogTypes.UPDATE, order.Id, "Order");
                 }
                 dbContext.SubmitChanges();
 

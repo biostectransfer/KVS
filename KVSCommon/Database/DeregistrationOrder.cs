@@ -20,7 +20,7 @@ namespace KVSCommon.Database
         {
             get
             {
-                return this.OrderId;
+                return this.OrderNumber;
             }
         }
 
@@ -55,7 +55,7 @@ namespace KVSCommon.Database
             };
 
             dbContext.DeregistrationOrder.InsertOnSubmit(deregistrationOrder);
-            dbContext.WriteLogItem("Abmeldeauftrag angelegt.", LogTypes.INSERT, deregistrationOrder.OrderId, "DeregistrationOrder", vehicle.Id);
+            dbContext.WriteLogItem("Abmeldeauftrag angelegt.", LogTypes.INSERT, deregistrationOrder.OrderNumber, "DeregistrationOrder", vehicle.Id);
             return deregistrationOrder;
         }
         /// <summary>

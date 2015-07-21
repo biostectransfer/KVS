@@ -95,7 +95,7 @@ namespace KVSCommon.Database
                     throw new Exception("Aus der Preisliste darf kein Standardpreis gelöscht werden!");
                 }
                 var orders = (from order in dbContext.Order
-                              join orderserivce in dbContext.OrderItem on order.Id equals orderserivce.OrderId
+                              join orderserivce in dbContext.OrderItem on order.OrderNumber equals orderserivce.OrderNumber
                               where (price.LocationId.HasValue ? order.LocationId == price.LocationId : order.LocationId == null) && orderserivce.ProductId == price.ProductId
                               select new { order });//.ToList();
                     if (orders.ToList().Count() > 0)

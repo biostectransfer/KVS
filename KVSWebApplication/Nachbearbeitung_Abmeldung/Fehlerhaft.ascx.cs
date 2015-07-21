@@ -60,7 +60,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                          join cust in con.Customer on ord.CustomerId equals cust.Id
                                          join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
-                                         join derord in con.DeregistrationOrder on ord.Id equals derord.OrderId
+                                         join derord in con.DeregistrationOrder on ord.OrderNumber equals derord.OrderNumber
                                          join reg in con.Registration on derord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on derord.VehicleId equals veh.Id
                                          where ordtype.Name == "Abmeldung" && ord.HasError.GetValueOrDefault(false) != false
@@ -69,7 +69,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                              OrderId = ord.Id,
                                              locationId = "",
                                              CustomerId = cust.Id,
-                                             OrderNumber = ord.Ordernumber,
+                                             OrderNumber = ord.OrderNumber,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
                                              CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " + cust.SmallCustomer.Person.Name : cust.Name,
@@ -115,7 +115,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          join cust in con.Customer on ord.CustomerId equals cust.Id
                                          join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
                                          join loc in con.Location on ord.LocationId equals loc.Id
-                                         join derord in con.DeregistrationOrder on ord.Id equals derord.OrderId
+                                         join derord in con.DeregistrationOrder on ord.OrderNumber equals derord.OrderNumber
                                          join reg in con.Registration on derord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on derord.VehicleId equals veh.Id
                                          where ord.HasError.GetValueOrDefault(false) != false && ordtype.Name == "Abmeldung"
@@ -124,7 +124,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                              OrderId = ord.Id,
                                              locationId = loc.Id,
                                              CustomerId = cust.Id,
-                                             OrderNumber = ord.Ordernumber,
+                                             OrderNumber = ord.OrderNumber,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
                                              Inspection = derord.Registration.GeneralInspectionDate,
@@ -215,7 +215,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             var editButton = sender as Button;
             var item = editButton.NamingContainer as GridEditFormItem;
 
-            var orderId = Int32.Parse(item.SavedOldValues["OrderId"].ToString());
+            var orderId = Int32.Parse(item.SavedOldValues["OrderNumber"].ToString());
             if (RadComboBoxCustomer.SelectedValue == "2")
             {
                 locationId = Int32.Parse(item.SavedOldValues["locationId"].ToString());

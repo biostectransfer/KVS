@@ -143,11 +143,11 @@ namespace KVSWebApplication.Abrechnung
                 DataClasses1DataContext con = new DataClasses1DataContext();
                 var query = from cust in con.Customer
                             join ord in con.Order on cust.Id equals ord.CustomerId
-                            join orditm in con.OrderItem on ord.Id equals orditm.OrderId
+                            join orditm in con.OrderItem on ord.Id equals orditm.OrderNumber
                             join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
                             join lrcust in con.SmallCustomer on cust.Id equals lrcust.CustomerId
                             where cust.Id == customerId && orditm.Status == 600 && ord.Status == 600
-                            orderby ord.Ordernumber descending
+                            orderby ord.OrderNumber descending
                             select new
                             {
                                 OrderId = ord.Id,
@@ -156,7 +156,7 @@ namespace KVSWebApplication.Abrechnung
                                 Location = "",
                                 ItemCount = orditm.Count,
                                 Amount = orditm.Amount,
-                                OrderNumber = ord.Ordernumber,
+                                OrderNumber = ord.OrderNumber,
                                 ProductName = orditm.ProductName,
                                 ItemStatus = orditmsts.Name,
                                 ExecutionDate = ord.ExecutionDate,
@@ -178,11 +178,11 @@ namespace KVSWebApplication.Abrechnung
                 {
                     var query = from cust in con.Customer
                                 join ord in con.Order on cust.Id equals ord.CustomerId
-                                join orditm in con.OrderItem on ord.Id equals orditm.OrderId
+                                join orditm in con.OrderItem on ord.Id equals orditm.OrderNumber
                                 join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
                                 join lrcust in con.LargeCustomer on cust.Id equals lrcust.CustomerId
                                 where cust.Id == customerId && (ord.Status == 600 || ord.Status == 700) && orditm.Status == 600
-                                orderby ord.Ordernumber descending
+                                orderby ord.OrderNumber descending
                                 select new
                                 {
                                     OrderId = ord.Id,
@@ -192,7 +192,7 @@ namespace KVSWebApplication.Abrechnung
                                     CostCenterName = orditm.CostCenter.Name,
                                     Amount = orditm.Amount,
                                     ItemCount = orditm.Count,
-                                    OrderNumber = ord.Ordernumber,
+                                    OrderNumber = ord.OrderNumber,
                                     ProductName = orditm.ProductName,
                                     ItemStatus = orditmsts.Name,
                                     ExecutionDate = ord.ExecutionDate,
@@ -213,11 +213,11 @@ namespace KVSWebApplication.Abrechnung
                 {
                     var query = from cust in con.Customer
                                 join ord in con.Order on cust.Id equals ord.CustomerId
-                                join orditm in con.OrderItem on ord.Id equals orditm.OrderId
+                                join orditm in con.OrderItem on ord.Id equals orditm.OrderNumber
                                 join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
                                 join lrcust in con.LargeCustomer on cust.Id equals lrcust.CustomerId
                                 where cust.Id == customerId && (ord.Status == 600 || ord.Status == 700) && orditm.Status == 600
-                                orderby ord.Ordernumber descending
+                                orderby ord.OrderNumber descending
                                 select new
                                 {
                                     OrderId = ord.Id,
@@ -227,7 +227,7 @@ namespace KVSWebApplication.Abrechnung
                                     CostCenterName = orditm.CostCenter.Name,
                                     Amount = orditm.Amount,
                                     ItemCount = orditm.Count,
-                                    OrderNumber = ord.Ordernumber,
+                                    OrderNumber = ord.OrderNumber,
                                     ProductName = orditm.ProductName,
                                     ItemStatus = orditmsts.Name,
                                     ExecutionDate = ord.ExecutionDate,
@@ -252,13 +252,13 @@ namespace KVSWebApplication.Abrechnung
                     DateTime endDate = startingDate.AddDays(7);
                     var query = from cust in con.Customer
                                 join ord in con.Order on cust.Id equals ord.CustomerId
-                                join orditm in con.OrderItem on ord.Id equals orditm.OrderId
+                                join orditm in con.OrderItem on ord.Id equals orditm.OrderNumber
                                 join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
                                 join lrcust in con.LargeCustomer on cust.Id equals lrcust.CustomerId
                                 where
                                 cust.Id == customerId && (ord.Status == 600 || ord.Status == 700) && orditm.Status == 600
                                 && ord.ExecutionDate.Value > startingDate && ord.ExecutionDate < endDate
-                                orderby ord.Ordernumber descending
+                                orderby ord.OrderNumber descending
                                 select new
                                 {
                                     OrderId = ord.Id,
@@ -268,7 +268,7 @@ namespace KVSWebApplication.Abrechnung
                                     CostCenterName = orditm.CostCenter.Name,
                                     Amount = orditm.Amount,
                                     ItemCount = orditm.Count,
-                                    OrderNumber = ord.Ordernumber,
+                                    OrderNumber = ord.OrderNumber,
                                     ProductName = orditm.ProductName,
                                     ItemStatus = orditmsts.Name,
                                     ExecutionDate = ord.ExecutionDate,
@@ -288,12 +288,12 @@ namespace KVSWebApplication.Abrechnung
                 {
                     var query = from cust in con.Customer
                                 join ord in con.Order on cust.Id equals ord.CustomerId
-                                join orditm in con.OrderItem on ord.Id equals orditm.OrderId
+                                join orditm in con.OrderItem on ord.Id equals orditm.OrderNumber
                                 join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
                                 join lrcust in con.LargeCustomer on cust.Id equals lrcust.CustomerId
                                 where cust.Id == customerId && (ord.Status == 600 || ord.Status == 700) && orditm.Status == 600
                                 && ord.ExecutionDate.Value.Month == DateTime.Now.Month
-                                orderby ord.Ordernumber descending
+                                orderby ord.OrderNumber descending
                                 select new
                                 {
                                     OrderId = ord.Id,
@@ -303,7 +303,7 @@ namespace KVSWebApplication.Abrechnung
                                     CostCenterName = orditm.CostCenter.Name,
                                     Amount = orditm.Amount,
                                     ItemCount = orditm.Count,
-                                    OrderNumber = ord.Ordernumber,
+                                    OrderNumber = ord.OrderNumber,
                                     ProductName = orditm.ProductName,
                                     ItemStatus = orditmsts.Name,
                                     ExecutionDate = ord.ExecutionDate,
@@ -323,10 +323,10 @@ namespace KVSWebApplication.Abrechnung
                 {
                     var query = from cust in con.Customer
                                 join ord in con.Order on cust.Id equals ord.CustomerId
-                                join orditm in con.OrderItem on ord.Id equals orditm.OrderId
+                                join orditm in con.OrderItem on ord.Id equals orditm.OrderNumber
                                 join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
                                 where cust.Id == customerId
-                                orderby ord.Ordernumber descending
+                                orderby ord.OrderNumber descending
                                 select new
                                 {
                                     OrderId = ord.Id,
@@ -336,7 +336,7 @@ namespace KVSWebApplication.Abrechnung
                                     CostCenterName = orditm.CostCenter.Name,
                                     Amount = orditm.Amount,
                                     ItemCount = orditm.Count,
-                                    OrderNumber = ord.Ordernumber,
+                                    OrderNumber = ord.OrderNumber,
                                     ProductName = orditm.ProductName,
                                     ItemStatus = orditmsts.Name,
                                     ExecutionDate = ord.ExecutionDate,
@@ -386,7 +386,7 @@ namespace KVSWebApplication.Abrechnung
                     }
                     currItem.ItemCount = Convert.ToInt32(item["ItemCount"].Text);
                     currItem.OrderLocationName = item["Location"].Text;
-                    currItem.OrderId = Int32.Parse(item["OrderId"].Text);
+                    currItem.OrderId = Int32.Parse(item["OrderNumber"].Text);
                     currItem.OrderLocationId = String.IsNullOrEmpty(item["OrderLocation"].Text) ? (int?)null : Int32.Parse(item["OrderLocation"].Text);
                     virtualItems.Add(currItem);
                 }
@@ -541,7 +541,7 @@ namespace KVSWebApplication.Abrechnung
 
                     currItem.ItemCount = Convert.ToInt32(item["ItemCount"].Text);
                     currItem.OrderLocationName = item["Location"].Text == "&nbsp;" ? "" : item["Location"].Text;
-                    currItem.OrderId = Int32.Parse(item["OrderId"].Text);
+                    currItem.OrderId = Int32.Parse(item["OrderNumber"].Text);
                     currItem.OrderLocationId = String.IsNullOrEmpty(item["OrderLocation"].Text) ? (int?)null : Int32.Parse(item["OrderLocation"].Text);
                     virtualItems.Add(currItem);
                 }
@@ -652,7 +652,7 @@ namespace KVSWebApplication.Abrechnung
         ///Falls alle Items schon abgerechnet - Status 900 (Abgerechnet)
         /// </summary>
         /// <param name="con"></param>
-        /// <param name="orderId"></param>
+        /// <param name="OrderNumber"></param>
         protected void UpdateOrderStatus(DataClasses1DataContext con, int orderId)
         {
             bool shouldBeUpdated = false;

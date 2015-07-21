@@ -68,8 +68,8 @@ DataTextField = "Name" DataValueField = "Value" ID = "CustomerDropDownList"
              <CommandItemSettings ShowAddNewRecordButton="false"  ShowRefreshButton="true"  />
                <Columns>
                 <telerik:GridEditCommandColumn ButtonType="PushButton" EditText = "Auftrag bearbeiten" UniqueName = "EditOffenColumn"  />                        
-                  <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderId" HeaderText="OrderId" ForceExtractValue="Always"
-                    SortExpression="OrderId" Display = "false" UniqueName="OrderId" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
+                  <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderNumber" HeaderText="OrderNumber" ForceExtractValue="Always"
+                    SortExpression="OrderNumber" Display = "false" UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
                 </telerik:GridBoundColumn> 
                 <telerik:GridBoundColumn FilterControlWidth="105px" DataField="locationId" HeaderText="locationId" ForceExtractValue="Always"
@@ -132,7 +132,7 @@ DataTextField = "Name" DataValueField = "Value" ID = "CustomerDropDownList"
     <br />
     <asp:Label Text="Fahrzeug" ID = "FahrzeugLabel" runat="server" />
     <br />
-   <telerik:RadTextBox Text='<%# Bind( "OrderId") %>' Visible = "false" ID="OrderIdBox" runat="server">
+   <telerik:RadTextBox Text='<%# Bind( "OrderNumber") %>' Visible = "false" ID="OrderIdBox" runat="server">
    </telerik:RadTextBox>  
    <telerik:RadTextBox Text='<%# Bind( "locationId") %>'  Visible = "false" ID="LocationIdBox" runat="server">
    </telerik:RadTextBox>  

@@ -167,12 +167,12 @@ namespace KVSCommon.Database
                 if (orderItemToDelete.Order.PackingList != null)
                     throw new Exception("Lieferschein wurde bereits erstellt, löschen nicht möglich");
 
-                var itemsAnzahl = dbContext.OrderItem.Count(q => q.Id != orderItemId && q.SuperOrderItemId != orderItemId && q.OrderId==orderItemToDelete.OrderId);
-                    if(itemsAnzahl==0)
-                        throw new Exception("Mind. eine Position muss pro Auftrag verfügbar sein");
+                var itemsAnzahl = dbContext.OrderItem.Count(q => q.Id != orderItemId && q.SuperOrderItemId != orderItemId && q.OrderNumber == orderItemToDelete.OrderNumber);
+                if (itemsAnzahl == 0)
+                    throw new Exception("Mind. eine Position muss pro Auftrag verfügbar sein");
 
-                 var hasChildItems = dbContext.OrderItem.FirstOrDefault(q => q.SuperOrderItemId == orderItemToDelete.Id);
-                 dbContext.OrderItem.DeleteOnSubmit(hasChildItems);
+                var hasChildItems = dbContext.OrderItem.FirstOrDefault(q => q.SuperOrderItemId == orderItemToDelete.Id);
+                dbContext.OrderItem.DeleteOnSubmit(hasChildItems);
 
 
 
@@ -182,8 +182,8 @@ namespace KVSCommon.Database
                 }
 
                 dbContext.OrderItem.DeleteOnSubmit(orderItemToDelete);
-                dbContext.WriteLogItem("Auftragsposition " + orderItemToDelete.ProductName + " mit der Auftragsnummer " + orderItemToDelete.Order.Ordernumber+ " wurde gelöscht.", LogTypes.DELETE, orderItemToDelete.Id, "OrderItem");
-
+                dbContext.WriteLogItem("Auftragsposition " + orderItemToDelete.ProductName + " mit der Auftragsnummer " + orderItemToDelete.Order.OrderNumber + " wurde gelöscht.",
+                    LogTypes.DELETE, orderItemToDelete.Id, "OrderItem");
             }
         }
     }

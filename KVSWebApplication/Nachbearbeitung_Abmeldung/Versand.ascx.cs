@@ -49,7 +49,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             DataClasses1DataContext con = new DataClasses1DataContext();
             var versandQuery = from packList in con.PackingList
                                //join myOrder in con.Order on packList.Id equals myOrder.PackingListId 
-                               let CustomerNameLet = con.Order.Where(q => q.PackingListId == packList.Id).FirstOrDefault()
+                               let CustomerNameLet = con.Order.Where(q => q.PackingListNumber == packList.PackingListNumber).FirstOrDefault()
                                //where myOrder.OrderType.Name != "Zulassung" 
                                orderby packList.PackingListNumber descending
                                select new
@@ -77,7 +77,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             var _item = (GridDataItem)e.DetailTableView.ParentItem;
             var listId = Int32.Parse(_item["listId"].Text);
             var orderQuery = from ord in dbContext.Order
-                             where ord.PackingListId == listId && ord.Status == 600 && ord.HasError.GetValueOrDefault(false) != true
+                             where ord.PackingListNumber == listId && ord.Status == 600 && ord.HasError.GetValueOrDefault(false) != true
                              select new
                              {
                                  OrderId = ord.Id,
@@ -87,7 +87,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                         ord.Customer.SmallCustomer.Person.FirstName + " " +
                                         ord.Customer.SmallCustomer.Person.Name : ord.Customer.Name, 
                                  OrderLocation = ord.Location.Name,
-                                 OrderNumber = ord.Ordernumber,
+                                 OrderNumber = ord.OrderNumber,
                                  Status = ord.OrderStatus.Name,
                                  OrderType = ord.OrderType.Name,
                                  OrderError = ord.HasError == true ? "Ja" : "Nein"
@@ -108,7 +108,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             {
                 var listId = Int32.Parse(mylistId.Text);
                 var orderQuery = from ord in dbContext.Order
-                                 where ord.PackingListId == listId && ord.Status == 600 && ord.HasError.GetValueOrDefault(false) != true
+                                 where ord.PackingListNumber == listId && ord.Status == 600 && ord.HasError.GetValueOrDefault(false) != true
                                  select new
                                  {
                                      OrderId = ord.Id,
@@ -118,7 +118,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                         ord.Customer.SmallCustomer.Person.FirstName + " " +
                                         ord.Customer.SmallCustomer.Person.Name : ord.Customer.Name, 
                                      OrderLocation = ord.Location.Name,
-                                     OrderNumber = ord.Ordernumber,
+                                     OrderNumber = ord.OrderNumber,
                                      Status = ord.OrderStatus.Name,
                                      OrderType = ord.OrderType.Name,
                                      OrderError = ord.HasError == true ? "Ja" : "Nein"

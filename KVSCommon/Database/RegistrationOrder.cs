@@ -20,7 +20,7 @@ namespace KVSCommon.Database
         {
             get
             {
-                return this.OrderId;
+                return this.OrderNumber;
             }
         }
 
@@ -65,7 +65,7 @@ namespace KVSCommon.Database
 
             //var vehicleVIN = dbContext.Vehicle.Where(q => q.Id == vehicleId).Select(q => q.VIN).Single();
             dbContext.RegistrationOrder.InsertOnSubmit(registrationOrder);
-            dbContext.WriteLogItem("Zulassungsauftrag wurde angelegt.", LogTypes.INSERT, registrationOrder.OrderId, "RegistrationOrder", vehicle.Id);
+            dbContext.WriteLogItem("Zulassungsauftrag wurde angelegt.", LogTypes.INSERT, registrationOrder.OrderNumber, "RegistrationOrder", vehicle.Id);
             return registrationOrder;
         }
         /// <summary>

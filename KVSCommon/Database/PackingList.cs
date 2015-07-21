@@ -63,7 +63,7 @@ namespace KVSCommon.Database
         /// <summary>
         /// Fügt dem Lieferschein einen Auftrag anhand der AuftragsId hinzu.
         /// </summary>
-        /// <param name="orderId">Id des Auftrags.</param>
+        /// <param name="OrderNumber">Id des Auftrags.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         public void AddOrderById(int orderId, DataClasses1DataContext dbContext)
         {
@@ -74,7 +74,7 @@ namespace KVSCommon.Database
 
             Order order = dbContext.Order.Single(q => q.Id == orderId);
             order.LogDBContext = dbContext;
-            order.PackingListId = this.Id;
+            order.PackingListNumber = this.PackingListNumber;
             dbContext.WriteLogItem("Auftrag zum Lieferschein hinzugefügt.", LogTypes.UPDATE, this.Id, "PackingList", orderId);
         }
 
@@ -82,7 +82,7 @@ namespace KVSCommon.Database
         /// <summary>
         /// Merged PDFs
         /// </summary>
-        /// <param name="orderId">File Array</param>
+        /// <param name="OrderNumber">File Array</param>
         /// <param name="return"> Gemerged PDF</param>
         public static void MergePackingLists(string[] files, string mergedFileName)
         {
@@ -109,7 +109,7 @@ namespace KVSCommon.Database
         /// <summary>
         /// Entfernt einen Auftrag aus dem Lieferschein.
         /// </summary>
-        /// <param name="orderId">Id des Auftrags, der entfernt werden soll.</param>
+        /// <param name="OrderNumber">Id des Auftrags, der entfernt werden soll.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         public void RemoveOrderById(int orderId, DataClasses1DataContext dbContext)
         {
@@ -120,7 +120,7 @@ namespace KVSCommon.Database
 
             Order order = dbContext.Order.Single(q => q.Id == orderId);
             order.LogDBContext = dbContext;
-            order.PackingListId = null;
+            order.PackingListNumber = null;
             dbContext.WriteLogItem("Auftrag aus Lieferschein entfernt.", LogTypes.UPDATE, this.Id, "PackingList", orderId);
         }
 

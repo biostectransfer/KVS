@@ -21,7 +21,7 @@
             <GroupingSettings CaseSensitive="false"></GroupingSettings>
             <MasterTableView AutoGenerateColumns="false" AllowFilteringByColumn="True" ShowFooter="True">
                 <Columns>
-                    <telerik:GridMaskedColumn DataField="OrderID" HeaderText="OrderID"
+                    <telerik:GridMaskedColumn DataField="OrderNumber" HeaderText="OrderNumber"
                         FilterControlWidth="50px" AutoPostBackOnFilter="false" CurrentFilterFunction="EqualTo"
                         FilterDelay="2000" ShowFilterIcon="false" Mask="#####">
                     </telerik:GridMaskedColumn>

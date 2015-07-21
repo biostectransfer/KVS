@@ -57,7 +57,7 @@ namespace KVSWebApplication.ChangeHistory
                               Date = chang.Date,
                               ReferenceId = (!chang.ReferenceId.HasValue)? (int?)null : chang.ReferenceId.Value,
                               TranslatedText = TranslatedText(status,chang.Text, allStates),
-                              OrderNumber = tableName == "Order" ? myOrder.FirstOrDefault(q => q.Id == Ref).Ordernumber : myOrderItem.FirstOrDefault(q => q.Id == Ref).Order.Ordernumber
+                              OrderNumber = tableName == "Order" ? myOrder.FirstOrDefault(q => q.Id == Ref).OrderNumber : myOrderItem.FirstOrDefault(q => q.Id == Ref).Order.OrderNumber
                           };
             changes = changes.OrderByDescending(q=>q.OrderNumber);
             e.Result = changes;

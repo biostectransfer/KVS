@@ -50,8 +50,8 @@
         DataSourceID = "LinqDataSourceLieferscheine" GroupLoadMode = "Client" GroupsDefaultExpanded = "false">
             <CommandItemSettings ShowAddNewRecordButton="false"  ShowRefreshButton="true"  />
             <Columns>           
-            <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderId" HeaderText="OrderId"
-                    SortExpression="OrderId" Display = "false" UniqueName="OrderId" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
+            <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderNumber" HeaderText="OrderNumber"
+                    SortExpression="OrderNumber" Display = "false" UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
                 </telerik:GridBoundColumn>                 
                  <telerik:GridBoundColumn FilterControlWidth="105px" DataField="locationId" HeaderText="locationId"
@@ -124,8 +124,8 @@
         <MasterTableView  AutoGenerateColumns = "false" DataSourceID = "LinqDataSourceLieferscheineOffene" GroupLoadMode = "Client" GroupsDefaultExpanded = "false">
             <Columns>                
             <telerik:GridButtonColumn ButtonType = "PushButton" Text = "Fertigstellen"> </telerik:GridButtonColumn>        
-            <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderId" HeaderText="OrderId"
-                    SortExpression="OrderId" Display = "false" UniqueName="OrderId" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
+            <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderNumber" HeaderText="OrderNumber"
+                    SortExpression="OrderNumber" Display = "false" UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
                 </telerik:GridBoundColumn>   
                   <telerik:GridBoundColumn FilterControlWidth="105px" DataField="customerID" HeaderText="customerID"

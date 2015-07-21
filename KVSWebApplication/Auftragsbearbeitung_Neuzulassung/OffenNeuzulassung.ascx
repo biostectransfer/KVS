@@ -256,8 +256,8 @@
                <Columns>   
                  <telerik:GridEditCommandColumn ButtonType="PushButton" EditText = "Ändern" UniqueName = "EditOffenColumn"  />                        
                                       
-                  <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderId" HeaderText="OrderId"
-                    SortExpression="OrderId" Display = "false" UniqueName="OrderId" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
+                  <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderNumber" HeaderText="OrderNumber"
+                    SortExpression="OrderNumber" Display = "false" UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
                 </telerik:GridBoundColumn>   
 
@@ -343,7 +343,7 @@
                             <td>
                             </td>
                         </tr>
-                        <asp:TextBox ID="orderIdBox" Visible = "false" Text='<%# Bind( "OrderId") %>' runat="server"> </asp:TextBox>
+                        <asp:TextBox ID="orderIdBox" Visible = "false" Text='<%# Bind( "OrderNumber") %>' runat="server"> </asp:TextBox>
                          <asp:TextBox ID="customerIdBox" Visible = "false" Text='<%# Bind( "customerID") %>' runat="server">   </asp:TextBox>
                              
                         <tr>

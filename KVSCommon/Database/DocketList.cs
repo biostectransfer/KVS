@@ -62,7 +62,7 @@ namespace KVSCommon.Database
         /// <summary>
         /// Fügt einen Laufzettel zum Auftrag anhand der AuftragsId hinzu.
         /// </summary>
-        /// <param name="orderId">Id des Auftrags.</param>
+        /// <param name="OrderNumber">Id des Auftrags.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         public void AddOrderById(int orderId, DataClasses1DataContext dbContext)
         {
@@ -73,13 +73,13 @@ namespace KVSCommon.Database
 
             Order order = dbContext.Order.Single(q => q.Id == orderId);
             order.LogDBContext = dbContext;
-            order.DocketListId = this.Id;
+            order.DocketListNumber = this.DocketListNumber;
             dbContext.WriteLogItem("Auftrag zum Laufzettel hinzugefügt.", LogTypes.UPDATE, this.Id, "DocketList", orderId);
         }
         /// <summary>
         /// Merged PDFs
         /// </summary>
-        /// <param name="orderId">File Array</param>
+        /// <param name="OrderNumber">File Array</param>
         /// <param name="return"> Gemerged PDF</param>
         public static void MergeDocketLists(string[] files, string mergedFileName)
         {
@@ -104,7 +104,7 @@ namespace KVSCommon.Database
         /// <summary>
         /// Entfernt einen Laufzettel  aus dem Auftrag.
         /// </summary>
-        /// <param name="orderId">Id des Auftrags, der entfernt werden soll.</param>
+        /// <param name="OrderNumber">Id des Auftrags, der entfernt werden soll.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         public void RemoveOrderById(int orderId, DataClasses1DataContext dbContext)
         {
@@ -115,7 +115,7 @@ namespace KVSCommon.Database
 
             Order order = dbContext.Order.Single(q => q.Id == orderId);
             order.LogDBContext = dbContext;
-            order.DocketListId = null;
+            order.DocketListNumber = null;
             dbContext.WriteLogItem("Auftrag aus Laufzettel entfernt.", LogTypes.UPDATE, this.Id, "DocketList", orderId);
         }
 

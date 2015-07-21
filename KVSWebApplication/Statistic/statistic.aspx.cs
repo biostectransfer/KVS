@@ -36,7 +36,7 @@ namespace KVSWebApplication.Statistic
                            {
                                OrderId = ord.Id,
                                CustomerId = ord.CustomerId,
-                               OrderNumber = ord.Ordernumber,
+                               OrderNumber = ord.OrderNumber,
                                CreateDate = ord.CreateDate,
                                Status = ord.OrderStatus.Name,
                                CustomerName = ord.Customer.Name,

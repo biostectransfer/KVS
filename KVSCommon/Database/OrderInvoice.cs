@@ -33,7 +33,7 @@ namespace KVSCommon.Database
         /// <summary>
         /// Erstellt eine Verknuepfung zwischen einem Auftrag und einer Rechnung.
         /// </summary>
-        /// <param name="orderId">Id des Auftrags.</param>
+        /// <param name="OrderNumber">Id des Auftrags.</param>
         /// <param name="invoiceId">Id der Rechnung.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Die neue Verknüpfung.</returns>
@@ -47,29 +47,29 @@ namespace KVSCommon.Database
 
             dbContext.OrderInvoice.InsertOnSubmit(item);
             ///  var invoiceNumber = dbContext.Invoice.Where(q => q.Id == invoiceId).Select(q => q.InvoiceNumber).Single();
-            var orderNumber = dbContext.Order.Where(q => q.Id == order.Id).Select(q => q.Ordernumber).Single();
+            var orderNumber = dbContext.Order.Where(q => q.Id == order.Id).Select(q => q.OrderNumber).Single();
             dbContext.WriteLogItem("Rechnung wurde mit Auftrag " + orderNumber + " verknüpft.", LogTypes.INSERT, order.Id, "OrderInvoice", invoice.Id);
             return item;
         }
         /// <summary>
         /// Loescht eine Auftrags/Rechnungsverknuepfung
         /// </summary>
-        /// <param name="orderId">AuftragsID</param>
+        /// <param name="OrderNumber">AuftragsID</param>
         /// <param name="invoiceId">RechnungsID</param>
         /// <param name="dbContext">DB Kontext</param>
-        public static void DeleteOrderInvoice(int orderId, int invoiceId, DataClasses1DataContext dbContext)
+        public static void DeleteOrderInvoice(int orderNumber, int invoiceId, DataClasses1DataContext dbContext)
         {
-            var item = dbContext.OrderInvoice.SingleOrDefault(q => q.OrderId == orderId && q.InvoiceId == invoiceId);
+            var item = dbContext.OrderInvoice.SingleOrDefault(q => q.OrderNumber == orderNumber && q.InvoiceId == invoiceId);
             if (item == null)
             {
-                var orderNumber = dbContext.Order.Where(q => q.Id == orderId).Select(q => q.Ordernumber).SingleOrDefault();
+                //todo delete var orderNumber = dbContext.Order.Where(q => q.OrderNumber == orderNumber).Select(q => q.OrderNumber).SingleOrDefault();
                 var invoiceNumber = dbContext.Invoice.Where(q => q.Id == invoiceId).Select(q => q.InvoiceNumber.Number).SingleOrDefault();
                 throw new Exception("Es existiert keine Verknüpfung zwischen dem Auftrag Nr. " + orderNumber + " und der Rechnung Nr. " + invoiceNumber);
             }
 
             dbContext.OrderInvoice.DeleteOnSubmit(item);
-            dbContext.WriteLogItem("Verknüpfung zwischen Auftrag Nr. " + item.Order.Ordernumber + " und Rechnung Nr. " + item.Invoice.InvoiceNumber.Number + " wurde gelöscht.", 
-                LogTypes.DELETE, orderId, "OrderInvoice", invoiceId);
+            dbContext.WriteLogItem("Verknüpfung zwischen Auftrag Nr. " + item.Order.OrderNumber + " und Rechnung Nr. " + item.Invoice.InvoiceNumber.Number + " wurde gelöscht.", 
+                LogTypes.DELETE, orderNumber, "OrderInvoice", invoiceId);
         }
         /// <summary>
         /// Aenderungsevents für die Historie

@@ -109,8 +109,8 @@
             </DetailTables>           
              <CommandItemSettings ShowAddNewRecordButton="false"  ShowRefreshButton="true"  />
                <Columns>
-                 <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderId" HeaderText="OrderId"
-                    SortExpression="OrderId" Display = "false" UniqueName="OrderId" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
+                 <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderNumber" HeaderText="OrderNumber"
+                    SortExpression="OrderNumber" Display = "false" UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
                 </telerik:GridBoundColumn>   
                  <telerik:GridBoundColumn FilterControlWidth="105px" DataField="locationId" HeaderText="locationId"
@@ -165,7 +165,7 @@
                    <asp:Panel runat="server" ID="InnerContainer" CssClass="nestedTemplate" Visible="true">
                    <br />
                 <asp:Label runat = "server" ID = "WellcomeNeuzulassungLabel" Font-Bold = "true" Font-Size = "Larger" Text = "Hier können Sie die Daten überprüfen und den Auftrag fertigstellen oder als Fehler markieren."></asp:Label>      
-                    <asp:TextBox ID="orderIdBox" Visible = "false" Text='<%# Bind( "OrderId") %>' runat="server">
+                    <asp:TextBox ID="orderIdBox" Visible = "false" Text='<%# Bind( "OrderNumber") %>' runat="server">
                                 </asp:TextBox>
                          <asp:TextBox ID="customerIdBox" Visible = "false" Text='<%# Bind( "customerID") %>' runat="server">   </asp:TextBox>                                        
                   <table id="Table1" cellspacing="10" cellpadding="1" width="250" border="0">       
