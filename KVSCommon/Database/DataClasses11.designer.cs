@@ -5445,11 +5445,11 @@ namespace KVSCommon.Database
 		
 		private EntitySet<Invoice> _Invoice;
 		
-		private EntitySet<PackingList> _PackingList;
-		
 		private EntitySet<RegistrationLocation> _RegistrationLocation;
 		
 		private EntitySet<DocketList> _DocketList;
+		
+		private EntitySet<PackingList> _PackingList;
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
@@ -5479,9 +5479,9 @@ namespace KVSCommon.Database
 			this._Location1 = new EntitySet<Location>(new Action<Location>(this.attach_Location1), new Action<Location>(this.detach_Location1));
 			this._Location2 = new EntitySet<Location>(new Action<Location>(this.attach_Location2), new Action<Location>(this.detach_Location2));
 			this._Invoice = new EntitySet<Invoice>(new Action<Invoice>(this.attach_Invoice), new Action<Invoice>(this.detach_Invoice));
-			this._PackingList = new EntitySet<PackingList>(new Action<PackingList>(this.attach_PackingList), new Action<PackingList>(this.detach_PackingList));
 			this._RegistrationLocation = new EntitySet<RegistrationLocation>(new Action<RegistrationLocation>(this.attach_RegistrationLocation), new Action<RegistrationLocation>(this.detach_RegistrationLocation));
 			this._DocketList = new EntitySet<DocketList>(new Action<DocketList>(this.attach_DocketList), new Action<DocketList>(this.detach_DocketList));
+			this._PackingList = new EntitySet<PackingList>(new Action<PackingList>(this.attach_PackingList), new Action<PackingList>(this.detach_PackingList));
 			OnCreated();
 		}
 		
@@ -5709,19 +5709,6 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Adress_PackingList", Storage="_PackingList", ThisKey="Id", OtherKey="RecipientAdressId")]
-		public EntitySet<PackingList> PackingList
-		{
-			get
-			{
-				return this._PackingList;
-			}
-			set
-			{
-				this._PackingList.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Adress_RegistrationLocation", Storage="_RegistrationLocation", ThisKey="Id", OtherKey="RegistrationLocationAdressId")]
 		public EntitySet<RegistrationLocation> RegistrationLocation
 		{
@@ -5745,6 +5732,19 @@ namespace KVSCommon.Database
 			set
 			{
 				this._DocketList.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Adress_PackingList", Storage="_PackingList", ThisKey="Id", OtherKey="RecipientAdressId")]
+		public EntitySet<PackingList> PackingList
+		{
+			get
+			{
+				return this._PackingList;
+			}
+			set
+			{
+				this._PackingList.Assign(value);
 			}
 		}
 		
@@ -5864,18 +5864,6 @@ namespace KVSCommon.Database
 			entity.Adress = null;
 		}
 		
-		private void attach_PackingList(PackingList entity)
-		{
-			this.SendPropertyChanging();
-			entity.Adress = this;
-		}
-		
-		private void detach_PackingList(PackingList entity)
-		{
-			this.SendPropertyChanging();
-			entity.Adress = null;
-		}
-		
 		private void attach_RegistrationLocation(RegistrationLocation entity)
 		{
 			this.SendPropertyChanging();
@@ -5895,6 +5883,18 @@ namespace KVSCommon.Database
 		}
 		
 		private void detach_DocketList(DocketList entity)
+		{
+			this.SendPropertyChanging();
+			entity.Adress = null;
+		}
+		
+		private void attach_PackingList(PackingList entity)
+		{
+			this.SendPropertyChanging();
+			entity.Adress = this;
+		}
+		
+		private void detach_PackingList(PackingList entity)
 		{
 			this.SendPropertyChanging();
 			entity.Adress = null;
@@ -10172,8 +10172,6 @@ namespace KVSCommon.Database
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
-		private int _Id;
-		
 		private int _PackingListNumber;
 		
 		private string _DispatchOrderNumber;
@@ -10192,18 +10190,16 @@ namespace KVSCommon.Database
 		
 		private EntitySet<Order> _Order;
 		
-		private EntityRef<Adress> _Adress;
+		private EntityRef<Order> _Order1;
 		
 		private EntityRef<Document> _Document;
 		
-		private EntityRef<Order> _Order1;
+		private EntityRef<Adress> _Adress;
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
     partial void OnPackingListNumberChanging(int value);
     partial void OnPackingListNumberChanged();
     partial void OnDispatchOrderNumberChanging(string value);
@@ -10225,30 +10221,10 @@ namespace KVSCommon.Database
 		public PackingList()
 		{
 			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
-			this._Adress = default(EntityRef<Adress>);
-			this._Document = default(EntityRef<Document>);
 			this._Order1 = default(EntityRef<Order>);
+			this._Document = default(EntityRef<Document>);
+			this._Adress = default(EntityRef<Adress>);
 			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="int NOT NULL")]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PackingListNumber", DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
@@ -10436,36 +10412,36 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Adress_PackingList", Storage="_Adress", ThisKey="RecipientAdressId", OtherKey="Id", IsForeignKey=true)]
-		public Adress Adress
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_PackingList", Storage="_Order1", ThisKey="OldOrderId", OtherKey="OrderNumber", IsForeignKey=true)]
+		public Order Order1
 		{
 			get
 			{
-				return this._Adress.Entity;
+				return this._Order1.Entity;
 			}
 			set
 			{
-				Adress previousValue = this._Adress.Entity;
+				Order previousValue = this._Order1.Entity;
 				if (((previousValue != value) 
-							|| (this._Adress.HasLoadedOrAssignedValue == false)))
+							|| (this._Order1.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if ((previousValue != null))
 					{
-						this._Adress.Entity = null;
-						previousValue.PackingList.Remove(this);
+						this._Order1.Entity = null;
+						previousValue.PackingList2.Remove(this);
 					}
-					this._Adress.Entity = value;
+					this._Order1.Entity = value;
 					if ((value != null))
 					{
-						value.PackingList.Add(this);
-						this._RecipientAdressId = value.Id;
+						value.PackingList2.Add(this);
+						this._OldOrderId = value.OrderNumber;
 					}
 					else
 					{
-						this._RecipientAdressId = default(int);
+						this._OldOrderId = default(Nullable<int>);
 					}
-					this.SendPropertyChanged("Adress");
+					this.SendPropertyChanged("Order1");
 				}
 			}
 		}
@@ -10504,36 +10480,36 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_PackingList", Storage="_Order1", ThisKey="OldOrderId", OtherKey="OrderNumber", IsForeignKey=true)]
-		public Order Order1
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Adress_PackingList", Storage="_Adress", ThisKey="RecipientAdressId", OtherKey="Id", IsForeignKey=true)]
+		public Adress Adress
 		{
 			get
 			{
-				return this._Order1.Entity;
+				return this._Adress.Entity;
 			}
 			set
 			{
-				Order previousValue = this._Order1.Entity;
+				Adress previousValue = this._Adress.Entity;
 				if (((previousValue != value) 
-							|| (this._Order1.HasLoadedOrAssignedValue == false)))
+							|| (this._Adress.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if ((previousValue != null))
 					{
-						this._Order1.Entity = null;
-						previousValue.PackingList2.Remove(this);
+						this._Adress.Entity = null;
+						previousValue.PackingList.Remove(this);
 					}
-					this._Order1.Entity = value;
+					this._Adress.Entity = value;
 					if ((value != null))
 					{
-						value.PackingList2.Add(this);
-						this._OldOrderId = value.OrderNumber;
+						value.PackingList.Add(this);
+						this._RecipientAdressId = value.Id;
 					}
 					else
 					{
-						this._OldOrderId = default(Nullable<int>);
+						this._RecipientAdressId = default(int);
 					}
-					this.SendPropertyChanged("Order1");
+					this.SendPropertyChanged("Adress");
 				}
 			}
 		}

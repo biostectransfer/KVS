@@ -54,7 +54,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                orderby packList.PackingListNumber descending
                                select new
                                {
-                                   listId = packList.Id,
+                                   listId = packList.PackingListNumber,
                                    CustomerName = //CustomerNameLet.Customer.Name,
                                      CustomerNameLet.Customer.SmallCustomer != null &&
                                         CustomerNameLet.Customer.SmallCustomer.Person != null ?
@@ -80,7 +80,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 itemIndexHiddenField.Value = item.ItemIndex.ToString();
                 var myListId = Int32.Parse(item["listId"].Text);
                 DataClasses1DataContext dbContext = new DataClasses1DataContext();
-                var myVerbringung = dbContext.PackingList.SingleOrDefault(q => q.Id == myListId);
+                var myVerbringung = dbContext.PackingList.SingleOrDefault(q => q.PackingListNumber == myListId);
                 if (myVerbringung.IsSelfDispatch == true)
                 {
                     myDispathHiddenField.Value = "true";
@@ -166,7 +166,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 var _listId = item.FindControl("listIdBox") as TextBox;
                 var listId = Int32.Parse(_listId.Text);
                 var dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
-                var packList = dbContext.PackingList.SingleOrDefault(q => q.Id == listId);
+                var packList = dbContext.PackingList.SingleOrDefault(q => q.PackingListNumber == listId);
                 if (packList.IsPrinted == true)
                 {
                     ErrorVersandGedrucktLabel.Visible = true;

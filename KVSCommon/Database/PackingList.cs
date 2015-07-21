@@ -25,7 +25,7 @@ namespace KVSCommon.Database
         {
             get
             {
-                return this.Id;
+                return this.PackingListNumber;
             }
         }
 
@@ -55,7 +55,7 @@ namespace KVSCommon.Database
                 Recipient = recipient
             };
             
-            dbContext.WriteLogItem("Lieferschein erstellt.", LogTypes.INSERT, packingList.Id, "PackingList");
+            dbContext.WriteLogItem("Lieferschein erstellt.", LogTypes.INSERT, packingList.PackingListNumber, "PackingList");
             dbContext.PackingList.InsertOnSubmit(packingList);
             return packingList;
         }
@@ -75,7 +75,7 @@ namespace KVSCommon.Database
             Order order = dbContext.Order.Single(q => q.Id == orderId);
             order.LogDBContext = dbContext;
             order.PackingListNumber = this.PackingListNumber;
-            dbContext.WriteLogItem("Auftrag zum Lieferschein hinzugefügt.", LogTypes.UPDATE, this.Id, "PackingList", orderId);
+            dbContext.WriteLogItem("Auftrag zum Lieferschein hinzugefügt.", LogTypes.UPDATE, this.PackingListNumber, "PackingList", orderId);
         }
 
 
@@ -121,7 +121,7 @@ namespace KVSCommon.Database
             Order order = dbContext.Order.Single(q => q.Id == orderId);
             order.LogDBContext = dbContext;
             order.PackingListNumber = null;
-            dbContext.WriteLogItem("Auftrag aus Lieferschein entfernt.", LogTypes.UPDATE, this.Id, "PackingList", orderId);
+            dbContext.WriteLogItem("Auftrag aus Lieferschein entfernt.", LogTypes.UPDATE, this.PackingListNumber, "PackingList", orderId);
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace KVSCommon.Database
             dbContext.SubmitChanges();
             this.DocumentId = doc.Id;
 
-            dbContext.WriteLogItem("Lieferschein " + fileName + " wurde gedruckt.", LogTypes.UPDATE, this.Id, "Versand", doc.Id);
+            dbContext.WriteLogItem("Lieferschein " + fileName + " wurde gedruckt.", LogTypes.UPDATE, this.PackingListNumber, "Versand", doc.Id);
           
 
             if (this.LogDBContext == null)
@@ -183,7 +183,7 @@ namespace KVSCommon.Database
             }
 
             this.IsPrinted = true;
-            dbContext.WriteLogItem("Lieferschein wurde gedruckt.", LogTypes.UPDATE, this.Id, "PackingList");
+            dbContext.WriteLogItem("Lieferschein wurde gedruckt.", LogTypes.UPDATE, this.PackingListNumber, "PackingList");
         }
 
         /// <summary>

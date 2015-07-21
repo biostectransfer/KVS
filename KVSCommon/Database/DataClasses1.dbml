@@ -227,9 +227,9 @@
       <Association Name="Adress_Location1" Member="Location1" ThisKey="Id" OtherKey="InvoiceAdressId" Type="Location" />
       <Association Name="Adress_Location2" Member="Location2" ThisKey="Id" OtherKey="InvoiceDispatchAdressId" Type="Location" />
       <Association Name="Adress_Invoice" Member="Invoice" ThisKey="Id" OtherKey="InvoiceRecipientAdressId" Type="Invoice" />
-      <Association Name="Adress_PackingList" Member="PackingList" ThisKey="Id" OtherKey="RecipientAdressId" Type="PackingList" />
       <Association Name="Adress_RegistrationLocation" Member="RegistrationLocation" ThisKey="Id" OtherKey="RegistrationLocationAdressId" Type="RegistrationLocation" />
       <Association Name="Adress_DocketList" Member="DocketList" ThisKey="Id" OtherKey="RecipientAdressId" Type="DocketList" />
+      <Association Name="Adress_PackingList" Member="PackingList" ThisKey="Id" OtherKey="RecipientAdressId" Type="PackingList" />
     </Type>
   </Table>
   <Table Name="dbo.OrderStatus" Member="OrderStatus">
@@ -426,7 +426,6 @@
   </Table>
   <Table Name="dbo.PackingList" Member="PackingList">
     <Type Name="PackingList">
-      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="PackingListNumber" AutoSync="Never" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="DispatchOrderNumber" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="IsSelfDispatch" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
@@ -436,9 +435,9 @@
       <Column Name="DocumentId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="OldOrderId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Association Name="PackingList_Order" Member="Order" ThisKey="PackingListNumber" OtherKey="PackingListNumber" Type="Order" />
-      <Association Name="Adress_PackingList" Member="Adress" ThisKey="RecipientAdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
-      <Association Name="Document_PackingList" Member="Document" ThisKey="DocumentId" OtherKey="Id" Type="Document" IsForeignKey="true" />
       <Association Name="Order_PackingList" Member="Order1" ThisKey="OldOrderId" OtherKey="OrderNumber" Type="Order" IsForeignKey="true" />
+      <Association Name="Document_PackingList" Member="Document" ThisKey="DocumentId" OtherKey="Id" Type="Document" IsForeignKey="true" />
+      <Association Name="Adress_PackingList" Member="Adress" ThisKey="RecipientAdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.[Order]" Member="Order">

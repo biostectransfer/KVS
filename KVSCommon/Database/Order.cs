@@ -393,7 +393,7 @@ namespace KVSCommon.Database
                         temp_packingListId = order.PackingList.PackingListNumber;
 
                         dbContext.WriteLogItem("Lieferschein: " + temp_packingListId + " zum Auftrag: " + order.OrderNumber + "  wurde gelöscht. ", LogTypes.UPDATE, 
-                            order.PackingList.Id, "PackingList");
+                            order.PackingList.PackingListNumber, "PackingList");
 
                     }
                     order.PackingList = null;

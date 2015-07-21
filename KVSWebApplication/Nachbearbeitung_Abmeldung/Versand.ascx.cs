@@ -54,7 +54,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                orderby packList.PackingListNumber descending
                                select new
                                {
-                                   listId = packList.Id,
+                                   listId = packList.PackingListNumber,
                                    orderId = CustomerNameLet!=null ? CustomerNameLet.Id : (int?)null,
                                    CustomerName = //CustomerNameLet.Customer.Name,
                                     CustomerNameLet.Customer.SmallCustomer != null &&
@@ -135,7 +135,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 itemIndexHiddenField.Value = item.ItemIndex.ToString();
                 var myListId = Int32.Parse(item["listId"].Text);
                 var dbContext = new DataClasses1DataContext();
-                var myVerbringung = dbContext.PackingList.SingleOrDefault(q => q.Id == myListId);
+                var myVerbringung = dbContext.PackingList.SingleOrDefault(q => q.PackingListNumber == myListId);
                 if (myVerbringung.IsSelfDispatch == true)
                 {
                     myDispathHiddenField.Value = "true";
@@ -201,7 +201,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 var _listId = item.FindControl("listIdBox") as TextBox;
                 var listId = Int32.Parse(_listId.Text);
                 var dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
-                var packList = dbContext.PackingList.SingleOrDefault(q => q.Id == listId);
+                var packList = dbContext.PackingList.SingleOrDefault(q => q.PackingListNumber == listId);
                 if (packList.IsPrinted == true)
                 {
                     ErrorVersandGedrucktLabel.Visible = true;
