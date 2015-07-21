@@ -16684,8 +16684,6 @@ namespace KVSCommon.Database
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
-		private int _Id;
-		
 		private int _DocketListNumber;
 		
 		private string _DispatchOrderNumber;
@@ -16708,8 +16706,6 @@ namespace KVSCommon.Database
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
     partial void OnDocketListNumberChanging(int value);
     partial void OnDocketListNumberChanged();
     partial void OnDispatchOrderNumberChanging(string value);
@@ -16731,26 +16727,6 @@ namespace KVSCommon.Database
 			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
 			this._Adress = default(EntityRef<Adress>);
 			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="int NOT NULL")]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DocketListNumber", DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]

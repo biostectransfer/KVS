@@ -24,7 +24,7 @@ namespace KVSCommon.Database
         {
             get
             {
-                return this.Id;
+                return this.DocketListNumber;
             }
         }
 
@@ -54,7 +54,7 @@ namespace KVSCommon.Database
                 Recipient = recipient
             };
 
-            dbContext.WriteLogItem("Laufzettel erstellt.", LogTypes.INSERT, docketList.Id, "DocketList");
+            dbContext.WriteLogItem("Laufzettel erstellt.", LogTypes.INSERT, docketList.DocketListNumber, "DocketList");
             dbContext.DocketList.InsertOnSubmit(docketList);
             return docketList;
         }
@@ -74,7 +74,7 @@ namespace KVSCommon.Database
             Order order = dbContext.Order.Single(q => q.Id == orderId);
             order.LogDBContext = dbContext;
             order.DocketListNumber = this.DocketListNumber;
-            dbContext.WriteLogItem("Auftrag zum Laufzettel hinzugefügt.", LogTypes.UPDATE, this.Id, "DocketList", orderId);
+            dbContext.WriteLogItem("Auftrag zum Laufzettel hinzugefügt.", LogTypes.UPDATE, this.DocketListNumber, "DocketList", orderId);
         }
         /// <summary>
         /// Merged PDFs
@@ -116,7 +116,7 @@ namespace KVSCommon.Database
             Order order = dbContext.Order.Single(q => q.Id == orderId);
             order.LogDBContext = dbContext;
             order.DocketListNumber = null;
-            dbContext.WriteLogItem("Auftrag aus Laufzettel entfernt.", LogTypes.UPDATE, this.Id, "DocketList", orderId);
+            dbContext.WriteLogItem("Auftrag aus Laufzettel entfernt.", LogTypes.UPDATE, this.DocketListNumber, "DocketList", orderId);
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace KVSCommon.Database
             dbContext.SubmitChanges();
 
             this.DocumentId = doc.Id;
-            dbContext.WriteLogItem("Laufzettel " + fileName + " wurde gedruckt.", LogTypes.UPDATE, this.Id, "Versand", doc.Id);
+            dbContext.WriteLogItem("Laufzettel " + fileName + " wurde gedruckt.", LogTypes.UPDATE, this.DocketListNumber, "Versand", doc.Id);
 
 
             if (this.LogDBContext == null)
@@ -168,7 +168,7 @@ namespace KVSCommon.Database
             }
 
             this.IsPrinted = true;
-            dbContext.WriteLogItem("Laufzettel wurde gedruckt.", LogTypes.UPDATE, this.Id, "PackingList");
+            dbContext.WriteLogItem("Laufzettel wurde gedruckt.", LogTypes.UPDATE, this.DocketListNumber, "PackingList");
         }
         /// <summary>
         /// Versendet den Laufzettel per Email, falls erforderlich.

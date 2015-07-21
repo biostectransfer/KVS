@@ -760,7 +760,6 @@
   </Table>
   <Table Name="dbo.DocketList" Member="DocketList">
     <Type Name="DocketList">
-      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="DocketListNumber" AutoSync="Never" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="DispatchOrderNumber" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="IsSelfDispatch" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
