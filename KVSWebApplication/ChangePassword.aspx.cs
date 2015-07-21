@@ -17,12 +17,12 @@ namespace KVSWebApplication
         }
         protected void ChangeSaveBtn_Click(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])); // hier kommt die Loggingid
+            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
             try
             {
                 if (txbNewPassword.Text == txbRepeatPWD.Text)
                 {
-                    var thisUser = dbContext.User.SingleOrDefault(q => q.Id == new Guid(Session["CurrentUserId"].ToString()));
+                    var thisUser = dbContext.User.SingleOrDefault(q => q.Id == Int32.Parse(Session["CurrentUserId"].ToString()));
                     if (thisUser != null)
                     {
                         thisUser.ChangePassword(txbNewPassword.Text, txbOldPWD.Text, dbContext);

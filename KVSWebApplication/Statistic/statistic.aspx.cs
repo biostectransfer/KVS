@@ -51,7 +51,7 @@ namespace KVSWebApplication.Statistic
             {
                 try
                 {
-                    newQuery = newQuery.Where(q => q.CustomerId == new Guid(CustomerNameBox.SelectedValue));
+                    newQuery = newQuery.Where(q => q.CustomerId == Int32.Parse(CustomerNameBox.SelectedValue));
                 }
 
                 catch
@@ -121,7 +121,7 @@ namespace KVSWebApplication.Statistic
             {
                 //making pie
                 DataClasses1DataContext con = new DataClasses1DataContext();
-                var customerQuery = con.Customer.SingleOrDefault(q => q.Id == new Guid(CustomerNameBox.SelectedValue));
+                var customerQuery = con.Customer.SingleOrDefault(q => q.Id == Int32.Parse(CustomerNameBox.SelectedValue));
                 if (customerQuery != null)
                 {
                     List<Order> orderList = con.Order.Where(q => q.CustomerId == customerQuery.Id && q.Status == 900).ToList();
@@ -166,7 +166,7 @@ namespace KVSWebApplication.Statistic
             DataClasses1DataContext con = new DataClasses1DataContext();
             var Customer1 = from cust in con.Customer
                             select cust.Id; 
-            foreach (Guid custId in Customer1)
+            foreach (var custId in Customer1)
             {
                 var order = con.Order.Count(q => q.CustomerId == custId && q.Status == 900);
                 if (order != 0)
@@ -183,7 +183,7 @@ namespace KVSWebApplication.Statistic
             DataClasses1DataContext con = new DataClasses1DataContext();
             var Customer1 = from cust in con.Customer
                             select cust.Id;
-            foreach (Guid custId in Customer1)
+            foreach (var custId in Customer1)
             {
                 var orders = (from ord in con.Order
                              where ord.CustomerId == custId && ord.Status == 900

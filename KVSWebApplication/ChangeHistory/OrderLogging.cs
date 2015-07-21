@@ -17,7 +17,7 @@ namespace KVSWebApplication.ChangeHistory
         public string FirstName { get; set; }
         public string Login { get; set; }
         public DateTime Date { get; set; }
-        public Guid ReferenceId { get; set; }
+        public int? ReferenceId { get; set; }
         public long LogId { get; set; }
         public string TranslatedText { get; set; }
         public string Type { get; set; }

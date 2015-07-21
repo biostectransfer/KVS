@@ -32,26 +32,26 @@ namespace KVSWebApplication
             }
             set
             {
-                if(ViewState["PosName"] ==null || ViewState["PosName"] ==string.Empty)
-                ViewState["PosName"] = KVSCommon.Database.PathPosition.GetPathPostions(new KVSCommon.Database.DataClasses1DataContext());
+                if (ViewState["PosName"] == null || ViewState["PosName"] == string.Empty)
+                    ViewState["PosName"] = KVSCommon.Database.PathPosition.GetPathPostions(new KVSCommon.Database.DataClasses1DataContext());
             }
 
         }
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            CurrentPostionName="";
+            CurrentPostionName = "";
             if (ViewState["PosName"] != null || ViewState["PosName"] != string.Empty)
             {
                 Dictionary<string, string> dict = ViewState["PosName"] as Dictionary<string, string>;
                 string path = Request.Path;
                 if (dict.ContainsKey(path))
                 {
-                lblPostionPath.Text= dict[path];
-                lblPosName.Visible=true;
+                    lblPostionPath.Text = dict[path];
+                    lblPosName.Visible = true;
                 }
                 else
-                    lblPosName.Visible=false;
+                    lblPosName.Visible = false;
             }
             if (Session["CurrentUserName"] != null)
             {
@@ -67,7 +67,7 @@ namespace KVSWebApplication
                     lblLoginUsername.Text = "Gast";
 
             }
-         
+
         }
         protected void Page_Init(object sender, EventArgs e)
         {
@@ -82,33 +82,22 @@ namespace KVSWebApplication
 
             string basePath = ConfigurationManager.AppSettings["BaseUrl"];
 
-            if (Session["CurrentUserId"] == null || Session["CurrentUserId"].ToString() == "" || ((Guid)Session["CurrentUserId"]) == Guid.Empty)
+            if (Session["CurrentUserId"] == null || Session["CurrentUserId"].ToString() == "" || Session["CurrentUserId"] == null)
             {
                 Session["CurrentUserId"] = "";
                 Session["CurrentUserName"] = "";
-                //try
-                //{ 
+
                 Response.Redirect(basePath + "login.aspx");
                 if (FormsAuthentication.Authenticate("", ""))
                 {
                     FormsAuthentication.RedirectFromLoginPage("", false);
                 }
-
-
-
-                //catch
-                //{ Response.Redirect("login.aspx"); }
             }
             else
             {
                 Session["CurrentUserId"] = Session["CurrentUserId"];
                 Session["CurrentUserName"] = Session["CurrentUserName"];
-          
-
             }
-
         }
-    
-
     }
 }

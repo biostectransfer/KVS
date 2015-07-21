@@ -45,7 +45,7 @@ namespace KVSCommon.Database
         public static void SendOrderStatusPerEmail(bool daily)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            Guid userId = new Guid(ConfigurationManager.AppSettings["UserIdForEmailJob"]);
+            var userId = Int32.Parse(ConfigurationManager.AppSettings["UserIdForEmailJob"]);
             string fromEmail = ConfigurationManager.AppSettings["FromEmail"];
 
             try 
@@ -75,16 +75,15 @@ namespace KVSCommon.Database
         /// <param name="orderTypeId">Id der Auftragsart.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Auftrag.</returns>
-        public static Order CreateOrder(Guid userId, Guid customerId, Guid orderTypeId, Guid zulassungsstelleId, DataClasses1DataContext dbContext)
+        public static Order CreateOrder(int userId, int customerId, int orderTypeId, int zulassungsstelleId, DataClasses1DataContext dbContext)
         {
-            if (userId == Guid.Empty)
+            if (userId == 0)
             {
                 throw new Exception("Die BenutzerId ist nicht gesetzt.");
             }
 
             Order order = new Order()
             {
-                Id = Guid.NewGuid(),
                 CreateDate = DateTime.Now,
                 CustomerId = customerId,
                 Status = (int)OrderState.Offen,
@@ -103,7 +102,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="orderIds">List mit OrderIds</param>
         /// <param name="dbContext">DB Kontext</param>
-        public static void UpdateOrderStates(List<Guid> orderIds, DataClasses1DataContext dbContext)
+        public static void UpdateOrderStates(List<int> orderIds, DataClasses1DataContext dbContext)
         {
             IQueryable<Order> orders = dbContext.Order.Where(q => orderIds.Contains(q.Id));
             foreach (var order in orders.Where(q => q.OrderItem.Any(p => p.Status == (int)OrderItemState.Abgerechnet) && !q.OrderItem.All(r => r.Status == (int)OrderItemState.Abgerechnet || r.Status == (int)OrderItemState.Storniert)))
@@ -212,7 +211,7 @@ namespace KVSCommon.Database
         /// <param name="userId">UserId für den Datenbankzugriff.</param>
         /// <param name="fromEmailAddress">Emailadresse des Absenders.</param>
         /// <param name="smtpServer">SMTP-Server für den Emailversand.</param>
-        public static void SendOrderFinishedNotes(bool sendDailyMails, Guid userId, string fromEmailAddress, string smtpServer)
+        public static void SendOrderFinishedNotes(bool sendDailyMails, int userId, string fromEmailAddress, string smtpServer)
         {
             using (DataClasses1DataContext dbContext = new DataClasses1DataContext(userId))
             {
@@ -296,14 +295,13 @@ namespace KVSCommon.Database
         /// <param name="isAuthorativeCharge">Gibt an, ob es sich um eine behoerdliche Gebühr handelt oder nicht.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Die neue Auftragsposition.</returns>
-        public OrderItem AddOrderItem(Guid productId, decimal priceAmount, int count, Guid? costCenterId, Guid? superOrderItemId, bool isAuthorativeCharge, DataClasses1DataContext dbContext)
+        public OrderItem AddOrderItem(int productId, decimal priceAmount, int count, CostCenter costCenter, int? superOrderItemId, bool isAuthorativeCharge, DataClasses1DataContext dbContext)
         {
             var product = dbContext.Product.Where(q => q.Id == productId).Single();
             OrderItem item = new OrderItem()
             {
-                Id = Guid.NewGuid(),
                 Amount = priceAmount,
-                CostCenterId = costCenterId,
+                CostCenter = costCenter,
                 ProductId = productId,
                 Status = (int)OrderItemState.Offen,
                 ProductName = product.Name,
@@ -325,7 +323,7 @@ namespace KVSCommon.Database
         /// <param name="itemId">Auftragspositionen Id</param>
         /// <param name="amount">Betrag</param>
         /// <returns>bool</returns>
-        public static bool GenerateAuthCharge(DataClasses1DataContext dbContext, Guid authId, string itemId, string amount)
+        public static bool GenerateAuthCharge(DataClasses1DataContext dbContext, int? authId, string itemId, string amount)
         {
             if (amount == string.Empty)
                 amount = "0";
@@ -340,11 +338,11 @@ namespace KVSCommon.Database
                     amoutToSave = amoutToSave.Replace(".", ",");
 
 
-                if (authId == Guid.Empty)
+                if (!authId.HasValue)
                 {
                     var myOrder = (from order in dbContext.Order
                                    join ordItem in dbContext.OrderItem on order.Id equals ordItem.OrderId
-                                   where ordItem.Id == new Guid(itemId)
+                                   where ordItem.Id == Int32.Parse(itemId)
                                    select new tempOrder
                                    {
                                        order = order,
@@ -352,7 +350,8 @@ namespace KVSCommon.Database
                                    }).First();
         
                 
-                    myOrder.order.AddOrderItem(myOrder.orderItem.ProductId, Convert.ToDecimal(amoutToSave), myOrder.orderItem.Count, myOrder.orderItem.CostCenterId, myOrder.orderItem.Id, true, dbContext);
+                    myOrder.order.AddOrderItem(myOrder.orderItem.ProductId, Convert.ToDecimal(amoutToSave), myOrder.orderItem.Count, myOrder.orderItem.CostCenter, 
+                        myOrder.orderItem.Id, true, dbContext);
                 }
                 else
                 {
@@ -378,7 +377,7 @@ namespace KVSCommon.Database
         ///</summary>
         ///<param name="dbContext">DB Kontext</param>
         ///<param name="packingListId">Lieferschein ID</param>
-        public static void TryToRemovePackingListIdAndSetStateToRegistration(DataClasses1DataContext dbContext, Guid packingListId)
+        public static void TryToRemovePackingListIdAndSetStateToRegistration(DataClasses1DataContext dbContext, int packingListId)
         {
             var orders = dbContext.Order.Where(q => q.PackingListId == packingListId);
             foreach(var order in orders)
@@ -387,13 +386,14 @@ namespace KVSCommon.Database
                 {
                     order.LogDBContext = dbContext;
                     int temp_packingListId = 0;
-                    Guid temp_packingList = Guid.Empty;
+
                     if (order.PackingList != null)
                     {
                         order.PackingList.OldOrderId = order.Id;
                         temp_packingListId = order.PackingList.PackingListNumber;
-                        temp_packingList = order.PackingList.Id;
-                        dbContext.WriteLogItem("Lieferschein: " + temp_packingListId + " zum Auftrag: " + order.Ordernumber + "  wurde gelöscht. ", LogTypes.UPDATE, temp_packingList, "PackingList");
+
+                        dbContext.WriteLogItem("Lieferschein: " + temp_packingListId + " zum Auftrag: " + order.Ordernumber + "  wurde gelöscht. ", LogTypes.UPDATE, 
+                            order.PackingList.Id, "PackingList");
 
                     }
                     order.PackingList = null;

@@ -42,7 +42,7 @@ namespace KVSCommon.Database
         /// <param name="typeId">Id des Verteilertyps.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Verteilereintrag.</returns>
-        public Mailinglist AddNewMailinglistItem(string email, Guid typeId, DataClasses1DataContext dbContext)
+        public Mailinglist AddNewMailinglistItem(string email, int typeId, DataClasses1DataContext dbContext)
         {
             MailinglistType type = dbContext.MailinglistType.Single(q => q.Id == typeId);
             if (this.Mailinglist.Any(q => q.Email == email && q.MailinglistTypeId == typeId))
@@ -60,7 +60,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="mailinglistId">Id des Eintrags.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void RemoveMailinglistItem(Guid mailinglistId, DataClasses1DataContext dbContext)
+        public void RemoveMailinglistItem(int mailinglistId, DataClasses1DataContext dbContext)
         {
             Mailinglist ml = this.Mailinglist.SingleOrDefault(q => q.Id == mailinglistId);
             if (ml == null)
@@ -76,7 +76,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="adressId">Id des Standorts.</param>
         /// <param name="dbContext">Datenbankkontext</param>
-        public static void RemoveLocation(Guid locationId, DataClasses1DataContext dbContext)
+        public static void RemoveLocation(int locationId, DataClasses1DataContext dbContext)
         {
             Location lc = dbContext.Location.SingleOrDefault(q => q.Id ==locationId);
             if (lc != null)
@@ -118,9 +118,9 @@ namespace KVSCommon.Database
 
             var changeAddress = dbContext.Adress.FirstOrDefault(q => q.Id != lc.AdressId);
           
-            Guid tempId = lc.AdressId;
-            Guid? tempIA = lc.InvoiceAdressId;
-            Guid? tempIDA = lc.InvoiceDispatchAdressId;
+            var tempId = lc.AdressId;
+            var tempIA = lc.InvoiceAdressId;
+            var tempIDA = lc.InvoiceDispatchAdressId;
             if (changeAddress != null)
             {
                 lc.AdressId = changeAddress.Id;
@@ -227,7 +227,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnSuperLocationIdChanging(Guid? value)
+        partial void OnSuperLocationIdChanging(int? value)
         {
             if (value.HasValue)
             {
@@ -248,7 +248,8 @@ namespace KVSCommon.Database
             }
             else
             {
-                this.LogDBContext.WriteLogItem("Standort " + this.Name + " wurde dem Standort " + this.Location1.Name + " entzogen.", LogTypes.UPDATE, this.Location1.Id, "Location", this.Id);
+                //TODO var location = _dbContext.Location.
+                //this.LogDBContext.WriteLogItem("Standort " + this.Name + " wurde dem Standort " + this.Location1.Name + " entzogen.", LogTypes.UPDATE, this.Location1.Id, "Location", this.Id);
             }
         }
     }

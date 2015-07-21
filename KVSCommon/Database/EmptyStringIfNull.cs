@@ -30,7 +30,7 @@ namespace KVSCommon.Database
         /// <returns></returns>
         public static string ReturnZeroStringIfNull(string myValue)
         {
-            if (myValue == string.Empty || myValue ==  null)
+            if (myValue == string.Empty || myValue == null)
                 return "0";
             else
                 return myValue.ToString();
@@ -47,7 +47,7 @@ namespace KVSCommon.Database
         {
             if (myValue == null)
                 return null;
-            
+
             else
             {
                 try
@@ -60,9 +60,8 @@ namespace KVSCommon.Database
 
                 }
             }
-           
-
         }
+
         /// <summary>
         /// Prueft ob die einegegebene Zahl auch eine nummer ist
         /// </summary>
@@ -70,32 +69,9 @@ namespace KVSCommon.Database
         /// <returns></returns>
         public static bool IsNumber(string myValue)
         {
-         
-                try
-                {
-                    decimal.Parse(myValue);
-                    return true;
-                }
-                catch
-                {
-                    return false;
-
-                }
-            
-
-
-        }
-        /// <summary>
-        /// Prueft ob die einegegebene Zahl auch eine Guid ist
-        /// </summary>
-        /// <param name="myValue"></param>
-        /// <returns></returns>
-        public static bool IsGuid(string myValue)
-        {
-
             try
             {
-                Guid.Parse(myValue);
+                decimal.Parse(myValue);
                 return true;
             }
             catch
@@ -103,10 +79,8 @@ namespace KVSCommon.Database
                 return false;
 
             }
-
-
-
         }
+
         /// <summary>
         /// Gibt 0 zurueck, wenn der eingegebene Wert null ist
         /// </summary>
@@ -118,7 +92,6 @@ namespace KVSCommon.Database
                 return "0";
             else
                 return myValue.ToString();
-
         }
         /// <summary>
         /// Gibt eine 0 zurueck, wenn die Eingabe ein null ist
@@ -128,7 +101,6 @@ namespace KVSCommon.Database
         /// <returns></returns>
         public static decimal ReturnZeroDecimalIfNullEditVat(object myValue)
         {
-
             if (myValue == null)
                 return 0;
             else
@@ -136,18 +108,12 @@ namespace KVSCommon.Database
                 decimal myVat = 0;
                 myValue = myValue.ToString().Trim();
                 myValue = myValue.ToString().Replace('.', ',');
-              
+
                 try { myVat = decimal.Parse(myValue.ToString()); }
                 catch { throw new Exception("Die MwSt muss eine Dezimalzahl darstellen!"); }
 
                 return myVat;
             }
-       
-
         }
-   
-
-
-
     }
 }

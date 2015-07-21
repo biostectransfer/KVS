@@ -24,31 +24,31 @@ namespace KVSWebApplication.Abrechnung
             {
                 UpdateInvoiceWithNewParam();
             }
-                Abrechnung abr = Page as Abrechnung;
-                RadScriptManager script = abr.getScriptManager() as RadScriptManager;
-                script.RegisterPostBackControl(RechnungErstellenButton);
-                script.RegisterPostBackControl(PrintCopyButton);
-                script.RegisterPostBackControl(btnShowInvoice);
-                if (Session["CurrentUserId"] != null)
+            Abrechnung abr = Page as Abrechnung;
+            RadScriptManager script = abr.getScriptManager() as RadScriptManager;
+            script.RegisterPostBackControl(RechnungErstellenButton);
+            script.RegisterPostBackControl(PrintCopyButton);
+            script.RegisterPostBackControl(btnShowInvoice);
+            if (Session["CurrentUserId"] != null)
+            {
+                if (!String.IsNullOrEmpty(Session["CurrentUserId"].ToString()))
                 {
-                    if (!String.IsNullOrEmpty(Session["CurrentUserId"].ToString()))
-                    {
-                        CheckUserPermissions();
-                    }
-                    if (!Page.IsPostBack)
-                    {
-                        RadGridAbrechnungErstellen.Enabled = true;
-                        RadGridAbrechnungErstellen.DataBind();
-                    }
-                } 
-        }   
+                    CheckUserPermissions();
+                }
+                if (!Page.IsPostBack)
+                {
+                    RadGridAbrechnungErstellen.Enabled = true;
+                    RadGridAbrechnungErstellen.DataBind();
+                }
+            }
+        }
         /// <summary>
         /// Pruefe die Benutzerrechte
         /// </summary>
         protected void CheckUserPermissions()
         {
             List<string> userPermissions = new List<string>();
-            userPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+            userPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (userPermissions.Count > 0)
             {
                 if (!userPermissions.Contains("RECHNUNG_ERSTELLEN"))
@@ -60,7 +60,7 @@ namespace KVSWebApplication.Abrechnung
                     AllButtonsPanel.Visible = true;
                 }
             }
-        }     
+        }
         #region Methods
         /// <summary>
         /// Event fuer den Stornieren Button
@@ -74,12 +74,12 @@ namespace KVSWebApplication.Abrechnung
                 RechnungVorschauErrorLabel.Visible = false;
                 foreach (GridDataItem item in RadGridAbrechnungErstellen.SelectedItems)
                 {
-                    Guid invoiceID = new Guid(item["invoiceId"].Text);
+                    var invoiceID = Int32.Parse(item["invoiceId"].Text);
                     if (invoiceID != null)
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         Invoice newInvoice = dbContext.Invoice.SingleOrDefault(q => q.Id == invoiceID);
-                        if ( newInvoice.IsPrinted == false)
+                        if (newInvoice.IsPrinted == false)
                         {
                             newInvoice.canceled = true;
                             newInvoice.Cancel(dbContext);
@@ -102,11 +102,11 @@ namespace KVSWebApplication.Abrechnung
                 RechnungVorschauErrorLabel.Text = "Sie haben keine Rechnung zum stornieren ausgewählt";
             }
         }
-       /// <summary>
-       /// Event fuer den Clear Button
-       /// </summary>
-       /// <param name="sender"></param>
-       /// <param name="e"></param>
+        /// <summary>
+        /// Event fuer den Clear Button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void clearButton_Click(object sender, EventArgs e)
         {
             CustomerDropDownList.ClearSelection();
@@ -124,26 +124,26 @@ namespace KVSWebApplication.Abrechnung
                 using (DataClasses1DataContext dbCotenxt = new DataClasses1DataContext())
                 {
                     EmailOkeyLabel.Visible = false;
-                    GridDataItem item = RadGridAbrechnungErstellen.SelectedItems[0] as GridDataItem;
-                    Guid invoiceId = new Guid(item["invoiceId"].Text);
+                    var item = RadGridAbrechnungErstellen.SelectedItems[0] as GridDataItem;
+                    var invoiceId = Int32.Parse(item["invoiceId"].Text);
                     string fromEmail = ConfigurationManager.AppSettings["FromEmail"];
                     string host = ConfigurationManager.AppSettings["smtpHost"];
-                    Invoice.SendByMail(dbCotenxt,invoiceId, host, fromEmail);
+                    Invoice.SendByMail(dbCotenxt, invoiceId, host, fromEmail);
                     EmailOkeyLabel.ForeColor = System.Drawing.Color.Green;
                     EmailOkeyLabel.Text = "Email wurde erfolgreich gesendet!";
                     EmailOkeyLabel.Visible = true;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 EmailOkeyLabel.ForeColor = System.Drawing.Color.Red;
-                EmailOkeyLabel.Text = "Fehler beim Emailversand:" +ex.Message;
+                EmailOkeyLabel.Text = "Fehler beim Emailversand:" + ex.Message;
                 EmailOkeyLabel.Visible = true;
-            }         
+            }
         }
-       /// <summary>
+        /// <summary>
         /// Update Invoice mit neue Positionen
-       /// </summary>
+        /// </summary>
         protected void UpdateInvoiceWithNewParam()
         {
             try
@@ -156,8 +156,8 @@ namespace KVSWebApplication.Abrechnung
                 {
                     foreach (GridDataItem item in RadGridAbrechnungErstellen.SelectedItems)
                     {
-                        Guid invoiceId = new Guid(item["invoiceId"].Text);
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                        var invoiceId = Int32.Parse(item["invoiceId"].Text);
+                        var dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         var invoiceToAdd = dbContext.Invoice.SingleOrDefault(q => q.Id == invoiceId);
                         if (invoiceToAdd != null)
                         {
@@ -166,18 +166,18 @@ namespace KVSWebApplication.Abrechnung
                         }
                     }
                 }
-                RadGridAbrechnungErstellen.Rebind();             
+                RadGridAbrechnungErstellen.Rebind();
             }
             catch (Exception ex)
-            {             
+            {
                 RechnungVorschauErrorLabel.Visible = true;
                 RechnungVorschauErrorLabel.Text = "Fehler: " + ex.Message;
             }
-        }       
+        }
         #endregion
         #region Index Changed
         protected void Cell_Selected(object sender, EventArgs e)
-        {          
+        {
             if (RadGridAbrechnungErstellen.SelectedItems.Count == 0)
             {
                 AddButton.Enabled = false;
@@ -221,7 +221,7 @@ namespace KVSWebApplication.Abrechnung
                 try
                 {
                     DataClasses1DataContext dbContext = new DataClasses1DataContext();
-                    Guid invoiceId = new Guid(item["invoiceId"].Text);
+                    var invoiceId = Int32.Parse(item["invoiceId"].Text);
                     Invoice newInvoice = dbContext.Invoice.SingleOrDefault(q => q.Id == invoiceId);
                     string fileName = "RechnungsCopy_" + newInvoice.CreateDate.Day + "_" + newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + "_" + DateTime.Now.Ticks + ".pdf";
                     using (MemoryStream memS = new MemoryStream())
@@ -252,7 +252,7 @@ namespace KVSWebApplication.Abrechnung
             RadGridAbrechnungErstellen.DataBind();
         }
         #endregion
-        #region Linq Data Sources  
+        #region Linq Data Sources
         /// <summary>
         /// Detail Tabelle Datasource
         /// </summary>
@@ -261,12 +261,12 @@ namespace KVSWebApplication.Abrechnung
         protected void DetailTable_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            Guid invoiceId=Guid.Empty;
+
             bool isPrinted = false;
-            if (e.WhereParameters["InvoiceId"] != null)
-            {
-                invoiceId = new Guid(e.WhereParameters["InvoiceId"].ToString());
-            }
+            //TODO if (e.WhereParameters["InvoiceId"] != null)
+            //{
+            var invoiceId = Int32.Parse(e.WhereParameters["InvoiceId"].ToString());
+            //}
             if (e.WhereParameters["isPrinted"] != null)
             {
                 isPrinted = Convert.ToBoolean(e.WhereParameters["isPrinted"].ToString());
@@ -284,23 +284,23 @@ namespace KVSWebApplication.Abrechnung
                                          Count = invitem.Count,
                                          Name = invitem.Name,
                                          isPrinted = inv.IsPrinted,
-                                         AccountId = Guid.Empty,
+                                         AccountId = 0,
                                          AccountNumber = "",
-                                         InvoiceItemId = invitem.Id, 
-                                         Active = (isPrinted) ? false :true
+                                         InvoiceItemId = invitem.Id,
+                                         Active = (isPrinted) ? false : true
                                      }).ToList();
             foreach (var invItem in invoiceItemsQuery)
-           {
-               var thisItem = (from i in invoiceAccounts
-                                     where i.InvoiceItemId == invItem.ItemId
-                               select new _Accounts { InvoiceItemId = i.InvoiceItemId, AccountId = i.AccountId, AccountNumber = i.AccountNumber, }).SingleOrDefault();
-               if (thisItem != null)
-               {
-                   invItem.AccountId = thisItem.AccountId;
-                   invItem.AccountNumber = thisItem.AccountNumber;
-                   invItem.InvoiceItemId = thisItem.InvoiceItemId;
-               }
-           }
+            {
+                var thisItem = (from i in invoiceAccounts
+                                where i.InvoiceItemId == invItem.ItemId
+                                select new _Accounts { InvoiceItemId = i.InvoiceItemId, AccountId = i.AccountId, AccountNumber = i.AccountNumber, }).SingleOrDefault();
+                if (thisItem != null)
+                {
+                    invItem.AccountId = thisItem.AccountId;
+                    invItem.AccountNumber = thisItem.AccountNumber;
+                    invItem.InvoiceItemId = thisItem.InvoiceItemId;
+                }
+            }
             e.Result = invoiceItemsQuery;
         }
         /// <summary>
@@ -313,22 +313,26 @@ namespace KVSWebApplication.Abrechnung
             DataClasses1DataContext con = new DataClasses1DataContext();
             var customerQuery = from cust in con.Customer
                                 select new
-                                {   Name = cust.SmallCustomer!=null && cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name, 
-                                    Value = cust.Id, Matchcode = cust.MatchCode, Kundennummer = cust.CustomerNumber };
+                                {
+                                    Name = cust.SmallCustomer != null && cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
+                                    Value = cust.Id,
+                                    Matchcode = cust.MatchCode,
+                                    Kundennummer = cust.CustomerNumber
+                                };
             e.Result = customerQuery;
         }
-       /// <summary>
+        /// <summary>
         /// Gibt alle Daten zum gewaehlten Kunden zurueck
-       /// </summary>
-       /// <param name="sender"></param>
-       /// <param name="e"></param>
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void AbrechnungLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext con = new DataClasses1DataContext();
-            Guid customerId = Guid.Empty;
+            var customerId = 0;
             if (CustomerDropDownList.SelectedValue != string.Empty)
-                customerId = new Guid(CustomerDropDownList.SelectedValue);
-            if (customerId != Guid.Empty)
+                customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
+            if (customerId != 0)
             {
                 var invoiceQuery = from inv in con.Invoice
                                    where inv.CustomerId == customerId
@@ -343,7 +347,7 @@ namespace KVSWebApplication.Abrechnung
                                         inv.Customer.SmallCustomer != null &&
                                         inv.Customer.SmallCustomer.Person != null ?
                                         inv.Customer.SmallCustomer.Person.FirstName + " " +
-                                        inv.Customer.SmallCustomer.Person.Name : inv.Customer.Name, 
+                                        inv.Customer.SmallCustomer.Person.Name : inv.Customer.Name,
                                        createDate = inv.CreateDate,
                                        isPrinted = inv.IsPrinted,
                                        isPrintedMEssage = (inv.IsPrinted) ? "Gedruckt/Gebucht" : "Offen",
@@ -366,7 +370,7 @@ namespace KVSWebApplication.Abrechnung
                                       inv.Customer.SmallCustomer != null &&
                                         inv.Customer.SmallCustomer.Person != null ?
                                         inv.Customer.SmallCustomer.Person.FirstName + " " +
-                                        inv.Customer.SmallCustomer.Person.Name : inv.Customer.Name, 
+                                        inv.Customer.SmallCustomer.Person.Name : inv.Customer.Name,
                                        createDate = inv.CreateDate,
                                        isPrinted = inv.IsPrinted,
                                        isPrintedMEssage = (inv.IsPrinted) ? "Gedruckt/Gebucht" : "Offen",
@@ -377,7 +381,7 @@ namespace KVSWebApplication.Abrechnung
             }
         }
         #endregion
-        #region Button Clicked   
+        #region Button Clicked
         /// <summary>
         /// Erstellt eine neue Rechnung
         /// </summary>
@@ -385,7 +389,7 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void RechnungErstellen_Click(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
             try
             {
                 if (RadGridAbrechnungErstellen.SelectedItems.Count > 0)
@@ -393,13 +397,13 @@ namespace KVSWebApplication.Abrechnung
                     RechnungVorschauErrorLabel.Visible = false;
                     foreach (GridDataItem item in RadGridAbrechnungErstellen.SelectedItems)
                     {
-                        Guid invoiceID = new Guid(item["invoiceId"].Text);
+                        var invoiceID = Int32.Parse(item["invoiceId"].Text);
                         TransactionScope ts = null;
                         if (invoiceID != null)
                         {
                             var myErloeskonten = Accounts.generateAccountNumber(dbContext, invoiceID).ToList();
                             using (ts = new TransactionScope())
-                            {                            
+                            {
                                 if (item.ChildItem.NestedTableViews[0].Items.Count > 0)
                                 {
                                     foreach (GridDataItem myHelperItem in item.ChildItem.NestedTableViews[0].Items)
@@ -410,13 +414,13 @@ namespace KVSWebApplication.Abrechnung
                                         {
                                             throw new Exception("Fehler, bitte wiederholen Sie den Vorgang");
                                         }
-                                        if (helperTextbox.Text == string.Empty && myErloeskonten.FirstOrDefault(s => s.InvoiceItemId == new Guid(itemId.Text)) == null)
+                                        if (helperTextbox.Text == string.Empty && myErloeskonten.FirstOrDefault(s => s.InvoiceItemId == Int32.Parse(itemId.Text)) == null)
                                         {
                                             throw new Exception("Alle Rechnungspositionen müssen mind. einem Erlöskonto zugewiesen sein");
                                         }
                                         if (helperTextbox.Text != string.Empty)
                                         {
-                                            var Contains = myErloeskonten.FirstOrDefault(q => q.InvoiceItemId == new Guid(itemId.Text));
+                                            var Contains = myErloeskonten.FirstOrDefault(q => q.InvoiceItemId == Int32.Parse(itemId.Text));
                                             if (Contains != null && Contains.AccountNumber != helperTextbox.Text)
                                             {
                                                 Contains.AccountNumber = helperTextbox.Text;
@@ -425,9 +429,8 @@ namespace KVSWebApplication.Abrechnung
                                             {
                                                 _Accounts acc = new _Accounts
                                                 {
-                                                    AccountId = Guid.NewGuid(),
                                                     AccountNumber = helperTextbox.Text,
-                                                    InvoiceItemId = new Guid(itemId.Text)
+                                                    InvoiceItemId = Int32.Parse(itemId.Text)
                                                 };
                                                 myErloeskonten.Add(acc);
                                             }
@@ -453,11 +456,11 @@ namespace KVSWebApplication.Abrechnung
                                 {
                                     var myAccount = new InvoiceItemAccountItem
                                     {
-                                        IIACCID = Guid.NewGuid(),
                                         InvoiceItemId = thisItems.InvoiceItemId,
                                         RevenueAccountText = thisItems.AccountNumber
                                     };
-                                    var contains = dbContext.InvoiceItemAccountItem.FirstOrDefault(q => q.InvoiceItemId == thisItems.InvoiceItemId && q.RevenueAccountText == thisItems.AccountNumber.Trim());
+                                    var contains = dbContext.InvoiceItemAccountItem.FirstOrDefault(q => q.InvoiceItemId == thisItems.InvoiceItemId && 
+                                        q.RevenueAccountText == thisItems.AccountNumber.Trim());
                                     if (contains == null)
                                     {
                                         dbContext.InvoiceItemAccountItem.InsertOnSubmit(myAccount);
@@ -469,24 +472,27 @@ namespace KVSWebApplication.Abrechnung
 
                                     dbContext.SubmitChanges();
 
-                                 
+
 
                                 }
                                 Invoice newInvoice = dbContext.Invoice.SingleOrDefault(q => q.Id == invoiceID);
-                              
+
                                 if (newInvoice.InvoiceItem.Count == 0)
                                 {
                                     throw new Exception("Die Rechnung konnte nicht erstellt werden, da für diese Rechnung keine Rechnungspositionen verbucht wurden");
                                 }
                                 if (newInvoice.IsPrinted == false)
-                                {    
+                                {
                                     using (MemoryStream memS = new MemoryStream())
                                     {
                                         string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
                                         newInvoice.Print(dbContext, memS, "", defaultAccountNumber.Checked);
-                                        string fileName = "Rechnung_" + newInvoice.InvoiceNumber.Number + "_" + newInvoice.CreateDate.Day + "_" + newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + ".pdf";
+                                        string fileName = "Rechnung_" + newInvoice.InvoiceNumber.Number + "_" + newInvoice.CreateDate.Day + "_" + 
+                                            newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + ".pdf";
                                         if (!Directory.Exists(serverPath)) Directory.CreateDirectory(serverPath);
-                                        if (!Directory.Exists(serverPath + "\\" + Session["CurrentUserId"].ToString())) Directory.CreateDirectory(serverPath + "\\" + Session["CurrentUserId"].ToString());
+                                        if (!Directory.Exists(serverPath + "\\" + Session["CurrentUserId"].ToString())) 
+                                            Directory.CreateDirectory(serverPath + "\\" + Session["CurrentUserId"].ToString());
+                                        
                                         serverPath = serverPath + "\\" + Session["CurrentUserId"].ToString();
                                         File.WriteAllBytes(serverPath + "\\" + fileName, memS.ToArray());
                                         OpenPrintfile(fileName);
@@ -494,7 +500,7 @@ namespace KVSWebApplication.Abrechnung
                                     }
                                 }
                                 ts.Complete();
-                            }                            
+                            }
                         }
                     }
                 }
@@ -523,7 +529,7 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void ShowInvoiceButton_Clicked(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
             try
             {
                 if (RadGridAbrechnungErstellen.SelectedItems.Count > 0)
@@ -531,9 +537,9 @@ namespace KVSWebApplication.Abrechnung
                     RechnungVorschauErrorLabel.Visible = false;
                     foreach (GridDataItem item in RadGridAbrechnungErstellen.SelectedItems)
                     {
-                        Guid invoiceID = new Guid(item["invoiceId"].Text);
-                        if (invoiceID != null)
-                        { 
+                        if (!String.IsNullOrEmpty(item["invoiceId"].Text))
+                        {
+                            var invoiceID = Int32.Parse(item["invoiceId"].Text);
                             Invoice newInvoice = dbContext.Invoice.SingleOrDefault(q => q.Id == invoiceID);
                             if (newInvoice.DocumentId != null)
                             {
@@ -544,7 +550,7 @@ namespace KVSWebApplication.Abrechnung
                                     if (!Directory.Exists(serverPath + "\\" + Session["CurrentUserId"].ToString())) Directory.CreateDirectory(serverPath + "\\" + Session["CurrentUserId"].ToString());
                                     serverPath = serverPath + "\\" + Session["CurrentUserId"].ToString();
                                     File.WriteAllBytes(serverPath + "\\" + newInvoice.Document.FileName, memS.ToArray());
-                                    OpenPrintfile(newInvoice.Document.FileName);                               
+                                    OpenPrintfile(newInvoice.Document.FileName);
                                 }
                             }
                             else
@@ -572,38 +578,38 @@ namespace KVSWebApplication.Abrechnung
                 RadGridAbrechnungErstellen.Rebind();
             }
         }
-      /// <summary>
-      /// Oeffne das erstellte Dokument
-      /// </summary>
-      /// <param name="myFile"></param>
+        /// <summary>
+        /// Oeffne das erstellte Dokument
+        /// </summary>
+        /// <param name="myFile"></param>
         private void OpenPrintfile(string myFile)
         {
             string url = ConfigurationManager.AppSettings["BaseUrl"];
             string path = url + "UserData/" + Session["CurrentUserId"].ToString() + "/" + myFile;
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Invoice", "<script>openFile('" + path + "');</script>", false);
         }
-      /// <summary>
-      /// Zeige alle Erloeskonten zur gewaehlten Dienstleistung
-      /// </summary>
-      /// <param name="sender"></param>
-      /// <param name="e"></param>
+        /// <summary>
+        /// Zeige alle Erloeskonten zur gewaehlten Dienstleistung
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void cmbErloeskontenThisProducts_ItemsRequested(object sender, RadComboBoxItemsRequestedEventArgs e)
-        {    
+        {
             RadComboBox cmbErloeskonten = ((RadComboBox)sender);
             Label itemId = cmbErloeskonten.Parent.FindControl("lblItemId") as Label;
-          bool printed = false;
-          if (cmbErloeskonten.Parent.Parent is GridDataItem)
-          {
-              GridDataItem s = ((GridDataItem)cmbErloeskonten.Parent.Parent);
-              if (s != null)
-              {
-                  printed = bool.Parse(s["IsPrinted"].Text);
-              }
-          }
+            bool printed = false;
+            if (cmbErloeskonten.Parent.Parent is GridDataItem)
+            {
+                GridDataItem s = ((GridDataItem)cmbErloeskonten.Parent.Parent);
+                if (s != null)
+                {
+                    printed = bool.Parse(s["IsPrinted"].Text);
+                }
+            }
             cmbErloeskonten.Items.Clear();
             cmbErloeskonten.Text = string.Empty;
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            cmbErloeskonten.DataSource = Accounts.generateAccountNumber(dbContext, new Guid(itemId.Text), printed);
+            cmbErloeskonten.DataSource = Accounts.generateAccountNumber(dbContext, Int32.Parse(itemId.Text), printed);
             cmbErloeskonten.Text = "";
             cmbErloeskonten.DataBind();
         }

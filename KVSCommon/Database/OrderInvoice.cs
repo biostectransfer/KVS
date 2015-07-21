@@ -37,18 +37,18 @@ namespace KVSCommon.Database
         /// <param name="invoiceId">Id der Rechnung.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Die neue Verknüpfung.</returns>
-        public static OrderInvoice CreateOrderInvoice(Guid orderId, Guid invoiceId, DataClasses1DataContext dbContext)
+        public static OrderInvoice CreateOrderInvoice(Order order, Invoice invoice, DataClasses1DataContext dbContext)
         {
             OrderInvoice item = new OrderInvoice()
             {
-                OrderId = orderId,
-                InvoiceId = invoiceId
+                Order = order,
+                Invoice = invoice
             };
 
             dbContext.OrderInvoice.InsertOnSubmit(item);
             ///  var invoiceNumber = dbContext.Invoice.Where(q => q.Id == invoiceId).Select(q => q.InvoiceNumber).Single();
-            var orderNumber = dbContext.Order.Where(q => q.Id == orderId).Select(q => q.Ordernumber).Single();
-            dbContext.WriteLogItem("Rechnung wurde mit Auftrag " + orderNumber + " verknüpft.", LogTypes.INSERT, orderId, "OrderInvoice", invoiceId);
+            var orderNumber = dbContext.Order.Where(q => q.Id == order.Id).Select(q => q.Ordernumber).Single();
+            dbContext.WriteLogItem("Rechnung wurde mit Auftrag " + orderNumber + " verknüpft.", LogTypes.INSERT, order.Id, "OrderInvoice", invoice.Id);
             return item;
         }
         /// <summary>
@@ -57,7 +57,7 @@ namespace KVSCommon.Database
         /// <param name="orderId">AuftragsID</param>
         /// <param name="invoiceId">RechnungsID</param>
         /// <param name="dbContext">DB Kontext</param>
-        public static void DeleteOrderInvoice(Guid orderId, Guid invoiceId, DataClasses1DataContext dbContext)
+        public static void DeleteOrderInvoice(int orderId, int invoiceId, DataClasses1DataContext dbContext)
         {
             var item = dbContext.OrderInvoice.SingleOrDefault(q => q.OrderId == orderId && q.InvoiceId == invoiceId);
             if (item == null)
@@ -68,7 +68,8 @@ namespace KVSCommon.Database
             }
 
             dbContext.OrderInvoice.DeleteOnSubmit(item);
-            dbContext.WriteLogItem("Verknüpfung zwischen Auftrag Nr. " + item.Order.Ordernumber + " und Rechnung Nr. " + item.Invoice.InvoiceNumber.Number + " wurde gelöscht.", LogTypes.DELETE, orderId, "OrderInvoice", invoiceId);
+            dbContext.WriteLogItem("Verknüpfung zwischen Auftrag Nr. " + item.Order.Ordernumber + " und Rechnung Nr. " + item.Invoice.InvoiceNumber.Number + " wurde gelöscht.", 
+                LogTypes.DELETE, orderId, "OrderInvoice", invoiceId);
         }
         /// <summary>
         /// Aenderungsevents für die Historie

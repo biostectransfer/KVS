@@ -96,9 +96,9 @@ namespace KVSWebApplication
         }
         protected void RadGridAllOrders_DetailTableDataBind(object source, GridDetailTableDataBindEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            GridDataItem item = (GridDataItem)e.DetailTableView.ParentItem;
-            Guid orderId = new Guid(item["OrderId"].Text.ToString());
+            var dbContext = new DataClasses1DataContext();
+            var item = (GridDataItem)e.DetailTableView.ParentItem;
+            var orderId = Int32.Parse(item["OrderId"].Text);
             var positionQuery = from ord in dbContext.Order
                                 join orditem in dbContext.OrderItem on ord.Id equals orditem.OrderId
                                 let authCharge = dbContext.OrderItem.FirstOrDefault(s => s.SuperOrderItemId == orditem.Id)
@@ -110,7 +110,7 @@ namespace KVSWebApplication
                                     ProductName = orditem.IsAuthorativeCharge ? orditem.ProductName + " (Amtl.Gebühr)" : orditem.ProductName,
                                     AmtGebuhr = authCharge == null ? false : true,
                                     AuthCharge = authCharge == null || authCharge.Amount == null ? "kein Preis" : (Math.Round(authCharge.Amount, 2, MidpointRounding.AwayFromZero)).ToString(),
-                                    AuthChargeId = authCharge == null ? Guid.Empty : authCharge.Id
+                                    AuthChargeId = authCharge == null ? (int?)null : authCharge.Id
                                 };
             e.DetailTableView.DataSource = positionQuery;
         }
@@ -151,8 +151,8 @@ namespace KVSWebApplication
                                          };
                 if (CustomerDropDownListOffenNeuzulassung.SelectedValue != string.Empty)
                 {
-                    Guid guid = new Guid(CustomerDropDownListOffenNeuzulassung.SelectedValue);
-                    smallCustomerQuery = smallCustomerQuery.Where(q => q.customerID == guid);
+                    var custId = Int32.Parse(CustomerDropDownListOffenNeuzulassung.SelectedValue);
+                    smallCustomerQuery = smallCustomerQuery.Where(q => q.customerID == custId);
                 }
                 e.Result = smallCustomerQuery;
             }
@@ -190,8 +190,8 @@ namespace KVSWebApplication
                                      };
                 if (CustomerDropDownListOffenNeuzulassung.SelectedValue != string.Empty)
                 {
-                    Guid guid = new Guid(CustomerDropDownListOffenNeuzulassung.SelectedValue);
-                    zulassungQuery = zulassungQuery.Where(q => q.customerID == guid);
+                    var custId = Int32.Parse(CustomerDropDownListOffenNeuzulassung.SelectedValue);
+                    zulassungQuery = zulassungQuery.Where(q => q.customerID == custId);
                 }
                 e.Result = zulassungQuery;
             }

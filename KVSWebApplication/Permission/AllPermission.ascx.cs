@@ -18,8 +18,8 @@ namespace KVSWebApplication.Permission
         List<string> thisUserPermissions = new List<string>();
         protected void Page_Load(object sender, EventArgs e)
         {
-       
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+
+            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (!thisUserPermissions.Contains("RECHTEPROFIL_BEARBEITEN"))
             {
                 getAllPermission.MasterTableView.CommandItemSettings.ShowAddNewRecordButton = false;
@@ -57,12 +57,12 @@ namespace KVSWebApplication.Permission
         }
         protected void getAllPermission_EditCommand(object source, Telerik.Web.UI.GridCommandEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
             Hashtable newValues = new Hashtable();
             ((GridEditableItem)e.Item).ExtractValues(newValues);
             try
             {
-                var checkThisPermission = dbContext.Permission.SingleOrDefault(q => q.Id == new Guid(newValues["Id"].ToString()));
+                var checkThisPermission = dbContext.Permission.SingleOrDefault(q => q.Id == Int32.Parse(newValues["Id"].ToString()));
                 if (checkThisPermission != null)
                 {
                     if (newValues["Description"] == null)

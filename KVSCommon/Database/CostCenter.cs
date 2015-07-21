@@ -40,7 +40,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="adressId">Id der Kostenstelle.</param>
         /// <param name="dbContext"></param>
-        public static void RemoveCostCenter(Guid costCenterId, DataClasses1DataContext dbContext)
+        public static void RemoveCostCenter(int costCenterId, DataClasses1DataContext dbContext)
         {
             CostCenter cc = dbContext.CostCenter.SingleOrDefault(q => q.Id == costCenterId);
             if (cc != null)
@@ -115,7 +115,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnBankAccountIdChanging(Guid? value)
+        partial void OnBankAccountIdChanging(int? value)
         {
             if (this.EntityState == Database.EntityState.Loaded)
             {

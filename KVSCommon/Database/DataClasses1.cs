@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Web;
 using System.Configuration;
 
@@ -11,52 +11,88 @@ namespace KVSCommon.Database
         {
         }
 
-        public DataClasses1DataContext(Guid logUserId)
+        public DataClasses1DataContext(int logUserId)
             : this()
         {
             this.LogUserId = logUserId;
         }
 
-        internal Guid? LogUserId
+        internal int? LogUserId
         {
             get;
             set;
         }
+                
+        /// <summary>
+        /// FÑŒgt dem Datenbankkontext einen Logeintrag hinzu.
+        /// </summary>
+        /// <param name="logText">Text fÑŒr den Logeintrag.</param>
+        /// <param name="type">Typ des Logeintrages.</param>
+        /// <param name="tableName">Tabellenname des betroffenen Datensatzes.</param>
+        public void WriteLogItem(string logText, LogTypes type, string tableName)
+        {
+            if (string.IsNullOrEmpty(tableName))
+            {
+                throw new Exception("Der Tabellenname darf nicht leer sein.");
+            }
+
+            //TODO
+            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, (int?)null, tableName, null, null));
+        }
+        
+        partial void OnCreated()
+        {
+            if (!this.LogUserId.HasValue)
+            {
+                if (HttpContext.Current != null)
+                {
+                    if (HttpContext.Current.Session["UserId"] != null)
+                    {
+                        int logUserId;
+                        if (Int32.TryParse(HttpContext.Current.Session["UserId"].ToString(), out logUserId))
+                        {
+                            this.LogUserId = logUserId;
+                        }
+                    }
+                }
+            }
+        }
 
         /// <summary>
-        /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
+        /// FÑŒgt dem Datenbankkontext einen Logeintrag hinzu.
         /// </summary>
-        /// <param name="logText">Text für den Logeintrag.</param>
+        /// <param name="logText">Text fÑŒr den Logeintrag.</param>
+        /// <param name="type">Typ des Logeintrages.</param>
+        public void WriteLogItem(string logText, LogTypes type)
+        {
+            //TODO
+            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, (int?)null, null, null, (int?)null));
+        }
+
+        /// <summary>
+        /// FÑŒgt dem Datenbankkontext einen Logeintrag hinzu.
+        /// </summary>
+        /// <param name="logText">Text fÑŒr den Logeintrag.</param>
         /// <param name="type">Typ des Logeintrages.</param>
         /// <param name="referenceId">Id des betroffenen Datensatzes.</param>
         /// <param name="tableName">Tabellenname des betroffenen Datensatzes.</param>
         /// <param name="propertyName">Name des betroffenen Feldes des Datensatzes.</param>
         /// <param name="childReferenceId">Id des untergeordneten Datensatzes.</param>
-        public void WriteLogItem(string logText, LogTypes type, Guid referenceId, string tableName, string propertyName, Guid childReferenceId)
+        public void WriteLogItem(string logText, LogTypes type, int referenceId, string tableName, string propertyName, int childReferenceId)
         {
             this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, propertyName, childReferenceId));
         }
-
+        
         /// <summary>
-        /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
+        /// FÑŒgt dem Datenbankkontext einen Logeintrag hinzu.
         /// </summary>
-        /// <param name="logText">Text für den Logeintrag.</param>
-        /// <param name="type">Typ des Logeintrages.</param>
-        public void WriteLogItem(string logText, LogTypes type)
-        {
-            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, null, null, null, null));
-        }
-
-        /// <summary>
-        /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
-        /// </summary>
-        /// <param name="logText">Text für den Logeintrag.</param>
+        /// <param name="logText">Text fÑŒr den Logeintrag.</param>
         /// <param name="type">Typ des Logeintrages.</param>
         /// <param name="referenceId">Id des betroffenen Datensatzes.</param>
         /// <param name="tableName">Tabellenname des betroffenen Datensatzes.</param>
-        public void WriteLogItem(string logText, LogTypes type, Guid referenceId, string tableName)
+        public void WriteLogItem(string logText, LogTypes type, int referenceId, string tableName)
         {
-            if (referenceId == Guid.Empty)
+            if (referenceId == 0)
             {
                 throw new Exception("Die ReferenceId darf nicht leer sein.");
             }
@@ -66,20 +102,20 @@ namespace KVSCommon.Database
                 throw new Exception("Der Tabellenname darf nicht leer sein.");
             }
 
-            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, null, null));
+            //TODO this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, null, null));
         }
 
         /// <summary>
-        /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
+        /// FÑŒgt dem Datenbankkontext einen Logeintrag hinzu.
         /// </summary>
-        /// <param name="logText">Text für den Logeintrag.</param>
+        /// <param name="logText">Text fÑŒr den Logeintrag.</param>
         /// <param name="type">Typ des Logeintrages.</param>
         /// <param name="referenceId">Id des betroffenen Datensatzes.</param>
         /// <param name="tableName">Tabellenname des betroffenen Datensatzes.</param>
         /// <param name="childReferenceId">Id des untergeordneten Datensatzes.</param>
-        public void WriteLogItem(string logText, LogTypes type, Guid referenceId, string tableName, Guid childReferenceId)
+        public void WriteLogItem(string logText, LogTypes type, int referenceId, string tableName, int childReferenceId)
         {
-            if (referenceId == Guid.Empty)
+            if (referenceId == 0)
             {
                 throw new Exception("Die ReferenceId darf nicht leer sein.");
             }
@@ -89,25 +125,25 @@ namespace KVSCommon.Database
                 throw new Exception("Der Tabellenname darf nicht leer sein.");
             }
 
-            if (childReferenceId == Guid.Empty)
+            if (childReferenceId == 0)
             {
                 throw new Exception("Die ChildReferenceId darf nicht leer sein.");
             }
 
-            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, null, childReferenceId));
+            //TODO this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, null, childReferenceId));
         }
 
         /// <summary>
-        /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
+        /// FÑŒgt dem Datenbankkontext einen Logeintrag hinzu.
         /// </summary>
-        /// <param name="logText">Text für den Logeintrag.</param>
+        /// <param name="logText">Text fÑŒr den Logeintrag.</param>
         /// <param name="type">Typ des Logeintrages.</param>
         /// <param name="referenceId">Id des betroffenen Datensatzes.</param>
         /// <param name="tableName">Tabellenname des betroffenen Datensatzes.</param>
         /// <param name="propertyName">Name des betroffenen Feldes des Datensatzes.</param>
-        public void WriteLogItem(string logText, LogTypes type, Guid referenceId, string tableName, string propertyName)
+        public void WriteLogItem(string logText, LogTypes type, int referenceId, string tableName, string propertyName)
         {
-            if (referenceId == Guid.Empty)
+            if (referenceId == 0)
             {
                 throw new Exception("Die ReferenceId darf nicht leer sein.");
             }
@@ -122,25 +158,9 @@ namespace KVSCommon.Database
                 throw new Exception("Der Feldname darf nicht leer sein.");
             }
 
-            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, propertyName, null));
+            //TODO this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, propertyName, null));
         }
-
-        /// <summary>
-        /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
-        /// </summary>
-        /// <param name="logText">Text für den Logeintrag.</param>
-        /// <param name="type">Typ des Logeintrages.</param>
-        /// <param name="tableName">Tabellenname des betroffenen Datensatzes.</param>
-        public void WriteLogItem(string logText, LogTypes type, string tableName)
-        {
-            if (string.IsNullOrEmpty(tableName))
-            {
-                throw new Exception("Der Tabellenname darf nicht leer sein.");
-            }
-
-            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, null, tableName, null, null));
-        }
-
+        
         /// <summary>
         /// Erstellt einen neuen Logeintrag.
         /// </summary>
@@ -151,7 +171,7 @@ namespace KVSCommon.Database
         /// <param name="propertyName">Name des betroffenen Properties.</param>
         /// <param name="childReferenceId">Id des betroffenen untergeordneten Datensatzes.</param>
         /// <returns>Den Logeintrag.</returns>
-        internal Systemlog GetLogItem(string logText, LogTypes type, Guid? referenceId, string tableName, string propertyName, Guid? childReferenceId)
+        internal Systemlog GetLogItem(string logText, LogTypes type, int? referenceId, string tableName, string propertyName, int? childReferenceId)
         {
             if (this.LogUserId.HasValue == false)
             {
@@ -171,27 +191,9 @@ namespace KVSCommon.Database
                 LogTypeId = (int)type,
                 TableName = tableName,
                 TableProperty = propertyName,
-                ReferenceId = referenceId,
-                ChildReferenceId = childReferenceId
+                //TODO ReferenceId = referenceId,
+                //ChildReferenceId = childReferenceId
             };
-        }
-
-        partial void OnCreated()
-        {
-            if (!this.LogUserId.HasValue)
-            {
-                if (HttpContext.Current != null)
-                {
-                    if (HttpContext.Current.Session["UserId"] != null)
-                    {
-                        Guid logUserId;
-                        if (Guid.TryParse(HttpContext.Current.Session["UserId"].ToString(), out logUserId))
-                        {
-                            this.LogUserId = logUserId;
-                        }
-                    }
-                }
-            }
         }
     }
 }

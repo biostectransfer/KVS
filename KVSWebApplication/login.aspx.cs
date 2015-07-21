@@ -16,7 +16,7 @@ namespace KVSWebApplication
     /// <summary>
     /// Codebehind fuer die Login/Logout Maske
     /// </summary>
-    public partial class login: System.Web.UI.Page
+    public partial class login : System.Web.UI.Page
     {
         private void KillSession()
         {
@@ -35,55 +35,44 @@ namespace KVSWebApplication
             FormsAuthentication.SignOut();
         }
         protected void Page_Load(object sender, EventArgs e)
-       {
-           if (Request["logout"] != null)
-           {
-               Session["CurrentUserId"] = "";
-               Session["CurrentUserName"] = "";
-               KillSession();
-           }
-           if (Session["CurrentUserId"] == null || Session["CurrentUserId"].ToString() == "")
-           {
-               Session["CurrentUserId"] = "";
-               Session["CurrentUserName"] = "";
-               SetMenuItems(false); 
-               //if (FormsAuthentication.Authenticate("", ""))
-               //{
-               //    FormsAuthentication.RedirectFromLoginPage("", false);
-               //}
-           }
-           else
-           {
-               if (Session["CurrentUserId"] is Guid)
-               {
-                   if (new Guid(Session["CurrentUserId"].ToString()) != Guid.Empty)
-                   {
-                       if (FormsAuthentication.Authenticate("newdirectionAdmin", "CaseDirectory"))
-                       {
-                           FormsAuthentication.RedirectFromLoginPage("newdirectionAdmin", true);
-                       }
-                       SetMenuItems(true);
-                       RadAjaxPanel1.Redirect("Search/search.aspx");
-                   }
-               }
-           }         
-        }
-         protected void OnLoggedIn(object sender, EventArgs e)
         {
-            if (Session["CurrentUserId"] is Guid)
+            if (Request["logout"] != null)
             {
-                if (((Guid)Session["CurrentUserId"]) != Guid.Empty)
+                Session["CurrentUserId"] = "";
+                Session["CurrentUserName"] = "";
+                KillSession();
+            }
+            if (Session["CurrentUserId"] == null || String.IsNullOrEmpty(Session["CurrentUserId"].ToString()))
+            {
+                Session["CurrentUserId"] = "";
+                Session["CurrentUserName"] = "";
+                SetMenuItems(false);
+            }
+            else
+            {
+                if (FormsAuthentication.Authenticate("newdirectionAdmin", "CaseDirectory"))
                 {
-                    SetMenuItems(true);
-                    Response.Redirect("Search/search.aspx");
+                    FormsAuthentication.RedirectFromLoginPage("newdirectionAdmin", true);
                 }
-                else
-                {
-                    SetMenuItems(false);
-                    RadAjaxPanel1.Redirect(Request.RawUrl);
-                }
+                SetMenuItems(true);
+                RadAjaxPanel1.Redirect("Search/search.aspx");
             }
         }
+
+        protected void OnLoggedIn(object sender, EventArgs e)
+        {
+            if (Session["CurrentUserId"] == null || String.IsNullOrEmpty(Session["CurrentUserId"].ToString()))
+            {
+                SetMenuItems(true);
+                Response.Redirect("Search/search.aspx");
+            }
+            else
+            {
+                SetMenuItems(false);
+                RadAjaxPanel1.Redirect(Request.RawUrl);
+            }
+        }
+
         protected void OnAuthenticate(object sender, AuthenticateEventArgs e)
         {
             bool Authenticated = false;
@@ -91,29 +80,29 @@ namespace KVSWebApplication
             {
                 using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
                 {
-                    Guid myId = KVSCommon.Database.User.Logon((Login2.FindControl("UserName") as TextBox).Text, (Login2.FindControl("Password") as TextBox).Text);
+                    var myId = KVSCommon.Database.User.Logon((Login2.FindControl("UserName") as TextBox).Text, (Login2.FindControl("Password") as TextBox).Text);
                     Session["CurrentUserId"] = myId;
                     Session["CurrentUserName"] = KVSCommon.Database.User.GetUserNamebyId(myId);
-             
+
                 }
                 Authenticated = true;
             }
             catch (Exception ex)
             {
-                StreamWriter myFile = new StreamWriter(@ConfigurationManager.AppSettings["LogFilePath"]+"loginError.txt", true);
+                StreamWriter myFile = new StreamWriter(@ConfigurationManager.AppSettings["LogFilePath"] + "loginError.txt", true);
                 myFile.Write(ex.Message);
                 myFile.Close();
                 Authenticated = false;
             }
-            e.Authenticated = Authenticated;        
+            e.Authenticated = Authenticated;
         }
-        private  void SetMenuItems(bool value)
+        private void SetMenuItems(bool value)
         {
             RadMenu myMene = (RadMenu)Master.FindControl("RadMenu1");
             HtmlGenericControl myLeftDiv = (HtmlGenericControl)Master.FindControl("leftcolumn");
             myLeftDiv.Visible = value;
             myMene.Enabled = value;
             myMene.Visible = value;
-        }      
+        }
     }
 }

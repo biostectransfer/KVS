@@ -78,7 +78,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 GridDataItem item = e.Item as GridDataItem;          
                 item.Selected = true;
                 itemIndexHiddenField.Value = item.ItemIndex.ToString();
-                Guid myListId = new Guid(item["listId"].Text);
+                var myListId = Int32.Parse(item["listId"].Text);
                 DataClasses1DataContext dbContext = new DataClasses1DataContext();
                 var myVerbringung = dbContext.PackingList.SingleOrDefault(q => q.Id == myListId);
                 if (myVerbringung.IsSelfDispatch == true)
@@ -93,9 +93,9 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         }
         protected void OrdersDetailedTabel_DetailTable(object source, GridDetailTableDataBindEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            GridDataItem _item = (GridDataItem)e.DetailTableView.ParentItem;
-            Guid listId = new Guid(_item["listId"].Text.ToString());
+            var dbContext = new DataClasses1DataContext();
+            var _item = (GridDataItem)e.DetailTableView.ParentItem;
+            var listId = Int32.Parse(_item["listId"].Text);
             var orderQuery = from ord in dbContext.Order
                              where ord.PackingListId == listId && ord.Status == 600 && ord.HasError.GetValueOrDefault(false) != true
                              select new
@@ -112,22 +112,22 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                  OrderType = ord.OrderType.Name,
                                  OrderError = ord.HasError == true ? "Ja" : "Nein"
                              };
-            GridDataItem item = (GridDataItem)e.DetailTableView.ParentItem;
-            GridNestedViewItem nestedItem = (GridNestedViewItem)item.ChildItem;
-            RadGrid radGrdEnquiriesVarients = (RadGrid)nestedItem.FindControl("RadGridVersandDetails");
+            var item = (GridDataItem)e.DetailTableView.ParentItem;
+            var nestedItem = (GridNestedViewItem)item.ChildItem;
+            var radGrdEnquiriesVarients = (RadGrid)nestedItem.FindControl("RadGridVersandDetails");
             radGrdEnquiriesVarients.DataSource = orderQuery;
             radGrdEnquiriesVarients.DataBind();
         }
         protected void OrdersDetailedTabel_DetailTableDataBind(object source, GridNeedDataSourceEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            RadGrid sender = source as RadGrid;
-            Panel item = sender.Parent as Panel;
+            var dbContext = new DataClasses1DataContext();
+            var sender = source as RadGrid;
+            var item = sender.Parent as Panel;
             // GridDataItem item = (GridDataItem)e.DetailTableView.ParentItem;
-            TextBox mylistId = item.FindControl("listIdBox") as TextBox;
+            var mylistId = item.FindControl("listIdBox") as TextBox;
             if (!String.IsNullOrEmpty(mylistId.Text))
             {
-                Guid listId = new Guid(mylistId.Text);
+                var listId = Int32.Parse(mylistId.Text);
                 var orderQuery = from ord in dbContext.Order
                                  where ord.PackingListId == listId && ord.Status == 600 && ord.HasError.GetValueOrDefault(false) != true
                                  select new
@@ -157,15 +157,15 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         protected void DrueckenButton_Clicked(object sender, EventArgs e)
         {
             Button editButton = sender as Button;                    
-                MemoryStream ms = new MemoryStream();               
-                Panel item = editButton.Parent as Panel;
+                var ms = new MemoryStream();
+                var item = editButton.Parent as Panel;
                 (((GridNestedViewItem)(((GridTableCell)(item.Parent.Parent)).Parent))).ParentItem.Selected = true;
-                CheckBox isSelfDispathCheckBox = item.FindControl("isSelfDispathCheckBox") as CheckBox;
-                RadTextBox DispatchOrderNumberBox = item.FindControl("DispatchOrderNumberBox") as RadTextBox;
-                Label ErrorVersandGedrucktLabel = item.FindControl("ErrorVersandGedrucktLabel") as Label;
-                TextBox _listId = item.FindControl("listIdBox") as TextBox;
-                Guid listId = new Guid(_listId.Text);
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid( Session["CurrentUserId"].ToString()));
+                var isSelfDispathCheckBox = item.FindControl("isSelfDispathCheckBox") as CheckBox;
+                var DispatchOrderNumberBox = item.FindControl("DispatchOrderNumberBox") as RadTextBox;
+                var ErrorVersandGedrucktLabel = item.FindControl("ErrorVersandGedrucktLabel") as Label;
+                var _listId = item.FindControl("listIdBox") as TextBox;
+                var listId = Int32.Parse(_listId.Text);
+                var dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                 var packList = dbContext.PackingList.SingleOrDefault(q => q.Id == listId);
                 if (packList.IsPrinted == true)
                 {
@@ -262,7 +262,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         {
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                 try
                 {
                     Button btnsender = sender as Button;
@@ -271,9 +271,9 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     {
                         lblPackingListId = btnsender.Parent.FindControl("lbllistId") as Label;
                     }
-                    if (lblPackingListId != null && EmptyStringIfNull.IsGuid(lblPackingListId.Text))
+                    if (lblPackingListId != null && !String.IsNullOrEmpty(lblPackingListId.Text))
                     {
-                        Order.TryToRemovePackingListIdAndSetStateToRegistration(dbContext, new Guid(lblPackingListId.Text));
+                        Order.TryToRemovePackingListIdAndSetStateToRegistration(dbContext, Int32.Parse(lblPackingListId.Text));
                         ts.Complete();
                     }
                     else
@@ -290,7 +290,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     ErrorVersandLabel.Visible = true;
                     try
                     {
-                        dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("btnRemovePackingList_Click Error " + ex.Message, LogTypes.ERROR, "Order");
                         dbContext.SubmitChanges();
                     }

@@ -54,7 +54,7 @@ namespace KVSCommon.Database
         /// <param name="adressId">ID der Adresse</param>
         /// <param name="dbContext">DB Kontext</param>
         /// <returns>CarOwner</returns>
-        public static CarOwner CreateCarOwner(string name, string firstName, Guid? bankAccountId, Guid? contactId, Guid? adressId, DataClasses1DataContext dbContext)
+        public static CarOwner CreateCarOwner(string name, string firstName, BankAccount bankAccount, Contact contact, Adress adress, DataClasses1DataContext dbContext)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -63,12 +63,11 @@ namespace KVSCommon.Database
 
             CarOwner owner = new CarOwner()
             {
-                Id = Guid.NewGuid(),
                 Name = name,
                 FirstName = firstName,
-                BankAccountId = bankAccountId,
-                ContactId = contactId,
-                AdressId = adressId
+                BankAccount = bankAccount,
+                Contact = contact,
+                Adress = adress
             };
 
             dbContext.WriteLogItem("Halter " + name + " wurde angelegt.", LogTypes.INSERT, owner.Id, "CarOwner");
@@ -116,7 +115,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnAdressIdChanging(Guid? value)
+        partial void OnAdressIdChanging(int? value)
         {
             this.WriteUpdateLogItem("Adresse", this.AdressId, value);
         }
@@ -124,7 +123,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnBankAccountIdChanging(Guid? value)
+        partial void OnBankAccountIdChanging(int? value)
         {
             this.WriteUpdateLogItem("Bankverbindung", this.BankAccountId, value);
         }
@@ -132,7 +131,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnContactIdChanging(Guid? value)
+        partial void OnContactIdChanging(int? value)
         {
             this.WriteUpdateLogItem("Kontaktdaten", this.ContactId, value);
         }

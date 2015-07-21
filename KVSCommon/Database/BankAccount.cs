@@ -34,7 +34,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="adressId">Id der Bank.</param>
         /// <param name="dbContext"></param>
-        public static void DeleteBank(Guid bankId, DataClasses1DataContext dbContext)
+        public static void DeleteBank(int bankId, DataClasses1DataContext dbContext)
         {
             BankAccount bank = dbContext.BankAccount.SingleOrDefault(q => q.Id == bankId);
             if (bank != null)
@@ -61,7 +61,6 @@ namespace KVSCommon.Database
 
             var bankaccount = new BankAccount()
             {
-                Id = Guid.NewGuid(),
                 BankName = name,
                 BankCode = bankcode,
                 Accountnumber = accountnumber,

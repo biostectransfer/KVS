@@ -45,7 +45,7 @@ namespace KVSCommon.Database
         /// <param name="invoiceRecipientAdressId">Adresse des Rechnungsempfängers.</param>
         /// <param name="customerId">Id des Kunden.</param>
         /// <returns>Die neue Rechnung.</returns>
-        public static Invoice CreateInvoice(DataClasses1DataContext dbContext, Guid userId, string invoiceRecipient, Guid invoiceRecipientAdressId, Guid customerId, double? discount, string invTypeId)
+        public static Invoice CreateInvoice(DataClasses1DataContext dbContext, int userId, string invoiceRecipient, Adress invoiceRecipientAdress, int customerId, double? discount, string invTypeId)
         {
             //if (string.IsNullOrEmpty(invoiceRecipient))
             //{
@@ -55,41 +55,37 @@ namespace KVSCommon.Database
             decimal? helper = null;
             Invoice invoice = new Invoice()
             {
-                Id = Guid.NewGuid(),
                 CreateDate = DateTime.Now,
                 IsPrinted = false,
                 UserId = userId,
                 InvoiceRecipient = invoiceRecipient,
-                InvoiceRecipientAdressId = invoiceRecipientAdressId,
+                Adress = invoiceRecipientAdress,
                 CustomerId = customerId,
                 discount = ((discount.HasValue) ? decimal.Parse(discount.Value.ToString()) : helper),
-                InvoiceType = GetInvoiceTypeId( dbContext,invTypeId)
+                InvoiceType = GetInvoiceTypeId(dbContext, invTypeId)
             };
 
             dbContext.Invoice.InsertOnSubmit(invoice);
             dbContext.WriteLogItem("Rechnung wurde angelegt.", LogTypes.INSERT, invoice.Id, "Invoice");
             return invoice;
         }
-    /// <summary>
-    /// Gibt die Guid des Rechnungstyps zurück
-    /// </summary>
-    /// <param name="dbContext">Datenbank Kontext</param>
-    /// <param name="myWhere">Rechnungstyp</param>
-    /// <returns>Rechnungstyp ID</returns>
-        public static Guid? GetInvoiceTypeId(DataClasses1DataContext dbContext, string myWhere)
+        /// <summary>
+        /// Gibt die id des Rechnungstyps zurück
+        /// </summary>
+        /// <param name="dbContext">Datenbank Kontext</param>
+        /// <param name="myWhere">Rechnungstyp</param>
+        /// <returns>Rechnungstyp ID</returns>
+        public static int? GetInvoiceTypeId(DataClasses1DataContext dbContext, string myWhere)
         {
-            Guid? type=null;
-                
-           
-                var helperTypes = dbContext.InvoiceTypes.FirstOrDefault(q => q.InvoiceTypeName == myWhere);
-                if (helperTypes == null)
-                    return null;
-                else
-                    type = helperTypes.ID;
-             
-            
-            return type;  
+            int? type = null;
 
+            var helperTypes = dbContext.InvoiceTypes.FirstOrDefault(q => q.InvoiceTypeName == myWhere);
+            if (helperTypes == null)
+                return null;
+            else
+                type = helperTypes.ID;
+
+            return type;
         }
 
         /// <summary>
@@ -99,7 +95,7 @@ namespace KVSCommon.Database
         /// <param name="locationId">Id des Standorts, falls vorhanden.</param>
         /// <param name="dbContext">Datenbankkontext für die Abfrage.</param>
         /// <returns>Die Rechnungsadresse.</returns>
-        public static Adress GetInitialInvoiceAdress(Guid customerId, Guid? locationId, DataClasses1DataContext dbContext)
+        public static Adress GetInitialInvoiceAdress(int customerId, int? locationId, DataClasses1DataContext dbContext)
         {
             var customer = dbContext.Customer.Single(q => q.Id == customerId);
             LargeCustomer largeCustomer = customer.LargeCustomer;
@@ -129,7 +125,7 @@ namespace KVSCommon.Database
         /// Gibt die Rechnungsversandadresse anhand der Kundendaten und des Standorts der Aufträge in der Rechnung zurück.
         /// </summary>
         /// <returns>Die Rechnungsversandadresse.</returns>
-        public static Adress GetInvoiceDispatchAdress(Guid customerId, Guid? locationId, DataClasses1DataContext dbContext)
+        public static Adress GetInvoiceDispatchAdress(int customerId, int? locationId, DataClasses1DataContext dbContext)
         {
             var customer = dbContext.Customer.Single(q => q.Id == customerId);
             LargeCustomer largeCustomer = customer.LargeCustomer;
@@ -162,35 +158,35 @@ namespace KVSCommon.Database
         /// <param name="smtpServer">SMTP</param>
         /// <param name="fromAddress">Absender</param>
         /// <param name="toAdresses">Empfaenger</param>
-        public static void SendByMail(DataClasses1DataContext dbContext,Guid invoiceId, string smtpServer, string fromAddress, List<string> toAdresses=null)
+        public static void SendByMail(DataClasses1DataContext dbContext, int invoiceId, string smtpServer, string fromAddress, List<string> toAdresses = null)
         {
-           
-                var invoice = dbContext.Invoice.Single(q => q.Id == invoiceId);
-                if (invoice.Document != null)
-                {
-                    MemoryStream ms = new MemoryStream();
-                    ms.Write(invoice.Document.Data.ToArray(), 0, invoice.Document.Data.Length);
-                    ms.Position = 0;
-                    Attachment att = new Attachment(ms, invoice.Document.FileName, "application/pdf");
-                    Guid? locationId = null;
-                   
-                    if (invoice.OrderInvoice.Any())
-                    {
-                        locationId = invoice.OrderInvoice.First().Order.LocationId;
-                    }
-                    if (toAdresses == null)
-                    {
-                        toAdresses = invoice.Customer.LargeCustomer.GetMailinglistAdresses(dbContext, locationId, "Rechnung");
-                    }
-                   var mailBody = dbContext.DocumentConfiguration.FirstOrDefault(q=>q.Id=="MAILBODY");
 
-                    KVSCommon.Utility.Email.SendMail(fromAddress, toAdresses, "Rechnung #" + invoice.InvoiceNumber.Number, ((mailBody!=null) ? mailBody.Text :"No Mailbody found"), new List<string>(), new List<string>(), smtpServer, new List<Attachment>() { att });
-                }
-                else
+            var invoice = dbContext.Invoice.Single(q => q.Id == invoiceId);
+            if (invoice.Document != null)
+            {
+                MemoryStream ms = new MemoryStream();
+                ms.Write(invoice.Document.Data.ToArray(), 0, invoice.Document.Data.Length);
+                ms.Position = 0;
+                Attachment att = new Attachment(ms, invoice.Document.FileName, "application/pdf");
+                int? locationId = null;
+
+                if (invoice.OrderInvoice.Any())
                 {
-                    throw new Exception("Zu der Rechnung ist kein Rechnungs-PDF gespeichert.");
+                    locationId = invoice.OrderInvoice.First().Order.LocationId;
                 }
-            
+                if (toAdresses == null)
+                {
+                    toAdresses = invoice.Customer.LargeCustomer.GetMailinglistAdresses(dbContext, locationId, "Rechnung");
+                }
+                var mailBody = dbContext.DocumentConfiguration.FirstOrDefault(q => q.Id == "MAILBODY");
+
+                KVSCommon.Utility.Email.SendMail(fromAddress, toAdresses, "Rechnung #" + invoice.InvoiceNumber.Number, ((mailBody != null) ? mailBody.Text : "No Mailbody found"), new List<string>(), new List<string>(), smtpServer, new List<Attachment>() { att });
+            }
+            else
+            {
+                throw new Exception("Zu der Rechnung ist kein Rechnungs-PDF gespeichert.");
+            }
+
         }
 
         /// <summary>
@@ -203,7 +199,7 @@ namespace KVSCommon.Database
         /// <param name="costCenterId">Id der Kostenstelle, falls benötigt.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Die neue Rechnungsposition.</returns>
-        public InvoiceItem AddInvoiceItem(string name, decimal amount, int count, Guid? orderItemId, Guid? costCenterId, DataClasses1DataContext dbContext)
+        public InvoiceItem AddInvoiceItem(string name, decimal amount, int count, OrderItem orderItem, CostCenter costCenter, DataClasses1DataContext dbContext)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -218,19 +214,17 @@ namespace KVSCommon.Database
             Customer customer = dbContext.Customer.Single(q => q.Id == this.CustomerId);
             InvoiceItem item = new InvoiceItem()
             {
-                Id = Guid.NewGuid(),
                 Amount = amount,
                 Count = count,
                 Name = name,
-                OrderItemId = orderItemId,
-                CostcenterId = costCenterId
+                OrderItem = orderItem,
+                CostCenter = costCenter
             };
 
             this.InvoiceItem.Add(item);
             dbContext.WriteLogItem("Rechnungsposition " + name + " zur Rechnung hinzugefügt.", LogTypes.INSERT, this.Id, "InvoiceItem", item.Id);
-            if (orderItemId.HasValue)
+            if (orderItem != null)
             {
-                var orderItem = dbContext.OrderItem.Single(q => q.Id == orderItemId);
                 if (orderItem.Status == (int)OrderItemState.Abgerechnet)
                 {
                     throw new Exception("Die Auftragsposition ist bereits abgerechnet.");
@@ -260,10 +254,10 @@ namespace KVSCommon.Database
 
                 orderItem.LogDBContext = dbContext;
                 orderItem.Status = (int)OrderItemState.Abgerechnet;
-                var order = dbContext.OrderItem.Where(q => q.Id == orderItemId.Value).Single().Order;
+                var order = orderItem.Order;
                 if (!dbContext.OrderInvoice.Any(q => q.OrderId == order.Id && q.InvoiceId == this.Id))
                 {
-                    Database.OrderInvoice.CreateOrderInvoice(order.Id, this.Id, dbContext);
+                    Database.OrderInvoice.CreateOrderInvoice(order, this, dbContext);
                 }
             }
             else
@@ -324,7 +318,7 @@ namespace KVSCommon.Database
         /// <param name="ms">MemoryStream, in den das PDF geschrieben wird.</param>
         /// <param name="logoFilePath">Dateipfad zum Logo für das PDF.</param>
         ///  <param name="defaultAccountNumber">Das Standard definierte Konto</param>
-        public void Print(DataClasses1DataContext dbContext, MemoryStream ms, string logoFilePath, bool defaultAccountNumber=true)
+        public void Print(DataClasses1DataContext dbContext, MemoryStream ms, string logoFilePath, bool defaultAccountNumber = true)
         {
             if (this.IsPrinted)
             {
@@ -343,21 +337,20 @@ namespace KVSCommon.Database
                 dbContext.InvoiceNumber.InsertOnSubmit(num);
                 dbContext.SubmitChanges();
                 this.InvoiceNumber = num;
-               
+
             }
 
             InvoicePDF pdf = new InvoicePDF(dbContext, this, logoFilePath);
             pdf.WritePDF(ms);
             Document doc = new Document()
             {
-                Id = Guid.NewGuid(),
                 Data = ms.ToArray(),
                 DocumentType = dbContext.DocumentType.Where(q => q.Name == "Rechnung").Single(),
                 FileName = "Rechnung_" + num.Number.ToString() + ".pdf",
                 MimeType = "application/pdf"
             };
 
-            this.DocumentId = doc.Id;
+            this.Document = doc;
             dbContext.Document.InsertOnSubmit(doc);
             dbContext.WriteLogItem("Rechnung " + num.Number.ToString() + " wurde gedruckt.", LogTypes.UPDATE, this.Id, "Invoice", doc.Id);
             this.IsPrinted = true;
@@ -367,18 +360,6 @@ namespace KVSCommon.Database
             {
                 InvoiceItemAccountItem.UpdateAuthorativeAccounts(dbContext, this, Convert.ToString(ConfigurationManager.AppSettings["DefaultAccountNumber"]));
             }
-
-
-            //if (this.Customer.LargeCustomer != null && this.Customer.LargeCustomer.SendInvoiceByEmail)
-            //{
-            //    Guid? locationId = null;
-            //    if (this.OrderInvoice.Any())
-            //    {
-            //        locationId = this.OrderInvoice.First().Order.LocationId;
-            //    }
-
-            //    var emails = this.Customer.LargeCustomer.GetMailinglistAdresses(dbContext,locationId, "Rechnung");
-            //}
         }
 
         /// <summary>
@@ -420,18 +401,18 @@ namespace KVSCommon.Database
         {
             get
             {
-                
+
                 var query = this.InvoiceItem.Where(q => q.OrderItem == null || q.OrderItem.IsAuthorativeCharge == false).Where(q => q.VAT > 0);
                 decimal? discount = null;
                 if (this.InvoiceItem.FirstOrDefault() != null)
                 {
-                      discount = this.InvoiceItem.FirstOrDefault().Invoice.discount;
+                    discount = this.InvoiceItem.FirstOrDefault().Invoice.discount;
                 }
                 if (query.Count() > 0)
                 {
                     if (discount.HasValue && discount.Value != 0)
                     {
-                        return query.Sum(q => q.Amount * q.Count) * ((100 - discount.Value)/100);
+                        return query.Sum(q => q.Amount * q.Count) * ((100 - discount.Value) / 100);
                     }
                     else
                     {
@@ -521,20 +502,20 @@ namespace KVSCommon.Database
         /// <param name="customerId">Kundenid</param>
         /// <param name="userId">Benutzerid</param>
         /// <returns>Rechnungstext</returns>
-        public static string GetDefaultInvoiceText(DataClasses1DataContext dbContext , Guid customerId, Guid userId)
+        public static string GetDefaultInvoiceText(DataClasses1DataContext dbContext, int customerId, int userId)
         {
-           
-                Customer customer = dbContext.Customer.Single(q => q.Id == customerId);
-                //User user = dbContext.User.Single(q => q.Id == userId);
-                string defaultText = dbContext.DocumentConfiguration.Where(q => q.Id == "INVOICE_TEXT").Select(q => q.Text).SingleOrDefault();
-                if (!string.IsNullOrEmpty(defaultText))
-                {
-                    //return string.Format(defaultText, DateTime.Now.AddDays(customer.TermOfCredit.GetValueOrDefault(30)).ToShortDateString(), user.Person.FullName);
-                    return string.Format(defaultText, DateTime.Now.AddDays(customer.TermOfCredit.GetValueOrDefault(30)).ToShortDateString());
-                }
 
-                return string.Empty;
-            
+            Customer customer = dbContext.Customer.Single(q => q.Id == customerId);
+            //User user = dbContext.User.Single(q => q.Id == userId);
+            string defaultText = dbContext.DocumentConfiguration.Where(q => q.Id == "INVOICE_TEXT").Select(q => q.Text).SingleOrDefault();
+            if (!string.IsNullOrEmpty(defaultText))
+            {
+                //return string.Format(defaultText, DateTime.Now.AddDays(customer.TermOfCredit.GetValueOrDefault(30)).ToShortDateString(), user.Person.FullName);
+                return string.Format(defaultText, DateTime.Now.AddDays(customer.TermOfCredit.GetValueOrDefault(30)).ToShortDateString());
+            }
+
+            return string.Empty;
+
         }
         /// <summary>
         /// Aenderungsevents für die Historie
@@ -591,7 +572,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnCustomerIdChanging(Guid value)
+        partial void OnCustomerIdChanging(int value)
         {
             if (this.EntityState != Database.EntityState.New)
             {
@@ -610,7 +591,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnInvoiceTypeChanging(Guid? value)
+        partial void OnInvoiceTypeChanging(int? value)
         {
             this.WriteUpdateLogItem("Rechnungstype", this.InvoiceType, value);
         }

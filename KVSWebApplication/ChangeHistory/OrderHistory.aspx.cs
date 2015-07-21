@@ -29,7 +29,7 @@ namespace KVSWebApplication.ChangeHistory
         List<string> thisUserPermissions = new List<string>();
         protected void Page_Load(object sender, EventArgs e)
         {
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (!thisUserPermissions.Contains("CHANGELOG"))
             {
                 Response.Redirect("../AccessDenied.aspx");
@@ -44,7 +44,7 @@ namespace KVSWebApplication.ChangeHistory
                           let allStates = con.OrderStatus
                           let myOrder = con.Order
                           let myOrderItem=con.OrderItem
-                          let Ref = (!chang.ReferenceId.HasValue)?Guid.Empty: chang.ReferenceId.Value
+                          let Ref = (!chang.ReferenceId.HasValue)? (int?)null : chang.ReferenceId.Value
                           where chang.TableName == "Order" || chang.TableName == "OrderItem"
                           select new OrderLogging
                           {
@@ -55,7 +55,7 @@ namespace KVSWebApplication.ChangeHistory
                               Login = chang.Login,
                               Type= tableName=="Order" ? "Auftrag":"Auftragsposition",
                               Date = chang.Date,
-                              ReferenceId = (!chang.ReferenceId.HasValue)?Guid.Empty: chang.ReferenceId.Value,
+                              ReferenceId = (!chang.ReferenceId.HasValue)? (int?)null : chang.ReferenceId.Value,
                               TranslatedText = TranslatedText(status,chang.Text, allStates),
                               OrderNumber = tableName == "Order" ? myOrder.FirstOrDefault(q => q.Id == Ref).Ordernumber : myOrderItem.FirstOrDefault(q => q.Id == Ref).Order.Ordernumber
                           };

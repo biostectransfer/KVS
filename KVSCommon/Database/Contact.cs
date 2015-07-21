@@ -42,7 +42,6 @@ namespace KVSCommon.Database
         {
             Contact contact = new Contact()
             {
-                Id = Guid.NewGuid(),
                 Phone = phone,
                 Fax = fax,
                 MobilePhone = mobilePhone,
@@ -58,7 +57,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="adressId">Id des Kontakts.</param>
         /// <param name="dbContext"></param>
-        public static void DeleteContact(Guid contactId, DataClasses1DataContext dbContext)
+        public static void DeleteContact(int contactId, DataClasses1DataContext dbContext)
         {
             Contact contact = dbContext.Contact.SingleOrDefault(q => q.Id == contactId);
             if (contact != null)

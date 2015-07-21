@@ -49,7 +49,7 @@ namespace KVSWebApplication.ImportExport
                 + "001                                    ";
             completeByteString += myBeginText;
             completeByteString += firstY;
-            var selectedInvoiceId = Guid.Empty;
+            var selectedInvoiceId = 0;
             foreach (VirtualInvoice inv in invs)
             {
                 if (selectedInvoiceId != inv.Invoice.Id)

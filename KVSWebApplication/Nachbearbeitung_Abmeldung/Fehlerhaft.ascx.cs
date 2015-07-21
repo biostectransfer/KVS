@@ -26,7 +26,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             if (Session["CustomerIndex"] != null)
             {
                 if (!target.Contains("RadComboBoxCustomerZulassungsstelle") && !target.Contains("CustomerDropDownListZulassungsstelle") && !target.Contains("NewPositionZulButton") && !target.Contains("StornierenButton"))
-                {                    
+                {
                     CustomerDropDownList.DataBind();
                     if (Session["CustomerId"] != null)
                     {
@@ -37,13 +37,13 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                 CustomerDropDownList.SelectedValue = Session["CustomerId"].ToString();
                                 RadComboBoxCustomer.SelectedValue = Session["CustomerIndex"].ToString();
                             }
-                               }
+                        }
                         RadGridFehlerhaft.Enabled = true;
                         if (target.Contains("OffenNeuzulassung") || target.Contains("RadTabStripNeuzulassung") || target.Contains("IamFromSearch"))
                             RadGridFehlerhaft.DataBind();
                     }
                 }
-            } 
+            }
         }
         protected void clearButton_Click(object sender, EventArgs e)
         {
@@ -63,7 +63,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          join derord in con.DeregistrationOrder on ord.Id equals derord.OrderId
                                          join reg in con.Registration on derord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on derord.VehicleId equals veh.Id
-                                         where  ordtype.Name == "Abmeldung" && ord.HasError.GetValueOrDefault(false) != false
+                                         where ordtype.Name == "Abmeldung" && ord.HasError.GetValueOrDefault(false) != false
                                          select new
                                          {
                                              OrderId = ord.Id,
@@ -102,14 +102,14 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          };
                 if (CustomerDropDownList.SelectedValue != null && CustomerDropDownList.SelectedValue != string.Empty)
                 {
-                    smallCustomerQuery = smallCustomerQuery.Where(q => q.CustomerId == new Guid(CustomerDropDownList.SelectedValue));
+                    smallCustomerQuery = smallCustomerQuery.Where(q => q.CustomerId == Int32.Parse(CustomerDropDownList.SelectedValue));
                 }
                 e.Result = smallCustomerQuery;
             }
             //select all values for large customers
             else if (RadComboBoxCustomer.SelectedValue == "2")
             {
-                DataClasses1DataContext con = new DataClasses1DataContext();    
+                DataClasses1DataContext con = new DataClasses1DataContext();
                 var largeCustomerQuery = from ord in con.Order
                                          join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                          join cust in con.Customer on ord.CustomerId equals cust.Id
@@ -118,7 +118,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          join derord in con.DeregistrationOrder on ord.Id equals derord.OrderId
                                          join reg in con.Registration on derord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on derord.VehicleId equals veh.Id
-                                         where  ord.HasError.GetValueOrDefault(false) != false && ordtype.Name == "Abmeldung"
+                                         where ord.HasError.GetValueOrDefault(false) != false && ordtype.Name == "Abmeldung"
                                          select new
                                          {
                                              OrderId = ord.Id,
@@ -157,7 +157,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          };
                 if (CustomerDropDownList.SelectedValue != null && CustomerDropDownList.SelectedValue != string.Empty)
                 {
-                    largeCustomerQuery = largeCustomerQuery.Where(q => q.CustomerId == new Guid(CustomerDropDownList.SelectedValue));
+                    largeCustomerQuery = largeCustomerQuery.Where(q => q.CustomerId == Int32.Parse(CustomerDropDownList.SelectedValue));
                 }
                 if (Session["orderNumberSearch"] != null)
                 {
@@ -210,60 +210,60 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         {
             string begruendung = string.Empty;
             string newStatus = string.Empty;
-            Guid? locationId = null;
+            int? locationId = null;
             //vorbereitung für update
-                Button editButton = sender as Button;
-                GridEditFormItem item = editButton.NamingContainer as GridEditFormItem;
+            var editButton = sender as Button;
+            var item = editButton.NamingContainer as GridEditFormItem;
 
-                Guid orderId = new Guid(item.SavedOldValues["OrderId"].ToString());
-                if (RadComboBoxCustomer.SelectedValue == "2")
-                {
-                    locationId = new Guid(item.SavedOldValues["locationId"].ToString());
-                }              
-                RadTextBox VINBox = item.FindControl("VINBox") as RadTextBox;
-                RadTextBox VariantBox = item.FindControl("VariantBox") as RadTextBox;
-                RadTextBox LicenceBox = item.FindControl("LicenceBox") as RadTextBox;
-                RadTextBox PrevLicenceBox = item.FindControl("PreviousLicenceBox") as RadTextBox;
-                RadDatePicker InspectionDatePicker = item.FindControl("InspectionDatePicker") as RadDatePicker;
-                RadTextBox TSNBox = item.FindControl("TSNBox") as RadTextBox;
-                RadTextBox HSNBox = item.FindControl("HSNBox") as RadTextBox;
-                RadTextBox InsuranceBox = item.FindControl("InsuranceBox") as RadTextBox;
-                RadTextBox OwnerNameBox = item.FindControl("OwnerNameBox") as RadTextBox;
-                RadTextBox OwnerStreetBox = item.FindControl("OwnerStreetBox") as RadTextBox;
-                RadTextBox OwnerFirstNameBox = item.FindControl("OwnerFirstNameBox") as RadTextBox;
-                RadTextBox OwnerStreetNumberBox = item.FindControl("OwnerStreetNubmerBox") as RadTextBox;
-                RadTextBox OwnerZipCodeBox = item.FindControl("OwnerZipCodeBox") as RadTextBox;
-                RadTextBox OwnerCityBox = item.FindControl("OwnerCityBox") as RadTextBox;
-                RadTextBox OwnerCountryBox = item.FindControl("OwnerCountryBox") as RadTextBox;
-                RadTextBox OwnerPhoneBox = item.FindControl("OwnerPhoneBox") as RadTextBox;
-                RadTextBox OwnerFaxBox = item.FindControl("OwnerFaxBox") as RadTextBox;
-                RadTextBox OwnerMobilePhoneBox = item.FindControl("OwnerMobilePhoneBox") as RadTextBox;
-                RadTextBox OwnerEmailBox = item.FindControl("OwnerEmailBox") as RadTextBox;
-                RadTextBox BankNameBox = item.FindControl("BankNameBox") as RadTextBox;
-                RadTextBox AccountNumberBox = item.FindControl("AccountNumberBox") as RadTextBox;
-                RadTextBox BankCodeBox = item.FindControl("BankCodeBox") as RadTextBox;
-                RadTextBox FreiTextBox = item.FindControl("Freitext") as RadTextBox;            
-                UpdateTheWorld(orderId, locationId, VINBox.Text, VariantBox.Text, LicenceBox.Text, PrevLicenceBox.Text, InspectionDatePicker.SelectedDate,
-                    TSNBox.Text, HSNBox.Text, InsuranceBox.Text, OwnerNameBox.Text, OwnerStreetBox.Text, OwnerFirstNameBox.Text, OwnerStreetNumberBox.Text,
-                    OwnerZipCodeBox.Text, OwnerCityBox.Text, OwnerCountryBox.Text, OwnerPhoneBox.Text, OwnerFaxBox.Text, OwnerMobilePhoneBox.Text, OwnerEmailBox.Text,
-                    BankNameBox.Text, AccountNumberBox.Text, BankCodeBox.Text, FreiTextBox.Text);
-                if (Session["orderNumberSearch"] != null)
-                    Session["orderNumberSearch"] = string.Empty; //after search should be empty
-                RadGridFehlerhaft.MasterTableView.ClearEditItems();
-                RadGridFehlerhaft.MasterTableView.ClearChildEditItems();
-                RadGridFehlerhaft.MasterTableView.ClearSelectedItems();
-                RadGridFehlerhaft.Rebind();
+            var orderId = Int32.Parse(item.SavedOldValues["OrderId"].ToString());
+            if (RadComboBoxCustomer.SelectedValue == "2")
+            {
+                locationId = Int32.Parse(item.SavedOldValues["locationId"].ToString());
+            }
+            var VINBox = item.FindControl("VINBox") as RadTextBox;
+            var VariantBox = item.FindControl("VariantBox") as RadTextBox;
+            var LicenceBox = item.FindControl("LicenceBox") as RadTextBox;
+            var PrevLicenceBox = item.FindControl("PreviousLicenceBox") as RadTextBox;
+            var InspectionDatePicker = item.FindControl("InspectionDatePicker") as RadDatePicker;
+            var TSNBox = item.FindControl("TSNBox") as RadTextBox;
+            var HSNBox = item.FindControl("HSNBox") as RadTextBox;
+            var InsuranceBox = item.FindControl("InsuranceBox") as RadTextBox;
+            var OwnerNameBox = item.FindControl("OwnerNameBox") as RadTextBox;
+            var OwnerStreetBox = item.FindControl("OwnerStreetBox") as RadTextBox;
+            var OwnerFirstNameBox = item.FindControl("OwnerFirstNameBox") as RadTextBox;
+            var OwnerStreetNumberBox = item.FindControl("OwnerStreetNubmerBox") as RadTextBox;
+            var OwnerZipCodeBox = item.FindControl("OwnerZipCodeBox") as RadTextBox;
+            var OwnerCityBox = item.FindControl("OwnerCityBox") as RadTextBox;
+            var OwnerCountryBox = item.FindControl("OwnerCountryBox") as RadTextBox;
+            var OwnerPhoneBox = item.FindControl("OwnerPhoneBox") as RadTextBox;
+            var OwnerFaxBox = item.FindControl("OwnerFaxBox") as RadTextBox;
+            var OwnerMobilePhoneBox = item.FindControl("OwnerMobilePhoneBox") as RadTextBox;
+            var OwnerEmailBox = item.FindControl("OwnerEmailBox") as RadTextBox;
+            var BankNameBox = item.FindControl("BankNameBox") as RadTextBox;
+            var AccountNumberBox = item.FindControl("AccountNumberBox") as RadTextBox;
+            var BankCodeBox = item.FindControl("BankCodeBox") as RadTextBox;
+            var FreiTextBox = item.FindControl("Freitext") as RadTextBox;
+            UpdateTheWorld(orderId, locationId, VINBox.Text, VariantBox.Text, LicenceBox.Text, PrevLicenceBox.Text, InspectionDatePicker.SelectedDate,
+                TSNBox.Text, HSNBox.Text, InsuranceBox.Text, OwnerNameBox.Text, OwnerStreetBox.Text, OwnerFirstNameBox.Text, OwnerStreetNumberBox.Text,
+                OwnerZipCodeBox.Text, OwnerCityBox.Text, OwnerCountryBox.Text, OwnerPhoneBox.Text, OwnerFaxBox.Text, OwnerMobilePhoneBox.Text, OwnerEmailBox.Text,
+                BankNameBox.Text, AccountNumberBox.Text, BankCodeBox.Text, FreiTextBox.Text);
+            if (Session["orderNumberSearch"] != null)
+                Session["orderNumberSearch"] = string.Empty; //after search should be empty
+            RadGridFehlerhaft.MasterTableView.ClearEditItems();
+            RadGridFehlerhaft.MasterTableView.ClearChildEditItems();
+            RadGridFehlerhaft.MasterTableView.ClearSelectedItems();
+            RadGridFehlerhaft.Rebind();
         }
         //Updating all values in Order
-        protected void UpdateTheWorld(Guid orderId, Guid? locationId, string vin, string variant, string kennzeichen, string prevkennzeichen,
+        protected void UpdateTheWorld(int orderId, int? locationId, string vin, string variant, string kennzeichen, string prevkennzeichen,
             DateTime? inspection, string tsn, string hsn, string insurance, string name, string street, string firstname, string streetnum,
             string zip, string city, string country, string phone, string fax, string mobile, string email, string bankname, string account, string bankcode, string freitext)
         {
-            try 
+            try
             {
                 FehlerhaftErrorMessage.Text = "";
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
-                Order orderToUpdate = null;               
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                Order orderToUpdate = null;
                 if (RadComboBoxCustomer.SelectedValue == "1")
                 {
                     orderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
@@ -273,7 +273,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     orderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId && q.LocationId == locationId);
                 }
                 if (orderToUpdate != null)
-                {                                
+                {
                     orderToUpdate.LogDBContext = dbContext;
                     orderToUpdate.DeregistrationOrder.LogDBContext = dbContext;
                     orderToUpdate.DeregistrationOrder.Vehicle.LogDBContext = dbContext;

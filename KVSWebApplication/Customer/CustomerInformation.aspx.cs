@@ -30,7 +30,7 @@ namespace KVSWebApplication.Customer
 
             if (!Page.IsPostBack)
             {
-                thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+                thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
                 if (thisUserPermissions.Contains("KUNDEN_ANLEGEN"))
                 {
                     AddTab("Kunden erstellen", "AddCustomer");

@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="test_fullservice" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=ND2009-DATA\SQLSERVER2005;Initial Catalog=test_fullservice;User ID=sa" SettingsObjectName="KVSCommon.Properties.Settings" SettingsPropertyName="test_fullserviceConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.BankAccount" Member="BankAccount">
     <Type Name="BankAccount">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int  NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="BankName" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="true" />
       <Column Name="Accountnumber" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="true" />
       <Column Name="BankCode" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="true" />
@@ -15,12 +14,12 @@
   </Table>
   <Table Name="dbo.CarOwner" Member="CarOwner">
     <Type Name="CarOwner">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="true" />
       <Column Name="Firstname" Member="FirstName" Storage="_Vorname" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="AdressId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="ContactId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="BankAccountId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="AdressId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="ContactId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="BankAccountId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Association Name="CarOwner_Registration" Member="Registration" ThisKey="Id" OtherKey="CarOwnerId" Type="Registration" />
       <Association Name="BankAccount_CarOwner" Member="BankAccount" ThisKey="BankAccountId" OtherKey="Id" Type="BankAccount" IsForeignKey="true" />
       <Association Name="Contact_CarOwner" Member="Contact" ThisKey="ContactId" OtherKey="Id" Type="Contact" IsForeignKey="true" />
@@ -29,7 +28,7 @@
   </Table>
   <Table Name="dbo.Contact" Member="Contact">
     <Type Name="Contact">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Phone" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="Fax" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="MobilePhone" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
@@ -42,9 +41,9 @@
   </Table>
   <Table Name="dbo.CostCenter" Member="CostCenter">
     <Type Name="CostCenter">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="CustomerId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="BankAccountId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CustomerId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="BankAccountId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="Name" Type="System.String" DbType="varchar(50)" CanBeNull="false" />
       <Column Name="CostcenterNumber" Type="System.String" DbType="varchar(20) not null" CanBeNull="false" />
       <Association Name="CostCenter_OrderItem" Member="OrderItem" ThisKey="Id" OtherKey="CostCenterId" Type="OrderItem" />
@@ -55,13 +54,13 @@
   </Table>
   <Table Name="dbo.Customer" Member="Customer">
     <Type Name="Customer">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="ContactId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="AdressId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ContactId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="AdressId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="VAT" Type="System.Decimal" DbType="decimal(4,2) not null" CanBeNull="false" />
-      <Column Name="InvoiceAdressId" Type="System.Guid" DbType="uniqueidentifier not null" CanBeNull="false" />
-      <Column Name="InvoiceDispatchAdressId" Type="System.Guid" DbType="uniqueidentifier not null" CanBeNull="false" />
+      <Column Name="InvoiceAdressId" Type="System.Int32" DbType="int not null" CanBeNull="false" />
+      <Column Name="InvoiceDispatchAdressId" Type="System.Int32" DbType="int not null" CanBeNull="false" />
       <Column Name="TermOfCredit" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="Debitornumber" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
       <Column Name="MatchCode" Type="System.String" DbType="varchar(100)" CanBeNull="true" />
@@ -82,9 +81,9 @@
   </Table>
   <Table Name="dbo.DeregistrationOrder" Member="DeregistrationOrder">
     <Type Name="DeregistrationOrder">
-      <Column Name="OrderId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="VehicleId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="RegistrationId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="OrderId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="VehicleId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="RegistrationId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Association Name="Registration_DeregistrationOrder" Member="Registration" ThisKey="RegistrationId" OtherKey="Id" Type="Registration" IsForeignKey="true" />
       <Association Name="Vehicle_DeregistrationOrder" Member="Vehicle" ThisKey="VehicleId" OtherKey="Id" Type="Vehicle" IsForeignKey="true" />
       <Association Name="Order_DeregistrationOrder" Member="Order" ThisKey="OrderId" OtherKey="Id" Type="Order" IsForeignKey="true" />
@@ -92,23 +91,21 @@
   </Table>
   <Table Name="dbo.Location" Member="Location">
     <Type Name="Location">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="CustomerId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="true" />
-      <Column Name="ContactId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="AdressId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="SuperLocationId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CustomerId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="true" />
+      <Column Name="ContactId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="AdressId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="SuperLocationId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="VAT" Type="System.Decimal" DbType="Decimal(4,2)" CanBeNull="true" />
-      <Column Name="InvoiceAdressId" Type="System.Guid" DbType="uniqueidentifier" CanBeNull="true" />
-      <Column Name="InvoiceDispatchAdressId" Type="System.Guid" DbType="uniqueidentifier" CanBeNull="true" />
+      <Column Name="InvoiceAdressId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="InvoiceDispatchAdressId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
-      <Association Name="Location_Location" Member="Location2" ThisKey="Id" OtherKey="SuperLocationId" Type="Location" />
       <Association Name="Location_Mailinglist" Member="Mailinglist" ThisKey="Id" OtherKey="LocationId" Type="Mailinglist" />
       <Association Name="Location_Order" Member="Order" ThisKey="Id" OtherKey="LocationId" Type="Order" />
       <Association Name="Location_Price" Member="Price" ThisKey="Id" OtherKey="LocationId" Type="Price" />
       <Association Name="Location_LargeCustomer" Member="LargeCustomer1" ThisKey="Id" OtherKey="MainLocationId" Type="LargeCustomer" />
       <Association Name="Location_LargeCustomer1" Member="LargeCustomer2" ThisKey="Id" OtherKey="MainLocationId" Type="LargeCustomer" />
       <Association Name="Contact_Location" Member="Contact" ThisKey="ContactId" OtherKey="Id" Type="Contact" IsForeignKey="true" />
-      <Association Name="Location_Location" Member="Location1" ThisKey="SuperLocationId" OtherKey="Id" Type="Location" IsForeignKey="true" />
       <Association Name="Adress_Location" Member="Adress" ThisKey="AdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
       <Association Name="Adress_Location1" Member="InvoiceAdress" ThisKey="InvoiceAdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
       <Association Name="Adress_Location2" Member="InvoiceDispatchAdress" ThisKey="InvoiceDispatchAdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
@@ -124,8 +121,8 @@
   </Table>
   <Table Name="dbo.OrderInvoice" Member="OrderInvoice">
     <Type Name="OrderInvoice">
-      <Column Name="OrderId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="InvoiceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="OrderId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="InvoiceId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Association Name="Invoice_OrderInvoice" Member="Invoice" ThisKey="InvoiceId" OtherKey="Id" Type="Invoice" IsForeignKey="true" />
       <Association Name="Order_OrderInvoice" Member="Order" ThisKey="OrderId" OtherKey="Id" Type="Order" IsForeignKey="true" />
     </Type>
@@ -139,7 +136,7 @@
   </Table>
   <Table Name="dbo.OrderType" Member="OrderType">
     <Type Name="OrderType">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
       <Association Name="OrderType_RequiredField" Member="RequiredField" ThisKey="Id" OtherKey="OrderTypeId" Type="RequiredField" />
       <Association Name="OrderType_Order" Member="Order" ThisKey="Id" OtherKey="OrderTypeId" Type="Order" />
@@ -148,7 +145,7 @@
   </Table>
   <Table Name="dbo.Permission" Member="Permission">
     <Type Name="Permission">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Description" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
       <Association Name="Permission_PermissionProfilePermission" Member="PermissionProfilePermission" ThisKey="Id" OtherKey="PermissionId" Type="PermissionProfilePermission" />
@@ -157,7 +154,7 @@
   </Table>
   <Table Name="dbo.PermissionProfile" Member="PermissionProfile">
     <Type Name="PermissionProfile">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Description" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
       <Association Name="PermissionProfile_PermissionProfilePermission" Member="PermissionProfilePermission" ThisKey="Id" OtherKey="PermissionProfileId" Type="PermissionProfilePermission" />
@@ -166,17 +163,17 @@
   </Table>
   <Table Name="dbo.PermissionProfilePermission" Member="PermissionProfilePermission">
     <Type Name="PermissionProfilePermission">
-      <Column Name="PermissionProfileId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="PermissionId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PermissionProfileId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PermissionId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Association Name="Permission_PermissionProfilePermission" Member="Permission" ThisKey="PermissionId" OtherKey="Id" Type="Permission" IsForeignKey="true" />
       <Association Name="PermissionProfile_PermissionProfilePermission" Member="PermissionProfile" ThisKey="PermissionProfileId" OtherKey="Id" Type="PermissionProfile" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.SmallCustomer" Member="SmallCustomer">
     <Type Name="SmallCustomer">
-      <Column Name="CustomerId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="PersonId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="BankAccountId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CustomerId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PersonId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="BankAccountId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Association Name="BankAccount_SmallCustomer" Member="BankAccount" ThisKey="BankAccountId" OtherKey="Id" Type="BankAccount" IsForeignKey="true" />
       <Association Name="Customer_SmallCustomer" Member="Customer" ThisKey="CustomerId" OtherKey="Id" Type="Customer" IsForeignKey="true" />
       <Association Name="Person_SmallCustomer" Member="Person" ThisKey="PersonId" OtherKey="Id" Type="Person" IsForeignKey="true" />
@@ -184,16 +181,16 @@
   </Table>
   <Table Name="dbo.UserPermission" Member="UserPermission">
     <Type Name="UserPermission">
-      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="PermissionId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PermissionId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Association Name="Permission_UserPermission" Member="Permission" ThisKey="PermissionId" OtherKey="Id" Type="Permission" IsForeignKey="true" />
       <Association Name="User_UserPermission" Member="User" ThisKey="UserId" OtherKey="Id" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.UserPermissionProfile" Member="UserPermissionProfile">
     <Type Name="UserPermissionProfile">
-      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="PermissionProfileId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PermissionProfileId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Association Name="PermissionProfile_UserPermissionProfile" Member="PermissionProfile" ThisKey="PermissionProfileId" OtherKey="Id" Type="PermissionProfile" IsForeignKey="true" />
       <Association Name="User_UserPermissionProfile" Member="User" ThisKey="UserId" OtherKey="Id" Type="User" IsForeignKey="true" />
     </Type>
@@ -202,11 +199,11 @@
     <Type Name="Systemlog">
       <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="LogUserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="LogUserId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="TableName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="TableProperty" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="ReferenceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="ChildReferenceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ReferenceId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="ChildReferenceId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="Text" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
       <Column Name="Exception" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
       <Column Name="LogTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
@@ -216,7 +213,7 @@
   </Table>
   <Table Name="dbo.Adress" Member="Adress">
     <Type Name="Adress">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Street" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="StreetNumber" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
       <Column Name="Zipcode" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
@@ -244,9 +241,9 @@
   </Table>
   <Table Name="dbo.[User]" Member="User">
     <Type Name="User">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="PersonId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="ContactId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PersonId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="ContactId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="Login" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Password" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Salt" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
@@ -263,21 +260,19 @@
   </Table>
   <Table Name="dbo.OrderItem" Member="OrderItem">
     <Type Name="OrderItem">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="OrderId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="ProductId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="OrderId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="ProductId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="ProductName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Amount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
       <Column Name="Count" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="CostCenterId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="SuperOrderItemId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CostCenterId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="SuperOrderItemId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="IsAuthorativeCharge" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="NeedsVAT" Type="System.Boolean" DbType="bit not null" CanBeNull="false" />
-      <Association Name="OrderItem_OrderItem" Member="OrderItem2" ThisKey="Id" OtherKey="SuperOrderItemId" Type="OrderItem" />
       <Association Name="OrderItem_InvoiceItem" Member="InvoiceItem" ThisKey="Id" OtherKey="OrderItemId" Type="InvoiceItem" />
       <Association Name="CostCenter_OrderItem" Member="CostCenter" ThisKey="CostCenterId" OtherKey="Id" Type="CostCenter" IsForeignKey="true" />
-      <Association Name="OrderItem_OrderItem" Member="OrderItem1" ThisKey="SuperOrderItemId" OtherKey="Id" Type="OrderItem" IsForeignKey="true" />
       <Association Name="OrderItemStatus_OrderItem" Member="OrderItemStatus" ThisKey="Status" OtherKey="Id" Type="OrderItemStatus" IsForeignKey="true" />
       <Association Name="Order_OrderItem" Member="Order" ThisKey="OrderId" OtherKey="Id" Type="Order" IsForeignKey="true" />
       <Association Name="Product_OrderItem" Member="Product" ThisKey="ProductId" OtherKey="Id" Type="Product" IsForeignKey="true" />
@@ -285,7 +280,7 @@
   </Table>
   <Table Name="dbo.RegistrationOrderType" Member="RegistrationOrderType">
     <Type Name="RegistrationOrderType">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="RegistrationOrderType_RegistrationOrder" Member="RegistrationOrder" ThisKey="Id" OtherKey="RegistrationOrderTypeId" Type="RegistrationOrder" />
       <Association Name="RegistrationOrderType_Product" Member="Product" ThisKey="Id" OtherKey="RegistrationOrderTypeId" Type="Product" />
@@ -293,15 +288,15 @@
   </Table>
   <Table Name="dbo.DocumentType" Member="DocumentType">
     <Type Name="DocumentType">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="DocumentType_Document" Member="Document" ThisKey="Id" OtherKey="DokumentTypeId" Type="Document" />
     </Type>
   </Table>
   <Table Name="dbo.Document" Member="Document">
     <Type Name="Document">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="DokumentTypeId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DokumentTypeId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="FileName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Data" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
       <Column Name="MimeType" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
@@ -312,11 +307,11 @@
   </Table>
   <Table Name="dbo.Mailinglist" Member="Mailinglist">
     <Type Name="Mailinglist">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="CustomerId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CustomerId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="Email" Type="System.String" DbType="VarChar(150) NOT NULL" CanBeNull="false" />
-      <Column Name="LocationId" Type="System.Guid" DbType="uniqueidentifier" CanBeNull="true" />
-      <Column Name="MailinglistTypeId" Type="System.Guid" DbType="uniqueidentifier not null" CanBeNull="false" />
+      <Column Name="LocationId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="MailinglistTypeId" Type="System.Int32" DbType="int not null" CanBeNull="false" />
       <Association Name="Location_Mailinglist" Member="Location" ThisKey="LocationId" OtherKey="Id" Type="Location" IsForeignKey="true" />
       <Association Name="MailinglistType_Mailinglist" Member="MailinglistType" ThisKey="MailinglistTypeId" OtherKey="Id" Type="MailinglistType" IsForeignKey="true" />
       <Association Name="LargeCustomer_Mailinglist" Member="LargeCustomer" ThisKey="CustomerId" OtherKey="CustomerId" Type="LargeCustomer" IsForeignKey="true" />
@@ -324,9 +319,9 @@
   </Table>
   <Table Name="dbo.Registration" Member="Registration">
     <Type Name="Registration">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="CarOwnerId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="VehicleId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CarOwnerId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="VehicleId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="Licencenumber" Type="System.String" DbType="VarChar(15) NOT NULL" CanBeNull="true" />
       <Column Name="GeneralInspectionDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="RegistrationDocumentNumber" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
@@ -342,12 +337,12 @@
   </Table>
   <Table Name="dbo.RegistrationOrder" Member="RegistrationOrder">
     <Type Name="RegistrationOrder">
-      <Column Name="OrderId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="VehicleId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="RegistrationId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="OrderId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="VehicleId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="RegistrationId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="Licencenumber" Type="System.String" DbType="VarChar(15) NOT NULL" CanBeNull="true" />
       <Column Name="PreviousLicencenumber" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
-      <Column Name="RegistrationOrderTypeId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="RegistrationOrderTypeId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="eVBNumber" Type="System.String" DbType="VarChar(7)" CanBeNull="true" />
       <Association Name="Registration_RegistrationOrder" Member="Registration" ThisKey="RegistrationId" OtherKey="Id" Type="Registration" IsForeignKey="true" />
       <Association Name="RegistrationOrderType_RegistrationOrder" Member="RegistrationOrderType" ThisKey="RegistrationOrderTypeId" OtherKey="Id" Type="RegistrationOrderType" IsForeignKey="true" />
@@ -357,18 +352,18 @@
   </Table>
   <Table Name="dbo.Make" Member="Make">
     <Type Name="Make">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="HSN" Type="System.String" DbType="VarChar(4) NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
   <Table Name="dbo.Vehicle" Member="Vehicle">
     <Type Name="Vehicle">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="VIN" Type="System.String" DbType="VarChar(17) NOT NULL" CanBeNull="true" />
       <Column Name="TSN" Type="System.String" DbType="VarChar(4) NOT NULL" CanBeNull="true" />
       <Column Name="Variant" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="CurrentRegistrationId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CurrentRegistrationId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="HSN" Type="System.String" DbType="varchar(4) not null" CanBeNull="true" />
       <Column Name="FirstRegistrationDate" Type="System.DateTime" DbType="datetime" CanBeNull="true" />
       <Column Name="ColorCode" Type="System.Int32" DbType="int" CanBeNull="true" />
@@ -380,18 +375,18 @@
   </Table>
   <Table Name="dbo.Invoice" Member="Invoice">
     <Type Name="Invoice">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="IsPrinted" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="PrintDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="UserId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="InvoiceRecipient" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
-      <Column Name="InvoiceRecipientAdressId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="CustomerId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="DocumentId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="InvoiceRecipientAdressId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="CustomerId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="DocumentId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="InvoiceText" Type="System.String" DbType="varchar(500)" CanBeNull="true" />
       <Column Name="discount" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
-      <Column Name="InvoiceType" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="InvoiceType" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="canceled" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Association Name="Invoice_OrderInvoice" Member="OrderInvoice" ThisKey="Id" OtherKey="InvoiceId" Type="OrderInvoice" />
       <Association Name="Invoice_InvoiceNumber" Member="InvoiceNumber" ThisKey="Id" OtherKey="InvoiceId" Type="InvoiceNumber" Cardinality="One" />
@@ -406,24 +401,24 @@
   </Table>
   <Table Name="dbo.InvoiceNumber" Member="InvoiceNumber">
     <Type Name="InvoiceNumber">
-      <Column Name="InvoiceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="InvoiceId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Number" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
       <Association Name="Invoice_InvoiceNumber" Member="Invoice" ThisKey="InvoiceId" OtherKey="Id" Type="Invoice" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.LargeCustomerRequiredField" Member="LargeCustomerRequiredField">
     <Type Name="LargeCustomerRequiredField">
-      <Column Name="LargeCustomerId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="RequiredFieldId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="LargeCustomerId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="RequiredFieldId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Association Name="RequiredField_LargeCustomerRequiredField" Member="RequiredField" ThisKey="RequiredFieldId" OtherKey="Id" Type="RequiredField" IsForeignKey="true" />
       <Association Name="LargeCustomer_LargeCustomerRequiredField" Member="LargeCustomer" ThisKey="LargeCustomerId" OtherKey="CustomerId" Type="LargeCustomer" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.RequiredField" Member="RequiredField">
     <Type Name="RequiredField">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="OrderTypeId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="OrderTypeId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Association Name="RequiredField_LargeCustomerRequiredField" Member="LargeCustomerRequiredField" ThisKey="Id" OtherKey="RequiredFieldId" Type="LargeCustomerRequiredField" />
       <Association Name="OrderType_RequiredField" Member="OrderType" ThisKey="OrderTypeId" OtherKey="Id" Type="OrderType" IsForeignKey="true" />
       <Association Name="RequiredFieldTranslation_RequiredField" Member="RequiredFieldTranslation" ThisKey="Id" OtherKey="RequiredFieldId" Type="RequiredFieldTranslation" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
@@ -431,15 +426,15 @@
   </Table>
   <Table Name="dbo.PackingList" Member="PackingList">
     <Type Name="PackingList">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="PackingListNUmber" Member="PackingListNumber" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="DispatchOrderNumber" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="IsSelfDispatch" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="IsPrinted" Type="System.Boolean" DbType="bit" CanBeNull="true" />
-      <Column Name="RecipientAdressId" Type="System.Guid" DbType="uniqueidentifier not null" CanBeNull="false" />
+      <Column Name="RecipientAdressId" Type="System.Int32" DbType="int not null" CanBeNull="false" />
       <Column Name="Recipient" Type="System.String" DbType="varchar(50) not null" CanBeNull="false" />
-      <Column Name="DocumentId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="OldOrderId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="DocumentId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="OldOrderId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Association Name="PackingList_Order" Member="Order" ThisKey="Id" OtherKey="PackingListId" Type="Order" />
       <Association Name="Adress_PackingList" Member="Adress" ThisKey="RecipientAdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
       <Association Name="Document_PackingList" Member="Document" ThisKey="DocumentId" OtherKey="Id" Type="Document" IsForeignKey="true" />
@@ -448,25 +443,25 @@
   </Table>
   <Table Name="dbo.[Order]" Member="Order">
     <Type Name="Order">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="CustomerId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="LocationId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="OrderTypeId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CustomerId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="LocationId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="OrderTypeId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="Ordernumber" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="ExecutionDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="UserId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="ErrorReason" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
       <Column Name="HasError" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="PackingListId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="PackingListId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="FreeText" Type="System.String" DbType="varchar(200)" CanBeNull="true" />
       <Column Name="HasFinishedNoteBeenSent" Type="System.Boolean" DbType="bit" CanBeNull="true" />
       <Column Name="FinishDate" Type="System.DateTime" DbType="datetime" CanBeNull="true" />
-      <Column Name="Zulassungsstelle" Type="System.Guid" CanBeNull="true" />
+      <Column Name="Zulassungsstelle" Type="System.Int32" CanBeNull="true" />
       <Column Name="Geprueft" Type="System.Boolean" CanBeNull="true" />
       <Column Name="ReadyToSend" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="DocketListId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="DocketListId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Association Name="Order_DeregistrationOrder" Member="DeregistrationOrder" ThisKey="Id" OtherKey="OrderId" Type="DeregistrationOrder" Cardinality="One" />
       <Association Name="Order_OrderInvoice" Member="OrderInvoice" ThisKey="Id" OtherKey="OrderId" Type="OrderInvoice" />
       <Association Name="Order_OrderItem" Member="OrderItem" ThisKey="Id" OtherKey="OrderId" Type="OrderItem" />
@@ -484,7 +479,7 @@
   </Table>
   <Table Name="dbo.MailinglistType" Member="MailinglistType">
     <Type Name="MailinglistType">
-      <Column Name="Id" Type="System.Guid" DbType="uniqueidentifier not null" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int not null" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="varchar(50)" CanBeNull="false" />
       <Association Name="MailinglistType_Mailinglist" Member="Mailinglist" ThisKey="Id" OtherKey="MailinglistTypeId" Type="Mailinglist" />
     </Type>
@@ -501,7 +496,7 @@
   <Table Name="WebServiceLoginCustomer">
     <Type Name="WebServiceLoginCustomer">
       <Column Name="WebServiceLoginId" Type="System.Int32" DbType="int not null" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="CustomerId" Type="System.Guid" DbType="uniqueidentifier not null" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CustomerId" Type="System.Int32" DbType="int not null" IsPrimaryKey="true" CanBeNull="false" />
       <Association Name="WebServiceLogin_WebServiceLoginCustomer" Member="WebServiceLogin" ThisKey="WebServiceLoginId" OtherKey="Id" Type="WebServiceLogin" IsForeignKey="true" />
       <Association Name="Customer_WebServiceLoginCustomer" Member="Customer" ThisKey="CustomerId" OtherKey="Id" Type="Customer" IsForeignKey="true" />
     </Type>
@@ -514,14 +509,14 @@
   </Table>
   <Table Name="dbo.InvoiceItem" Member="InvoiceItem">
     <Type Name="InvoiceItem">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="InvoiceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="InvoiceId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Amount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
       <Column Name="Count" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="VAT" Type="System.Decimal" DbType="Decimal(4,2) NOT NULL" CanBeNull="false" />
-      <Column Name="OrderItemId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="CostcenterId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="OrderItemId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="CostcenterId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="AccountNumber" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Association Name="InvoiceItem_InvoiceItemAccountItem" Member="InvoiceItemAccountItem" ThisKey="Id" OtherKey="InvoiceItemId" Type="InvoiceItemAccountItem" />
       <Association Name="CostCenter_InvoiceItem" Member="CostCenter" ThisKey="CostcenterId" OtherKey="Id" Type="CostCenter" IsForeignKey="true" />
@@ -531,9 +526,9 @@
   </Table>
   <Table Name="dbo.Price" Member="Price">
     <Type Name="Price">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="ProductId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="LocationId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ProductId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="LocationId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="Amount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
       <Column Name="AuthorativeCharge" Type="System.Decimal" DbType="Money" CanBeNull="true" />
       <Association Name="Price_PriceAccount" Member="PriceAccount" ThisKey="Id" OtherKey="PriceId" Type="PriceAccount" />
@@ -543,43 +538,43 @@
   </Table>
   <Table Name="dbo.PriceAccount" Member="PriceAccount">
     <Type Name="PriceAccount">
-      <Column Name="PriceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="AccountId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PriceId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AccountId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Association Name="Price_PriceAccount" Member="Price" ThisKey="PriceId" OtherKey="Id" Type="Price" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
       <Association Name="Accounts_PriceAccount" Member="Accounts" ThisKey="AccountId" OtherKey="AccountId" Type="Accounts" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.InvoiceItemAccountItem" Member="InvoiceItemAccountItem">
     <Type Name="InvoiceItemAccountItem">
-      <Column Name="IIACCID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="InvoiceItemId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="IIACCID" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="InvoiceItemId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="RevenueAccountText" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="InvoiceItem_InvoiceItemAccountItem" Member="InvoiceItem" ThisKey="InvoiceItemId" OtherKey="Id" Type="InvoiceItem" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.ProductCategory" Member="ProductCategory">
     <Type Name="ProductCategory">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="ProductCategory_Product" Member="Product" ThisKey="Id" OtherKey="ProductCategoryId" Type="Product" />
     </Type>
   </Table>
   <Table Name="dbo.Accounts" Member="Accounts">
     <Type Name="Accounts">
-      <Column Name="AccountId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AccountId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="AccountNumber" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="CustomerId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CustomerId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Association Name="Accounts_PriceAccount" Member="PriceAccount" ThisKey="AccountId" OtherKey="AccountId" Type="PriceAccount" />
     </Type>
   </Table>
   <Table Name="dbo.Product" Member="Product">
     <Type Name="Product">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="ProductCategoryId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ProductCategoryId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="ItemNumber" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
-      <Column Name="OrderTypeId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="RegistrationOrderTypeId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="OrderTypeId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="RegistrationOrderTypeId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="NeedsVAT" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="IsLocked" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Association Name="Product_OrderItem" Member="OrderItem" ThisKey="Id" OtherKey="ProductId" Type="OrderItem" />
@@ -613,7 +608,7 @@
   </Table>
   <Table Name="dbo.Person" Member="Person">
     <Type Name="Person">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="FirstName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="Title" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
@@ -627,8 +622,8 @@
   </Table>
   <Table Name="dbo.LargeCustomer" Member="LargeCustomer">
     <Type Name="LargeCustomer">
-      <Column Name="CustomerId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="MainLocationId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="CustomerId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MainLocationId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="SendInvoiceToMainLocation" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="SendInvoiceByEmail" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="OrderFinishedNoteSendType" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
@@ -636,8 +631,8 @@
       <Column Name="SendOrderFinishedNoteToLocation" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="SendPackingListToCustomer" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="SendPackingListToLocation" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="PersonId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="InvoiceTypesID" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="PersonId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="InvoiceTypesID" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Association Name="LargeCustomer_CostCenter" Member="CostCenter" ThisKey="CustomerId" OtherKey="CustomerId" Type="CostCenter" />
       <Association Name="LargeCustomer_Location" Member="Location" ThisKey="CustomerId" OtherKey="CustomerId" Type="Location" />
       <Association Name="LargeCustomer_Mailinglist" Member="Mailinglist" ThisKey="CustomerId" OtherKey="CustomerId" Type="Mailinglist" />
@@ -651,7 +646,7 @@
   </Table>
   <Table Name="dbo.InvoiceTypes" Member="InvoiceTypes">
     <Type Name="InvoiceTypes">
-      <Column Name="ID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ID" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="InvoiceTypeName" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
       <Column Name="contraction" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Association Name="InvoiceTypes_Invoice" Member="Invoice" ThisKey="ID" OtherKey="InvoiceType" Type="Invoice" />
@@ -670,25 +665,25 @@
   </Table>
   <Table Name="dbo.RegistrationLocation" Member="RegistrationLocation">
     <Type Name="RegistrationLocation">
-      <Column Name="ID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ID" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="RegistrationLocationName" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
-      <Column Name="RegistrationLocationAdressId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="RegistrationLocationAdressId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Association Name="RegistrationLocation_Order" Member="Order" ThisKey="ID" OtherKey="Zulassungsstelle" Type="Order" />
       <Association Name="Adress_RegistrationLocation" Member="Adress" ThisKey="RegistrationLocationAdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" DeleteRule="CASCADE" />
     </Type>
   </Table>
   <Table Name="dbo.RequiredFieldTranslation" Member="RequiredFieldTranslation">
     <Type Name="RequiredFieldTranslation">
-      <Column Name="RequiredFieldId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="RequiredFieldId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
       <Association Name="RequiredFieldTranslation_RequiredField" Member="RequiredField" ThisKey="RequiredFieldId" OtherKey="Id" Type="RequiredField" Cardinality="One" />
     </Type>
   </Table>
   <Table Name="dbo.InvoiceRunReport" Member="InvoiceRunReport">
     <Type Name="InvoiceRunReport">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="CustomerId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="InvoiceTypeId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CustomerId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="InvoiceTypeId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="FinishedDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="InvoiceRunProgress" Type="System.Int32" DbType="Int" CanBeNull="true" />
@@ -697,8 +692,8 @@
   </Table>
   <Table Name="dbo.InvoiceIDInvoiceRunID" Member="InvoiceIDInvoiceRunID">
     <Type Name="InvoiceIDInvoiceRunID">
-      <Column Name="InvoiceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
-      <Column Name="InvoiceRunId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="InvoiceId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="InvoiceRunId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="Complete" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="Updated" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="Invoice_InvoiceIDInvoiceRunID" Member="Invoice" ThisKey="InvoiceId" OtherKey="Id" Type="Invoice" IsForeignKey="true" DeleteRule="CASCADE" />
@@ -724,28 +719,28 @@
   </Table>
   <Table Name="dbo.PathPosition" Member="PathPosition">
     <Type Name="PathPosition">
-      <Column Name="ID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ID" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="Path" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
       <Column Name="PostionName" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.ChangeLog" Member="ChangeLog">
     <Type Name="ChangeLog">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="FirstName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="Expr1" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
       <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="TableName" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="TableProperty" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
-      <Column Name="ReferenceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ReferenceId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="Text" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
       <Column Name="LogTypeId" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Exception" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
       <Column Name="Login" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="LastLogin" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="Expr2" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="LogUserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="LogUserId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
   <Table Name="dbo.ChangeLogColumNames" Member="ChangeLogColumNames">
@@ -757,22 +752,22 @@
   </Table>
   <Table Name="dbo.CustomerProduct" Member="CustomerProduct">
     <Type Name="CustomerProduct">
-      <Column Name="CustomerId" Type="System.Guid" DbType="UniqueIdentifier" IsPrimaryKey="true" CanBeNull="true" />
-      <Column Name="ProductId" Type="System.Guid" DbType="UniqueIdentifier" IsPrimaryKey="true" CanBeNull="true" />
+      <Column Name="CustomerId" Type="System.Int32" DbType="int" IsPrimaryKey="true" CanBeNull="true" />
+      <Column Name="ProductId" Type="System.Int32" DbType="int" IsPrimaryKey="true" CanBeNull="true" />
       <Association Name="Customer_CustomerProduct" Member="Customer" ThisKey="CustomerId" OtherKey="Id" Type="Customer" IsForeignKey="true" />
       <Association Name="Product_CustomerProduct" Member="Product" ThisKey="ProductId" OtherKey="Id" Type="Product" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.DocketList" Member="DocketList">
     <Type Name="DocketList">
-      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="DocketListNumber" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="DispatchOrderNumber" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="IsSelfDispatch" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="IsPrinted" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="RecipientAdressId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="RecipientAdressId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="Recipient" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="DocumentId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="DocumentId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Association Name="DocketList_Order" Member="Order" ThisKey="Id" OtherKey="DocketListId" Type="Order" />
       <Association Name="Adress_DocketList" Member="Adress" ThisKey="RecipientAdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
     </Type>
@@ -780,8 +775,8 @@
   <Table Name="dbo.AuthorativeChargeAccounts" Member="AuthorativeChargeAccounts">
     <Type Name="AuthorativeChargeAccounts">
       <Column Name="OrderItemId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="InvoiceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="InvoiceItemAccountItemId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="InvoiceId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="InvoiceItemAccountItemId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="InvoiceItemId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
       <Column Name="RevenueAccountText" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="IsAuthorativeCharge" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />

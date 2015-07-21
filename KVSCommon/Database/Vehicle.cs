@@ -64,7 +64,6 @@ namespace KVSCommon.Database
 
             Vehicle vehicle = new Vehicle()
             {
-                Id = Guid.NewGuid(),
                 VIN = vin,
                 HSN = hsn,
                 TSN = tsn,
@@ -94,7 +93,7 @@ namespace KVSCommon.Database
         /// <summary>
         /// Aenderungsevents für die Historie
         /// </summary>
-        partial void OnCurrentRegistrationIdChanging(Guid? value)
+        partial void OnCurrentRegistrationIdChanging(int? value)
         {
             this.WriteUpdateLogItem("Zulassung", this.CurrentRegistrationId, value);
         }

@@ -18,7 +18,7 @@ namespace KVSWebApplication.Customer
         List<string> thisUserPermissions = new List<string>();
         protected void Page_Load(object sender, EventArgs e)
         {
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (!thisUserPermissions.Contains("KOSTENSTELLEN_BEARBEITEN"))
             {
                 rbtCreateCostCenter.Enabled = false;
@@ -83,7 +83,7 @@ namespace KVSWebApplication.Customer
         {         
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
             var query = from cust in dbContext.CostCenter
-                        where cust.CustomerId == new Guid(e.WhereParameters["CustomerId"].ToString()) && cust.Id == new Guid(e.WhereParameters["CostCenterId"].ToString())
+                        where cust.CustomerId == Int32.Parse(e.WhereParameters["CustomerId"].ToString()) && cust.Id == Int32.Parse(e.WhereParameters["CostCenterId"].ToString())
                         orderby cust.BankAccount.BankName
                         select new
                         {
@@ -91,7 +91,7 @@ namespace KVSWebApplication.Customer
                             CustomerId = cust.CustomerId,
                             CostCenterId = cust.Id,
                             CostCenterName = cust.Name,
-                            BankId = cust.BankAccount == null ? Guid.Empty : cust.BankAccount.Id,
+                            BankId = cust.BankAccount == null ? (int?)null : cust.BankAccount.Id,
                             BankName = cust.BankAccount == null ? EmptyStringIfNull.ReturnEmptyStringIfNull(null) : cust.BankAccount.BankName,
                             Accountnumber = cust.BankAccount == null ? EmptyStringIfNull.ReturnEmptyStringIfNull(null) : cust.BankAccount.Accountnumber,
                             BankCode = cust.BankAccount == null ? EmptyStringIfNull.ReturnEmptyStringIfNull(null) : cust.BankAccount.BankCode,
@@ -107,16 +107,17 @@ namespace KVSWebApplication.Customer
             {
                 Hashtable newValues = new Hashtable();
                 ((GridEditableItem)e.Item).ExtractValues(newValues);
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])); // hier kommt die Loggingid
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
                 try
                 {
                     if (newValues["TableId"].ToString() == "Inner")
                     {
-                        var contactUpdate = dbContext.CostCenter.SingleOrDefault(q => q.Id == new Guid(newValues["CostCenterId"].ToString()) && q.CustomerId == new Guid(newValues["CustomerId"].ToString()));
+                        var contactUpdate = dbContext.CostCenter.SingleOrDefault(q => q.Id == Int32.Parse(newValues["CostCenterId"].ToString()) &&
+                            q.CustomerId == Int32.Parse(newValues["CustomerId"].ToString()));
                         contactUpdate._dbContext = dbContext;
                         if (contactUpdate != null)
                         {
-                            if (newValues["BankId"] == null || new Guid(newValues["BankId"].ToString()) == Guid.Empty)
+                            if (newValues["BankId"] == null || String.IsNullOrEmpty(newValues["BankId"].ToString()))
                             {
                                 if (newValues["BankName"] != null || newValues["IBAN"] != null)
                                 {
@@ -156,7 +157,7 @@ namespace KVSWebApplication.Customer
                     RadWindowManagerCostCenter.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("CostCenter Edit Error " + ex.Message, LogTypes.ERROR, "CostCenter");
                         dbContext.SubmitChanges();
                     }
@@ -259,15 +260,15 @@ namespace KVSWebApplication.Customer
         {
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                 
 
                     try
                     {
                         RadButton rbtSender = ((RadButton)sender);
                         Label lbl = rbtSender.Parent.FindControl("lblCostCenterId") as Label;
-                        if (EmptyStringIfNull.IsGuid(lbl.Text))
-                           KVSCommon.Database.CostCenter.RemoveCostCenter(new Guid(lbl.Text),dbContext);
+                        if (!String.IsNullOrEmpty(lbl.Text))
+                           KVSCommon.Database.CostCenter.RemoveCostCenter(Int32.Parse(lbl.Text),dbContext);
 
                         dbContext.SubmitChanges();
                       
@@ -284,7 +285,7 @@ namespace KVSWebApplication.Customer
                         RadWindowManagerCostCenter.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                         try
                         {
-                            dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                            dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                             dbContext.WriteLogItem("CostCenter Remove Error " + ex.Message, LogTypes.ERROR, "CostCenter");
                             dbContext.SubmitChanges();
                         }
@@ -303,13 +304,13 @@ namespace KVSWebApplication.Customer
             {
                 using (TransactionScope ts = new TransactionScope())
                 {
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])); // hier kommt die Loggingid
+                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
                     try
                     {
-                        var contactUpdate = dbContext.Customer.SingleOrDefault(q => q.Id == new Guid(CustomerCostCenter.SelectedValue));
+                        var contactUpdate = dbContext.Customer.SingleOrDefault(q => q.Id == Int32.Parse(CustomerCostCenter.SelectedValue));
                         if (contactUpdate != null)
                         {
-                            var newCostCenter = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == new Guid(CustomerCostCenter.SelectedValue));
+                            var newCostCenter = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == Int32.Parse(CustomerCostCenter.SelectedValue));
                             var createdCostCenter = newCostCenter.AddNewCostCenter(CostCenterName.Text, txbCostCenterNumber.Text, dbContext);
                             if (cmbBankNameCostCenter.Text != string.Empty || txbLargeCustomerIBAN.Text != string.Empty)
                             {
@@ -330,7 +331,7 @@ namespace KVSWebApplication.Customer
                         RadWindowManagerCostCenter.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                         try
                         {
-                            dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                            dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                             dbContext.WriteLogItem("rbtSaveCostCenter_Click Error " + ex.Message, LogTypes.ERROR, "CostCenter");
                             dbContext.SubmitChanges();
                         }

@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public class LocationOrderJoins
     {
-        public Guid LocationId { get; set; }
+        public int LocationId { get; set; }
         public Order Order { get; set; }
     }  
 }

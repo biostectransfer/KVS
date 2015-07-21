@@ -30,7 +30,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnInvoiceTypeIdChanging(Guid? value)
+        partial void OnInvoiceTypeIdChanging(int? value)
         {
             this.WriteUpdateLogItem("InvoiceTypeId", this.InvoiceTypeId, value);
         }
@@ -46,7 +46,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnCustomerIdChanging(Guid? value)
+        partial void OnCustomerIdChanging(int? value)
         {
             this.WriteUpdateLogItem("CustomerId", this.CustomerId, value);
         }

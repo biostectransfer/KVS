@@ -34,7 +34,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="dbContext">DB Kontext</param>
         /// <param name="smallCustomerId">Laufkundenid</param>
-        public static void RemoveLargeCutomer(DataClasses1DataContext dbContext, Guid smallCustomerId)
+        public static void RemoveLargeCutomer(DataClasses1DataContext dbContext, int smallCustomerId)
         {
             var lmCustomer = dbContext.LargeCustomer.FirstOrDefault(q => q.CustomerId == smallCustomerId);
             if (lmCustomer == null)
@@ -113,7 +113,9 @@ namespace KVSCommon.Database
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Großkunden.</returns>
         /// <remarks>Innerhalb des Aufrufs wird bereits dbContext.SubmitChanges() aufgerufen!</remarks>
-        public static LargeCustomer CreateLargeCustomer( DataClasses1DataContext dbContext ,string name, string street, string streetnumber, string zipcode, string city, string country, string phone, string fax, string mobilephone, string email, decimal vat, bool sendInvoiceToMainLocation, bool sendInvoiceByEmail, int? termOfCredit, string customerNumber,string matchcode, string Debitornumber, Guid? PersonId, Guid? InvoiceType, string evbNumber)
+        public static LargeCustomer CreateLargeCustomer( DataClasses1DataContext dbContext ,string name, string street, string streetnumber, string zipcode, string city, string country, 
+            string phone, string fax, string mobilephone, string email, decimal vat, bool sendInvoiceToMainLocation, bool sendInvoiceByEmail, int? termOfCredit, 
+            string customerNumber,string matchcode, string Debitornumber, int? PersonId, int? InvoiceType, string evbNumber)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -172,11 +174,9 @@ namespace KVSCommon.Database
             
             Location location = new Location()
             {
-                Id = Guid.NewGuid(),
                 Name = name,
                 Adress = new Adress()
                 {
-                    Id = Guid.NewGuid(),
                     Zipcode = zipcode,
                     Country = country,
                     City = city,
@@ -185,7 +185,6 @@ namespace KVSCommon.Database
                 },
                 Contact = new Contact()
                 {
-                    Id = Guid.NewGuid(),
                     Email = email,
                     MobilePhone = mobilephone,
                     Fax = fax,
@@ -226,13 +225,12 @@ namespace KVSCommon.Database
 
             CostCenter costcenter = new CostCenter()
             {
-                Id = Guid.NewGuid(),
                 Name = name,
                 CostcenterNumber = costcenterNumber
             };
             costcenter._dbContext = dbContext;
             this.CostCenter.Add(costcenter);
-            dbContext.WriteLogItem("Neue Kostenstelle " + name + " angelegt.", LogTypes.INSERT, this.CustomerId, "Customer", costcenter.Id);
+            //TODO dbContext.WriteLogItem("Neue Kostenstelle " + name + " angelegt.", LogTypes.INSERT, this.CustomerId, "Customer", costcenter.Id);
             return costcenter;
         }
 
@@ -243,7 +241,7 @@ namespace KVSCommon.Database
         /// <param name="typeId">Id des Typs des Verteilers.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Eintrag.</returns>
-        public Mailinglist AddNewMailinglistItem(string email, Guid typeId, DataClasses1DataContext dbContext)
+        public Mailinglist AddNewMailinglistItem(string email, int typeId, DataClasses1DataContext dbContext)
         {
             var type = dbContext.MailinglistType.Single(q => q.Id == typeId);
             if (this.Mailinglist.Any(q => q.Email == email && q.LocationId.HasValue == false && q.MailinglistTypeId == typeId))
@@ -261,7 +259,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="mailinglistId">Id des Eintrags.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void RemoveMailinglistItem(Guid mailinglistId, DataClasses1DataContext dbContext)
+        public void RemoveMailinglistItem(int mailinglistId, DataClasses1DataContext dbContext)
         {
             Mailinglist ml = this.Mailinglist.SingleOrDefault(q => q.Id == mailinglistId);
             if (ml == null)
@@ -278,7 +276,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="requiredFieldId">Id des Felds.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void AddRequiredField(Guid requiredFieldId, DataClasses1DataContext dbContext)
+        public void AddRequiredField(int requiredFieldId, DataClasses1DataContext dbContext)
         {
             var requiredField = dbContext.RequiredField.Single(q => q.Id == requiredFieldId);
             if (!this.LargeCustomerRequiredField.Any(q => q.RequiredFieldId == requiredFieldId))
@@ -296,7 +294,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="requiredFieldId">Id des Felds.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void RemoveRequiredField(Guid requiredFieldId, DataClasses1DataContext dbContext)
+        public void RemoveRequiredField(int requiredFieldId, DataClasses1DataContext dbContext)
         {
             var requiredField = dbContext.RequiredField.Single(q => q.Id == requiredFieldId);
             LargeCustomerRequiredField largeCustomerRequiredField = this.LargeCustomerRequiredField.SingleOrDefault(q => q.RequiredFieldId == requiredFieldId);
@@ -314,7 +312,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="orderTypeId">Id der Auftragsart.</param>
         /// <returns></returns>
-        public List<string> GetRequiredFieldNames(Guid orderTypeId)
+        public List<string> GetRequiredFieldNames(int orderTypeId)
         {
             return this.LargeCustomerRequiredField
                 .Select(q => q.RequiredField)
@@ -330,7 +328,7 @@ namespace KVSCommon.Database
         /// <param name="type">Art des Verteilers.</param>
         /// <returns>Liste mit Emailadressen.</returns>
         /// <remarks>Wenn der Verteiler eines Standorts abgefragt wird, und dieser leer ist, werden die Adressen aus dem Verteiler des Kunden zurückgegeben.</remarks>
-        public List<string> GetMailinglistAdresses(DataClasses1DataContext dbContext, Guid? locationId, string type)
+        public List<string> GetMailinglistAdresses(DataClasses1DataContext dbContext, int? locationId, string type)
         {
             if (locationId.HasValue)
             {

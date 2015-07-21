@@ -45,9 +45,10 @@ namespace KVSCommon.Database
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Zulassungsauftrag.</returns>
         /// <remarks>Erstellt auch gleichzeitig den Order-Datensatz.</remarks>
-        public static RegistrationOrder CreateRegistrationOrder(Guid userId, Guid customerId, string licencenumber, string previousLicencenumber, string evbNumber, Guid vehicleId, Guid registrationId, Guid registrationOrderTypeId, Guid? locationId, Guid zulassungsstelleId, DataClasses1DataContext dbContext)
+        public static RegistrationOrder CreateRegistrationOrder(int userId, int customerId, string licencenumber, string previousLicencenumber, string evbNumber, 
+            Vehicle vehicle, Registration registration, int registrationOrderTypeId, int? locationId, int zulassungsstelleId, DataClasses1DataContext dbContext)
         {
-            Guid orderTypeId = dbContext.OrderType.Single(q => q.Name == "Zulassung").Id;
+            var orderTypeId = dbContext.OrderType.Single(q => q.Name == "Zulassung").Id;
             Order order = Order.CreateOrder(userId, customerId, orderTypeId, zulassungsstelleId, dbContext);
             order.LocationId = locationId;
 
@@ -55,8 +56,8 @@ namespace KVSCommon.Database
             {
                 Order = order,
                 Licencenumber = licencenumber,
-                VehicleId = vehicleId,
-                RegistrationId = registrationId,
+                Vehicle = vehicle,
+                Registration = registration,
                 PreviousLicencenumber = previousLicencenumber,
                 RegistrationOrderTypeId = registrationOrderTypeId,
                 eVBNumber = evbNumber
@@ -64,7 +65,7 @@ namespace KVSCommon.Database
 
             //var vehicleVIN = dbContext.Vehicle.Where(q => q.Id == vehicleId).Select(q => q.VIN).Single();
             dbContext.RegistrationOrder.InsertOnSubmit(registrationOrder);
-            dbContext.WriteLogItem("Zulassungsauftrag wurde angelegt.", LogTypes.INSERT, registrationOrder.OrderId, "RegistrationOrder", vehicleId);
+            dbContext.WriteLogItem("Zulassungsauftrag wurde angelegt.", LogTypes.INSERT, registrationOrder.OrderId, "RegistrationOrder", vehicle.Id);
             return registrationOrder;
         }
         /// <summary>

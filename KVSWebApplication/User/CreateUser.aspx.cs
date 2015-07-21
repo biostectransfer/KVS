@@ -29,7 +29,7 @@ namespace KVSWebApplication.User
         List<string> thisUserPermissions = new List<string>();
         protected void Page_Load(object sender, EventArgs e)
         {
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (!thisUserPermissions.Contains("BENUTZER_ANLEGEN"))
             {
                 rbtcreateUser.Enabled = false;
@@ -70,14 +70,14 @@ namespace KVSWebApplication.User
         }
         protected void ChangeSaveBtn_Click(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
             try
             {
                 if (txbNewPassword.Text == txbRepeatPWD.Text && ViewState["userToChange"] != null)
                 {
                     if (ViewState["userToChange"].ToString() != string.Empty)
                     {
-                        var thisUser = dbContext.User.SingleOrDefault(q => q.Id == new Guid(ViewState["userToChange"].ToString()));
+                        var thisUser = dbContext.User.SingleOrDefault(q => q.Id == Int32.Parse(ViewState["userToChange"].ToString()));
                         if (thisUser != null)
                         {
                             thisUser.ChangePassword(txbNewPassword.Text, dbContext);
@@ -112,7 +112,7 @@ namespace KVSWebApplication.User
             ResetErrorLabels();
             if (checkFields() == true)
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                 try
                 {                   
                     var createUser = KVSCommon.Database.User.CreateUser(txbUserLogin.Text, txbUserPassword1.Text, txbUserNachname.Text, txbUserVorname.Text, txbUserTitle.Text, dbContext);
@@ -179,10 +179,10 @@ namespace KVSWebApplication.User
         {
             Hashtable newValues = new Hashtable();
             ((GridEditableItem)e.Item).ExtractValues(newValues);
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])); // hier kommt die Loggingid
+            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
             try
             {
-                var userDataUpdate = dbContext.User.SingleOrDefault(q => q.Id == new Guid(newValues["Id"].ToString()));              
+                var userDataUpdate = dbContext.User.SingleOrDefault(q => q.Id == Int32.Parse(newValues["Id"].ToString()));              
                     if (userDataUpdate != null && userDataUpdate.Contact == null)
                     {
                         var addContact = Contact.CreateContact(EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Phone"]), EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Fax"]),

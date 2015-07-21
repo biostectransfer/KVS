@@ -45,7 +45,6 @@ namespace KVSCommon.Database
         {
             Adress adress = new Adress()
             {
-                Id = Guid.NewGuid(),
                 Street = street,
                 StreetNumber = streetNumber,
                 Zipcode = zipcode,
@@ -63,7 +62,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="adressId">Id der Adresse.</param>
         /// <param name="dbContext"></param>
-        public static void DeleteAdress(Guid adressId, DataClasses1DataContext dbContext)
+        public static void DeleteAdress(int adressId, DataClasses1DataContext dbContext)
         {
             Adress adress = dbContext.Adress.SingleOrDefault(q => q.Id == adressId);
             if (adress != null)
@@ -82,7 +81,6 @@ namespace KVSCommon.Database
         {
             Adress copy = new Adress()
             {
-                Id = Guid.NewGuid(),
                 Street = adress.Street,
                 StreetNumber = adress.StreetNumber,
                 Zipcode = adress.Zipcode,

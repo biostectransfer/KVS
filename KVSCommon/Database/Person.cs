@@ -51,7 +51,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="adressId">Id der Person.</param>
         /// <param name="dbContext">DB Kontext</param>
-        public static void DeletePerson(Guid personId, DataClasses1DataContext dbContext)
+        public static void DeletePerson(int personId, DataClasses1DataContext dbContext)
         {
             Person person = dbContext.Person.SingleOrDefault(q => q.Id == personId);
             if (person != null)
@@ -73,7 +73,6 @@ namespace KVSCommon.Database
         {
             var person = new Person()
             {
-                Id = Guid.NewGuid(),
                 FirstName = firstname,
                 Name = name,
                 Gender = null,

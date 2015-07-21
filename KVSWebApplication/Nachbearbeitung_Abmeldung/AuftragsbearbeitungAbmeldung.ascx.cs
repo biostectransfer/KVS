@@ -18,16 +18,16 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
     /// </summary>
     public partial class AuftragsbearbeitungAbmeldung : System.Web.UI.UserControl
     {
-        private string customer = string.Empty;        
+        private string customer = string.Empty;
         RadScriptManager script = null;
         protected void RadGridAbmeldung_PreRender(object sender, EventArgs e)
         {
             HideExpandColumnRecursive(RadGridAbmeldung.MasterTableView);
-        
+
         }
         public void HideExpandColumnRecursive(GridTableView tableView)
         {
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID((Int32.Parse(Session["CurrentUserId"].ToString()))));
             GridItem[] nestedViewItems = tableView.GetItems(GridItemType.NestedView);
             foreach (GridNestedViewItem nestedViewItem in nestedViewItems)
             {
@@ -41,7 +41,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         List<string> thisUserPermissions = new List<string>();
         protected void Page_Load(object sender, EventArgs e)
         {
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             bool canDeleteItem = thisUserPermissions.Contains("LOESCHEN_AUFTRAGSPOSITION");
             if (canDeleteItem == false)
             {
@@ -53,17 +53,17 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             }
             NachbearbeitungAbmeldung auftragNeu = Page as NachbearbeitungAbmeldung;
             script = auftragNeu.getScriptManager() as RadScriptManager;
-            script.RegisterPostBackControl(ZulassungsstelleLieferscheineButton);      
+            script.RegisterPostBackControl(ZulassungsstelleLieferscheineButton);
             string target = Request["__EVENTTARGET"] == null ? "" : Request["__EVENTTARGET"];
             if (String.IsNullOrEmpty(target))
                 if (Session["orderNumberSearch"] != null)
-                    if(!String.IsNullOrEmpty(Session["orderNumberSearch"].ToString()))
-                       target = "IamFromSearch";
+                    if (!String.IsNullOrEmpty(Session["orderNumberSearch"].ToString()))
+                        target = "IamFromSearch";
             StornierungErfolgLabel.Visible = false;
             if (Session["CustomerIndex"] != null)
-            {                  
+            {
                 if (!target.Contains("RadComboBoxCustomerAbmeldungOffen") && !target.Contains("CustomerDropDownListAbmeldungOffen") && !target.Contains("StornierenButton") && !target.Contains("NewPositionButton"))
-                {                 
+                {
                     if (Session["CustomerId"] != null)
                     {
                         if (!Page.IsPostBack)
@@ -73,15 +73,15 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                 RadComboBoxCustomerAbmeldungOffen.SelectedValue = Session["CustomerIndex"].ToString();
                                 CustomerDropDownListAbmeldungOffen.SelectedValue = Session["CustomerId"].ToString();
                             }
-                         }
+                        }
                         if (Session["orderStatusSearch"] != null)
                             if (!Session["orderStatusSearch"].ToString().Contains("Zulassungsstelle"))
 
-                                if (target.Contains("ZulassungNachbearbeitung") || target.Contains("RadTabStrip1") || target.Contains("IamFromSearch"))                              
+                                if (target.Contains("ZulassungNachbearbeitung") || target.Contains("RadTabStrip1") || target.Contains("IamFromSearch"))
                                 {
                                     RadGridAbmeldung.Enabled = true;
                                     RadGridAbmeldung.Rebind();
-                                }                      
+                                }
                     }
                 }
             }
@@ -99,9 +99,9 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             }
         }
         protected void AbmeldungenLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {         
+        {
             //select all values for small customers
-            if ( RadComboBoxCustomerAbmeldungOffen.SelectedValue == "1")
+            if (RadComboBoxCustomerAbmeldungOffen.SelectedValue == "1")
             {
                 DataClasses1DataContext con = new DataClasses1DataContext();
                 var abmeldungQuery = from ord in con.Order
@@ -134,8 +134,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                      };
                 if (CustomerDropDownListAbmeldungOffen.SelectedValue != string.Empty)
                 {
-                    Guid guid = new Guid(CustomerDropDownListAbmeldungOffen.SelectedValue);
-                    abmeldungQuery = abmeldungQuery.Where(q => q.customerID == guid);
+                    var custId = Int32.Parse(CustomerDropDownListAbmeldungOffen.SelectedValue);
+                    abmeldungQuery = abmeldungQuery.Where(q => q.customerID == custId);
                 }
                 e.Result = abmeldungQuery;
             }
@@ -175,8 +175,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                      };
                 if (CustomerDropDownListAbmeldungOffen.SelectedValue != string.Empty)
                 {
-                    Guid guid = new Guid(CustomerDropDownListAbmeldungOffen.SelectedValue);
-                    abmeldungQuery = abmeldungQuery.Where(q => q.customerID == guid);
+                    var custId = Int32.Parse(CustomerDropDownListAbmeldungOffen.SelectedValue);
+                    abmeldungQuery = abmeldungQuery.Where(q => q.customerID == custId);
                 }
                 if (Session["orderNumberSearch"] != null && Session["orderStatusSearch"] != null)
                 {
@@ -215,7 +215,10 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                     select new
                                     {
                                         Name = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
-                                        Value = cust.Id, Matchcode = cust.MatchCode, Kundennummer = cust.CustomerNumber };
+                                        Value = cust.Id,
+                                        Matchcode = cust.MatchCode,
+                                        Kundennummer = cust.CustomerNumber
+                                    };
                 e.Result = customerQuery;
             }
             else if (RadComboBoxCustomerAbmeldungOffen.SelectedValue == "2") //Large Customers
@@ -224,7 +227,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                     where cust.Id == cust.LargeCustomer.CustomerId
                                     select new { Name = cust.Name, Value = cust.Id, Matchcode = cust.MatchCode, Kundennummer = cust.CustomerNumber };
                 e.Result = customerQuery;
-            }           
+            }
         }
         // Large oder small Customer
         protected void SmallLargeCustomerIndex_Changed(object sender, EventArgs e)
@@ -240,27 +243,29 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             RadGridAbmeldung.Enabled = true;
             this.RadGridAbmeldung.DataBind();
             Session["CustomerIndex"] = RadComboBoxCustomerAbmeldungOffen.SelectedValue;
-            Session["CustomerId"] = CustomerDropDownListAbmeldungOffen.SelectedValue;     
+            Session["CustomerId"] = CustomerDropDownListAbmeldungOffen.SelectedValue;
         }
         protected void ProductLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext con = new DataClasses1DataContext();
             var productQuery = from prod in con.Product
-                               select new {
+                               select new
+                               {
                                    ItemNumber = prod.ItemNumber,
                                    Name = prod.Name,
                                    Value = prod.Id,
                                    Category = prod.ProductCategory.Name
                                };
-            e.Result = productQuery;           
+            e.Result = productQuery;
         }
         protected void CostCenterDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext con = new DataClasses1DataContext();
             var costCenterQuery = from cost in con.CostCenter
-                                  select new { 
-                                  Name = cost.Name,
-                                  Value = cost.Id
+                                  select new
+                                  {
+                                      Name = cost.Name,
+                                      Value = cost.Id
                                   };
             e.Result = costCenterQuery;
         }
@@ -290,10 +295,16 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     RadTextBox tbEditPrice = editedItem["ColumnPrice"].FindControl("tbEditPrice") as RadTextBox;
                     string itemId = editedItem["ItemIdColumn"].Text;
                     RadTextBox tbAuthPrice = editedItem["AuthCharge"].FindControl("tbAuthChargePrice") as RadTextBox;
-                    Guid authId = new Guid(editedItem["AuthChargeId"].Text);
-                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString())))
+
+                    int? authChargeId = null;
+                    if (!String.IsNullOrEmpty(editedItem["AuthChargeId"].Text))
                     {
-                        if (Order.GenerateAuthCharge(dbContext, authId, itemId, tbAuthPrice.Text))
+                        authChargeId = Int32.Parse(editedItem["AuthChargeId"].Text);
+                    }
+
+                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                    {
+                        if (Order.GenerateAuthCharge(dbContext, authChargeId, itemId, tbAuthPrice.Text))
                         {
                             dbContext.SubmitChanges();
                             tbAuthPrice.ForeColor = System.Drawing.Color.Green;
@@ -306,31 +317,31 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 {
                     using (TransactionScope ts = new TransactionScope())
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
-                        
-                            try
-                            {
+                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
 
-                                GridEditableItem editedItem = e.Item as GridEditableItem;
-                                string itemId = editedItem["ItemIdColumn"].Text;
-                                OrderItem.RemoveOrderItem(dbContext, new Guid(itemId));
-                                dbContext.SubmitChanges();
-                                ts.Complete();
-                              
+                        try
+                        {
 
-                            }
-                            catch (Exception ex)
-                            {
-                                if (ts != null)
-                                    ts.Dispose();
+                            GridEditableItem editedItem = e.Item as GridEditableItem;
+                            string itemId = editedItem["ItemIdColumn"].Text;
+                            OrderItem.RemoveOrderItem(dbContext, Int32.Parse(itemId));
+                            dbContext.SubmitChanges();
+                            ts.Complete();
 
-                                AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
-                                AbmeldungErrLabel.Visible = true;
-                                dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
-                                dbContext.WriteLogItem("Delete OrderItem Error " + ex.Message, LogTypes.ERROR, "OrderItem");
-                                dbContext.SubmitChanges();
-                            }
-                        
+
+                        }
+                        catch (Exception ex)
+                        {
+                            if (ts != null)
+                                ts.Dispose();
+
+                            AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
+                            AbmeldungErrLabel.Visible = true;
+                            dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                            dbContext.WriteLogItem("Delete OrderItem Error " + ex.Message, LogTypes.ERROR, "OrderItem");
+                            dbContext.SubmitChanges();
+                        }
+
 
                     }
                     RadGridAbmeldung.Rebind();
@@ -354,22 +365,22 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 
             }
         }
- 
+
         // Updating ausgewählten OrderItem
         protected void UpdatePosition(string itemId, string amount)
         {
-            Guid orderItemId = Guid.Empty;
             string amoutToSave = amount;
             if (amoutToSave.Contains("."))
                 amoutToSave = amoutToSave.Replace(".", ",");
             if (!EmptyStringIfNull.IsNumber(amount))
                 throw new Exception("Achtung, Sie haben keinen gültigen Preis eingegeben");
-            orderItemId = new Guid(itemId);
-            if (orderItemId != Guid.Empty)
+
+            if (!String.IsNullOrEmpty(itemId))
             {
+                var orderItemId = Int32.Parse(itemId);
                 try
                 {
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                     var positionUpdateQuery = dbContext.OrderItem.SingleOrDefault(q => q.Id == orderItemId);
                     positionUpdateQuery.LogDBContext = dbContext;
                     positionUpdateQuery.Amount = Convert.ToDecimal(amoutToSave);
@@ -386,34 +397,34 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         {
             if (RadGridAbmeldung.SelectedItems.Count > 0)
             {
-                  try
+                try
                 {
-                AbmeldungErrLabel.Visible = false;
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
-                Button button = sender as Button;
-                OrderItem newOrderItem1 = null;
-                Guid orderId = Guid.Empty, locationId = Guid.Empty;
-                Price newPrice = null;
-                RadComboBox productDropDown = button.NamingContainer.FindControl("NewProductDropDownList") as RadComboBox;
-                DropDownList costCenterDropDown = button.NamingContainer.FindControl("CostCenterDropDownList") as DropDownList;              
-                Guid product = new Guid(productDropDown.SelectedValue);          
-                foreach (GridDataItem item in RadGridAbmeldung.SelectedItems)
-                {
-                    //hier
-                    KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == new Guid(productDropDown.SelectedValue));
+                    AbmeldungErrLabel.Visible = false;
+                    var dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                    Button button = sender as Button;
+                    OrderItem newOrderItem1 = null;
 
-                    orderId = new Guid(item["OrderId"].Text);
-                    if (!String.IsNullOrEmpty(item["locationId"].Text) && EmptyStringIfNull.IsGuid(item["locationId"].Text))
+                    Price newPrice = null;
+                    var productDropDown = button.NamingContainer.FindControl("NewProductDropDownList") as RadComboBox;
+                    var costCenterDropDown = button.NamingContainer.FindControl("CostCenterDropDownList") as DropDownList;
+                    var product = Int32.Parse(productDropDown.SelectedValue);
+                    foreach (GridDataItem item in RadGridAbmeldung.SelectedItems)
                     {
-                        locationId = new Guid(item["locationId"].Text);
-                        newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == locationId);
-                    }
-                     
+                        //hier
+                        KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == Int32.Parse(productDropDown.SelectedValue));
+
+                        var orderId = Int32.Parse(item["OrderId"].Text);
+                        if (!String.IsNullOrEmpty(item["locationId"].Text))
+                        {
+                            var locationId = Int32.Parse(item["locationId"].Text);
+                            newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == locationId);
+                        }
+
                         if (newPrice == null)
                         {
                             newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == null);
                         }
-                   
+
                         var orderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
                         orderToUpdate.LogDBContext = dbContext;
                         if (newPrice == null || newProduct == null || orderToUpdate == null)
@@ -424,36 +435,37 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 
 
                             newOrderItem1 = orderToUpdate.AddOrderItem(newProduct.Id, newPrice.Amount, 1,
-                                 (orderItemCostCenter != null) ? orderItemCostCenter.CostCenterId : null, 
+                                 (orderItemCostCenter != null) ? orderItemCostCenter.CostCenter : null,
                                  null, false, dbContext);
                             if (newPrice.AuthorativeCharge.HasValue)
                             {
-                                orderToUpdate.AddOrderItem(newProduct.Id, newPrice.AuthorativeCharge.Value, 1, (orderItemCostCenter != null) ? orderItemCostCenter.CostCenterId : null,
+                                orderToUpdate.AddOrderItem(newProduct.Id, newPrice.AuthorativeCharge.Value, 1,
+                                    (orderItemCostCenter != null) ? orderItemCostCenter.CostCenter : null,
                                     newOrderItem1.Id, newPrice.AuthorativeCharge.HasValue, dbContext);
                             }
                             dbContext.SubmitChanges();
                         }
-                  
+
+                    }
+                    RadGridAbmeldung.Rebind();
                 }
-                RadGridAbmeldung.Rebind();
+                catch (Exception ex)
+                {
+                    AbmeldungErrLabel.Visible = true;
+                    AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
                 }
-                  catch (Exception ex)
-                  {
-                      AbmeldungErrLabel.Visible = true;
-                      AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
-                  }
             }
-            else 
+            else
             {
                 AbmeldungErrLabel.Text = "Sie haben keinen Auftrag ausgewählt!";
                 AbmeldungErrLabel.Visible = true;
-            }                  
+            }
         }
         protected void RadGridOffen_DetailTableDataBind(object source, GridDetailTableDataBindEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            GridDataItem item = (GridDataItem)e.DetailTableView.ParentItem;
-            Guid orderId = new Guid(item["OrderId"].Text.ToString());
+            var dbContext = new DataClasses1DataContext();
+            var item = (GridDataItem)e.DetailTableView.ParentItem;
+            var orderId = Int32.Parse(item["OrderId"].Text.ToString());
             var positionQuery = from ord in dbContext.Order
                                 join orditem in dbContext.OrderItem on ord.Id equals orditem.OrderId
                                 let authCharge = dbContext.OrderItem.FirstOrDefault(s => s.SuperOrderItemId == orditem.Id)
@@ -463,15 +475,15 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                     OrderItemId = orditem.Id,
                                     Amount = orditem.Amount == null ? "kein Preis" : (Math.Round(orditem.Amount, 2, MidpointRounding.AwayFromZero)).ToString(),
                                     ProductName = orditem.IsAuthorativeCharge ? orditem.ProductName + " (Amtl.Gebühr)" : orditem.ProductName,
-                                    AmtGebuhr = authCharge == null ? false:true,
+                                    AmtGebuhr = authCharge == null ? false : true,
                                     AuthCharge = authCharge == null || authCharge.Amount == null ? "kein Preis" : (Math.Round(authCharge.Amount, 2, MidpointRounding.AwayFromZero)).ToString(),
-                                    AuthChargeId = authCharge == null ? Guid.Empty : authCharge.Id
+                                    AuthChargeId = authCharge == null ? (int?)null : authCharge.Id
                                     //AmtGebuhr2 = orditem.IsAuthorativeCharge ? "Ja" : "Nein"
                                 };
             e.DetailTableView.DataSource = positionQuery;
-        }       
+        }
         //Row Index wird in hiddenfield gespeichert
-        protected void EditButton_Clicked(object sender, GridCommandEventArgs  e)
+        protected void EditButton_Clicked(object sender, GridCommandEventArgs e)
         {
             var button = sender as RadButton;
             GridDataItem dataItem = e.Item as GridDataItem;
@@ -492,11 +504,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 }
                 else
                 {
-
-                
-
                     List<string> laufzettel = new List<string>();
-                    using (DataClasses1DataContext con = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString())))
+                    using (DataClasses1DataContext con = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
                     {
                         using (ts = new TransactionScope())
                         {
@@ -516,19 +525,19 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                 if (location.Count() > 0)
                                 {
 
-                                    docketList = DocketList.CreateDocketList(location.First().RegistrationLocation.RegistrationLocationName, location.First().RegistrationLocation.Adress.Id, con);
+                                    docketList = DocketList.CreateDocketList(
+                                        location.First().RegistrationLocation.RegistrationLocationName,
+                                        location.First().RegistrationLocation.Adress, con);
                                     docketList.LogDBContext = con;
                                     docketList.IsSelfDispatch = true;
                                 }
                                 foreach (var order in location)
                                 {
-                                    Guid orderId = Guid.Empty;
                                     foreach (var order2 in location)
                                     {
                                         if (order2 != null)
                                         {
-                                            orderId = order2.Id;
-                                            docketList.AddOrderById(orderId, con);
+                                            docketList.AddOrderById(order2.Id, con);
                                             //updating order status
                                             order2.LogDBContext = con;
                                             order2.Status = 400;
@@ -561,34 +570,34 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                             }
                             ts.Complete();
                         }
-                            RadGridAbmeldung.MasterTableView.ClearChildEditItems();
-                            RadGridAbmeldung.MasterTableView.ClearEditItems();
-                            RadGridAbmeldung.Rebind();
-                            if (laufzettel.Count > 1)
-                            {
-                                string myMergedFileName = EmptyStringIfNull.CheckIfFolderExistsAndReturnPathForPdf(Session["CurrentUserId"].ToString(), true);
-                                DocketList.MergeDocketLists(laufzettel.ToArray(), myMergedFileName);
-                                myMergedFileName = myMergedFileName.Replace(ConfigurationManager.AppSettings["BasePath"], ConfigurationManager.AppSettings["BaseUrl"]);
-                                myMergedFileName = myMergedFileName.Replace(@"\\", @"/");
-                                myMergedFileName = myMergedFileName.Replace(@"\", @"/");
-                                LieferscheinePath.Text = "<a href=" + '\u0022' + myMergedFileName + '\u0022' + " target=" + '\u0022' + "_blank" + '\u0022' + "> Laufzettel öffnen</a>";
-                                LieferscheinePath.Visible = true;
-                            }
-                            else if (laufzettel.Count == 1)
-                            {
-                                string myMergedFileName = laufzettel[0];
-                                myMergedFileName = myMergedFileName.Replace(ConfigurationManager.AppSettings["BasePath"], ConfigurationManager.AppSettings["BaseUrl"]);
-                                myMergedFileName = myMergedFileName.Replace(@"\\", @"/");
-                                myMergedFileName = myMergedFileName.Replace(@"\", @"/");
-                                LieferscheinePath.Text = "<a href=" + '\u0022' + myMergedFileName + '\u0022' + " target=" + '\u0022' + "_blank" + '\u0022' + "> Laufzettel öffnen</a>";
-                                LieferscheinePath.Visible = true;
-                            }
-                            else
-                            {
-                                LieferscheinePath.Text = "Keine Laufzettel vorhanden!";
-                                LieferscheinePath.Visible = true;
-                            }
-                          
+                        RadGridAbmeldung.MasterTableView.ClearChildEditItems();
+                        RadGridAbmeldung.MasterTableView.ClearEditItems();
+                        RadGridAbmeldung.Rebind();
+                        if (laufzettel.Count > 1)
+                        {
+                            string myMergedFileName = EmptyStringIfNull.CheckIfFolderExistsAndReturnPathForPdf(Session["CurrentUserId"].ToString(), true);
+                            DocketList.MergeDocketLists(laufzettel.ToArray(), myMergedFileName);
+                            myMergedFileName = myMergedFileName.Replace(ConfigurationManager.AppSettings["BasePath"], ConfigurationManager.AppSettings["BaseUrl"]);
+                            myMergedFileName = myMergedFileName.Replace(@"\\", @"/");
+                            myMergedFileName = myMergedFileName.Replace(@"\", @"/");
+                            LieferscheinePath.Text = "<a href=" + '\u0022' + myMergedFileName + '\u0022' + " target=" + '\u0022' + "_blank" + '\u0022' + "> Laufzettel öffnen</a>";
+                            LieferscheinePath.Visible = true;
+                        }
+                        else if (laufzettel.Count == 1)
+                        {
+                            string myMergedFileName = laufzettel[0];
+                            myMergedFileName = myMergedFileName.Replace(ConfigurationManager.AppSettings["BasePath"], ConfigurationManager.AppSettings["BaseUrl"]);
+                            myMergedFileName = myMergedFileName.Replace(@"\\", @"/");
+                            myMergedFileName = myMergedFileName.Replace(@"\", @"/");
+                            LieferscheinePath.Text = "<a href=" + '\u0022' + myMergedFileName + '\u0022' + " target=" + '\u0022' + "_blank" + '\u0022' + "> Laufzettel öffnen</a>";
+                            LieferscheinePath.Visible = true;
+                        }
+                        else
+                        {
+                            LieferscheinePath.Text = "Keine Laufzettel vorhanden!";
+                            LieferscheinePath.Visible = true;
+                        }
+
 
                     }
                 }
@@ -601,16 +610,16 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 
                 AbmeldungErrLabel.Visible = true;
                 AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
-              
+
             }
         }
-        private void UpdateOrderAfterZulassungsstelle(Guid customerIdToUpdate, Guid orderIdToUpdate)
+        private void UpdateOrderAfterZulassungsstelle(int customerIdToUpdate, int orderIdToUpdate)
         {
-            Guid customerID = customerIdToUpdate;
-            Guid orderId = orderIdToUpdate;
+            var customerID = customerIdToUpdate;
+            var orderId = orderIdToUpdate;
             try
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                 var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.Id == orderId);
                 if (newOrder != null)
                 {
@@ -629,7 +638,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     dbContext.SubmitChanges();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 AbmeldungErrLabel.Text = "Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator. <br />" + "Error: " + ex.Message;
                 AbmeldungErrLabel.Visible = true;
@@ -640,46 +649,48 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             if (itemIndexHiddenField.Value != null) // falls ausgewählte Row Index gesetz wurde
             {
                 GridDataItem selectedItem = RadGridAbmeldung.MasterTableView.Items[Convert.ToInt32(itemIndexHiddenField.Value)];
-                selectedItem.Selected = true;            
+                selectedItem.Selected = true;
                 string VIN = string.Empty,
                     kennzeichen = string.Empty,
                     HSN = string.Empty,
                     TSN = string.Empty;
-                Guid orderId, customerId;
-                Button editButton = sender as Button;
-                GridEditFormItem item = editButton.NamingContainer as GridEditFormItem;
-                TextBox vinBox = item.FindControl("VINBox") as TextBox;
-                TextBox orderIdBox = item.FindControl("orderIdBox") as TextBox;
-                TextBox kennzeichenBox = item.FindControl("KennzeichenBox") as TextBox;
-                CheckBox errorCheckBox = item.FindControl("ErrorCheckBox") as CheckBox;
-                TextBox errorReasonTextBox = item.FindControl("ErrorReasonTextBox") as TextBox;
-                TextBox HSNBox = item.FindControl("HSNAbmFormBox") as TextBox;
-                TextBox TSNBox = item.FindControl("TSNAbmFormBox") as TextBox;
-                orderId = new Guid(orderIdBox.Text);
+                int customerId = 0;
+                var editButton = sender as Button;
+                var item = editButton.NamingContainer as GridEditFormItem;
+                var vinBox = item.FindControl("VINBox") as TextBox;
+                var orderIdBox = item.FindControl("orderIdBox") as TextBox;
+                var kennzeichenBox = item.FindControl("KennzeichenBox") as TextBox;
+                var errorCheckBox = item.FindControl("ErrorCheckBox") as CheckBox;
+                var errorReasonTextBox = item.FindControl("ErrorReasonTextBox") as TextBox;
+                var HSNBox = item.FindControl("HSNAbmFormBox") as TextBox;
+                var TSNBox = item.FindControl("TSNAbmFormBox") as TextBox;
+                var orderId = Int32.Parse(orderIdBox.Text);
+                
                 if (!String.IsNullOrEmpty(CustomerDropDownListAbmeldungOffen.SelectedValue.ToString()))
-                    customerId = new Guid(CustomerDropDownListAbmeldungOffen.SelectedValue);
+                    customerId = Int32.Parse(CustomerDropDownListAbmeldungOffen.SelectedValue);
                 else
                 {
                     TextBox customerid = item.FindControl("customerIdBox") as TextBox;
-                    customerId = new Guid(customerid.Text);
+                    customerId = Int32.Parse(customerid.Text);
                 }
+                
                 AbmeldungErrLabel.Visible = false;
                 if (errorCheckBox.Checked) // falls Auftrag als Fehler gemeldet sollte
                 {
                     string errorReason = errorReasonTextBox.Text;
                     try
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         var OrderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId && q.CustomerId == customerId);
                         OrderToUpdate.LogDBContext = dbContext;
                         OrderToUpdate.HasError = true;
                         OrderToUpdate.ErrorReason = errorReason;
                         dbContext.SubmitChanges();
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         AbmeldungErrLabel.Text = "Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator. <br /> " + "Error: " + ex.Message;
-                        AbmeldungErrLabel.Visible = true;                   
+                        AbmeldungErrLabel.Visible = true;
                     }
                 }
                 else // falls normales Update 
@@ -696,14 +707,14 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     {
                         AbmeldungErrLabel.Text = "Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator. <br /> " + "Error: " + ex.Message;
                         AbmeldungErrLabel.Visible = true;
-                    }                
-               }
-                if(Session["orderNumberSearch"] != null)
-                  Session["orderNumberSearch"] = string.Empty; //after search should be empty
+                    }
+                }
+                if (Session["orderNumberSearch"] != null)
+                    Session["orderNumberSearch"] = string.Empty; //after search should be empty
                 RadGridAbmeldung.MasterTableView.ClearChildEditItems();
                 RadGridAbmeldung.MasterTableView.ClearEditItems();
                 RadGridAbmeldung.Rebind();
-            }         
+            }
         }
         // Order wird updated mit Status 400 (Zulassungstelle)
         protected void UpdateOrderAndItemsStatus()
@@ -712,48 +723,48 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             {
                 AbmeldungErrLabel.Visible = false;
                 AbmeldungOkLabel.Visible = false;
-                //if (CheckIfAllExistsToUpdate())
-                //{
-                    foreach (GridDataItem item in RadGridAbmeldung.SelectedItems)
-                    {
-                        // Vorbereitung für Update
-                        Guid customerID;
-                        if (!String.IsNullOrEmpty(CustomerDropDownListAbmeldungOffen.SelectedValue.ToString()))
-                            customerID = new Guid(CustomerDropDownListAbmeldungOffen.SelectedValue);
-                        else
-                            customerID = new Guid(item["customerID"].Text);
-                        Guid orderId = new Guid(item["OrderId"].Text);
-                        try
-                        {
-                            DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
-                            var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.Id == orderId);
-                            if (newOrder != null)
-                            {
-                                //updating order status
-                                newOrder.LogDBContext = dbContext;
-                                newOrder.Status = 400;
 
-                                //updating orderitems status                          
-                                foreach (OrderItem ordItem in newOrder.OrderItem)
-                                {
-                                    ordItem.LogDBContext = dbContext;
-                                    if (ordItem.Status != (int)OrderItemState.Storniert)
-                                    {
-                                        ordItem.Status = 300;
-                                    }
-                                }
-                                dbContext.SubmitChanges();
-                            }
-                        }
-                        catch (Exception ex)
+                foreach (GridDataItem item in RadGridAbmeldung.SelectedItems)
+                {
+                    // Vorbereitung für Update
+                    int customerID = 0;
+                    if (!String.IsNullOrEmpty(CustomerDropDownListAbmeldungOffen.SelectedValue.ToString()))
+                        customerID = Int32.Parse(CustomerDropDownListAbmeldungOffen.SelectedValue);
+                    else
+                        customerID = Int32.Parse(item["customerID"].Text);
+
+                    var orderId = Int32.Parse(item["OrderId"].Text);
+                    try
+                    {
+                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.Id == orderId);
+                        if (newOrder != null)
                         {
-                            AbmeldungErrLabel.Text = "Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator. <br /> " + "Error: " + ex.Message;
-                            AbmeldungErrLabel.Visible = true;
+                            //updating order status
+                            newOrder.LogDBContext = dbContext;
+                            newOrder.Status = 400;
+
+                            //updating orderitems status                          
+                            foreach (OrderItem ordItem in newOrder.OrderItem)
+                            {
+                                ordItem.LogDBContext = dbContext;
+                                if (ordItem.Status != (int)OrderItemState.Storniert)
+                                {
+                                    ordItem.Status = 300;
+                                }
+                            }
+                            dbContext.SubmitChanges();
                         }
                     }
-                    // erfolgreich
-                    RadGridAbmeldung.DataBind();
-                    AbmeldungOkLabel.Visible = true;
+                    catch (Exception ex)
+                    {
+                        AbmeldungErrLabel.Text = "Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator. <br /> " + "Error: " + ex.Message;
+                        AbmeldungErrLabel.Visible = true;
+                    }
+                }
+                // erfolgreich
+                RadGridAbmeldung.DataBind();
+                AbmeldungOkLabel.Visible = true;
             }
             else
             {
@@ -762,9 +773,9 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             }
         }
         // Updating Order before Zulassungstelle
-        protected void updateDataBase(string vin, string tsn, string hsn, Guid orderId, Guid customerId, string kennzeichen)
+        protected void updateDataBase(string vin, string tsn, string hsn, int orderId, int customerId, string kennzeichen)
         {
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString())))
+            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
             {
                 var updateQuery = dbContext.DeregistrationOrder.Single(q => q.OrderId == orderId);
                 updateQuery.LogDBContext = dbContext;
@@ -774,8 +785,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 updateQuery.Vehicle.VIN = vin;
                 updateQuery.Registration.Licencenumber = kennzeichen;
                 updateQuery.Vehicle.TSN = tsn;
-                updateQuery.Vehicle.HSN = hsn;               
-                dbContext.SubmitChanges();               
+                updateQuery.Vehicle.HSN = hsn;
+                dbContext.SubmitChanges();
             }
         }
         //Prüfen ob alle Werte da sind um den Auftrag auf "Zulassungstelle" zu setzen
@@ -783,20 +794,20 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         {
             bool shouldBeUpdated = true;
             foreach (GridDataItem item in RadGridAbmeldung.SelectedItems)
-            { 
-                if(String.IsNullOrEmpty(item["VIN"].Text))
+            {
+                if (String.IsNullOrEmpty(item["VIN"].Text))
                 {
                     shouldBeUpdated = false;
                     AbmeldungErrLabel.Text = "Bitte fügen Sie FIN ein";
                     AbmeldungErrLabel.Visible = true;
-                }                
-                if(String.IsNullOrEmpty(item["TSN"].Text))
+                }
+                if (String.IsNullOrEmpty(item["TSN"].Text))
                 {
                     shouldBeUpdated = false;
                     AbmeldungErrLabel.Text = "Bitte fügen Sie TSN ein";
                     AbmeldungErrLabel.Visible = true;
                 }
-                if(String.IsNullOrEmpty(item["HSN"].Text))
+                if (String.IsNullOrEmpty(item["HSN"].Text))
                 {
                     shouldBeUpdated = false;
                     AbmeldungErrLabel.Text = "Bitte fügen Sie HSN ein";
@@ -807,7 +818,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     shouldBeUpdated = false;
                     AbmeldungErrLabel.Text = "Bitte fügen Sie Standort ein";
                     AbmeldungErrLabel.Visible = true;
-                }                
+                }
             }
             return shouldBeUpdated;
         }
@@ -830,10 +841,10 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 
                 foreach (GridDataItem item in RadGridAbmeldung.SelectedItems)
                 {
-                    Guid orderId = new Guid(item["OrderId"].Text);
+                    var orderId = Int32.Parse(item["OrderId"].Text);
                     try
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         var newOrder = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
                         //updating order status
                         newOrder.LogDBContext = dbContext;

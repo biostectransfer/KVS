@@ -67,7 +67,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnCostcenterIdChanging(Guid? value)
+        partial void OnCostcenterIdChanging(int? value)
         {
             this.WriteUpdateLogItem("Kostenstelle", this.CostcenterId, value);
         }
@@ -83,7 +83,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnOrderItemIdChanging(Guid? value)
+        partial void OnOrderItemIdChanging(int? value)
         {
             this.WriteUpdateLogItem("Auftragsposition", this.OrderItemId, value);
         }

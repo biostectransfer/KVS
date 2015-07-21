@@ -40,7 +40,6 @@ namespace KVSCommon.Database
         {
             var item = new ProductCategory()
             {
-                Id = Guid.NewGuid(),
                 LogDBContext = dbContext,
                 Name = name
             };

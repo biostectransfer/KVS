@@ -132,7 +132,7 @@
     <None Include="Database\DataClasses1.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <SubType>Designer</SubType>
-      <LastGenOutput>DataClasses1.designer.cs</LastGenOutput>
+      <LastGenOutput>DataClasses11.designer.cs</LastGenOutput>
     </None>
     <None Include="KlassenDiagrammCommon_Utility.cd" />
     <None Include="KlassenDiagrammDatabase.cd" />

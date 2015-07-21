@@ -46,7 +46,6 @@ namespace KVSCommon.Database
 
             Make make = new Make()
             {
-                Id = Guid.NewGuid(),
                 Name = name,
                 HSN = hsn
             };

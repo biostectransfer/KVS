@@ -39,7 +39,7 @@ namespace KVSCommon.Database
         /// <param name="locationId">Id des Standorts, falls benoetigt. </param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Preis.</returns>
-        public static Price CreatePrice(decimal amount, decimal? authorativeCharge, Guid productId, Guid? locationId, Guid? accountId, DataClasses1DataContext dbContext)
+        public static Price CreatePrice(decimal amount, decimal? authorativeCharge, int productId, int? locationId, int? accountId, DataClasses1DataContext dbContext)
         {
             if (dbContext.Price.Any(q => q.ProductId == productId && q.LocationId == locationId))
             {
@@ -55,7 +55,6 @@ namespace KVSCommon.Database
 
             var price = new Price()
             {
-                Id = Guid.NewGuid(),
                 Amount = amount,
                 AuthorativeCharge = authorativeCharge,
                 LocationId = locationId,
@@ -69,7 +68,7 @@ namespace KVSCommon.Database
                 
                 var account = new PriceAccount()
                 {
-                    PriceId = price.Id,
+                    Price = price,
                     AccountId =accountId.Value
 
                 };
@@ -155,7 +154,7 @@ namespace KVSCommon.Database
             this.WriteUpdateLogItem("Betrag", this.Amount, value);
         }
      
-        partial void OnLocationIdChanging(Guid? value)
+        partial void OnLocationIdChanging(int? value)
         {
             if (this.EntityState != Database.EntityState.New)
             {
@@ -163,7 +162,7 @@ namespace KVSCommon.Database
             }
         }
 
-        partial void OnProductIdChanging(Guid value)
+        partial void OnProductIdChanging(int value)
         {
             if (this.EntityState != Database.EntityState.New)
             {

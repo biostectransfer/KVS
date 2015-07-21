@@ -16,7 +16,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
     public partial class Zulassungsstelle : System.Web.UI.UserControl
     {
         private string customer = string.Empty;
-        RadScriptManager script = null;   
+        RadScriptManager script = null;
         public bool comeFromOrder
         {
             set;
@@ -38,7 +38,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     HideExpandColumnRecursive(nestedView);
                 }
             }
-        } 
+        }
         protected void Page_Load(object sender, EventArgs e)
         {
             if (comeFromOrder == true)
@@ -66,14 +66,14 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             {
                 if (!target.Contains("RadComboBoxCustomerZulassungsstelle") && !target.Contains("CustomerDropDownListZulassungsstelle") && !target.Contains("NewPositionZulButton") && !target.Contains("StornierenButton"))
                 {
-                    if(RadComboBoxCustomerZulassungsstelle.Items.Count()>0)
-                    RadComboBoxCustomerZulassungsstelle.SelectedValue = Session["CustomerIndex"].ToString();
-                   // CustomerDropDownListZulassungsstelle.DataBind();
+                    if (RadComboBoxCustomerZulassungsstelle.Items.Count() > 0)
+                        RadComboBoxCustomerZulassungsstelle.SelectedValue = Session["CustomerIndex"].ToString();
+                    // CustomerDropDownListZulassungsstelle.DataBind();
                     if (Session["CustomerId"] != null)
                     {
                         if (CustomerDropDownListZulassungsstelle.Items.Count() > 0)
-                        CustomerDropDownListZulassungsstelle.SelectedValue = Session["CustomerId"].ToString();
-                        
+                            CustomerDropDownListZulassungsstelle.SelectedValue = Session["CustomerId"].ToString();
+
                         RadGridNeuzulassung.Enabled = true;
 
                         if (target.Contains("OffenNeuzulassung") || target.Contains("RadTabStripNeuzulassung") || target.Contains("IamFromSearch") || target.Contains("ShowAll"))
@@ -95,10 +95,10 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             }
         }
         protected void AbmeldungenLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {           
+        {
             //select all values for small customers
-           if ( RadComboBoxCustomerZulassungsstelle.SelectedValue == "1") // Small
-            {            
+            if (RadComboBoxCustomerZulassungsstelle.SelectedValue == "1") // Small
+            {
                 DataClasses1DataContext con = new DataClasses1DataContext();
                 RadGridNeuzulassung.Columns.FindByUniqueName("CustomerLocation").Visible = false;
 
@@ -131,15 +131,15 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          };
                 if (CustomerDropDownListZulassungsstelle.SelectedValue != string.Empty)
                 {
-                    Guid guid = new Guid(CustomerDropDownListZulassungsstelle.SelectedValue);
-                    smallCustomerQuery = smallCustomerQuery.Where(q => q.customerID == guid);
+                    var custId = Int32.Parse(CustomerDropDownListZulassungsstelle.SelectedValue);
+                    smallCustomerQuery = smallCustomerQuery.Where(q => q.customerID == custId);
                 }
                 e.Result = smallCustomerQuery;
             }
             //select all values for large customers
             else if (RadComboBoxCustomerZulassungsstelle.SelectedValue == "2") // Large
             {
-                DataClasses1DataContext con = new DataClasses1DataContext();              
+                DataClasses1DataContext con = new DataClasses1DataContext();
                 var largeCustomerQuery1 = from ord in con.Order
                                           join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                           join cust in con.Customer on ord.CustomerId equals cust.Id
@@ -170,8 +170,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                           };
                 if (CustomerDropDownListZulassungsstelle.SelectedValue != string.Empty)
                 {
-                    Guid guid = new Guid(CustomerDropDownListZulassungsstelle.SelectedValue);
-                    largeCustomerQuery1 = largeCustomerQuery1.Where(q => q.customerID == guid);
+                    var custId = Int32.Parse(CustomerDropDownListZulassungsstelle.SelectedValue);
+                    largeCustomerQuery1 = largeCustomerQuery1.Where(q => q.customerID == custId);
                 }
                 if (Session["orderNumberSearch"] != null)
                 {
@@ -180,16 +180,16 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         if (Session["orderStatusSearch"].ToString().Contains("Zulassungsstelle"))
                         {
                             int orderNumber = Convert.ToInt32(Session["orderNumberSearch"].ToString());
-                            largeCustomerQuery1 = largeCustomerQuery1.Where(q => q.OrderNumber == orderNumber);  
-                        }            
+                            largeCustomerQuery1 = largeCustomerQuery1.Where(q => q.OrderNumber == orderNumber);
+                        }
                     }
                 }
                 e.Result = largeCustomerQuery1;
                 CheckOpenedOrders();
-            }                  
+            }
         }
         protected void ShowAllButton_Click(object sender, EventArgs e)
-        {           
+        {
             CustomerDropDownListZulassungsstelle.ClearSelection();
             RadGridNeuzulassung.Enabled = true;
             RadGridNeuzulassung.Rebind();
@@ -199,12 +199,16 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         {
             DataClasses1DataContext con = new DataClasses1DataContext();
             if (RadComboBoxCustomerZulassungsstelle.SelectedValue == "1") //Small Customers
-            {                
+            {
                 var customerQuery = from cust in con.Customer
-                                    where  cust.Id == cust.SmallCustomer.CustomerId
+                                    where cust.Id == cust.SmallCustomer.CustomerId
                                     select new
-                                    { Name = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
-                                        Value = cust.Id, Matchcode = cust.MatchCode, Kundennummer = cust.CustomerNumber };
+                                    {
+                                        Name = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
+                                        Value = cust.Id,
+                                        Matchcode = cust.MatchCode,
+                                        Kundennummer = cust.CustomerNumber
+                                    };
                 e.Result = customerQuery;
             }
             else if (RadComboBoxCustomerZulassungsstelle.SelectedValue == "2") //Large Customers
@@ -213,8 +217,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                     where cust.Id == cust.LargeCustomer.CustomerId
                                     select new { Name = cust.Name, Value = cust.Id, Matchcode = cust.MatchCode, Kundennummer = cust.CustomerNumber };
                 e.Result = customerQuery;
-            }          
-        }        
+            }
+        }
         // Large oder small Customer
         protected void SmallLargeCustomerIndex_Changed(object sender, EventArgs e)
         {
@@ -229,14 +233,14 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             this.RadGridNeuzulassung.Enabled = true;
             this.RadGridNeuzulassung.DataBind();
             Session["CustomerIndex"] = RadComboBoxCustomerZulassungsstelle.SelectedValue;
-            Session["CustomerId"] = CustomerDropDownListZulassungsstelle.SelectedValue;          
+            Session["CustomerId"] = CustomerDropDownListZulassungsstelle.SelectedValue;
         }
         // Automatische Suche nach HSN
         protected void HSNBox_TextChanged(object sender, EventArgs e)
         {
             TextBox hsnTextBox = sender as TextBox;
             Label hsnLabel = hsnTextBox.Parent.FindControl("HSNSearchLabel") as Label;
-            TextBox tsnBox = hsnTextBox.Parent.FindControl("TSNAbmBox") as TextBox;            
+            TextBox tsnBox = hsnTextBox.Parent.FindControl("TSNAbmBox") as TextBox;
             hsnLabel.Text = "";
             if (!String.IsNullOrEmpty(hsnTextBox.Text))
             {
@@ -249,10 +253,10 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         protected void AmtGebuhrCheckBoxZulDataBinding(object sender, EventArgs e)
         {
             CheckBox amtGebCheckBox = sender as CheckBox;
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString())))
+            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
             {
                 TextBox orderIdBox = amtGebCheckBox.FindControl("orderIdBox") as TextBox;
-                Label dienstleistungLabel = amtGebCheckBox.FindControl("DienstleisungZulLabel") as Label;               
+                Label dienstleistungLabel = amtGebCheckBox.FindControl("DienstleisungZulLabel") as Label;
                 dienstleistungLabel.Text = "";
                 CheckBox dienstleistungVorhandenCheckBox = amtGebCheckBox.FindControl("DiensleistungVorhandenZulCheckBox") as CheckBox;
                 dienstleistungVorhandenCheckBox.Checked = false;
@@ -260,7 +264,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 Label amtGebLabel = amtGebCheckBox.FindControl("AmtGebLabel") as Label;
                 amtGebBox.Visible = false;
                 amtGebLabel.Visible = false;
-                Guid orderId = new Guid(orderIdBox.Text);
+                var orderId = Int32.Parse(orderIdBox.Text);
                 var searchOrderQuery = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
                 if (searchOrderQuery != null)
                 {
@@ -287,75 +291,82 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         }
         protected void OnItemCommand_Fired(object sender, GridCommandEventArgs e)
         {
-          try
-          {
-            ZulassungErrLabel.Text = "";
-            ZulassungErrLabel.Visible = false;
-            if (e.CommandName == "AmtGebuhrSetzen")
+            try
             {
-                GridEditableItem editedItem = e.Item as GridEditableItem;
-                RadTextBox tbEditPrice = editedItem["ColumnPrice"].FindControl("tbEditPrice") as RadTextBox;
-                string itemId = editedItem["ItemIdColumn"].Text;
-                RadTextBox tbAuthPrice = editedItem["AuthCharge"].FindControl("tbAuthChargePrice") as RadTextBox;
-                Guid authId = new Guid(editedItem["AuthChargeId"].Text);
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString())))
+                ZulassungErrLabel.Text = "";
+                ZulassungErrLabel.Visible = false;
+                if (e.CommandName == "AmtGebuhrSetzen")
                 {
-                    if (Order.GenerateAuthCharge(dbContext, authId, itemId, tbAuthPrice.Text))
+                    GridEditableItem editedItem = e.Item as GridEditableItem;
+                    RadTextBox tbEditPrice = editedItem["ColumnPrice"].FindControl("tbEditPrice") as RadTextBox;
+                    string itemId = editedItem["ItemIdColumn"].Text;
+                    RadTextBox tbAuthPrice = editedItem["AuthCharge"].FindControl("tbAuthChargePrice") as RadTextBox;
+
+                    int? authChargeId = null;
+                    if (!String.IsNullOrEmpty(editedItem["AuthChargeId"].Text))
                     {
-                        dbContext.SubmitChanges();
-                        tbAuthPrice.ForeColor = System.Drawing.Color.Green;
+                        authChargeId = Int32.Parse(editedItem["AuthChargeId"].Text);
+                    }
+
+                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                    {
+                        if (Order.GenerateAuthCharge(dbContext, authChargeId, itemId, tbAuthPrice.Text))
+                        {
+                            dbContext.SubmitChanges();
+                            tbAuthPrice.ForeColor = System.Drawing.Color.Green;
+                        }
+                    }
+                    UpdatePosition(itemId, tbEditPrice.Text);
+                    tbEditPrice.ForeColor = System.Drawing.Color.Green;
+                }
+                else
+                {
+                    if (e.Item is GridDataItem)
+                    {
+                        var button = sender as RadButton;
+                        GridDataItem dataItem = e.Item as GridDataItem;
+                        dataItem.Selected = true;
+                        itemIndexHiddenField.Value = dataItem.ItemIndex.ToString();
                     }
                 }
-                UpdatePosition(itemId, tbEditPrice.Text);
-                tbEditPrice.ForeColor = System.Drawing.Color.Green;
             }
-            else
+            catch (Exception ex)
             {
-                if (e.Item is GridDataItem)
-                {
-                    var button = sender as RadButton;
-                    GridDataItem dataItem = e.Item as GridDataItem;
-                    dataItem.Selected = true;
-                    itemIndexHiddenField.Value = dataItem.ItemIndex.ToString();
-                }
+                ZulassungErrLabel.Text = "Fehler: " + ex.Message;
+                ZulassungErrLabel.Visible = true;
             }
-          }
-          catch (Exception ex)
-          {
-                 ZulassungErrLabel.Text = "Fehler: " + ex.Message;
-                 ZulassungErrLabel.Visible = true;
-           }
         }
         // Updating ausgewählten OrderItem
         protected void UpdatePosition(string itemId, string amount)
-        {  Guid orderItemId = Guid.Empty;
+        {
             string amoutToSave = amount;
             if (amoutToSave.Contains("."))
                 amoutToSave = amoutToSave.Replace(".", ",");
             if (!EmptyStringIfNull.IsNumber(amount))
                 throw new Exception("Achtung, Sie haben keinen gültigen Preis eingegeben");
-            orderItemId = new Guid(itemId);
-            if (orderItemId != Guid.Empty)
+
+            if (!String.IsNullOrEmpty(itemId))
             {
+                var orderItemId = Int32.Parse(itemId);
                 try
                 {
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                     var positionUpdateQuery = dbContext.OrderItem.SingleOrDefault(q => q.Id == orderItemId);
                     positionUpdateQuery.LogDBContext = dbContext;
-                    positionUpdateQuery.Amount = Convert.ToDecimal(amoutToSave);             
+                    positionUpdateQuery.Amount = Convert.ToDecimal(amoutToSave);
                     dbContext.SubmitChanges();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     throw new Exception("Die ausgewählte Position kann nicht updatet werden <br /> Error: " + ex.Message);
                 }
-            }    
+            }
         }
         protected void RadGridNeuzulassung_DetailTableDataBind(object source, GridDetailTableDataBindEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            GridDataItem item = (GridDataItem)e.DetailTableView.ParentItem;
-            Guid orderId = new Guid(item["OrderId"].Text.ToString());
+            var dbContext = new DataClasses1DataContext();
+            var item = (GridDataItem)e.DetailTableView.ParentItem;
+            var orderId = Int32.Parse(item["OrderId"].Text);
             var positionQuery = from ord in dbContext.Order
                                 join orditem in dbContext.OrderItem on ord.Id equals orditem.OrderId
                                 let authCharge = dbContext.OrderItem.FirstOrDefault(s => s.SuperOrderItemId == orditem.Id)
@@ -367,114 +378,114 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                     ProductName = orditem.IsAuthorativeCharge ? orditem.ProductName + " (Amtl.Gebühr)" : orditem.ProductName,
                                     AmtGebuhr = authCharge == null ? false : true,
                                     AuthCharge = authCharge == null || authCharge.Amount == null ? "kein Preis" : (Math.Round(authCharge.Amount, 2, MidpointRounding.AwayFromZero)).ToString(),
-                                    AuthChargeId = authCharge == null ? Guid.Empty : authCharge.Id                                    
+                                    AuthChargeId = authCharge == null ? (int?)null : authCharge.Id
                                 };
             GridDataItem dataItem = item;
             GridNestedViewItem nestedItem = (GridNestedViewItem)dataItem.ChildItem;
             RadGrid radGrdEnquiriesVarients = (RadGrid)nestedItem.FindControl("RadGridNeuzulassungDetails");
             radGrdEnquiriesVarients.DataSource = positionQuery;
-            radGrdEnquiriesVarients.DataBind();                   
+            radGrdEnquiriesVarients.DataBind();
         }
         protected void AuftragFertigStellen_Command(object sender, EventArgs e)
-        {            
-                string kennzeichen = string.Empty,
-                    VIN = string.Empty,
-                    hsn = string.Empty,
-                    tsn = string.Empty;
-                Guid orderId, customerId;
-                Button editButton = sender as Button;
-                Panel item = editButton.Parent as Panel;
-                (((GridNestedViewItem)(((GridTableCell)(item.Parent.Parent)).Parent))).ParentItem.Selected = true;
-                TextBox kennzeichenBox = item.FindControl("KennzeichenBox") as TextBox;
-                TextBox vinBox = item.FindControl("VINBox") as TextBox;
-                TextBox orderIdBox = item.FindControl("orderIdBox") as TextBox;
-                TextBox TSNBox = item.FindControl("TSNAbmBox") as TextBox;
-                TextBox HSNBox = item.FindControl("HSNAbmBox") as TextBox;                
-                CheckBox errorCheckBox = item.FindControl("ErrorZulCheckBox") as CheckBox;
-                TextBox errorReasonTextBox = item.FindControl("ErrorReasonZulTextBox") as TextBox;
-                TextBox amtGebBox = item.FindControl("AmtGebTextBox") as TextBox;
-                kennzeichen = kennzeichenBox.Text.ToUpper();
-                VIN = vinBox.Text;
-                orderId = new Guid(orderIdBox.Text);
-                if (!String.IsNullOrEmpty(CustomerDropDownListZulassungsstelle.SelectedValue.ToString()))
-                    customerId = new Guid(CustomerDropDownListZulassungsstelle.SelectedValue);
-                else
-                {                   
-                    TextBox customerid = item.FindControl("customerIdBox") as TextBox;
-                    customerId = new Guid(customerid.Text);
-                }
-                tsn = TSNBox.Text;
-                hsn = HSNBox.Text;
-                ZulassungErfolgtLabel.Visible = false;
-                if (errorCheckBox.Checked) // falls Auftrag als Fehler gemeldet sollte
+        {
+            string kennzeichen = string.Empty,
+                VIN = string.Empty,
+                hsn = string.Empty,
+                tsn = string.Empty;
+            int customerId = 0;
+            Button editButton = sender as Button;
+            Panel item = editButton.Parent as Panel;
+            (((GridNestedViewItem)(((GridTableCell)(item.Parent.Parent)).Parent))).ParentItem.Selected = true;
+            TextBox kennzeichenBox = item.FindControl("KennzeichenBox") as TextBox;
+            TextBox vinBox = item.FindControl("VINBox") as TextBox;
+            TextBox orderIdBox = item.FindControl("orderIdBox") as TextBox;
+            TextBox TSNBox = item.FindControl("TSNAbmBox") as TextBox;
+            TextBox HSNBox = item.FindControl("HSNAbmBox") as TextBox;
+            CheckBox errorCheckBox = item.FindControl("ErrorZulCheckBox") as CheckBox;
+            TextBox errorReasonTextBox = item.FindControl("ErrorReasonZulTextBox") as TextBox;
+            TextBox amtGebBox = item.FindControl("AmtGebTextBox") as TextBox;
+            kennzeichen = kennzeichenBox.Text.ToUpper();
+            VIN = vinBox.Text;
+            var orderId = Int32.Parse(orderIdBox.Text);
+            if (!String.IsNullOrEmpty(CustomerDropDownListZulassungsstelle.SelectedValue.ToString()))
+                customerId = Int32.Parse(CustomerDropDownListZulassungsstelle.SelectedValue);
+            else
+            {
+                TextBox customerid = item.FindControl("customerIdBox") as TextBox;
+                customerId = Int32.Parse(customerid.Text);
+            }
+            tsn = TSNBox.Text;
+            hsn = HSNBox.Text;
+            ZulassungErfolgtLabel.Visible = false;
+            if (errorCheckBox.Checked) // falls Auftrag als Fehler gemeldet sollte
+            {
+                string errorReason = errorReasonTextBox.Text;
+                try
                 {
-                    string errorReason = errorReasonTextBox.Text;
+                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                    var OrderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId && q.CustomerId == customerId);
+                    OrderToUpdate.LogDBContext = dbContext;
+                    OrderToUpdate.HasError = true;
+                    OrderToUpdate.ErrorReason = errorReason;
+                    dbContext.SubmitChanges();
+                    RadGridNeuzulassung.MasterTableView.ClearChildEditItems();
+                    RadGridNeuzulassung.MasterTableView.ClearEditItems();
+                    RadGridNeuzulassung.Rebind();
+                }
+                catch (Exception ex)
+                {
+                    ZulassungErrLabel.Text = "Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator <br /> Error:" + ex.Message;
+                    ZulassungErfolgtLabel.Visible = true;
+                }
+            }
+            else  // falls normales Update 
+            {
+                bool amtlGebVor = false;
+                bool kennzeichenVorh = false;
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                var myOrder = dbContext.Order.SingleOrDefault(q => q.Id == orderId && q.CustomerId == customerId);
+                foreach (var orderItem in myOrder.OrderItem)
+                {
+                    if (orderItem.IsAuthorativeCharge)
+                        amtlGebVor = true;
+                }
+                if (String.IsNullOrEmpty(kennzeichen))
+                {
+                    ZulassungErrLabel.Text = "Bitte geben Sie die Kennzeichen ein!";
+                    ZulassungErrLabel.Visible = true;
+                }
+                else if (!amtlGebVor)
+                {
+                    ZulassungErrLabel.Text = "Bitte fügen Sie eine Amtl.Gebühr hinzu!";
+                    ZulassungErrLabel.Visible = true;
+                }
+                else
+                {
+                    ZulassungErrLabel.Visible = false;
                     try
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
-                        var OrderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId && q.CustomerId == customerId);
-                        OrderToUpdate.LogDBContext = dbContext;
-                        OrderToUpdate.HasError = true;
-                        OrderToUpdate.ErrorReason = errorReason;
-                        dbContext.SubmitChanges();
-                        RadGridNeuzulassung.MasterTableView.ClearChildEditItems();
-                        RadGridNeuzulassung.MasterTableView.ClearEditItems();
-                        RadGridNeuzulassung.Rebind();
+                        updateDataBase(kennzeichen, VIN, tsn, hsn, orderId, customerId);
+                        UpdateOrderAndItemsStatus();
+                        ZulassungErfolgtLabel.Visible = true;
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
-                        ZulassungErrLabel.Text = "Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator <br /> Error:" + ex.Message;
+                        ZulassungErrLabel.Text = "Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator <br /> Error: " + ex.Message;
                         ZulassungErfolgtLabel.Visible = true;
                     }
                 }
-                else  // falls normales Update 
-                {
-                    bool amtlGebVor = false;
-                    bool kennzeichenVorh = false;
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
-                    var myOrder = dbContext.Order.SingleOrDefault(q => q.Id == orderId && q.CustomerId == customerId);
-                    foreach (var orderItem in myOrder.OrderItem)
-                    {
-                        if (orderItem.IsAuthorativeCharge)
-                            amtlGebVor = true;
-                    }
-                    if (String.IsNullOrEmpty(kennzeichen))
-                    {
-                        ZulassungErrLabel.Text = "Bitte geben Sie die Kennzeichen ein!";
-                        ZulassungErrLabel.Visible = true;
-                    }
-                    else if (!amtlGebVor)
-                    {
-                        ZulassungErrLabel.Text = "Bitte fügen Sie eine Amtl.Gebühr hinzu!";
-                        ZulassungErrLabel.Visible = true;
-                    }
-                    else
-                    {
-                        ZulassungErrLabel.Visible = false;
-                        try
-                        {
-                            updateDataBase(kennzeichen, VIN, tsn, hsn, orderId, customerId);
-                            UpdateOrderAndItemsStatus();
-                            ZulassungErfolgtLabel.Visible = true;                          
-                        }
-                        catch(Exception ex)
-                        {
-                            ZulassungErrLabel.Text = "Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator <br /> Error: " + ex.Message;
-                            ZulassungErfolgtLabel.Visible = true;
-                        }
-                    }
-                }
-                if (Session["orderNumberSearch"] != null)
-                    Session["orderNumberSearch"] = string.Empty; //after search should be empty
-                RadGridNeuzulassung.MasterTableView.ClearChildEditItems();
-                RadGridNeuzulassung.MasterTableView.ClearEditItems();
-                RadGridNeuzulassung.Rebind();
-                CheckOpenedOrders();        
+            }
+            if (Session["orderNumberSearch"] != null)
+                Session["orderNumberSearch"] = string.Empty; //after search should be empty
+            RadGridNeuzulassung.MasterTableView.ClearChildEditItems();
+            RadGridNeuzulassung.MasterTableView.ClearEditItems();
+            RadGridNeuzulassung.Rebind();
+            CheckOpenedOrders();
         }
         //falls benötigt, wird der Status per Email gesendet
-        protected void SendStatusByEmail(Guid customerId, Order orderToSend)
+        protected void SendStatusByEmail(int customerId, Order orderToSend)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
             var customerAuswahl = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == customerId);
             string fromEmail = ConfigurationManager.AppSettings["FromEmail"];
             string smtp = ConfigurationManager.AppSettings["smtpHost"];
@@ -484,7 +495,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 {
                     Order.SendOrderFinishedNote(orderToSend, fromEmail, smtp, dbContext);
                 }
-                catch 
+                catch
                 {
                     throw new Exception("Email mit OrderStatus konnte nicht gesendet werden.");
                 }
@@ -497,82 +508,84 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             {
                 ZulassungErrLabel.Visible = false;
                 ZulassungErfolgtLabel.Visible = false;
-                    foreach (GridDataItem item in RadGridNeuzulassung.SelectedItems)
+                foreach (GridDataItem item in RadGridNeuzulassung.SelectedItems)
+                {
+                    // Vorbereitung für Update
+                    int customerID;
+                    if (!String.IsNullOrEmpty(CustomerDropDownListZulassungsstelle.SelectedValue.ToString()))
+                        customerID = Int32.Parse(CustomerDropDownListZulassungsstelle.SelectedValue);
+                    else
+                        customerID = Int32.Parse(item["customerID"].Text);
+                    
+                    var orderId = Int32.Parse(item["OrderId"].Text);
+                    
+                    smallCustomerOrderHiddenField.Value = orderId.ToString();
+                    CustomerIdHiddenField.Value = customerID.ToString();
+                    try
                     {
-                        // Vorbereitung für Update
-                        Guid customerID;
-                        if (!String.IsNullOrEmpty(CustomerDropDownListZulassungsstelle.SelectedValue.ToString()))
-                            customerID = new Guid(CustomerDropDownListZulassungsstelle.SelectedValue);
-                        else
-                            customerID = new Guid(item["customerID"].Text);
-                        Guid orderId = new Guid(item["OrderId"].Text);
-                        smallCustomerOrderHiddenField.Value = orderId.ToString();
-                        CustomerIdHiddenField.Value = customerID.ToString();
-                        try
+                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.Id == orderId);
+                        if (newOrder != null)
                         {
-                            DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
-                            var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.Id == orderId);
-                            if (newOrder != null)
-                            {      
-                                if (RadComboBoxCustomerZulassungsstelle.SelectedIndex == 1) // small
+                            if (RadComboBoxCustomerZulassungsstelle.SelectedIndex == 1) // small
+                            {
+                                //updating order status
+                                newOrder.LogDBContext = dbContext;
+                                newOrder.Status = 600;
+                                newOrder.ExecutionDate = DateTime.Now;
+                                //updating orderitems status                          
+                                foreach (OrderItem ordItem in newOrder.OrderItem)
                                 {
-                                    //updating order status
-                                    newOrder.LogDBContext = dbContext;
-                                    newOrder.Status = 600;
-                                    newOrder.ExecutionDate = DateTime.Now;
-                                    //updating orderitems status                          
-                                    foreach (OrderItem ordItem in newOrder.OrderItem)
+                                    ordItem.LogDBContext = dbContext;
+                                    if (ordItem.Status != (int)OrderItemState.Storniert)
                                     {
-                                        ordItem.LogDBContext = dbContext;
-                                        if (ordItem.Status != (int)OrderItemState.Storniert)
-                                        {
-                                            ordItem.Status = 600;
-                                        }
+                                        ordItem.Status = 600;
                                     }
-                                    dbContext.SubmitChanges();
-                                    //opening window for adress
-                                    string script = "function f(){$find(\"" + AddAdressRadWindow.ClientID + "\").show(); Sys.Application.remove_load(f);}Sys.Application.add_load(f);";
-                                    ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
-                                    SetValuesForAdressWindow(customerID);
                                 }
-                                else //large
+                                dbContext.SubmitChanges();
+                                //opening window for adress
+                                string script = "function f(){$find(\"" + AddAdressRadWindow.ClientID + "\").show(); Sys.Application.remove_load(f);}Sys.Application.add_load(f);";
+                                ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
+                                SetValuesForAdressWindow(customerID);
+                            }
+                            else //large
+                            {
+                                //updating order status
+                                newOrder.LogDBContext = dbContext;
+                                newOrder.Status = 600;
+                                newOrder.ExecutionDate = DateTime.Now;
+                                //updating orderitems status                          
+                                foreach (OrderItem ordItem in newOrder.OrderItem)
                                 {
-                                    //updating order status
-                                    newOrder.LogDBContext = dbContext;
-                                    newOrder.Status = 600;
-                                    newOrder.ExecutionDate = DateTime.Now;
-                                    //updating orderitems status                          
-                                    foreach (OrderItem ordItem in newOrder.OrderItem)
+                                    ordItem.LogDBContext = dbContext;
+                                    if (ordItem.Status != (int)OrderItemState.Storniert)
                                     {
-                                        ordItem.LogDBContext = dbContext;
-                                        if (ordItem.Status != (int)OrderItemState.Storniert)
-                                        {
-                                            ordItem.Status = 600;
-                                        }
+                                        ordItem.Status = 600;
                                     }
-                                    dbContext.SubmitChanges();
-                                    SendStatusByEmail(customerID, newOrder);
-                                }                            
+                                }
+                                dbContext.SubmitChanges();
+                                SendStatusByEmail(customerID, newOrder);
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            ZulassungErrLabel.Text = "Fehler: " + ex.Message;
-                            ZulassungErrLabel.Visible = true;
-                        }
                     }
-                    // erfolgreich
-                    RadGridNeuzulassung.DataBind();
-                    ZulassungErfolgtLabel.Visible = true;
-                }          
+                    catch (Exception ex)
+                    {
+                        ZulassungErrLabel.Text = "Fehler: " + ex.Message;
+                        ZulassungErrLabel.Visible = true;
+                    }
+                }
+                // erfolgreich
+                RadGridNeuzulassung.DataBind();
+                ZulassungErfolgtLabel.Visible = true;
+            }
         }
         // getting adress from small customer
-        protected void SetValuesForAdressWindow(Guid customerId)
+        protected void SetValuesForAdressWindow(int customerId)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
 
             var locationQuery = (from adr in dbContext.Adress
-                                join cust in dbContext.Customer on adr.Id equals cust.InvoiceAdressId
+                                 join cust in dbContext.Customer on adr.Id equals cust.InvoiceAdressId
                                  where cust.Id == customerId
                                  select adr).SingleOrDefault();
             StreetTextBox.Text = locationQuery.Street;
@@ -585,7 +598,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             if (RadComboBoxCustomerZulassungsstelle.SelectedIndex == 1) // small
             {
                 ZusatzlicheInfoLabel.Visible = true;
-            }           
+            }
         }
         // Create new Adress in der DatenBank
         protected void OnAddAdressButton_Clicked(object sender, EventArgs e)
@@ -600,19 +613,16 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             // OrderItem Eigenschaften
             string ProductName = string.Empty;
             decimal Amount = 0;
-            Guid customerId = Guid.Empty;
+            int customerId = 0;
             if (!String.IsNullOrEmpty(CustomerDropDownListZulassungsstelle.SelectedValue))
             {
-                customerId = new Guid(CustomerDropDownListZulassungsstelle.SelectedValue);
+                customerId = Int32.Parse(CustomerDropDownListZulassungsstelle.SelectedValue);
             }
             else if (!String.IsNullOrEmpty(CustomerIdHiddenField.Value))
             {
-                customerId = new Guid(CustomerIdHiddenField.Value);
+                customerId = Int32.Parse(CustomerIdHiddenField.Value);
             }
-            else 
-            {             
-            }
-            Guid? costCenterId = null;
+
             street = StreetTextBox.Text;
             streetNumber = StreetNumberTextBox.Text;
             zipcode = ZipcodeTextBox.Text;
@@ -621,31 +631,34 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             invoiceRecipient = InvoiceRecipient.Text;
             int itemCount = 0;
             TransactionScope scope = null;
-            ZulassungErrLabel.Visible = false; 
+            ZulassungErrLabel.Visible = false;
             try
             {
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString())))
+                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
                 {
                     using (scope = new TransactionScope())
                     {
                         var newAdress = Adress.CreateAdress(street, streetNumber, zipcode, city, country, dbContext);
                         var myCustomer = dbContext.Customer.FirstOrDefault(q => q.Id == customerId);
-                        var newInvoice = Invoice.CreateInvoice(dbContext, new Guid(Session["CurrentUserId"].ToString()), invoiceRecipient, newAdress.Id, customerId, txbDiscount.Value, "Einzelrechnung");
+                        var newInvoice = Invoice.CreateInvoice(dbContext, Int32.Parse(Session["CurrentUserId"].ToString()), invoiceRecipient, newAdress, customerId, 
+                            txbDiscount.Value, "Einzelrechnung");
                         InvoiceIdHidden.Value = newInvoice.Id.ToString();
                         //Submiting new Invoice and Adress
                         dbContext.SubmitChanges();
-                        var orderQuery = dbContext.Order.SingleOrDefault(q => q.Id == new Guid(smallCustomerOrderHiddenField.Value));
+                        var orderQuery = dbContext.Order.SingleOrDefault(q => q.Id == Int32.Parse(smallCustomerOrderHiddenField.Value));
                         foreach (OrderItem ordItem in orderQuery.OrderItem)
                         {
                             ProductName = ordItem.ProductName;
                             Amount = ordItem.Amount;
-                            Guid orderItemId = ordItem.Id;
-                            if (!String.IsNullOrEmpty(ordItem.CostCenterId.ToString()) && ordItem.CostCenterId.ToString().Length > 8)
+
+                            CostCenter costCenter = null;
+                            if (ordItem.CostCenterId.HasValue)//TODO && ordItem.CostCenterId.ToString().Length > 8)
                             {
-                                costCenterId = new Guid(ordItem.CostCenterId.ToString());
+                                costCenter = dbContext.CostCenter.FirstOrDefault(o => o.Id == ordItem.CostCenterId.Value);
                             }
+
                             itemCount = ordItem.Count;
-                            InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(ProductName, Convert.ToDecimal(Amount), itemCount, orderItemId, costCenterId, dbContext);
+                            InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(ProductName, Convert.ToDecimal(Amount), itemCount, ordItem, costCenter, dbContext);
                             ordItem.LogDBContext = dbContext;
                             newInvoiceItem.VAT = myCustomer.VAT;
                             ordItem.Status = 900;
@@ -655,12 +668,12 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         dbContext.SubmitChanges();
                         // Closing RadWindow
                         string script = "function f(){$find(\"" + AddAdressRadWindow.ClientID + "\").close(); Sys.Application.remove_load(f);}Sys.Application.add_load(f);";
-                        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);                     
+                        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
                         Print(newInvoice, dbContext);
                         orderQuery.LogDBContext = dbContext;
                         orderQuery.Status = 900;
                         dbContext.SubmitChanges();
-                        scope.Complete();                        
+                        scope.Complete();
                     }
                     RadGridNeuzulassung.Rebind();
                 }
@@ -669,12 +682,12 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             {
                 ZulassungErrLabel.Text = " Fehler:" + ex.Message;
                 ZulassungErrLabel.Visible = true;
-            }            
+            }
         }
         protected void Print(Invoice newInvoice, DataClasses1DataContext dbContext)
         {
             using (MemoryStream memS = new MemoryStream())
-            {               
+            {
                 string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
                 InvoiceHelper.CreateAccounts(dbContext, newInvoice);
                 newInvoice.Print(dbContext, memS, "");
@@ -731,28 +744,32 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 try
                 {
                     ZulassungErrLabel.Visible = false;
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                     Button button = sender as Button;
-                    Guid orderId = Guid.Empty, locationId = Guid.Empty;
-                    Price newPrice;
+
+                    Price newPrice = null;
                     OrderItem newOrderItem1 = null;
-                    RadComboBox productDropDown = button.NamingContainer.FindControl("NewProductDropDownList") as RadComboBox;
-                    DropDownList costCenterDropDown = button.NamingContainer.FindControl("CostCenterDropDownList") as DropDownList;
-                    Guid product = new Guid(productDropDown.SelectedValue);
+                    var productDropDown = button.NamingContainer.FindControl("NewProductDropDownList") as RadComboBox;
+                    var costCenterDropDown = button.NamingContainer.FindControl("CostCenterDropDownList") as DropDownList;
+                    var product = Int32.Parse(productDropDown.SelectedValue);
                     foreach (GridDataItem item in RadGridNeuzulassung.SelectedItems)
                     {
-                        orderId = new Guid(item["OrderId"].Text);
-                        KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == new Guid(productDropDown.SelectedValue));
-                        newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == locationId);
-                        if (!String.IsNullOrEmpty(item["locationId"].Text) && item["locationId"].Text.Length > 6)
+                        var orderId = Int32.Parse(item["OrderId"].Text);
+                        KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == Int32.Parse(productDropDown.SelectedValue));
+                        
+                        //TODO newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == locationId);
+                        
+                        if (!String.IsNullOrEmpty(item["locationId"].Text))//TODO && item["locationId"].Text.Length > 6)
                         {
-                            locationId = new Guid(item["locationId"].Text);
+                            var locationId = Int32.Parse(item["locationId"].Text);
                             newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == locationId);
                         }
+                        
                         if (newPrice == null || String.IsNullOrEmpty(item["locationId"].Text))
                         {
                             newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == null);
                         }
+                        
                         var orderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
                         if (newPrice == null || newProduct == null || orderToUpdate == null)
                             throw new Exception("Achtung, die Position kann nicht hinzugefügt werden, es konnte entweder kein Preis, Produkt oder der Auftrag gefunden werden!");
@@ -763,10 +780,10 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                             orderToUpdate.LogDBContext = dbContext;
                             var orderItemCostCenter = orderToUpdate.OrderItem.FirstOrDefault(q => q.CostCenter != null);
 
-                            newOrderItem1 = orderToUpdate.AddOrderItem(newProduct.Id, newPrice.Amount, 1, (orderItemCostCenter != null) ? orderItemCostCenter.CostCenterId : null, null, false, dbContext);
+                            newOrderItem1 = orderToUpdate.AddOrderItem(newProduct.Id, newPrice.Amount, 1, (orderItemCostCenter != null) ? orderItemCostCenter.CostCenter : null, null, false, dbContext);
                             if (newPrice.AuthorativeCharge.HasValue)
                             {
-                                orderToUpdate.AddOrderItem(newProduct.Id, newPrice.AuthorativeCharge.Value, 1, (orderItemCostCenter != null) ? orderItemCostCenter.CostCenterId : null,
+                                orderToUpdate.AddOrderItem(newProduct.Id, newPrice.AuthorativeCharge.Value, 1, (orderItemCostCenter != null) ? orderItemCostCenter.CostCenter : null,
                                     newOrderItem1.Id, newPrice.AuthorativeCharge.HasValue, dbContext);
                             }
                             dbContext.SubmitChanges();
@@ -783,7 +800,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             else
             {
                 ZulassungErrLabel.Visible = true;
-            }       
+            }
         }
         protected void ProductLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
@@ -819,9 +836,9 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             itemIndexHiddenField.Value = dataItem.ItemIndex.ToString();
         }
         // Updating Order und setzen Status 600 - Fertig
-        protected void updateDataBase(string kennzeichen, string vin, string tsn, string hsn, Guid orderId, Guid customerId)
+        protected void updateDataBase(string kennzeichen, string vin, string tsn, string hsn, int orderId, int customerId)
         {
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString())))
+            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
             {
                 var orderUpdateQuery = dbContext.Order.Single(q => q.Id == orderId && q.CustomerId == customerId);
                 orderUpdateQuery.LogDBContext = dbContext;
@@ -853,10 +870,10 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 StornierungErfolgLabel.Visible = false;
                 foreach (GridDataItem item in RadGridNeuzulassung.SelectedItems)
                 {
-                    Guid orderId = new Guid(item["OrderId"].Text);
+                    var orderId = Int32.Parse(item["OrderId"].Text);
                     try
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         var newOrder = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
                         //updating order status
                         newOrder.LogDBContext = dbContext;
@@ -865,7 +882,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         foreach (OrderItem ordItem in newOrder.OrderItem)
                         {
                             ordItem.LogDBContext = dbContext;
-                            ordItem.Status = (int)OrderItemState.Storniert;                          
+                            ordItem.Status = (int)OrderItemState.Storniert;
                         }
                         dbContext.SubmitChanges();
                         RadGridNeuzulassung.Rebind();
@@ -878,10 +895,10 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     }
                 }
             }
-            else 
+            else
             {
                 ZulassungErrLabel.Visible = true;
             }
         }
-    }   
+    }
 }

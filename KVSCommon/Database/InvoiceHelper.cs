@@ -23,7 +23,6 @@ namespace KVSCommon.Database
                  {
                      var myAccount = new InvoiceItemAccountItem
                      {
-                         IIACCID = Guid.NewGuid(),
                          InvoiceItemId = thisItems.InvoiceItemId,
                          RevenueAccountText = thisItems.AccountNumber
                      };

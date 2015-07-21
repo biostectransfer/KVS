@@ -16,8 +16,8 @@ namespace KVSWebApplication.Permission
     {
         List<string> thisUserPermissions = new List<string>();
         protected void Page_Load(object sender, EventArgs e)
-        {  
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+        {
+            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (!thisUserPermissions.Contains("RECHTEPROFIL_BEARBEITEN"))
             {
                 getAllPermissionProfile.MasterTableView.CommandItemSettings.ShowAddNewRecordButton = false;
@@ -33,14 +33,14 @@ namespace KVSWebApplication.Permission
             {
                 GridDataItem item = (GridDataItem)e.Item;
                 object myId = item.GetDataKeyValue("Id");
-                
+
                 if (myId != null)
                 {
-                   using (DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])))
-                   {
+                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                    {
                         try
                         {
-                            Guid myProfileId = new Guid(item.GetDataKeyValue("Id").ToString());
+                            var myProfileId = Int32.Parse(item.GetDataKeyValue("Id").ToString());
 
                             var permProfUsers = dbContext.UserPermissionProfile.Where(q => q.PermissionProfileId == myProfileId);
                             if (permProfUsers != null)
@@ -61,17 +61,17 @@ namespace KVSWebApplication.Permission
                                     dbContext.SubmitChanges();
                                 }
                             }
-                           
+
 
                             var permProf = dbContext.PermissionProfile.SingleOrDefault(q => q.Id == myProfileId);
                             if (permProf != null) //kann gelöscht sein
                             {
                                 dbContext.PermissionProfile.DeleteOnSubmit(permProf);
-                                dbContext.SubmitChanges();                             
-                            }                   
+                                dbContext.SubmitChanges();
+                            }
                         }
 
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             RadWindowManagerAllPermissionProfile.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                             try
@@ -83,10 +83,10 @@ namespace KVSWebApplication.Permission
                         }
                     }
 
-                   getAllPermissionProfile.Rebind();
+                    getAllPermissionProfile.Rebind();
                 }
             }
-        } 
+        }
 
         protected void getAllPermissionProfileDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
@@ -119,15 +119,15 @@ namespace KVSWebApplication.Permission
         }
         protected void getAllPermissionProfile_EditCommand(object source, Telerik.Web.UI.GridCommandEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
             Hashtable newValues = new Hashtable();
             ((GridEditableItem)e.Item).ExtractValues(newValues);
             try
             {
-                var checkThisPermission = dbContext.PermissionProfile.SingleOrDefault(q => q.Id == new Guid(newValues["Id"].ToString()));
+                var checkThisPermission = dbContext.PermissionProfile.SingleOrDefault(q => q.Id == Int32.Parse(newValues["Id"].ToString()));
                 if (checkThisPermission != null)
                 {
-                    if (newValues["Description"] == null || newValues["Name"]==null)
+                    if (newValues["Description"] == null || newValues["Name"] == null)
                     {
                         throw new Exception("Die Rechtebeschreibung/Rechtename darf nicht leer sein!");
                     }
@@ -167,11 +167,11 @@ namespace KVSWebApplication.Permission
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
             var query = from permission in dbContext.PermissionProfile
                         join pprofile in dbContext.PermissionProfilePermission on permission.Id equals pprofile.PermissionProfileId
-                        where permission.Id==new Guid(e.WhereParameters["Id"].ToString())
+                        where permission.Id == Int32.Parse(e.WhereParameters["Id"].ToString())
                         orderby pprofile.Permission.Name
                         select new
                         {
-                            Id=pprofile.Permission.Id,
+                            Id = pprofile.Permission.Id,
                             Name = pprofile.Permission.Name,
                             pprofile.Permission.Description
                         };
@@ -186,13 +186,13 @@ namespace KVSWebApplication.Permission
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
             var query = from permission in dbContext.Permission
-                        where permission.PermissionProfilePermission.Any(q => q.PermissionProfileId == new Guid(e.WhereParameters["Id"].ToString())) == false
+                        where permission.PermissionProfilePermission.Any(q => q.PermissionProfileId == Int32.Parse(e.WhereParameters["Id"].ToString())) == false
                         orderby permission.Name
                         select new
                         {
-                           permission.Id,
-                           permission.Name,
-                           permission.Description
+                            permission.Id,
+                            permission.Name,
+                            permission.Description
                         };
             e.Result = query;
         }
@@ -206,32 +206,32 @@ namespace KVSWebApplication.Permission
         }
         protected void savePermissionPackageClick(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])); // hier kommt die Loggingid
+            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
             try
-            {             
+            {
                 RadListBoxItemCollection AddedPermission = ((RadListBox)((RadButton)sender).Parent.FindControl("AddedPermission")).Items;
                 RadListBoxItemCollection AllPermissions = ((RadListBox)((RadButton)sender).Parent.FindControl("Permissions")).Items;
-                Guid permissionProfileId = new Guid(((RadButton)sender).CommandArgument.ToString());
+                var permissionProfileId = Int32.Parse(((RadButton)sender).CommandArgument.ToString());
                 var permissionClear = dbContext.PermissionProfilePermission.Where(q => q.PermissionProfileId == permissionProfileId);
-                var thisPermissionProfile = dbContext.PermissionProfile.SingleOrDefault(q => q.Id == permissionProfileId);     
-                    foreach (RadListBoxItem permission in AllPermissions)
+                var thisPermissionProfile = dbContext.PermissionProfile.SingleOrDefault(q => q.Id == permissionProfileId);
+                foreach (RadListBoxItem permission in AllPermissions)
+                {
+                    if (permissionClear.SingleOrDefault(q => q.PermissionId == Int32.Parse(permission.Value) && q.PermissionProfileId == permissionProfileId) != null)
                     {
-                        if (permissionClear.SingleOrDefault(q => q.PermissionId == new Guid(permission.Value) && q.PermissionProfileId == permissionProfileId) != null)
-                        {
-                            thisPermissionProfile.RemovePermission(new Guid(permission.Value), dbContext);
-                        }
+                        thisPermissionProfile.RemovePermission(Int32.Parse(permission.Value), dbContext);
                     }
-                    foreach (RadListBoxItem addItem in AddedPermission)
+                }
+                foreach (RadListBoxItem addItem in AddedPermission)
+                {
+                    if (permissionClear.SingleOrDefault(q => q.PermissionId == Int32.Parse(addItem.Value) && q.PermissionProfileId == permissionProfileId) == null)
                     {
-                        if (permissionClear.SingleOrDefault(q => q.PermissionId == new Guid(addItem.Value) && q.PermissionProfileId == permissionProfileId) == null)
-                        {
-                            thisPermissionProfile.AddPermission(new Guid(addItem.Value), dbContext);
-                        }
+                        thisPermissionProfile.AddPermission(Int32.Parse(addItem.Value), dbContext);
                     }
-                    dbContext.SubmitChanges();
-                    getAllPermissionProfile.EditIndexes.Clear();
-                    getAllPermissionProfile.MasterTableView.IsItemInserted = false;
-                    getAllPermissionProfile.MasterTableView.Rebind();  
+                }
+                dbContext.SubmitChanges();
+                getAllPermissionProfile.EditIndexes.Clear();
+                getAllPermissionProfile.MasterTableView.IsItemInserted = false;
+                getAllPermissionProfile.MasterTableView.Rebind();
             }
             catch (Exception ex)
             {
@@ -243,31 +243,31 @@ namespace KVSWebApplication.Permission
                 catch { }
             }
         }
-       protected  void Grid_InsertCommand(object source, GridCommandEventArgs e)
-       {
-           DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])); // hier kommt die Loggingid
-                try
+        protected void Grid_InsertCommand(object source, GridCommandEventArgs e)
+        {
+            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+            try
+            {
+                Hashtable newValues = new Hashtable();
+                ((GridEditableItem)e.Item).ExtractValues(newValues);
+                if (newValues["Description"] == null || newValues["Name"] == null)
                 {
-                    Hashtable newValues = new Hashtable();
-                    ((GridEditableItem)e.Item).ExtractValues(newValues);
-                    if (newValues["Description"] == null || newValues["Name"] == null)
-                    {
-                        throw new Exception("Die Rechtebeschreibung/Rechtename darf nicht leer sein!");
-                    }
-                    var checkRightProfile = dbContext.PermissionProfile.SingleOrDefault(q => q.Name == newValues["Name"].ToString());
-                    if(checkRightProfile == null)
-                    {
-                        KVSCommon.Database.PermissionProfile.CreatePermissionProfile(newValues["Name"].ToString(), newValues["Description"].ToString(), dbContext);
-                        dbContext.SubmitChanges();
-                    }
-                    else
-                        throw new Exception("Der Rechteprofilname existiert bereits!");
-                    e.Canceled = true;
-                    getAllPermissionProfile.EditIndexes.Clear();
-                    getAllPermissionProfile.MasterTableView.IsItemInserted = false;
-                    getAllPermissionProfile.MasterTableView.Rebind();  
+                    throw new Exception("Die Rechtebeschreibung/Rechtename darf nicht leer sein!");
                 }
-                catch (Exception ex)
+                var checkRightProfile = dbContext.PermissionProfile.SingleOrDefault(q => q.Name == newValues["Name"].ToString());
+                if (checkRightProfile == null)
+                {
+                    KVSCommon.Database.PermissionProfile.CreatePermissionProfile(newValues["Name"].ToString(), newValues["Description"].ToString(), dbContext);
+                    dbContext.SubmitChanges();
+                }
+                else
+                    throw new Exception("Der Rechteprofilname existiert bereits!");
+                e.Canceled = true;
+                getAllPermissionProfile.EditIndexes.Clear();
+                getAllPermissionProfile.MasterTableView.IsItemInserted = false;
+                getAllPermissionProfile.MasterTableView.Rebind();
+            }
+            catch (Exception ex)
             {
                 RadWindowManagerAllPermissionProfile.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                 try
@@ -277,6 +277,6 @@ namespace KVSWebApplication.Permission
                 }
                 catch { }
             }
-        } 
+        }
     }
 }

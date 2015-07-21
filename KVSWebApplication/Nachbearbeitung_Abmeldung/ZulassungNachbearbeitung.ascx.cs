@@ -114,8 +114,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          };
                 if (CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue != string.Empty)
                 {
-                    Guid guid = new Guid(CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue);
-                    smallCustomerQuery = smallCustomerQuery.Where(q => q.customerID == guid);
+                    var custId = Int32.Parse(CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue);
+                    smallCustomerQuery = smallCustomerQuery.Where(q => q.customerID == custId);
                 }
                 e.Result = smallCustomerQuery;
             }
@@ -153,8 +153,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                           };
                 if (CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue != string.Empty)
                 {
-                    Guid guid = new Guid(CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue);
-                    largeCustomerQuery1 = largeCustomerQuery1.Where(q => q.customerID == guid);
+                    var custId = Int32.Parse(CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue);
+                    largeCustomerQuery1 = largeCustomerQuery1.Where(q => q.customerID == custId);
                 }
                 if (Session["orderNumberSearch"] != null)
                 {
@@ -221,17 +221,16 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                       kennzeichen = string.Empty,
                       HSN = string.Empty,
                       TSN = string.Empty;
-                Guid orderId, customerId;
+                int customerId = 0;
                 Button editButton = sender as Button;
-                //GridEditFormItem item = editButton.NamingContainer as GridEditFormItem;
+
                 Panel item = editButton.Parent as Panel;
                 (((GridNestedViewItem)(((GridTableCell)(item.Parent.Parent)).Parent))).ParentItem.Selected = true;
                 RadDateTimePicker picker = item.FindControl("CreateDateBox") as RadDateTimePicker;
                 TextBox kennzeichenBox = item.FindControl("KennzeichenBox") as TextBox;
                 TextBox vinBox = item.FindControl("VINBox") as TextBox;
                 TextBox orderIdBox = item.FindControl("orderIdBox") as TextBox;
-               // CheckBox dienstleistungVorhandenCheckBox = item.FindControl("DiensleistungVorhandenCheckBox") as CheckBox;
-               // CheckBox AmtGebuhrCheckBox = item.FindControl("AmtGebuhrCheckBox") as CheckBox;               
+          
                 CheckBox errorCheckBox = item.FindControl("ErrorZulCheckBox") as CheckBox;
                 TextBox errorReasonTextBox = item.FindControl("ErrorReasonZulTextBox") as TextBox;
                 TextBox HSNBox = item.FindControl("HSNAbmBox") as TextBox;
@@ -240,13 +239,14 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 ErrorZulLabel.Visible = false;
                 kennzeichen = kennzeichenBox.Text.ToUpper();
                 VIN = vinBox.Text;
-                orderId = new Guid(orderIdBox.Text);
+                var orderId = Int32.Parse(orderIdBox.Text);
+
                 if (!String.IsNullOrEmpty(CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue.ToString()))
-                    customerId = new Guid(CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue);
+                    customerId = Int32.Parse(CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue);
                 else
                 {
                     TextBox customerid = item.FindControl("customerIdBox") as TextBox;
-                    customerId = new Guid(customerid.Text);
+                    customerId = Int32.Parse(customerid.Text);
                 }
                 HSN = HSNBox.Text;
                 TSN = TSNBox.Text;
@@ -255,7 +255,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     string errorReason = errorReasonTextBox.Text;
                     try
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         var OrderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId && q.CustomerId == customerId);
                         OrderToUpdate.LogDBContext = dbContext;
                         OrderToUpdate.HasError = true;
@@ -274,7 +274,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 else  // falls normales Update 
                 {
                     bool amtlGebVor = false;
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                     var myOrder = dbContext.Order.SingleOrDefault(q => q.Id == orderId && q.CustomerId == customerId);
                     foreach (var orderItem in myOrder.OrderItem)
                     {
@@ -315,9 +315,9 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             }         
         }
         //falls benötigt, wird der Status per Email gesendet
-        protected void SendStatusByEmail(Guid customerId, Order orderToSend)
+        protected void SendStatusByEmail(int customerId, Order orderToSend)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
             var customerAuswahl = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == customerId);
             string fromEmail = ConfigurationManager.AppSettings["FromEmail"];
             string smtp = ConfigurationManager.AppSettings["smtpHost"];
@@ -346,19 +346,19 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             // OrderItem Eigenschaften
             string ProductName = string.Empty;
             decimal Amount = 0;
-            Guid customerId = Guid.Empty;
+            int customerId = 0;
             if (!String.IsNullOrEmpty(CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue))
             {
-                customerId = new Guid(CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue);
+                customerId = Int32.Parse(CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue);
             }
             else if (!String.IsNullOrEmpty(CustomerIdHiddenField.Value))
             {
-                customerId = new Guid(CustomerIdHiddenField.Value);
+                customerId = Int32.Parse(CustomerIdHiddenField.Value);
             }
             else
             {
             }
-            Guid? costCenterId = null;
+            int? costCenterId = null;
             street = StreetTextBox.Text;
             streetNumber = StreetNumberTextBox.Text;
             zipcode = ZipcodeTextBox.Text;
@@ -370,28 +370,38 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             AbmeldungErrLabel.Visible = false;
             try
             {
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString())))
+                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
                 {
                     using (scope = new TransactionScope())
                     {
                         var newAdress = Adress.CreateAdress(street, streetNumber, zipcode, city, country, dbContext);
                         var myCustomer = dbContext.Customer.FirstOrDefault(q => q.Id == customerId);
-                        var newInvoice = Invoice.CreateInvoice(dbContext, new Guid(Session["CurrentUserId"].ToString()), invoiceRecipient, newAdress.Id, customerId, txbDiscount.Value, "Einzelrechnung");
+                        var newInvoice = Invoice.CreateInvoice(dbContext, Int32.Parse(Session["CurrentUserId"].ToString()), invoiceRecipient, 
+                            newAdress, customerId, txbDiscount.Value, "Einzelrechnung");
                         InvoiceIdHidden.Value = newInvoice.Id.ToString();
                         //Submiting new Invoice and Adress
                         dbContext.SubmitChanges();
-                        var orderQuery = dbContext.Order.SingleOrDefault(q => q.Id == new Guid(smallCustomerOrderHiddenField.Value));
+                        var orderQuery = dbContext.Order.SingleOrDefault(q => q.Id == Int32.Parse(smallCustomerOrderHiddenField.Value));
                         foreach (OrderItem ordItem in orderQuery.OrderItem)
                         {
                             ProductName = ordItem.ProductName;
                             Amount = ordItem.Amount;
-                            Guid orderItemId = ordItem.Id;
-                            if (!String.IsNullOrEmpty(ordItem.CostCenterId.ToString()) && ordItem.CostCenterId.ToString().Length > 8)
-                            {
-                                costCenterId = new Guid(ordItem.CostCenterId.ToString());
-                            }
+                            
+                            //TODO
+                            //if (!String.IsNullOrEmpty(ordItem.CostCenterId.ToString()) && ordItem.CostCenterId.ToString().Length > 8)
+                            //{
+                            //    costCenterId = Int32.Parse(ordItem.CostCenterId.ToString());
+                            //}
+                            
                             itemCount = ordItem.Count;
-                            InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(ProductName, Convert.ToDecimal(Amount), itemCount, orderItemId, costCenterId, dbContext);
+
+                            CostCenter costCenter = null;
+                            if (costCenterId.HasValue)
+                            {
+                                costCenter = dbContext.CostCenter.FirstOrDefault(o => o.Id == costCenterId.Value);
+                            }
+
+                            InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(ProductName, Convert.ToDecimal(Amount), itemCount, ordItem, costCenter, dbContext);
                             ordItem.LogDBContext = dbContext;
                             newInvoiceItem.VAT = myCustomer.VAT;
                             ordItem.Status = 900;
@@ -447,10 +457,16 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     RadTextBox tbEditPrice = editedItem["ColumnPrice"].FindControl("tbEditPrice") as RadTextBox;
                     string itemId = editedItem["ItemIdColumn"].Text;
                     RadTextBox tbAuthPrice = editedItem["AuthCharge"].FindControl("tbAuthChargePrice") as RadTextBox;
-                    Guid authId = new Guid(editedItem["AuthChargeId"].Text);
-                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString())))
+
+                    int? authChargeId = null;
+                    if (!String.IsNullOrEmpty(editedItem["AuthChargeId"].Text))
                     {
-                        if (Order.GenerateAuthCharge(dbContext, authId, itemId, tbAuthPrice.Text))
+                        authChargeId = Int32.Parse(editedItem["AuthChargeId"].Text);
+                    }
+
+                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                    {
+                        if (Order.GenerateAuthCharge(dbContext, authChargeId, itemId, tbAuthPrice.Text))
                         {
                             dbContext.SubmitChanges();
                             tbAuthPrice.ForeColor = System.Drawing.Color.Green;
@@ -479,18 +495,18 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         // Updating ausgewählten OrderItem
         protected void UpdatePosition(string itemId, string amount)
         {
-            Guid orderItemId = Guid.Empty;
             string amoutToSave = amount;
             if (amoutToSave.Contains("."))
                 amoutToSave = amoutToSave.Replace(".", ",");
             if (!EmptyStringIfNull.IsNumber(amount))
                 throw new Exception("Achtung, Sie haben keinen gültigen Preis eingegeben");
-            orderItemId = new Guid(itemId);
-            if (orderItemId != Guid.Empty)
+ 
+            if (!String.IsNullOrEmpty(itemId))
             {
                 try
                 {
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                    var orderItemId = Int32.Parse(itemId);
+                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                     var positionUpdateQuery = dbContext.OrderItem.SingleOrDefault(q => q.Id == orderItemId);
                     positionUpdateQuery.LogDBContext = dbContext;
                     positionUpdateQuery.Amount = Convert.ToDecimal(amoutToSave);
@@ -526,17 +542,17 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     foreach (GridDataItem item in RadGridAbmeldung.SelectedItems)
                     {
                         // Vorbereitung für Update
-                        Guid customerID;
+                        int customerID = 0;
                         if (!String.IsNullOrEmpty(CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue.ToString()))
-                            customerID = new Guid(CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue);
+                            customerID = Int32.Parse(CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue);
                         else
-                            customerID = new Guid(item["customerID"].Text);
-                        Guid orderId = new Guid(item["OrderId"].Text);
+                            customerID = Int32.Parse(item["customerID"].Text);
+                        var orderId = Int32.Parse(item["OrderId"].Text);
                         smallCustomerOrderHiddenField.Value = orderId.ToString();
                         CustomerIdHiddenField.Value = customerID.ToString();
                         try
                         {
-                            DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                             var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.Id == orderId);
                             if (newOrder != null)
                             {
@@ -598,7 +614,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             }
         }
         // getting adress from small customer
-        protected void SetValuesForAdressWindow(Guid customerId)
+        protected void SetValuesForAdressWindow(int customerId)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
             var locationQuery = (from adr in dbContext.Adress
@@ -652,9 +668,9 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             return shouldBeUpdated;
         }
         // Updating Order und OrderItems auf Status 600 - Abgeschlossen
-        protected void updateDataBase(string kennzeichen, string vin, string tsn, string hsn, Guid orderId, Guid customerId)
+        protected void updateDataBase(string kennzeichen, string vin, string tsn, string hsn, int orderId, int customerId)
         {
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString())))
+            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
             {
                 var orderUpdateQuery = dbContext.Order.SingleOrDefault(q => q.Id == orderId && q.CustomerId == customerId);
                 orderUpdateQuery.LogDBContext = dbContext;
@@ -679,7 +695,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
             GridDataItem item = (GridDataItem)e.DetailTableView.ParentItem;
-            Guid orderId = new Guid(item["OrderId"].Text.ToString());
+            var orderId = Int32.Parse(item["OrderId"].Text);
             var positionQuery = from ord in dbContext.Order
                                 join orditem in dbContext.OrderItem on ord.Id equals orditem.OrderId
                                 let authCharge = dbContext.OrderItem.FirstOrDefault(s => s.SuperOrderItemId == orditem.Id)
@@ -691,7 +707,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                     ProductName = orditem.IsAuthorativeCharge ? orditem.ProductName + " (Amtl.Gebühr)" : orditem.ProductName,
                                     AmtGebuhr = authCharge == null ? false : true,
                                     AuthCharge = authCharge == null || authCharge.Amount == null ? "kein Preis" : (Math.Round(authCharge.Amount, 2, MidpointRounding.AwayFromZero)).ToString(),
-                                    AuthChargeId = authCharge == null ? Guid.Empty : authCharge.Id
+                                    AuthChargeId = authCharge == null ? (int?)null : authCharge.Id
                                 };
             GridDataItem dataItem = item;
             GridNestedViewItem nestedItem = (GridNestedViewItem)dataItem.ChildItem;
@@ -706,21 +722,22 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                    try
                 {
                 AbmeldungErrLabel.Visible = false;
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                 Button button = sender as Button;
-                Guid orderId = Guid.Empty, locationId = Guid.Empty;
+                int locationId = 0;
                 Price newPrice = null;
                 OrderItem newOrderItem1 = null;
-                RadComboBox productDropDown = button.NamingContainer.FindControl("NewProductDropDownList") as RadComboBox;
-                DropDownList costCenterDropDown = button.NamingContainer.FindControl("CostCenterDropDownList") as DropDownList;
-                Guid product = new Guid(productDropDown.SelectedValue);
+                var productDropDown = button.NamingContainer.FindControl("NewProductDropDownList") as RadComboBox;
+                var costCenterDropDown = button.NamingContainer.FindControl("CostCenterDropDownList") as DropDownList;
+                var product = Int32.Parse(productDropDown.SelectedValue);
+
                 foreach (GridDataItem item in RadGridAbmeldung.SelectedItems)
                 {
-                    orderId = new Guid(item["OrderId"].Text);
-                    KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == new Guid(productDropDown.SelectedValue));
+                    var orderId = Int32.Parse(item["OrderId"].Text);
+                    KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == Int32.Parse(productDropDown.SelectedValue));
                     if (CustomerDropDownListAbmeldungZulassunsstelle.SelectedValue == "2") // if small customer
                     {
-                        locationId = new Guid(item["locationId"].Text);
+                        locationId = Int32.Parse(item["locationId"].Text);
                         newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == locationId);
                     }                                                       
                     if (newPrice == null)
@@ -737,11 +754,11 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         orderToUpdate.LogDBContext = dbContext;
                         var orderItemCostCenter = orderToUpdate.OrderItem.FirstOrDefault(q => q.CostCenter != null);
 
-                        newOrderItem1 = orderToUpdate.AddOrderItem(newProduct.Id, newPrice.Amount, 1, (orderItemCostCenter != null) ? orderItemCostCenter.CostCenterId : null,
+                        newOrderItem1 = orderToUpdate.AddOrderItem(newProduct.Id, newPrice.Amount, 1, (orderItemCostCenter != null) ? orderItemCostCenter.CostCenter : null,
                             null, false, dbContext);
                         if (newPrice.AuthorativeCharge.HasValue)
                         {
-                            orderToUpdate.AddOrderItem(newProduct.Id, newPrice.AuthorativeCharge.Value, 1, (orderItemCostCenter != null) ? orderItemCostCenter.CostCenterId : null,
+                            orderToUpdate.AddOrderItem(newProduct.Id, newPrice.AuthorativeCharge.Value, 1, (orderItemCostCenter != null) ? orderItemCostCenter.CostCenter : null,
                                 newOrderItem1.Id, newPrice.AuthorativeCharge.HasValue, dbContext);
                         }
                         dbContext.SubmitChanges();
@@ -803,10 +820,10 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 StornierungErfolgLabel.Visible = false;
                 foreach (GridDataItem item in RadGridAbmeldung.SelectedItems)
                 {
-                    Guid orderId = new Guid(item["OrderId"].Text);
+                    var orderId = Int32.Parse(item["OrderId"].Text);
                     try
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         var newOrder = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
                         //updating order status
                         newOrder.LogDBContext = dbContext;

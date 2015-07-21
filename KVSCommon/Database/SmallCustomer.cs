@@ -34,7 +34,7 @@ namespace KVSCommon.Database
       /// </summary>
       /// <param name="dbContext">DB Kontext</param>
       /// <param name="smallCustomerId">Laufkunden ID</param>
-        public static void RemoveSmallCutomer(DataClasses1DataContext dbContext, Guid smallCustomerId)
+        public static void RemoveSmallCutomer(DataClasses1DataContext dbContext, int smallCustomerId)
         {
             var smCustomer = dbContext.SmallCustomer.FirstOrDefault(q => q.CustomerId == smallCustomerId);
             if (smCustomer == null)
@@ -85,7 +85,8 @@ namespace KVSCommon.Database
         /// <param name="customerNumber">Kundennummer.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Laufkunden.</returns>
-        public static SmallCustomer CreateSmallCustomer(string name, string firstName, string title, string gender, string street, string streetnumber, string zipcode, string city, string country, string phone, string fax, string mobilephone, string email, decimal vat, int? termOfCredit, string customerNumber, DataClasses1DataContext dbContext)
+        public static SmallCustomer CreateSmallCustomer(string name, string firstName, string title, string gender, string street, string streetnumber, string zipcode, string city, 
+            string country, string phone, string fax, string mobilephone, string email, decimal vat, int? termOfCredit, string customerNumber, DataClasses1DataContext dbContext)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -96,7 +97,6 @@ namespace KVSCommon.Database
             customer._dbContext = dbContext;
             var person = new Person()
             {
-                Id = Guid.NewGuid(),
                 FirstName = firstName,
                 Name = name,
                 Gender = gender,

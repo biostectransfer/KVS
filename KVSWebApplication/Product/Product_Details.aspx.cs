@@ -27,7 +27,7 @@ namespace KVSWebApplication.Product
         List<string> thisUserPermissions = new List<string>();
         protected void Page_Load(object sender, System.EventArgs e)
         {
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (!Page.IsPostBack)
             {
                 if (thisUserPermissions.Contains("PRODUKTE_UEBERSICHT") || thisUserPermissions.Contains("PRODUKTE_SPERREN") || thisUserPermissions.Contains("PRODUKTE_ANLEGEN") || thisUserPermissions.Contains("PRODUKTE_BEARBEITEN"))

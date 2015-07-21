@@ -42,13 +42,13 @@ namespace KVSCommon.Database
         /// <param name="registrationDocumentNumber">Fahrzeugbriefnummer, falls vorhanden.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Die neue Zulassung.</returns>
-        public static Registration CreateRegistration(Guid carOwnerId, Guid vehicleId, string licencenumber, string evbNumber, DateTime? generalInspectionDate, DateTime? registrationDate, string registrationDocumentNumber, string emissionCode, DataClasses1DataContext dbContext)
+        public static Registration CreateRegistration(CarOwner carOwner, Vehicle vehicle, string licencenumber, string evbNumber, DateTime? generalInspectionDate, 
+            DateTime? registrationDate, string registrationDocumentNumber, string emissionCode, DataClasses1DataContext dbContext)
         {
             Registration registration = new Registration()
             {
-                Id = Guid.NewGuid(),
-                VehicleId = vehicleId,
-                CarOwnerId = carOwnerId,
+                Vehicle = vehicle,
+                CarOwner = carOwner,
                 Licencenumber = licencenumber,
                 GeneralInspectionDate = generalInspectionDate,
                 RegistrationDate = registrationDate,
@@ -58,7 +58,7 @@ namespace KVSCommon.Database
             };
 
             //   var vehicleVIN = dbContext.Vehicle.Single(q => q.Id == vehicleId).VIN;
-            dbContext.WriteLogItem("Zulassung wurde angelegt.", LogTypes.INSERT, registration.Id, "Registration", vehicleId);
+            dbContext.WriteLogItem("Zulassung wurde angelegt.", LogTypes.INSERT, registration.Id, "Registration", vehicle.Id);
             dbContext.Registration.InsertOnSubmit(registration);
             return registration;
         }

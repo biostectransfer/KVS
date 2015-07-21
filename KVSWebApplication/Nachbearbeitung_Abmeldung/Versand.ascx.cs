@@ -55,7 +55,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                select new
                                {
                                    listId = packList.Id,
-                                   orderId = CustomerNameLet!=null ? CustomerNameLet.Id : Guid.Empty,
+                                   orderId = CustomerNameLet!=null ? CustomerNameLet.Id : (int?)null,
                                    CustomerName = //CustomerNameLet.Customer.Name,
                                     CustomerNameLet.Customer.SmallCustomer != null &&
                                         CustomerNameLet.Customer.SmallCustomer.Person != null ?
@@ -73,9 +73,9 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         protected void OrdersDetailedTabel_DetailTable(object source, GridDetailTableDataBindEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            GridDataItem _item = (GridDataItem)e.DetailTableView.ParentItem;
-            Guid listId = new Guid(_item["listId"].Text.ToString());
+            var dbContext = new DataClasses1DataContext();
+            var _item = (GridDataItem)e.DetailTableView.ParentItem;
+            var listId = Int32.Parse(_item["listId"].Text);
             var orderQuery = from ord in dbContext.Order
                              where ord.PackingListId == listId && ord.Status == 600 && ord.HasError.GetValueOrDefault(false) != true
                              select new
@@ -92,21 +92,21 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                  OrderType = ord.OrderType.Name,
                                  OrderError = ord.HasError == true ? "Ja" : "Nein"
                              };
-            GridDataItem item = (GridDataItem)e.DetailTableView.ParentItem;
-            GridNestedViewItem nestedItem = (GridNestedViewItem)item.ChildItem;
-            RadGrid radGrdEnquiriesVarients = (RadGrid)nestedItem.FindControl("RadGridVersandDetails");
+            var item = (GridDataItem)e.DetailTableView.ParentItem;
+            var nestedItem = (GridNestedViewItem)item.ChildItem;
+            var radGrdEnquiriesVarients = (RadGrid)nestedItem.FindControl("RadGridVersandDetails");
             radGrdEnquiriesVarients.DataSource = orderQuery;
             radGrdEnquiriesVarients.DataBind();
         }
         protected void OrdersDetailedTabel_DetailTableDataBind(object source, GridNeedDataSourceEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            RadGrid sender = source as RadGrid;
-            Panel item = sender.Parent as Panel;
-            TextBox mylistId = item.FindControl("listIdBox") as TextBox;
+            var dbContext = new DataClasses1DataContext();
+            var sender = source as RadGrid;
+            var item = sender.Parent as Panel;
+            var mylistId = item.FindControl("listIdBox") as TextBox;
             if (!String.IsNullOrEmpty(mylistId.Text))
             {
-                Guid listId = new Guid(mylistId.Text);
+                var listId = Int32.Parse(mylistId.Text);
                 var orderQuery = from ord in dbContext.Order
                                  where ord.PackingListId == listId && ord.Status == 600 && ord.HasError.GetValueOrDefault(false) != true
                                  select new
@@ -130,11 +130,11 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         {
             if (e.Item is GridDataItem)
             {
-                GridDataItem item = e.Item as GridDataItem;
+                var item = e.Item as GridDataItem;
                 item.Selected = true;
                 itemIndexHiddenField.Value = item.ItemIndex.ToString();
-                Guid myListId = new Guid(item["listId"].Text);
-                DataClasses1DataContext dbContext = new DataClasses1DataContext();
+                var myListId = Int32.Parse(item["listId"].Text);
+                var dbContext = new DataClasses1DataContext();
                 var myVerbringung = dbContext.PackingList.SingleOrDefault(q => q.Id == myListId);
                 if (myVerbringung.IsSelfDispatch == true)
                 {
@@ -148,20 +148,20 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         protected void btnRemovePackingList_Click(object sender, EventArgs e)
         {
-            using (TransactionScope ts = new TransactionScope())
+            using (var ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                var dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                 try
                 {
-                    Button btnsender = sender as Button;
+                    var btnsender = sender as Button;
                     Label lblPackingListId = null;
                     if(btnsender != null)
                     {
                         lblPackingListId = btnsender.Parent.FindControl("lbllistId") as Label;
                     }
-                    if (lblPackingListId != null && EmptyStringIfNull.IsGuid(lblPackingListId.Text))
+                    if (lblPackingListId != null && !String.IsNullOrEmpty(lblPackingListId.Text))
                     {
-                        Order.TryToRemovePackingListIdAndSetStateToRegistration(dbContext, new Guid(lblPackingListId.Text));
+                        Order.TryToRemovePackingListIdAndSetStateToRegistration(dbContext, Int32.Parse(lblPackingListId.Text));
                         ts.Complete();
                     }
                     else
@@ -178,7 +178,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     ErrorVersandLabel.Visible = true;
                         try
                         {
-                            dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                            dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                             dbContext.WriteLogItem("btnRemovePackingList_Click Error " + ex.Message, LogTypes.ERROR, "Order");
                             dbContext.SubmitChanges();
                         }
@@ -192,15 +192,15 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         protected void DrueckenButton_Clicked(object sender, EventArgs e)
         {
             ErrorVersandLabel.Visible = false;
-                MemoryStream ms = new MemoryStream();
-                Button editButton = sender as Button;
-                Panel item = editButton.Parent as Panel;
-                CheckBox isSelfDispathCheckBox = item.FindControl("isSelfDispathCheckBox") as CheckBox;
-                RadTextBox DispatchOrderNumberBox = item.FindControl("DispatchOrderNumberBox") as RadTextBox;
-                Label ErrorVersandGedrucktLabel = item.FindControl("ErrorVersandGedrucktLabel") as Label;
-                TextBox _listId = item.FindControl("listIdBox") as TextBox;
-                Guid listId =  new Guid(_listId.Text);
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                var ms = new MemoryStream();
+                var editButton = sender as Button;
+                var item = editButton.Parent as Panel;
+                var isSelfDispathCheckBox = item.FindControl("isSelfDispathCheckBox") as CheckBox;
+                var DispatchOrderNumberBox = item.FindControl("DispatchOrderNumberBox") as RadTextBox;
+                var ErrorVersandGedrucktLabel = item.FindControl("ErrorVersandGedrucktLabel") as Label;
+                var _listId = item.FindControl("listIdBox") as TextBox;
+                var listId = Int32.Parse(_listId.Text);
+                var dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                 var packList = dbContext.PackingList.SingleOrDefault(q => q.Id == listId);
                 if (packList.IsPrinted == true)
                 {

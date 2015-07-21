@@ -41,7 +41,7 @@ namespace KVSCommon.Database
         /// <param name="recipientAdressId">Id der Adresse für den Laufzettel.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Lieferscheindatensatz.</returns>
-        public static DocketList CreateDocketList(string recipient, Guid recipientAdressId, DataClasses1DataContext dbContext)
+        public static DocketList CreateDocketList(string recipient, Adress recipientAdress, DataClasses1DataContext dbContext)
         {
             if (recipient == null)
             {
@@ -50,8 +50,7 @@ namespace KVSCommon.Database
 
             DocketList docketList = new DocketList()
             {
-                Id = Guid.NewGuid(),
-                RecipientAdressId = recipientAdressId,
+                Adress = recipientAdress,
                 Recipient = recipient
             };
 
@@ -65,7 +64,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="orderId">Id des Auftrags.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void AddOrderById(Guid orderId, DataClasses1DataContext dbContext)
+        public void AddOrderById(int orderId, DataClasses1DataContext dbContext)
         {
             if (this.IsPrinted.GetValueOrDefault(false))
             {
@@ -107,7 +106,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="orderId">Id des Auftrags, der entfernt werden soll.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void RemoveOrderById(Guid orderId, DataClasses1DataContext dbContext)
+        public void RemoveOrderById(int orderId, DataClasses1DataContext dbContext)
         {
             if (this.IsPrinted.GetValueOrDefault(false))
             {
@@ -149,15 +148,17 @@ namespace KVSCommon.Database
 
             Document doc = new Document()
             {
-                Id = Guid.NewGuid(),
                 Data = ms.ToArray(),
                 DocumentType = dbContext.DocumentType.Where(q => q.Name == "Laufzettel").Single(),
                 FileName = fileName,
                 MimeType = "application/pdf"
-            };
-            this.DocumentId = doc.Id;
-        
+            };        
             dbContext.Document.InsertOnSubmit(doc);
+            
+            //TODO check this
+            dbContext.SubmitChanges();
+
+            this.DocumentId = doc.Id;
             dbContext.WriteLogItem("Laufzettel " + fileName + " wurde gedruckt.", LogTypes.UPDATE, this.Id, "Versand", doc.Id);
 
 

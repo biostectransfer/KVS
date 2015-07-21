@@ -67,12 +67,12 @@ namespace KVSCommon.Database
             }
 
             item.CheckLoggingPossible();
-            if (item.ItemId.GetType() != typeof(Guid))
+            if (item.ItemId.GetType() != typeof(int))
             {
-                throw new Exception("Fehler beim Erstellen des UpdateLog-Eintrags: Die ItemId ist keine Guid.");
+                throw new Exception("Fehler beim Erstellen des UpdateLog-Eintrags: Die ItemId ist keine Int.");
             }
 
-            item.LogDBContext.WriteLogItem(fieldName + " von '" + valueBefore + "' auf '" + valueAfter + "' geändert.", LogTypes.UPDATE, (Guid)item.ItemId, item.GetType().Name, fieldName);
+            item.LogDBContext.WriteLogItem(fieldName + " von '" + valueBefore + "' auf '" + valueAfter + "' geändert.", LogTypes.UPDATE, (int)item.ItemId, item.GetType().Name, fieldName);
         }
     }
 }

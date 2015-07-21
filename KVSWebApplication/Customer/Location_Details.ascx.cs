@@ -16,8 +16,8 @@ namespace KVSWebApplication.Customer
     {
         List<string> thisUserPermissions = new List<string>();
         protected void Page_Load(object sender, EventArgs e)
-        {  
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+        {
+            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (!thisUserPermissions.Contains("STANDORT_ANLAGE"))
             {
                 rbtCreateLocation.Enabled = false;
@@ -40,7 +40,7 @@ namespace KVSWebApplication.Customer
         protected void setDefaultValues()
         {
             chbLocationRechnungsadresse_Checked(this, new EventArgs());
-            chbLocationVersandadresse_Checked(this, new EventArgs());      
+            chbLocationVersandadresse_Checked(this, new EventArgs());
         }
         protected void chbLocationRechnungsadresse_Checked(object sender, EventArgs e)
         {
@@ -84,38 +84,38 @@ namespace KVSWebApplication.Customer
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
             RadComboBox cmbZipCode = ((RadComboBox)sender);
-            cmbZipCode.Items.Clear();        
+            cmbZipCode.Items.Clear();
             var myzipCodes = from zipCodes in dbContext.Adress
                              group zipCodes by zipCodes.Zipcode into z
                              select new { z.Key };
             foreach (var myItem in myzipCodes)
             {
-                cmbZipCode.Items.Add(new RadComboBoxItem(myItem.Key));               
+                cmbZipCode.Items.Add(new RadComboBoxItem(myItem.Key));
             }
         }
         protected void Citys_ItemsRequested(object sender, EventArgs e)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            RadComboBox cmbCity = ((RadComboBox)sender);          
+            RadComboBox cmbCity = ((RadComboBox)sender);
             cmbCity.Items.Clear();
-            var myCitys= from citys in dbContext.Adress
-                         group citys by citys.City into c
-                         select new { c.Key };
+            var myCitys = from citys in dbContext.Adress
+                          group citys by citys.City into c
+                          select new { c.Key };
             foreach (var myItem in myCitys)
             {
-                cmbCity.Items.Add(new RadComboBoxItem(myItem.Key));               
+                cmbCity.Items.Add(new RadComboBoxItem(myItem.Key));
             }
         }
         protected void Countrys_ItemsRequested(object sender, EventArgs e)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            RadComboBox cmbCountry = ((RadComboBox)sender);           
+            RadComboBox cmbCountry = ((RadComboBox)sender);
             cmbCountry.Items.Clear();
             var myCountrys = from countrys in dbContext.Adress
                              group countrys by countrys.Country into count
-                             select new { count.Key };                             
+                             select new { count.Key };
             foreach (var myItem in myCountrys)
-            {               
+            {
                 cmbCountry.Items.Add(new RadComboBoxItem(myItem.Key));
             }
         }
@@ -123,15 +123,15 @@ namespace KVSWebApplication.Customer
         {
             RadComboBox cmbSuperLocation = ((RadComboBox)sender);
             TextBox txbCustomerId = ((RadComboBox)sender).Parent.FindControl("txbCustomerId") as TextBox;
-                   DataClasses1DataContext dbContext = new DataClasses1DataContext();
-                   var mySuperLocations = from _locations in dbContext.Location
-                                          where _locations.CustomerId == new Guid(txbCustomerId.Text)
-                                           select new { _locations.Name, _locations.Id };
-                     foreach (var mySuperLocation in mySuperLocations)
-                     {
-                         cmbSuperLocation.Items.Add(new RadComboBoxItem( mySuperLocation.Name, mySuperLocation.Id.ToString()));
-                     }     
+            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            var mySuperLocations = from _locations in dbContext.Location
+                                   where _locations.CustomerId == Int32.Parse(txbCustomerId.Text)
+                                   select new { _locations.Name, _locations.Id };
+            foreach (var mySuperLocation in mySuperLocations)
+            {
+                cmbSuperLocation.Items.Add(new RadComboBoxItem(mySuperLocation.Name, mySuperLocation.Id.ToString()));
             }
+        }
         protected void ResetErrorLabels()
         {
             lblCustomerNameLocationError.Text = "";
@@ -169,7 +169,7 @@ namespace KVSWebApplication.Customer
                 lblCustomerNameLocationError.Text = "Es wurde kein Kunde ausgewält";
                 check = false;
             }
-            if (txbLocationStreet.Text == string.Empty || txbLocationNr.Text==string.Empty)
+            if (txbLocationStreet.Text == string.Empty || txbLocationNr.Text == string.Empty)
             {
                 lblLocationStreetNrError.Text = "Bitte Strasse/Nr. eintragen";
                 check = false;
@@ -235,14 +235,14 @@ namespace KVSWebApplication.Customer
                     check = false;
                 }
             }
-            return check;            
-        }     
+            return check;
+        }
         protected void SaveLocationAdress(object sender, EventArgs e)
         {
 
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])); // hier kommt die Loggingid
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
                 try
                 {
                     RadButton myButton = ((RadButton)sender);
@@ -257,7 +257,7 @@ namespace KVSWebApplication.Customer
                     RadComboBox LocationEditSendCity = ((RadComboBox)myButton.Parent.FindControl("LocationEditSendCity"));
                     RadComboBox LocationEditInvoiceCountry = ((RadComboBox)myButton.Parent.FindControl("cmbLocationEditInvoiceCountry"));
                     RadComboBox LocationSendCountry = ((RadComboBox)myButton.Parent.FindControl("cmbLocationSendCountry"));
-                    var selectedLocation = dbContext.Location.SingleOrDefault(q => q.Id == new Guid(locationId.Text));
+                    var selectedLocation = dbContext.Location.SingleOrDefault(q => q.Id == Int32.Parse(locationId.Text));
                     selectedLocation._dbContext = dbContext;
                     if (selectedLocation != null)
                     {
@@ -356,7 +356,7 @@ namespace KVSWebApplication.Customer
                     RadWindowManagerLocationDetails.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("Add/Edit Location InvoiceAdress Error:  " + ex.Message, LogTypes.ERROR, "Customer");
                         dbContext.SubmitChanges();
                     }
@@ -366,7 +366,7 @@ namespace KVSWebApplication.Customer
             getAllCustomerLocations.EditIndexes.Clear();
             getAllCustomerLocations.MasterTableView.IsItemInserted = false;
             getAllCustomerLocations.MasterTableView.Rebind();
-        }      
+        }
         protected void getAllCustomerLocationsDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
@@ -395,22 +395,22 @@ namespace KVSWebApplication.Customer
             try
             {
                 if (e.WhereParameters["Id"].ToString() != string.Empty)
-                {                  
+                {
                     var query = from customer in dbContext.Customer
                                 join location in dbContext.Location
                                 on customer.Id equals location.CustomerId
                                 join large in dbContext.LargeCustomer
-                                on customer.Id  equals large.CustomerId
-                                where customer.Id == new Guid(e.WhereParameters["Id"].ToString())
+                                on customer.Id equals large.CustomerId
+                                where customer.Id == Int32.Parse(e.WhereParameters["Id"].ToString())
                                 orderby location.Name
                                 select new
-                                {              
+                                {
                                     TableId = "Inner",
-                                    Id =  customer.Id==null ? "0": customer.Id.ToString(),
+                                    Id = customer.Id == null ? "0" : customer.Id.ToString(),
                                     LocationId = location.Id == null ? "0" : location.Id.ToString(),
-                                    ContactId = location != null && location.ContactId != null ? location.ContactId : Guid.Empty,
-                                    AdressId = location != null && location.AdressId != null ? location.AdressId : Guid.Empty,
-                                    SuperLocationId = location != null && location.SuperLocationId != null ? location.SuperLocationId : Guid.Empty,
+                                    ContactId = location != null && location.ContactId != null ? location.ContactId : (int?)null,
+                                    AdressId = location != null && location.AdressId != null ? location.AdressId : 0,
+                                    SuperLocationId = location != null && location.SuperLocationId != null ? location.SuperLocationId : (int?)null,
                                     Name = location != null ? location.Name : null,
                                     Phone = location != null && location.Contact != null ? location.Contact.Phone : null,
                                     Fax = location != null && location.Contact != null ? location.Contact.Fax : null,
@@ -418,12 +418,12 @@ namespace KVSWebApplication.Customer
                                     Email = location != null && location.Contact != null ? location.Contact.Email : null,
                                     Street = location != null && location.Adress != null ? location.Adress.Street : null,
                                     HouseNumber = location != null && location.Adress != null ? location.Adress.StreetNumber : null,
-                                    Zipcode = location != null && location.Adress != null ? location.Adress.Zipcode: null,
+                                    Zipcode = location != null && location.Adress != null ? location.Adress.Zipcode : null,
                                     City = location != null && location.Adress != null ? location.Adress.City : null,
-                                    Country = location != null && location.Adress != null ? location.Adress.Country: null,
-                                    SuperLocation = location != null ? location.Location1.Name: null,
+                                    Country = location != null && location.Adress != null ? location.Adress.Country : null,
+                                    //TODO SuperLocation = location != null ? location.Location1.Name : null,
                                     DefaulLocation = large.MainLocationId != null && large.MainLocationId == location.Id ? "true" : "false",
-                                    Vat = location != null ? EmptyStringIfNull.ReturnEmptyStringIfNull(location.VAT) : null,                           
+                                    Vat = location != null ? EmptyStringIfNull.ReturnEmptyStringIfNull(location.VAT) : null,
                                     InvoiceStreet = location != null && location.InvoiceAdress != null ? location.InvoiceAdress.Street : null,
                                     InvoiceStreeetNumber = location != null && location.InvoiceAdress != null ? location.InvoiceAdress.StreetNumber : null,
                                     InvoiceZipCode = location != null && location.InvoiceAdress != null ? location.InvoiceAdress.Zipcode : null,
@@ -434,8 +434,8 @@ namespace KVSWebApplication.Customer
                                     SendZipCode = location != null && location.InvoiceDispatchAdress != null ? location.InvoiceDispatchAdress.Zipcode : null,
                                     SendCity = location != null && location.InvoiceDispatchAdress != null ? location.InvoiceDispatchAdress.City : null,
                                     SendCountry = location != null && location.InvoiceDispatchAdress != null ? location.InvoiceDispatchAdress.Country : null
-                                };                    
-                    e.Result = query;                  
+                                };
+                    e.Result = query;
                 }
             }
             catch (Exception ex)
@@ -479,17 +479,16 @@ namespace KVSWebApplication.Customer
         }
         protected void rbtSaveLocation_Click(object sender, EventArgs e)
         {
-       
             if (CheckFields())
             {
                 using (TransactionScope ts = new TransactionScope())
                 {
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                     try
                     {
                         if (txbLocationName.Text != string.Empty && CustomerLocation.SelectedIndex != -1)
                         {
-                            var selCustomer = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == new Guid(CustomerLocation.SelectedValue));
+                            var selCustomer = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == Int32.Parse(CustomerLocation.SelectedValue));
                             selCustomer.Customer._dbContext = dbContext;
                             if (selCustomer != null)
                             {
@@ -505,15 +504,16 @@ namespace KVSWebApplication.Customer
                                 {
                                     throw new Exception("Die MwSt muss eine Dezimalzahl sein");
                                 }
-                                var addedLocation = selCustomer.AddNewLocation(txbLocationName.Text, txbLocationStreet.Text, txbLocationNr.Text, txbLocationZipCode.Text, cmbLocationCity.Text, cmbLocationCountry.Text,
+                                var addedLocation = selCustomer.AddNewLocation(txbLocationName.Text, txbLocationStreet.Text, txbLocationNr.Text, txbLocationZipCode.Text,
+                                    cmbLocationCity.Text, cmbLocationCountry.Text,
                                       txbLocationPhone.Text, txbLocationFax.Text, txbLocationPhone.Text, txbLocationEmail.Text, vat, dbContext);
-                                
+
                                 DeclareInvoiceSendAdress(addedLocation);
                                 if (cmbOverLocation.SelectedIndex != -1)
                                 {
                                     addedLocation.LogDBContext = dbContext;
                                     addedLocation._dbContext = dbContext;
-                                    addedLocation.SuperLocationId = new Guid(cmbOverLocation.SelectedValue);
+                                    addedLocation.SuperLocationId = Int32.Parse(cmbOverLocation.SelectedValue);
                                 }
                                 dbContext.SubmitChanges();
                                 ts.Complete();
@@ -522,32 +522,32 @@ namespace KVSWebApplication.Customer
                                 resultMessage.Text = "Standort wurde erfolgreich angelegt";
                             }
                         }
-                      
+
                     }
                     catch (Exception ex)
                     {
                         if (ts != null)
                             ts.Dispose();
-                        dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("SaveLocation_Click Error:  " + ex.Message, LogTypes.ERROR, "Location");
                         resultMessage.Text = "Fehler: " + ex.Message;
                         resultMessage.BackColor = System.Drawing.Color.Red;
                         dbContext.SubmitChanges();
                     }
                 }
-               
+
             }
         }
         protected void DeclareInvoiceSendAdress(Location createdLocation)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
             if (chbLocationRechnungsaderesse.Checked == false)
             {
-                var newInvoiceAdress = Adress.CreateAdress(txbLocationInvoiceAdressStreet.Text, 
+                var newInvoiceAdress = Adress.CreateAdress(txbLocationInvoiceAdressStreet.Text,
                                                            txbLocationInvoiceAdressStreetNr.Text,
-                                                           cmbLocationInvoiceZip.Text, 
-                                                           cmbLocationCityInvoice.Text, 
-                                                           cmbLocationInvoiceCountry.Text, 
+                                                           cmbLocationInvoiceZip.Text,
+                                                           cmbLocationCityInvoice.Text,
+                                                           cmbLocationInvoiceCountry.Text,
                                                            dbContext);
                 createdLocation.InvoiceAdress = newInvoiceAdress;
             }
@@ -559,8 +559,8 @@ namespace KVSWebApplication.Customer
             {
                 var newInvoiceAdress = Adress.CreateAdress(txbLocationSendAdressStreet.Text,
                                                            txbLocationSendAdressStreetNr.Text,
-                                                           cmbLocationSendZip.Text, 
-                                                           cmbLocationCitySend.Text, 
+                                                           cmbLocationSendZip.Text,
+                                                           cmbLocationCitySend.Text,
                                                            cmbLocationSendCountry.Text, dbContext);
                 createdLocation.InvoiceDispatchAdress = newInvoiceAdress;
             }
@@ -581,7 +581,7 @@ namespace KVSWebApplication.Customer
                 var query = from customer in dbContext.Customer
                             join largeCustomer in dbContext.LargeCustomer on customer.Id equals largeCustomer.CustomerId
                             join _location in dbContext.Location on largeCustomer.MainLocationId equals _location.Id
-                            where customer.Id == new Guid(e.Value)
+                            where customer.Id == Int32.Parse(e.Value)
                             select new
                             {
                                 _location.Id,
@@ -602,7 +602,7 @@ namespace KVSWebApplication.Customer
             bool insertUpdateOk = true;
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])); // hier kommt die Loggingid
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
                 try
                 {
                     Button myButton = ((Button)sender);
@@ -626,8 +626,8 @@ namespace KVSWebApplication.Customer
                     TextBox textVat = ((TextBox)myButton.FindControl("txbVatEdit"));
                     if (name.Text != string.Empty)
                     {
-                        var myLocation = dbContext.Location.SingleOrDefault(q => q.CustomerId == new Guid(customerId.Text) && q.Id == new Guid(locationId.Text));
-                        var myCustomer = dbContext.Customer.SingleOrDefault(q => q.Id == new Guid(customerId.Text));
+                        var myLocation = dbContext.Location.SingleOrDefault(q => q.CustomerId == Int32.Parse(customerId.Text) && q.Id == Int32.Parse(locationId.Text));
+                        var myCustomer = dbContext.Customer.SingleOrDefault(q => q.Id == Int32.Parse(customerId.Text));
                         myLocation.Name = name.Text;
                         decimal vat = 0;
                         textVat.Text = textVat.Text.Trim();
@@ -647,14 +647,14 @@ namespace KVSWebApplication.Customer
                         else
                             myCustomer.LargeCustomer.MainLocationId = null;
 
-                        if (ValidateGuid(superLocation.SelectedValue))
+                        if (!String.IsNullOrEmpty(superLocation.SelectedValue))
                         {
                             myLocation.LogDBContext = dbContext;
-                            myLocation.SuperLocationId = new Guid(superLocation.SelectedValue);
+                            myLocation.SuperLocationId = Int32.Parse(superLocation.SelectedValue);
                         }
                         if (myLocation != null)
                         {
-                            if (new Guid(contactId.Text) == Guid.Empty)
+                            if (String.IsNullOrEmpty(contactId.Text))
                             {
                                 var myContact = Contact.CreateContact(phone.Text, fax.Text, mobileNumber.Text, email.Text, dbContext);
                                 myLocation.ContactId = myContact.Id;
@@ -667,7 +667,7 @@ namespace KVSWebApplication.Customer
                                 myLocation.Contact.MobilePhone = mobileNumber.Text;
                                 myLocation.Contact.Email = email.Text;
                             }
-                            if (new Guid(adressId.Text) == Guid.Empty)
+                            if (String.IsNullOrEmpty(adressId.Text))
                             {
                                 var myAdress = Adress.CreateAdress(street.Text, streetNumber.Text, zipCode.Text, city.Text, country.Text, dbContext);
                                 myLocation.AdressId = myAdress.Id;
@@ -689,7 +689,7 @@ namespace KVSWebApplication.Customer
                     {
                         throw new Exception("Der Name darf nicht leer sein");
                     }
-              
+
                 }
                 catch (Exception ex)
                 {
@@ -699,7 +699,7 @@ namespace KVSWebApplication.Customer
                     RadWindowManagerLocationDetails.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("Location Error " + ex.Message, LogTypes.ERROR, "Location");
                         dbContext.SubmitChanges();
                     }
@@ -719,75 +719,68 @@ namespace KVSWebApplication.Customer
             getAllCustomerLocations.MasterTableView.IsItemInserted = false;
             getAllCustomerLocations.MasterTableView.Rebind();
         }
-        protected  bool ValidateGuid(string theGuid)
-        {
-            try { Guid aG = new Guid(theGuid); }
-            catch { return false; }
-
-            return true;
-        }
         protected void RemoveLocation_Click(object sender, EventArgs e)
         {
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
-                
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
 
+
+                try
+                {
+                    RadButton rbtSender = ((RadButton)sender);
+                    Label lblLocationId = rbtSender.Parent.FindControl("lblLocationId") as Label;
+                    Label lblCustomerId = rbtSender.Parent.FindControl("lblCustomerId") as Label;
+                    if (!String.IsNullOrEmpty(lblLocationId.Text) && !String.IsNullOrEmpty(lblCustomerId.Text))
+                    {
+                        var custLocs = dbContext.Location.Where(q => q.CustomerId == Int32.Parse(lblCustomerId.Text));
+
+                        if (custLocs.Count() <= 1)
+                        {
+                            throw new Exception("Ein Standort muss immer vorhanden sein, deshalb darf er nicht gelöscht werden");
+                        }
+                        var custLoc = custLocs.FirstOrDefault(q => q.Id == Int32.Parse(lblLocationId.Text));
+                        custLoc._dbContext = dbContext;
+                        if (custLoc.Order != null && custLoc.Order.Count > 0)
+                            throw new Exception("Der Standort " + custLoc.Name + " kann nicht gelöscht werden, diese ist mit Aufträgen verknüft");
+
+                        if (custLoc.Price != null && custLoc.Price.Count > 0)
+                            throw new Exception("Der Standort " + custLoc.Name + "  kann nicht gelöscht werden, dieser ist mit Preisen verknüft");
+
+                        KVSCommon.Database.Location.ChangeLocations(dbContext, custLoc);
+                        KVSCommon.Database.Location.RemoveLocation(custLoc.Id, dbContext);
+
+                    }
+
+                    dbContext.SubmitChanges();
+                    ts.Complete();
+                    RadWindowManagerLocationDetails.RadAlert("Standort wurde erfolgreich gelöscht", 380, 180, "Info", "");
+
+
+                }
+                catch (Exception ex)
+                {
+
+                    if (ts != null)
+                        ts.Dispose();
+                    RadWindowManagerLocationDetails.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        RadButton rbtSender = ((RadButton)sender);
-                        Label lblLocationId = rbtSender.Parent.FindControl("lblLocationId") as Label;
-                        Label lblCustomerId = rbtSender.Parent.FindControl("lblCustomerId") as Label;
-                        if (EmptyStringIfNull.IsGuid(lblLocationId.Text) && EmptyStringIfNull.IsGuid(lblCustomerId.Text))
-                        {
-                            var custLocs = dbContext.Location.Where(q=>q.CustomerId == new Guid(lblCustomerId.Text));
-                            
-                            if(custLocs.Count()<=1)
-                            {
-                                throw new Exception("Ein Standort muss immer vorhanden sein, deshalb darf er nicht gelöscht werden");
-                            }
-                            var custLoc = custLocs.FirstOrDefault(q => q.Id == new Guid(lblLocationId.Text));
-                            custLoc._dbContext = dbContext;
-                            if (custLoc.Order != null && custLoc.Order.Count > 0)
-                                throw new Exception("Der Standort " + custLoc.Name + " kann nicht gelöscht werden, diese ist mit Aufträgen verknüft");
-
-                            if (custLoc.Price != null && custLoc.Price.Count > 0)
-                                throw new Exception("Der Standort " + custLoc.Name + "  kann nicht gelöscht werden, dieser ist mit Preisen verknüft");
-
-                            KVSCommon.Database.Location.ChangeLocations(dbContext, custLoc);
-                            KVSCommon.Database.Location.RemoveLocation(custLoc.Id, dbContext);
-
-                        }
-
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext.WriteLogItem("RemoveLocation_Click Error " + ex.Message, LogTypes.ERROR, "Location");
                         dbContext.SubmitChanges();
-                        ts.Complete();
-                        RadWindowManagerLocationDetails.RadAlert("Standort wurde erfolgreich gelöscht", 380, 180, "Info", "");
-              
-                       
                     }
-                    catch (Exception ex)
-                    {
+                    catch { }
 
-                        if (ts != null)
-                            ts.Dispose();
-                        RadWindowManagerLocationDetails.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
-                        try
-                        {
-                            dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
-                            dbContext.WriteLogItem("RemoveLocation_Click Error " + ex.Message, LogTypes.ERROR, "Location");
-                            dbContext.SubmitChanges();
-                        }
-                        catch { }
+                }
 
-                    }
-                 
-                
-             
+
+
             }
             getAllCustomerLocations.EditIndexes.Clear();
             getAllCustomerLocations.MasterTableView.IsItemInserted = false;
             getAllCustomerLocations.MasterTableView.Rebind();
         }
     }
-    
+
 }

@@ -97,7 +97,7 @@ namespace KVSWebApplication.Search
             {
                 try
                 {
-                    newQuery = newQuery.Where(q => q.CustomerId == new Guid(CustomerNameBox.SelectedValue));
+                    newQuery = newQuery.Where(q => q.CustomerId == Int32.Parse(CustomerNameBox.SelectedValue));
                 }
 
                 catch
@@ -198,7 +198,7 @@ namespace KVSWebApplication.Search
                 bool showErrorLabel = false;
                 GridDataItem item = (GridDataItem)e.Item;
 
-                Guid customerId = new Guid(item["CustomerId"].Text);
+                var customerId = Int32.Parse(item["CustomerId"].Text);
                 string status = item["Status"].Text;
 
                 

@@ -37,7 +37,7 @@ namespace KVSCommon.Database
         /// <param name="AccountNumber">Kontonummer</param>
         /// <param name="dbContext">Datenbank Kontext</param>
         /// <returns>Erloeskonto</returns>
-       public static Accounts CreateAccount(Guid? CustomerId, string AccountNumber, DataClasses1DataContext dbContext)
+       public static Accounts CreateAccount(int? CustomerId, string AccountNumber, DataClasses1DataContext dbContext)
        {
            if (dbContext.Accounts.Any(q => q.CustomerId == CustomerId && q.AccountNumber == AccountNumber))
            {
@@ -45,7 +45,6 @@ namespace KVSCommon.Database
            }
            var account = new Accounts
            {
-               AccountId = Guid.NewGuid(),
                AccountNumber = AccountNumber,
                CustomerId = CustomerId
            };
@@ -60,7 +59,7 @@ namespace KVSCommon.Database
        /// <param name="CustomerId">Kundenid</param>
        /// <param name="AccountNumber">Kontonummer</param>
        /// <param name="dbContext">Datenbank Kontext</param>
-       public static void DeleteAccount(Guid CustomerId, string AccountNumber, DataClasses1DataContext dbContext)
+       public static void DeleteAccount(int CustomerId, string AccountNumber, DataClasses1DataContext dbContext)
        {
            var myAcount = dbContext.Accounts.FirstOrDefault(q => q.CustomerId == CustomerId && q.AccountNumber == AccountNumber);
            if (myAcount == null)
@@ -80,7 +79,7 @@ namespace KVSCommon.Database
        /// <param name="itemId">Rechnungspositionsid</param>
        /// <param name="isPrinted">Ist Gedruckt</param>
        /// <returns>IQueryable<_Accounts></returns>
-        public static IQueryable<_Accounts> generateAccountNumber(DataClasses1DataContext dbContext, Guid itemId, bool isPrinted = false)
+        public static IQueryable<_Accounts> generateAccountNumber(DataClasses1DataContext dbContext, int itemId, bool isPrinted = false)
        {
         
            IQueryable<_Accounts> _accounts = null;
@@ -144,7 +143,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-       partial void OnAccountIdChanging(Guid value)
+       partial void OnAccountIdChanging(int value)
         {
             this.WriteUpdateLogItem("AccountId", this.AccountId, value);
         }
@@ -152,7 +151,7 @@ namespace KVSCommon.Database
        /// Aenderungsevents für die Historie
        /// </summary>
        /// <param name="value"></param>
-       partial void OnCustomerIdChanging(Guid? value)
+       partial void OnCustomerIdChanging(int? value)
        {
            this.WriteUpdateLogItem("CustomerId", this.CustomerId, value);
        }

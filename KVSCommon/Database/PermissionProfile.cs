@@ -51,7 +51,6 @@ namespace KVSCommon.Database
 
             var profile = new PermissionProfile()
             {
-                Id = Guid.NewGuid(),
                 Name = name,
                 Description = description
             };
@@ -66,7 +65,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="id">Id des Rechteprofils.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public static void DeletePermissionProfileById(Guid id, DataClasses1DataContext dbContext)
+        public static void DeletePermissionProfileById(int id, DataClasses1DataContext dbContext)
         {
             var item = dbContext.PermissionProfile.SingleOrDefault(q => q.Id == id);
             if (item == null)
@@ -89,7 +88,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="permissionId">Id des Rechts.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void AddPermission(Guid permissionId, DataClasses1DataContext dbContext)
+        public void AddPermission(int permissionId, DataClasses1DataContext dbContext)
         {
             Permission permission = dbContext.Permission.SingleOrDefault(q => q.Id == permissionId);
             if (permission == null)
@@ -114,7 +113,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="permissionId">Id des Rechts.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void RemovePermission(Guid permissionId, DataClasses1DataContext dbContext)
+        public void RemovePermission(int permissionId, DataClasses1DataContext dbContext)
         {
             Permission permission = dbContext.Permission.SingleOrDefault(q => q.Id == permissionId);
             if (permission == null)

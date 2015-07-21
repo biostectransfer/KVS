@@ -20,21 +20,21 @@ namespace KVSWebApplication.Abrechnung
             get { return amount; }
             set { amount = value; }
         }
-        private Guid orderItemId;
-        public Guid OrderItemId
+        private int orderItemId;
+        public int OrderItemId
         {
             get { return orderItemId; }
             set { orderItemId = value; }
         }
      
-        private Guid? costCenterId;
-        public Guid? CostCenterId
+        private int? costCenterId;
+        public int? CostCenterId
         {
             get { return costCenterId; }
             set { costCenterId = value; }
         }
-        private Guid orderId;
-        public Guid OrderId
+        private int orderId;
+        public int OrderId
         {
             get { return orderId; }
             set { orderId = value; }
@@ -45,8 +45,8 @@ namespace KVSWebApplication.Abrechnung
             get { return itemCount; }
             set { itemCount = value; }
         }
-        private Guid? orderLocationId;
-        public Guid? OrderLocationId
+        private int? orderLocationId;
+        public int? OrderLocationId
         {
             get { return orderLocationId; }
             set { orderLocationId = value; }

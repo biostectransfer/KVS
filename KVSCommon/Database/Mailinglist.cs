@@ -41,7 +41,7 @@ namespace KVSCommon.Database
         /// <param name="locationId">StandortiD</param>
         /// <param name="dbContext">DB Kontext</param>
         /// <returns>Mailinglist Objekt</returns>
-        internal static Mailinglist CreateMailinglistItem(string email, Guid typeId, Guid? customerId, Guid? locationId, DataClasses1DataContext dbContext)
+        internal static Mailinglist CreateMailinglistItem(string email, int typeId, int? customerId, int? locationId, DataClasses1DataContext dbContext)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -50,7 +50,6 @@ namespace KVSCommon.Database
 
             Mailinglist ml = new Mailinglist()
             {
-                Id = Guid.NewGuid(),
                 Email = email,
                 MailinglistTypeId = typeId,
                 CustomerId = customerId,

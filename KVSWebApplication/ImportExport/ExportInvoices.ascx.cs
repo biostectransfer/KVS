@@ -60,7 +60,7 @@ namespace KVSWebApplication.ImportExport
                         };
             if (CustomerNameBox.SelectedIndex > 0)
             {
-                query = query.Where(q => q.CustomerId == new Guid(CustomerNameBox.SelectedValue));
+                query = query.Where(q => q.CustomerId == Int32.Parse(CustomerNameBox.SelectedValue));
             }
             if (RechnungsnummerSearchBox.Text != string.Empty && isNumber(RechnungsnummerSearchBox.Text))
             {
@@ -175,7 +175,7 @@ namespace KVSWebApplication.ImportExport
         {
             if (Session["SelectedInvoices"] != null)
             {              
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])))
+                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
                 {
                     try
                     {

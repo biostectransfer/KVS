@@ -30,7 +30,7 @@ namespace KVSWebApplication.Mailing
         protected void Page_Load(object sender, EventArgs e)
         {
             rbtCustomerMail_Checked(this, new EventArgs());
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (!thisUserPermissions.Contains("EMAIL_UEBERSICHT") && !thisUserPermissions.Contains("EMAIL_BEARBEITEN") && !thisUserPermissions.Contains("EMAIL_LOESCHEN") && !thisUserPermissions.Contains("EMAIL_ANLEGEN"))
             {
                 Response.Redirect("../AccessDenied.aspx");
@@ -87,7 +87,7 @@ namespace KVSWebApplication.Mailing
                     var query = from customer in dbContext.Customer
                                 join largeCustomer in dbContext.LargeCustomer on customer.Id equals largeCustomer.CustomerId
                                 join _location in dbContext.Location on customer.Id equals _location.CustomerId
-                                where customer.Id == new Guid(AllCustomer.SelectedValue)
+                                where customer.Id == Int32.Parse(AllCustomer.SelectedValue)
                                 orderby _location.Name
                                 select new
                                 {
@@ -108,21 +108,23 @@ namespace KVSWebApplication.Mailing
         protected void GetMailAdresses_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {            
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            if (cmbLocations.SelectedValue == ""  || cmbLocations.Enabled == false)
-                cmbLocations.SelectedValue = Guid.Empty.ToString();
-            if (AllCustomer.SelectedValue == "" )
-                AllCustomer.SelectedValue = Guid.Empty.ToString();
-            if (rbtCustomerMail.Checked == true && new Guid(AllCustomer.SelectedValue) != Guid.Empty)
+            //TODO
+            //if (cmbLocations.SelectedValue == ""  || cmbLocations.Enabled == false)
+            //    cmbLocations.SelectedValue = String.Empty;
+            //if (AllCustomer.SelectedValue == "" )
+            //    AllCustomer.SelectedValue = String.Empty;
+
+            if (rbtCustomerMail.Checked == true && !String.IsNullOrEmpty(AllCustomer.SelectedValue))
             {
                var mails = from emails in dbContext.Mailinglist
-                           where emails.CustomerId == new Guid(AllCustomer.SelectedValue)
+                           where emails.CustomerId == Int32.Parse(AllCustomer.SelectedValue)
                         select new { emails.Id, emails.CustomerId, emails.LocationId, EmailAdresse = emails.Email, EmailType = emails.MailinglistType.Name };
                 e.Result = mails;
             }
-            else if (rbtLocationMail.Checked == true && new Guid(cmbLocations.SelectedValue) != Guid.Empty)
+            else if (rbtLocationMail.Checked == true && String.IsNullOrEmpty(cmbLocations.SelectedValue))
             {
                 var mails = from emails in dbContext.Mailinglist
-                            where emails.LocationId == new Guid(cmbLocations.SelectedValue)
+                            where emails.LocationId == Int32.Parse(cmbLocations.SelectedValue)
                             select new { emails.Id, emails.CustomerId, emails.LocationId, EmailAdresse = emails.Email, EmailType = emails.MailinglistType.Name };
                 e.Result = mails;
             }
@@ -134,14 +136,14 @@ namespace KVSWebApplication.Mailing
                             select new { t.Key };
                 e.Result = mails;
             }
-            if (new Guid(AllCustomer.SelectedValue) == Guid.Empty)
+            if (String.IsNullOrEmpty(AllCustomer.SelectedValue))
             {
                 RadGridMailEditor.Enabled = false;
                 RadGridMailEditor.Visible = false;
             }
             else if (rbtLocationMail.Checked == true)
             {
-                if (new Guid(cmbLocations.SelectedValue) == Guid.Empty)
+                if (String.IsNullOrEmpty(cmbLocations.SelectedValue))
                 {
                     RadGridMailEditor.Enabled = false;
                     RadGridMailEditor.Visible = false;
@@ -170,7 +172,7 @@ namespace KVSWebApplication.Mailing
                     RadGridMailEditor.Visible = false;
                     return;
                 }
-                if (new Guid(cmbLocations.SelectedValue) == Guid.Empty)
+                if (String.IsNullOrEmpty(cmbLocations.SelectedValue))
                 {
                     RadGridMailEditor.Enabled = false;
                     RadGridMailEditor.Visible = false;
@@ -183,7 +185,7 @@ namespace KVSWebApplication.Mailing
                 RadGridMailEditor.Visible = false;
                 return;
             }
-            if (new Guid(AllCustomer.SelectedValue) == Guid.Empty)
+            if (String.IsNullOrEmpty(AllCustomer.SelectedValue))
             {
                 RadGridMailEditor.Enabled = false;
                 RadGridMailEditor.Visible = false;
@@ -203,7 +205,7 @@ namespace KVSWebApplication.Mailing
         }
         protected void btnSaveMail_Click(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])); // hier kommt die Loggingid
+            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
             Button myButton = ((Button)sender);
             Label errorMessage = ((Label)myButton.FindControl("SchowErrorMessages"));
             TextBox email = ((TextBox)myButton.FindControl("EmailAdress"));
@@ -230,18 +232,18 @@ namespace KVSWebApplication.Mailing
                     {
                         if (rbtCustomerMail.Checked == true && AllCustomer.SelectedValue != string.Empty)
                         {
-                            var cust = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == new Guid(AllCustomer.SelectedValue));
+                            var cust = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == Int32.Parse(AllCustomer.SelectedValue));
                             if (cust != null)
                             {
-                                cust.AddNewMailinglistItem(EmptyStringIfNull.ReturnEmptyStringIfNull(email.Text), new Guid(cmbSelectedType.SelectedValue), dbContext);
+                                cust.AddNewMailinglistItem(EmptyStringIfNull.ReturnEmptyStringIfNull(email.Text), Int32.Parse(cmbSelectedType.SelectedValue), dbContext);
                             }                         
                         }
                         if (rbtLocationMail.Checked == true && AllCustomer.SelectedValue != "" && cmbLocations.SelectedValue != "")
                         {
-                            var loc = dbContext.Location.SingleOrDefault(q => q.Id == new Guid(cmbLocations.SelectedValue));
+                            var loc = dbContext.Location.SingleOrDefault(q => q.Id == Int32.Parse(cmbLocations.SelectedValue));
                             if (loc != null)
                             {
-                                loc.AddNewMailinglistItem(EmptyStringIfNull.ReturnEmptyStringIfNull(email.Text), new Guid(cmbSelectedType.SelectedValue), dbContext);
+                                loc.AddNewMailinglistItem(EmptyStringIfNull.ReturnEmptyStringIfNull(email.Text), Int32.Parse(cmbSelectedType.SelectedValue), dbContext);
                             }
                         }
                     }
@@ -252,14 +254,14 @@ namespace KVSWebApplication.Mailing
                 }
                 else if (Id.Text != string.Empty || email.Text == string.Empty)
                 {
-                    var Mlist = dbContext.Mailinglist.SingleOrDefault(q => q.Id == new Guid(Id.Text));
+                    var Mlist = dbContext.Mailinglist.SingleOrDefault(q => q.Id == Int32.Parse(Id.Text));
                     if (Mlist != null)
                     {
                         Mlist.LogDBContext = dbContext;
                         Mlist.Email = EmptyStringIfNull.ReturnEmptyStringIfNull(email.Text);
                         if (cmbSelectedType.SelectedValue != string.Empty)
                         {
-                            Mlist.MailinglistTypeId = new Guid(cmbSelectedType.SelectedValue);
+                            Mlist.MailinglistTypeId = Int32.Parse(cmbSelectedType.SelectedValue);
                         }                         
                     }
                  }
@@ -294,24 +296,24 @@ namespace KVSWebApplication.Mailing
                     if (e.Item is GridDataItem)
                     {
                         GridDataItem deletedItem = e.Item as GridDataItem;
-                        using (DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])))
+                        using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
                         {
                             try
                             {
                                 if (rbtCustomerMail.Checked == true && AllCustomer.SelectedValue != string.Empty)
                                 {
-                                    var cust = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == new Guid(AllCustomer.SelectedValue));
+                                    var cust = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == Int32.Parse(AllCustomer.SelectedValue));
                                     if (cust != null && deletedItem["Id"].Text != string.Empty)
                                     {
-                                        cust.RemoveMailinglistItem(new Guid(deletedItem["Id"].Text), dbContext);
+                                        cust.RemoveMailinglistItem(Int32.Parse(deletedItem["Id"].Text), dbContext);
                                     }
                                 }
                                 if (rbtLocationMail.Checked == true)
                                 {
-                                    var loc = dbContext.Location.SingleOrDefault(q => q.Id == new Guid(cmbLocations.SelectedValue));
+                                    var loc = dbContext.Location.SingleOrDefault(q => q.Id == Int32.Parse(cmbLocations.SelectedValue));
                                     if (loc != null && deletedItem["Id"].Text != string.Empty)
                                     {
-                                        loc.RemoveMailinglistItem(new Guid(deletedItem["Id"].Text), dbContext);
+                                        loc.RemoveMailinglistItem(Int32.Parse(deletedItem["Id"].Text), dbContext);
                                     }
                                 }
                                 dbContext.SubmitChanges();
@@ -373,7 +375,7 @@ namespace KVSWebApplication.Mailing
                     var query = from customer in dbContext.Customer
                                 join largeCustomer in dbContext.LargeCustomer on customer.Id equals largeCustomer.CustomerId
                                 join _location in dbContext.Location on customer.Id equals _location.CustomerId
-                                where customer.Id == new Guid(e.Value)
+                                where customer.Id == Int32.Parse(e.Value)
                                 select new
                                 {
                                     _location.Id,

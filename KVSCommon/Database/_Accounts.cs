@@ -8,19 +8,19 @@ namespace KVSCommon.Database
     /// <summary>
     /// Hilfsklasse für die Erlöskonten
     /// </summary>
-   public class _Accounts
+    public class _Accounts
     {
-       /// <summary>
-       /// Primary Key
-       /// </summary>
-        public Guid AccountId { get; set; }
-       /// <summary>
-       /// Verweis auf die Rechnung
-       /// </summary>
-        public Guid InvoiceItemId { get; set; }
-       /// <summary>
-       /// Erlöskonto
-       /// </summary>
+        /// <summary>
+        /// Primary Key
+        /// </summary>
+        public int AccountId { get; set; }
+        /// <summary>
+        /// Verweis auf die Rechnung
+        /// </summary>
+        public int InvoiceItemId { get; set; }
+        /// <summary>
+        /// Erlöskonto
+        /// </summary>
         public string AccountNumber { get; set; }
     }
 }

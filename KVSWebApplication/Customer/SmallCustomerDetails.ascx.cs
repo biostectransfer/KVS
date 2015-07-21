@@ -15,10 +15,10 @@ namespace KVSWebApplication.Customer
     /// </summary>
     public partial class SmallCustomerDetails : System.Web.UI.UserControl
     {
-        List<string> thisUserPermissions = new List<string>();     
+        List<string> thisUserPermissions = new List<string>();
         protected void Page_Load(object sender, EventArgs e)
         {
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));        
+            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (!thisUserPermissions.Contains("KUNDEN_BEARBEITEN"))
             {
                 getSmallCustomer.Columns[0].Visible = false;
@@ -32,23 +32,23 @@ namespace KVSWebApplication.Customer
         protected void RemoveSmallCustomer_Click(object sender, EventArgs e)
         {
             bool insertUpdateOk = true;
-               
-          using (TransactionScope ts = new TransactionScope())
-          {
-              DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
-           
+
+            using (TransactionScope ts = new TransactionScope())
+            {
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+
                 try
                 {
                     RadButton rbtSender = ((RadButton)sender);
                     Label lbl = rbtSender.Parent.FindControl("lblCustomerId") as Label;
-                    if (EmptyStringIfNull.IsGuid(lbl.Text))
-                        SmallCustomer.RemoveSmallCutomer(dbContext, new Guid(lbl.Text));
+                    if (!String.IsNullOrEmpty(lbl.Text))
+                        SmallCustomer.RemoveSmallCutomer(dbContext, Int32.Parse(lbl.Text));
 
                     dbContext.SubmitChanges();
                     ts.Complete();
-                    
+
                     RadWindowManager1.RadAlert("Kunde wurde erfolgreich gelöscht", 380, 180, "Info", "");
-       
+
                 }
                 catch (Exception ex)
                 {
@@ -58,21 +58,21 @@ namespace KVSWebApplication.Customer
                     RadWindowManager1.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("RemoveSmallCustomer_Click Error " + ex.Message, LogTypes.ERROR, "Customer");
                         dbContext.SubmitChanges();
                     }
                     catch { }
-                  
-                   
+
+
                 }
-          }
-          if (insertUpdateOk)
-          {
-              getSmallCustomer.EditIndexes.Clear();
-              getSmallCustomer.MasterTableView.IsItemInserted = false;
-              getSmallCustomer.MasterTableView.Rebind();
-          }
+            }
+            if (insertUpdateOk)
+            {
+                getSmallCustomer.EditIndexes.Clear();
+                getSmallCustomer.MasterTableView.IsItemInserted = false;
+                getSmallCustomer.MasterTableView.Rebind();
+            }
         }
         /// <summary>
         /// Gibt die Mastergrid zurück (Informationen zur allen Kunden)
@@ -115,8 +115,8 @@ namespace KVSWebApplication.Customer
                             SendStreeetNumber = cust.InvoiceDispatchAdress.StreetNumber,
                             SendZipCode = cust.InvoiceDispatchAdress.Zipcode,
                             SendCity = cust.InvoiceDispatchAdress.City,
-                            SendCountry = cust.InvoiceDispatchAdress.Country                        
-                        };      
+                            SendCountry = cust.InvoiceDispatchAdress.Country
+                        };
             e.Result = query;
         }
         protected void ZipCodes_ItemsRequested(object sender, RadComboBoxItemsRequestedEventArgs e)
@@ -157,7 +157,7 @@ namespace KVSWebApplication.Customer
             {
                 cmbCountry.Items.Add(new RadComboBoxItem(myItem.Key));
             }
-        }   
+        }
         protected void GetSmallCustomerBankData_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
@@ -168,18 +168,18 @@ namespace KVSWebApplication.Customer
                             bankData.CustomerId,
                             bankData.BankAccount.BankName,
                             bankData.BankAccount.Accountnumber,
-                            bankData.BankAccount.BankCode,     
+                            bankData.BankAccount.BankCode,
                             bankData.BankAccount.IBAN,
-                            bankData.BankAccount.BIC                     
+                            bankData.BankAccount.BIC
                         };
             e.Result = query;
         }
         protected void bSaveAdressData_Click(object sender, EventArgs e)
         {
-          bool  insertUpdateOk = true;
+            bool insertUpdateOk = true;
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])); // hier kommt die Loggingid
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
                 try
                 {
                     RadButton myButton = ((RadButton)sender);
@@ -196,7 +196,7 @@ namespace KVSWebApplication.Customer
                     RadComboBox smallCustomerEditSendCity = ((RadComboBox)myButton.Parent.FindControl("SmallCustomerEditSendCity"));
                     RadComboBox smallCustomerEditInvoiceCountry = ((RadComboBox)myButton.Parent.FindControl("cmbSmallCustomerEditInvoiceCountry"));
                     RadComboBox smallCustomerSendCountry = ((RadComboBox)myButton.Parent.FindControl("cmbSmallCustomerSendCountry"));
-                    var selectedCustomer = dbContext.Customer.SingleOrDefault(q => q.Id == new Guid(customerId.Text));
+                    var selectedCustomer = dbContext.Customer.SingleOrDefault(q => q.Id == Int32.Parse(customerId.Text));
                     selectedCustomer._dbContext = dbContext;
                     if (selectedCustomer != null)
                     {
@@ -258,7 +258,7 @@ namespace KVSWebApplication.Customer
                     RadWindowManager1.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("Add/Edit SmallCustomer InvoiceAdress Error:  " + ex.Message, LogTypes.ERROR, "Customer");
                         dbContext.SubmitChanges();
                     }
@@ -271,7 +271,7 @@ namespace KVSWebApplication.Customer
                 getSmallCustomer.MasterTableView.IsItemInserted = false;
                 getSmallCustomer.MasterTableView.Rebind();
             }
-        }        
+        }
         /// <summary>
         /// Speichert die Änderung der Kundendaten  in die Datenbank
         /// </summary>
@@ -282,83 +282,83 @@ namespace KVSWebApplication.Customer
             bool insertUpdateOk = true;
             using (TransactionScope ts = new TransactionScope())
             {
-            Hashtable newValues = new Hashtable();
-            ((GridEditableItem)e.Item).ExtractValues(newValues);
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])); // hier kommt die Loggingid
-            try
-            {          
-                if (newValues["TableId"].ToString() == "Inner")
-                {                   
-                    var customerBankUpdate = dbContext.SmallCustomer.SingleOrDefault(q => q.CustomerId == new Guid(newValues["CustomerId"].ToString()));
-                    if (customerBankUpdate != null && customerBankUpdate.BankAccountId != null)
-                    {                   
-                        customerBankUpdate.BankAccount.LogDBContext = dbContext;
-                        customerBankUpdate.BankAccount.BankName = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["BankName"]);
-                        customerBankUpdate.BankAccount.Accountnumber = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Accountnumber"]);
-                        customerBankUpdate.BankAccount.BankCode = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["BankCode"]);
-                        customerBankUpdate.BankAccount.IBAN = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["IBAN"]);
-                        customerBankUpdate.BankAccount.BIC = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["BIC"]);
-                        dbContext.SubmitChanges();
-                        e.Canceled = true;
-                    }
-                    else if (customerBankUpdate != null && customerBankUpdate.BankAccountId == null)
+                Hashtable newValues = new Hashtable();
+                ((GridEditableItem)e.Item).ExtractValues(newValues);
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+                try
+                {
+                    if (newValues["TableId"].ToString() == "Inner")
                     {
-                        if (EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["BankName"]) != string.Empty || EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Accountnumber"]) != string.Empty ||
-                            EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["BankCode"]) != string.Empty || EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["IBAN"]) != string.Empty)
+                        var customerBankUpdate = dbContext.SmallCustomer.SingleOrDefault(q => q.CustomerId == Int32.Parse(newValues["CustomerId"].ToString()));
+                        if (customerBankUpdate != null && customerBankUpdate.BankAccountId != null)
                         {
-                            var addBank = BankAccount.CreateBankAccount(dbContext, newValues["BankName"].ToString(), newValues["Accountnumber"].ToString(), newValues["BankCode"].ToString(), newValues["IBAN"].ToString(), newValues["BIC"].ToString());
-                            customerBankUpdate.BankAccountId = addBank.Id;
+                            customerBankUpdate.BankAccount.LogDBContext = dbContext;
+                            customerBankUpdate.BankAccount.BankName = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["BankName"]);
+                            customerBankUpdate.BankAccount.Accountnumber = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Accountnumber"]);
+                            customerBankUpdate.BankAccount.BankCode = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["BankCode"]);
+                            customerBankUpdate.BankAccount.IBAN = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["IBAN"]);
+                            customerBankUpdate.BankAccount.BIC = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["BIC"]);
                             dbContext.SubmitChanges();
                             e.Canceled = true;
                         }
+                        else if (customerBankUpdate != null && customerBankUpdate.BankAccountId == null)
+                        {
+                            if (EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["BankName"]) != string.Empty || EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Accountnumber"]) != string.Empty ||
+                                EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["BankCode"]) != string.Empty || EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["IBAN"]) != string.Empty)
+                            {
+                                var addBank = BankAccount.CreateBankAccount(dbContext, newValues["BankName"].ToString(), newValues["Accountnumber"].ToString(), newValues["BankCode"].ToString(), newValues["IBAN"].ToString(), newValues["BIC"].ToString());
+                                customerBankUpdate.BankAccountId = addBank.Id;
+                                dbContext.SubmitChanges();
+                                e.Canceled = true;
+                            }
+                        }
                     }
+                    else if (newValues["TableId"].ToString() == "Outer")
+                    {
+                        var customerUpdate = dbContext.Customer.SingleOrDefault(q => q.Id == Int32.Parse(newValues["Id"].ToString()));
+                        customerUpdate._dbContext = dbContext;
+                        customerUpdate.LogDBContext = dbContext;
+                        if (newValues["Name"] == null)
+                            throw new Exception("Das Feld Kundenname ist ein Pflichtfeld und darf nicht leer sein");
+                        if (newValues["Vat"] == null)
+                            throw new Exception("Das Feld MwSt darf nicht leer sein");
+                        if (newValues["CustomerNumber"] == null)
+                            throw new Exception("Die Kundennummer darf nicht leer sein");
+                        customerUpdate.Name = newValues["Name"].ToString();
+                        customerUpdate.Adress.LogDBContext = dbContext;
+                        customerUpdate.Adress.Street = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Street"]);
+                        customerUpdate.Adress.StreetNumber = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["StreetNumber"]);
+                        customerUpdate.Adress.Zipcode = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Zipcode"]);
+                        customerUpdate.Adress.City = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["City"]);
+                        customerUpdate.Adress.Country = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Country"]);
+                        customerUpdate.Contact.LogDBContext = dbContext;
+                        customerUpdate.Contact.Phone = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Phone"]);
+                        customerUpdate.Contact.Fax = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Fax"]);
+                        customerUpdate.Contact.MobilePhone = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["MobilePhone"]);
+                        customerUpdate.Contact.Email = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Email"]);
+                        customerUpdate.VAT = EmptyStringIfNull.ReturnZeroDecimalIfNullEditVat(newValues["Vat"]);
+                        customerUpdate.TermOfCredit = EmptyStringIfNull.ReturnNullableInteger(newValues["Zahlungsziel"]);
+                        customerUpdate.CustomerNumber = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["CustomerNumber"]);
+                        dbContext.SubmitChanges();
+                    }
+                    ts.Complete();
+
                 }
-                else if (newValues["TableId"].ToString() == "Outer")
+                catch (Exception ex)
                 {
-                    var customerUpdate = dbContext.Customer.SingleOrDefault(q => q.Id == new Guid(newValues["Id"].ToString()));
-                    customerUpdate._dbContext = dbContext;
-                    customerUpdate.LogDBContext = dbContext;
-                    if (newValues["Name"] == null)
-                        throw new Exception("Das Feld Kundenname ist ein Pflichtfeld und darf nicht leer sein");
-                    if (newValues["Vat"] == null)
-                        throw new Exception("Das Feld MwSt darf nicht leer sein");
-                    if (newValues["CustomerNumber"] == null)
-                        throw new Exception("Die Kundennummer darf nicht leer sein");
-                    customerUpdate.Name = newValues["Name"].ToString();
-                    customerUpdate.Adress.LogDBContext = dbContext;
-                    customerUpdate.Adress.Street = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Street"]);
-                    customerUpdate.Adress.StreetNumber = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["StreetNumber"]);
-                    customerUpdate.Adress.Zipcode = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Zipcode"]);
-                    customerUpdate.Adress.City = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["City"]);
-                    customerUpdate.Adress.Country = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Country"]);
-                    customerUpdate.Contact.LogDBContext = dbContext;
-                    customerUpdate.Contact.Phone = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Phone"]);
-                    customerUpdate.Contact.Fax = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Fax"]);
-                    customerUpdate.Contact.MobilePhone = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["MobilePhone"]);
-                    customerUpdate.Contact.Email = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Email"]);
-                    customerUpdate.VAT = EmptyStringIfNull.ReturnZeroDecimalIfNullEditVat(newValues["Vat"]);
-                    customerUpdate.TermOfCredit = EmptyStringIfNull.ReturnNullableInteger(newValues["Zahlungsziel"]);
-                    customerUpdate.CustomerNumber = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["CustomerNumber"]);
-                    dbContext.SubmitChanges();                                  
+                    insertUpdateOk = false;
+                    if (ts != null)
+                        ts.Dispose();
+                    RadWindowManager1.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
+                    try
+                    {
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext.WriteLogItem("SmallCustomerDetails Error " + ex.Message, LogTypes.ERROR, "Customer");
+                        dbContext.SubmitChanges();
+                    }
+                    catch { }
                 }
-                ts.Complete();
-     
             }
-            catch (Exception ex)
-            {
-                insertUpdateOk = false;
-                if (ts != null)
-                    ts.Dispose();
-                RadWindowManager1.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
-                try
-                {
-                    dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
-                    dbContext.WriteLogItem("SmallCustomerDetails Error " + ex.Message, LogTypes.ERROR, "Customer");
-                    dbContext.SubmitChanges();
-                }
-                catch { }
-            }
-          }
             if (insertUpdateOk)
             {
                 getSmallCustomer.EditIndexes.Clear();

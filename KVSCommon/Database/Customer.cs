@@ -68,7 +68,6 @@ namespace KVSCommon.Database
 
             var adress = new Adress()
             {
-                Id = Guid.NewGuid(),
                 Street = street,
                 StreetNumber = streetnumber,
                 City = city,
@@ -78,7 +77,6 @@ namespace KVSCommon.Database
 
             var contact = new Contact()
             {
-                Id = Guid.NewGuid(),
                 Phone = phone,
                 Fax = fax,
                 MobilePhone = mobilephone,
@@ -87,13 +85,12 @@ namespace KVSCommon.Database
 
             var customer = new Customer()
             {
-                Id = Guid.NewGuid(),
                 Name = name,
                 Adress = adress,
                 Contact = contact,
                 VAT = vat,
-                InvoiceAdressId = adress.Id,
-                InvoiceDispatchAdressId = adress.Id,
+                InvoiceAdress = adress,
+                InvoiceDispatchAdress = adress,
                 TermOfCredit = termOfCredit,
                 CustomerNumber = customerNumber,
                 MatchCode = Matchcode,

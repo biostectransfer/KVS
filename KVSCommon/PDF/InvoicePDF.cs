@@ -235,8 +235,7 @@ namespace KVSCommon.PDF
                 string halter = string.Empty;
                 string zulassungsDatum = string.Empty;
                 string farbe = string.Empty;
-                Guid orderItemId = Guid.Empty;
-                Guid? superOrderItemId = Guid.Empty;
+
                 if (item.OrderItem != null)
                 {
                     Order order = item.OrderItem.Order;
@@ -259,8 +258,9 @@ namespace KVSCommon.PDF
                      
                     }
                 }
-                orderItemId = item.OrderItem.Id;
-                superOrderItemId = item.OrderItem.SuperOrderItemId;
+                
+                var orderItemId = item.OrderItem.Id;
+                var superOrderItemId = item.OrderItem.SuperOrderItemId;
 
                 if (!String.IsNullOrEmpty(zulassungsDatum))
                     zulassungsDatum = DateTime.Parse(zulassungsDatum).ToShortDateString();

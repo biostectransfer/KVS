@@ -29,7 +29,7 @@ namespace KVSWebApplication.RequiredField
         List<string> thisUserPermissions = new List<string>();
         protected void Page_Load(object sender, System.EventArgs e)
         {
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));          
+            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));          
         }
         protected void getAllCustomerRequiredDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
@@ -60,7 +60,7 @@ namespace KVSWebApplication.RequiredField
             var query = from reqField in dbContext.RequiredField
                         join orType in dbContext.OrderType on reqField.OrderTypeId equals orType.Id
                         where !(from l in dbContext.LargeCustomerRequiredField where
-                                l.LargeCustomerId == new Guid(e.WhereParameters["LargeCustomerId"].ToString())
+                                l.LargeCustomerId == Int32.Parse(e.WhereParameters["LargeCustomerId"].ToString())
                                 select l.RequiredFieldId).Contains(reqField.Id)
                         select new
                         {
@@ -79,7 +79,7 @@ namespace KVSWebApplication.RequiredField
                         join orType in dbContext.OrderType on reqField.OrderTypeId equals orType.Id
                         where (from l in dbContext.LargeCustomerRequiredField
                                 where
-                                    l.LargeCustomerId == new Guid(e.WhereParameters["LargeCustomerId"].ToString())
+                                    l.LargeCustomerId == Int32.Parse(e.WhereParameters["LargeCustomerId"].ToString())
                                 select l.RequiredFieldId).Contains(reqField.Id)
                         select new
                         {
@@ -93,27 +93,27 @@ namespace KVSWebApplication.RequiredField
         }
         protected void btnSaveRequired_Click(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
             try
             {
                 RadListBoxItemCollection AddedRequired = ((RadListBox)((RadButton)sender).Parent.FindControl("CustomerRequired")).Items;
                 RadListBoxItemCollection AllRequired = ((RadListBox)((RadButton)sender).Parent.FindControl("AllRequired")).Items;
-                Guid customerId = new Guid(((RadButton)sender).CommandArgument.ToString());
+                var customerId = Int32.Parse(((RadButton)sender).CommandArgument.ToString());
                 var myCustomer = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId== customerId);
                 if (myCustomer != null)
                 {
                     foreach (RadListBoxItem required in AllRequired)
                     {
-                        if (myCustomer.LargeCustomerRequiredField.SingleOrDefault(q => q.RequiredFieldId == new Guid(required.Value)) != null)
+                        if (myCustomer.LargeCustomerRequiredField.SingleOrDefault(q => q.RequiredFieldId == Int32.Parse(required.Value)) != null)
                         {
-                            myCustomer.RemoveRequiredField(new Guid(required.Value), dbContext);
+                            myCustomer.RemoveRequiredField(Int32.Parse(required.Value), dbContext);
                         }
                     }
                     foreach (RadListBoxItem addItem in AddedRequired)
                     {
-                        if (myCustomer.LargeCustomerRequiredField.SingleOrDefault(q => q.RequiredFieldId == new Guid(addItem.Value)) == null)
+                        if (myCustomer.LargeCustomerRequiredField.SingleOrDefault(q => q.RequiredFieldId == Int32.Parse(addItem.Value)) == null)
                         {
-                            myCustomer.AddRequiredField(new Guid(addItem.Value), dbContext);
+                            myCustomer.AddRequiredField(Int32.Parse(addItem.Value), dbContext);
                         }
                     }
                     dbContext.SubmitChanges();

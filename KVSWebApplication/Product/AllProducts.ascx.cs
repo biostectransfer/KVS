@@ -19,7 +19,7 @@ namespace KVSWebApplication.Product
         {
             try
             {
-                thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+                thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
                 if (!thisUserPermissions.Contains("PRODUKTE_BEARBEITEN"))
                 {
                     getAllProducts.Columns[0].Visible = false;
@@ -43,21 +43,21 @@ namespace KVSWebApplication.Product
                 }
                 if (!Page.IsPostBack)
                 {
-                    Session["myProductCategorys"] = new Dictionary<Guid, string>();
-                    Session["myOrderTypeNames"] = new Dictionary<Guid, string>();
-                    Session["myRegistrationOrderTypeNames"] = new Dictionary<Guid, string>();
+                    Session["myProductCategorys"] = new Dictionary<int, string>();
+                    Session["myOrderTypeNames"] = new Dictionary<int, string>();
+                    Session["myRegistrationOrderTypeNames"] = new Dictionary<int, string>();
                     Session["InsertEdit"] = false;
                     Session["selectedProductId"] = "";
                     Session["editableProductId"] = "";
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-           
+
         }
-        protected void getAllProducts_ItemDataBound(object sender, GridItemEventArgs e )
+        protected void getAllProducts_ItemDataBound(object sender, GridItemEventArgs e)
         {
             try
             {
@@ -93,51 +93,51 @@ namespace KVSWebApplication.Product
                 }
             }
 
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-      
+
         }
         protected void GetAllProductsDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
-        {         
+        {
 
-                Dictionary<Guid, string> myProductCategorys = ((Dictionary<Guid, string>)Session["myProductCategorys"]);
-                Dictionary<Guid, string> myOrderTypeNames = ((Dictionary<Guid, string>)Session["myOrderTypeNames"]);
-                Dictionary<Guid, string> myRegistrationOrderTypeNames = ((Dictionary<Guid, string>)Session["myRegistrationOrderTypeNames"]);
-                DataClasses1DataContext dbContext = new DataClasses1DataContext();    
-                   var query = from products in dbContext.Product
-                               let PriceId = products.Price.FirstOrDefault(p => p.ProductId == products.Id && p.LocationId == null)
-                               let price = (PriceId==null) ?Guid.Empty: PriceId.Id
-                               orderby products.ItemNumber
-                            select new
-                            {
-                                products.Id,
-                                PriceId = price,
-                                OrderTypeId = products.OrderTypeId,
-                                ProductCategoryId = products.ProductCategoryId,
-                                RegistrationOrderTypeId = products.RegistrationOrderTypeId,
-                                ProductName = products.Name,
-                                ItemNumber = products.ItemNumber != null ? products.ItemNumber : "",
-                                OrderTypeName = products.OrderType != null ? products.OrderType.Name : "",
-                                ProductCategorieName = products.ProductCategory != null ? products.ProductCategory.Name : "",
-                                RegistrationOrderTypeName = products.RegistrationOrderType != null ? products.RegistrationOrderType.Name : "",
-                                EnableDropDown = products.OrderType.Name.ToString() == "Zulassung" ? "true" : "false",
-                                Amount = EmptyStringIfNull.ReturnEmptyStringIfNull(products.Price.SingleOrDefault(q => q.ProductId == products.Id && q.LocationId == null).Amount.ToString()),
-                                AutoCharge = EmptyStringIfNull.ReturnEmptyStringIfNull(products.Price.SingleOrDefault(q => q.ProductId == products.Id && q.LocationId == null).AuthorativeCharge.ToString()),
-                                Vat = products.NeedsVAT != null && products.NeedsVAT == true ? "true" : "false",
-                                AccountNumber = (from price_ in dbContext.Price
-                                                 join _priceAccounts in dbContext.PriceAccount on price_.Id equals _priceAccounts.PriceId
-                                                 where price_.Id == price && price_.LocationId == null
-                                                 select _priceAccounts.Accounts.AccountNumber).SingleOrDefault()
-                            };
-                    try    
-                    {
+            Dictionary<int, string> myProductCategorys = ((Dictionary<int, string>)Session["myProductCategorys"]);
+            Dictionary<int, string> myOrderTypeNames = ((Dictionary<int, string>)Session["myOrderTypeNames"]);
+            Dictionary<int, string> myRegistrationOrderTypeNames = ((Dictionary<int, string>)Session["myRegistrationOrderTypeNames"]);
+            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            var query = from products in dbContext.Product
+                        let PriceId = products.Price.FirstOrDefault(p => p.ProductId == products.Id && p.LocationId == null)
+                        let price = (PriceId == null) ? (int?)null : PriceId.Id
+                        orderby products.ItemNumber
+                        select new
+                        {
+                            products.Id,
+                            PriceId = price,
+                            OrderTypeId = products.OrderTypeId,
+                            ProductCategoryId = products.ProductCategoryId,
+                            RegistrationOrderTypeId = products.RegistrationOrderTypeId,
+                            ProductName = products.Name,
+                            ItemNumber = products.ItemNumber != null ? products.ItemNumber : "",
+                            OrderTypeName = products.OrderType != null ? products.OrderType.Name : "",
+                            ProductCategorieName = products.ProductCategory != null ? products.ProductCategory.Name : "",
+                            RegistrationOrderTypeName = products.RegistrationOrderType != null ? products.RegistrationOrderType.Name : "",
+                            EnableDropDown = products.OrderType.Name.ToString() == "Zulassung" ? "true" : "false",
+                            Amount = EmptyStringIfNull.ReturnEmptyStringIfNull(products.Price.SingleOrDefault(q => q.ProductId == products.Id && q.LocationId == null).Amount.ToString()),
+                            AutoCharge = EmptyStringIfNull.ReturnEmptyStringIfNull(products.Price.SingleOrDefault(q => q.ProductId == products.Id && q.LocationId == null).AuthorativeCharge.ToString()),
+                            Vat = products.NeedsVAT != null && products.NeedsVAT == true ? "true" : "false",
+                            AccountNumber = (from price_ in dbContext.Price
+                                             join _priceAccounts in dbContext.PriceAccount on price_.Id equals _priceAccounts.PriceId
+                                             where price_.Id == price && price_.LocationId == null
+                                             select _priceAccounts.Accounts.AccountNumber).SingleOrDefault()
+                        };
+            try
+            {
                 var productCategorys = from pCategorys in dbContext.ProductCategory
                                        select new { pCategorys.Id, pCategorys.Name };
                 myProductCategorys.Clear();
 
-        
+
                 foreach (var Category in productCategorys)
                 {
                     if (Category.Id.ToString() != string.Empty)
@@ -169,7 +169,7 @@ namespace KVSWebApplication.Product
                         if (myOrderTypeNames.ContainsKey(RegistrationOrderTypeName.Id) == false)
                             myRegistrationOrderTypeNames.Add(RegistrationOrderTypeName.Id, RegistrationOrderTypeName.Name);
                     }
-                }        
+                }
             }
             catch (Exception ex)
             {
@@ -194,10 +194,10 @@ namespace KVSWebApplication.Product
                     string Employee = (item["ctlColumnGridWorkflow"].Controls[0] as DropDownList).SelectedItem.Text;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
-            }          
+            }
         }
 
         public void cmbCustomerProducts_OnLoad(RadComboBox Box)// public void cmbCustomerProducts_OnLoad(object sender, EventArgs e)
@@ -206,27 +206,10 @@ namespace KVSWebApplication.Product
             {
                 try
                 {
-                    //RadComboBox cmbCustomerProducts = ((RadComboBox)sender);
-
-                    //cmbCustomerProducts.Items.Clear();
-                    //cmbCustomerProducts.Text = string.Empty;
-
-
-
                     if (Session["editableProductId"] != null && Session["editableProductId"].ToString() != string.Empty)
                     {
                         string myProductId = Session["editableProductId"].ToString();
                         Box.Visible = true;
-                        //var myCustomers = from cust in dbContext.Customer
-                        //                  join custProd in dbContext.CustomerProduct on cust.Id equals custProd.CustomerId into JoinedCustProd
-                        //                  from custProd in JoinedCustProd.DefaultIfEmpty()                                  
-                        //                  orderby cust.Name ascending
-                        //                  select new
-                        //                  {
-                        //                      CustomerId = cust.Id,
-                        //                      CustomerName = cust.Name,
-                        //                      IsChecked = custProd.ProductId == new Guid(Session["selectedProductId"].ToString()) ? true : false
-                        //                  };
 
                         var myCustomers = from cust in dbContext.Customer
                                           join lCust in dbContext.LargeCustomer on cust.Id equals lCust.CustomerId
@@ -235,13 +218,11 @@ namespace KVSWebApplication.Product
                                           {
                                               CustomerId = cust.Id,
                                               CustomerName = String.IsNullOrEmpty(cust.MatchCode) ? cust.Name : cust.Name + "(" + cust.MatchCode + ")",
-                                              IsChecked = dbContext.CustomerProduct.SingleOrDefault(q => q.ProductId == new Guid(myProductId) && q.CustomerId == cust.Id) != null ? true : false
+                                              IsChecked = dbContext.CustomerProduct.SingleOrDefault(q => q.ProductId == Int32.Parse(myProductId) && q.CustomerId == cust.Id) != null ? true : false
                                           };
 
                         Box.DataSource = myCustomers;
                         Box.DataBind();
-                        //cmbCustomerProducts.DataSource = myCustomers;
-                        //cmbCustomerProducts.DataBind();
                     }
                 }
                 catch (Exception ex)
@@ -249,7 +230,7 @@ namespace KVSWebApplication.Product
                     dbContext.WriteLogItem("Product Error " + ex.Message, LogTypes.ERROR, "Product");
                     throw new Exception(ex.Message);
                 }
-            }       
+            }
         }
 
 
@@ -257,28 +238,28 @@ namespace KVSWebApplication.Product
         {
             try
             {
-                Dictionary<Guid, string> myProductCategorys = ((Dictionary<Guid, string>)Session["myProductCategorys"]);
+                var myProductCategorys = ((Dictionary<int, string>)Session["myProductCategorys"]);
                 RadComboBox cmbCategory = ((RadComboBox)sender);
                 cmbCategory.Items.Clear();
-                foreach (KeyValuePair<Guid, string> myItem in myProductCategorys)
+                foreach (var myItem in myProductCategorys)
                 {
                     cmbCategory.Items.Add(new RadComboBoxItem(myItem.Value, myItem.Key.ToString()));
-                }          
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-             
+
         }
         protected void cmbOrderTypeName_OnLoad(object sender, EventArgs e)
         {
             try
             {
-                Dictionary<Guid, string> myOrderTypeNames = ((Dictionary<Guid, string>)Session["myOrderTypeNames"]);
+                var myOrderTypeNames = ((Dictionary<int, string>)Session["myOrderTypeNames"]);
                 RadComboBox cmbOrderTypeName = ((RadComboBox)sender);
                 cmbOrderTypeName.Items.Clear();
-                foreach (KeyValuePair<Guid, string> myItem in myOrderTypeNames)
+                foreach (var myItem in myOrderTypeNames)
                 {
                     cmbOrderTypeName.Items.Add(new RadComboBoxItem(myItem.Value, myItem.Key.ToString()));
                 }
@@ -286,17 +267,17 @@ namespace KVSWebApplication.Product
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
-            }           
+            }
         }
 
         protected void cmbRegistrationOrderTypeName_OnLoad(object sender, EventArgs e)
         {
             try
             {
-                Dictionary<Guid, string> myRegistrationOrderTypeNames = ((Dictionary<Guid, string>)Session["myRegistrationOrderTypeNames"]);
+                var myRegistrationOrderTypeNames = ((Dictionary<int, string>)Session["myRegistrationOrderTypeNames"]);
                 RadComboBox cmbRegistrationOrderTypeName = ((RadComboBox)sender);
                 cmbRegistrationOrderTypeName.Items.Clear();
-                foreach (KeyValuePair<Guid, string> myItem in myRegistrationOrderTypeNames)
+                foreach (var myItem in myRegistrationOrderTypeNames)
                 {
                     cmbRegistrationOrderTypeName.Items.Add(new RadComboBoxItem(myItem.Value, myItem.Key.ToString()));
                 }
@@ -305,23 +286,25 @@ namespace KVSWebApplication.Product
             {
                 throw new Exception(ex.Message);
             }
-           
+
         }
 
         protected void cmbOrderTypeName_SelectedIndexChanged(object o, Telerik.Web.UI.RadComboBoxSelectedIndexChangedEventArgs e)
         {
-                RadComboBox myCombobox = (RadComboBox)((RadComboBox)o).Parent.FindControl("cmbRegistrationOrderTypeName");
-                try
-                {
-                    if (new Guid(e.Value) == new Guid("C7D1B831-ADF5-4A36-AD2A-E70B2590E755"))
-                        myCombobox.Enabled = true;
-                    else
-                        myCombobox.Enabled = false;
-                }
-                catch
-                {
+            RadComboBox myCombobox = (RadComboBox)((RadComboBox)o).Parent.FindControl("cmbRegistrationOrderTypeName");
+            try
+            {
+                //if Int32.Parse(e.Value) == Int32.Parse("C7D1B831-ADF5-4A36-AD2A-E70B2590E755"))
+                //TODO
+                if(Int32.Parse(e.Value) == 0)
+                    myCombobox.Enabled = true;
+                else
                     myCombobox.Enabled = false;
-                }
+            }
+            catch
+            {
+                myCombobox.Enabled = false;
+            }
         }
 
         protected void cmbErloeskonten_OnInit(object sender, EventArgs e)
@@ -343,7 +326,7 @@ namespace KVSWebApplication.Product
                                                  AccountId = _accounts.AccountId,
                                                  AccountNumber = _accounts.AccountNumber,
                                                  AccountSelected = (dbContext.PriceAccount.SingleOrDefault(s => s.AccountId == _accounts.AccountId &&
-                                                  s.PriceId == new Guid(lblPriceId)) == null ? false : true)
+                                                  s.PriceId == Int32.Parse(lblPriceId)) == null ? false : true)
                                              };
                         cmbErloeskonten.DataSource = myErloeskonten;
                         cmbErloeskonten.Text = "";
@@ -373,15 +356,15 @@ namespace KVSWebApplication.Product
                     dbContext.WriteLogItem("Product Error " + ex.Message, LogTypes.ERROR, "Product");
                     throw new Exception(ex.Message);
                 }
-            }                       
+            }
         }
         protected void btnSaveProduct_Click(object sender, EventArgs e)
         {
             bool insertUpdateOk = true;
             using (TransactionScope ts = new TransactionScope())
             {
-               
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])); // hier kommt die Loggingid
+
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
                 Button myButton = ((Button)sender);
                 Label errorMessage = ((Label)myButton.FindControl("SchowErrorMessages"));
                 try
@@ -397,15 +380,15 @@ namespace KVSWebApplication.Product
                     TextBox txtACharge = ((TextBox)myButton.FindControl("txbAuthorativeCharge"));
                     CheckBox chbVat = ((CheckBox)myButton.FindControl("chbVAT"));
                     RadComboBox cmbErloeskonten = ((RadComboBox)myButton.FindControl("cmbErloeskonten"));
-                    Guid? erloesKonto = null;
+                    int? erloesKonto = null;
 
                     RadComboBox cmbCustomerProduct = ((RadComboBox)myButton.FindControl("cmbCustomerProducts"));
 
                     UpdateCustomerProductsTabel(cmbCustomerProduct, productId.Text);
 
-                    if (EmptyStringIfNull.IsGuid(cmbErloeskonten.SelectedValue))
+                    if (!String.IsNullOrEmpty(cmbErloeskonten.SelectedValue))
                     {
-                        erloesKonto = new Guid(cmbErloeskonten.SelectedValue);
+                        erloesKonto = Int32.Parse(cmbErloeskonten.SelectedValue);
                     }
                     decimal? autCharge = null;
                     if (txtACharge.Text == string.Empty)
@@ -441,7 +424,7 @@ namespace KVSWebApplication.Product
                     {
                         if ((bool)Session["InsertEdit"] == false)
                         {
-                            var editProductData = dbContext.Product.SingleOrDefault(q => q.Id == new Guid(productId.Text));
+                            var editProductData = dbContext.Product.SingleOrDefault(q => q.Id == Int32.Parse(productId.Text));
                             if (editProductData == null)
                             {
                                 throw new Exception("Es ist ein Fehler aufgetretten, bitte aktualisieren Sie die Seite und versuchen Sie es erneut!");
@@ -452,24 +435,24 @@ namespace KVSWebApplication.Product
                                 editProductData.Name = productName.Text;
                                 editProductData.ItemNumber = productNumber.Text;
                                 editProductData.NeedsVAT = chbVat.Checked;
-                                if (dbContext.Product.FirstOrDefault(q => q.ItemNumber == productNumber.Text && q.Id != new Guid(productId.Text)) != null)
+                                if (dbContext.Product.FirstOrDefault(q => q.ItemNumber == productNumber.Text && q.Id != Int32.Parse(productId.Text)) != null)
                                 {
                                     throw new Exception("Diese Produktnummer ist bereits an ein anderes Produkt vergeben!");
                                 }
 
                                 if (Category.SelectedIndex != -1)
-                                    editProductData.ProductCategoryId = new Guid(Category.SelectedValue);
+                                    editProductData.ProductCategoryId = Int32.Parse(Category.SelectedValue);
                                 if (comboCmbOrderTypeName.SelectedIndex != -1)
-                                    editProductData.OrderTypeId = new Guid(comboCmbOrderTypeName.SelectedValue);
+                                    editProductData.OrderTypeId = Int32.Parse(comboCmbOrderTypeName.SelectedValue);
                                 if (comboRegisOrTypeName.SelectedIndex != -1)
-                                    editProductData.RegistrationOrderTypeId = new Guid(comboRegisOrTypeName.SelectedValue);
+                                    editProductData.RegistrationOrderTypeId = Int32.Parse(comboRegisOrTypeName.SelectedValue);
 
-                                var editPrice = dbContext.Price.SingleOrDefault(q => q.LocationId == null && q.ProductId == new Guid(productId.Text));
+                                var editPrice = dbContext.Price.SingleOrDefault(q => q.LocationId == null && q.ProductId == Int32.Parse(productId.Text));
                                 if (editPrice == null)
                                 {
                                     if (textAmount.Text != string.Empty)
                                     {
-                                        var newPrice = KVSCommon.Database.Price.CreatePrice(price, autCharge, new Guid(productId.Text), null, null, dbContext);
+                                        var newPrice = KVSCommon.Database.Price.CreatePrice(price, autCharge, Int32.Parse(productId.Text), null, null, dbContext);
                                         PriceAccountHelper.CreateAccount(erloesKonto, newPrice, dbContext);
                                     }
                                 }
@@ -494,10 +477,11 @@ namespace KVSWebApplication.Product
                             {
                                 throw new Exception("Diese Produktnummer ist bereits an ein anderes Produkt vergeben!");
                             }
-                            Price newPrice = KVSCommon.Database.Product.CreateProduct(productName.Text, new Guid(Category.SelectedValue), price, autCharge, productNumber.Text,
-                                new Guid(comboCmbOrderTypeName.SelectedValue),
-                                ((comboRegisOrTypeName.SelectedValue != string.Empty || comboRegisOrTypeName.SelectedIndex != -1) ? new Guid(comboRegisOrTypeName.SelectedValue) : new Guid?()), chbVat.Checked, true, dbContext);
-                         
+                            Price newPrice = KVSCommon.Database.Product.CreateProduct(productName.Text, Int32.Parse(Category.SelectedValue), price, autCharge, productNumber.Text,
+                                Int32.Parse(comboCmbOrderTypeName.SelectedValue),
+                                ((comboRegisOrTypeName.SelectedValue != string.Empty || comboRegisOrTypeName.SelectedIndex != -1) ? Int32.Parse(comboRegisOrTypeName.SelectedValue) : 
+                                (int?)null), chbVat.Checked, true, dbContext);
+
                             PriceAccountHelper.CreateAccount(erloesKonto, newPrice, dbContext);
                             dbContext.SubmitChanges();
                             Session["selectedProductId"] = "";
@@ -515,7 +499,7 @@ namespace KVSWebApplication.Product
                         ts.Dispose();
                     errorMessage.Text = "Fehler:" + ex.Message;
                     //RadWindowManagerAllProducts.RadAlert(ex.Message, 380, 180, "Fehler", "");
-                    dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                    dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                     dbContext.WriteLogItem("Product Error " + ex.Message, LogTypes.ERROR, "Product");
                     dbContext.SubmitChanges();
                 }
@@ -532,13 +516,14 @@ namespace KVSWebApplication.Product
 
         protected void UpdateCustomerProductsTabel(RadComboBox cmbCustomerProduct, string productId)
         {
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])))
+            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
             {
                 foreach (RadComboBoxItem Item in cmbCustomerProduct.Items)
                 {
                     if (!String.IsNullOrEmpty(Item.Value))
                     {
-                        var CustProdRelation = dbContext.CustomerProduct.SingleOrDefault(q => q.CustomerId == new Guid(Item.Value) && q.ProductId == new Guid(productId));
+                        var CustProdRelation = dbContext.CustomerProduct.SingleOrDefault(q => q.CustomerId == Int32.Parse(Item.Value) &&
+                            q.ProductId == Int32.Parse(productId));
 
                         if (CustProdRelation != null) // exists
                         {
@@ -549,25 +534,30 @@ namespace KVSWebApplication.Product
                             else // exits, but not checked - delete
                             {
                                 dbContext.CustomerProduct.DeleteOnSubmit(CustProdRelation);
-                            }                                 
+                            }
                         }
                         else //not exists
                         {
                             if (Item.Checked) //checked and not exists - insert
                             {
-                                CustomerProduct newCustProd = new CustomerProduct { CustomerId = new Guid(Item.Value), ProductId = new Guid(productId) };
+                                CustomerProduct newCustProd = new CustomerProduct 
+                                { 
+                                    CustomerId = Int32.Parse(Item.Value),
+                                    ProductId = Int32.Parse(productId) 
+                                };
+
                                 dbContext.CustomerProduct.InsertOnSubmit(newCustProd);
                             }
                             else // not exists and not checked - nothing
                             {
-                              //  dbContext.CustomerProduct.DeleteOnSubmit(CustProdRelation);
-                            } 
+                                //  dbContext.CustomerProduct.DeleteOnSubmit(CustProdRelation);
+                            }
                         }
 
                         dbContext.SubmitChanges();
                     }
                 }
-            }           
+            }
         }
 
         protected void btnAbort_Click(object sender, EventArgs e)
@@ -577,13 +567,13 @@ namespace KVSWebApplication.Product
                 Session["selectedProductId"] = "";
                 getAllProducts.EditIndexes.Clear();
                 getAllProducts.MasterTableView.IsItemInserted = false;
-                getAllProducts.MasterTableView.Rebind();  
+                getAllProducts.MasterTableView.Rebind();
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-           
+
         }
         protected void getAllProducts_ItemCommand(object sender, Telerik.Web.UI.GridCommandEventArgs e)
         {
@@ -606,14 +596,14 @@ namespace KVSWebApplication.Product
                         e.Item.OwnerTableView.IsItemInserted = true;
                         e.Item.OwnerTableView.InsertItem();
                     }
-                }      
+                }
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            
-        }      
+
+        }
         protected void getAllProducts_Init(object sender, System.EventArgs e)
         {
             try
@@ -635,41 +625,41 @@ namespace KVSWebApplication.Product
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
-            }          
+            }
         }
         protected void RemoveProduct_Click(object sender, EventArgs e)
         {
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
-                
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
 
+
+                try
+                {
+                    RadButton rbtSender = ((RadButton)sender);
+                    Label lblProductId = rbtSender.Parent.FindControl("lblProductId") as Label;
+                    if (!String.IsNullOrEmpty(lblProductId.Text))
+                    {
+                        KVSCommon.Database.Product.RemoveProduct(Int32.Parse(lblProductId.Text), dbContext);
+                        dbContext.SubmitChanges();
+                    }
+                    ts.Complete();
+                }
+                catch (Exception ex)
+                {
+
+                    if (ts != null)
+                        ts.Dispose();
+                    RadWindowManagerAllProducts.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                           RadButton rbtSender = ((RadButton)sender);
-                           Label lblProductId = rbtSender.Parent.FindControl("lblProductId") as Label;
-                        if (EmptyStringIfNull.IsGuid(lblProductId.Text))
-                        {
-                            KVSCommon.Database.Product.RemoveProduct(new Guid(lblProductId.Text), dbContext);
-                            dbContext.SubmitChanges();
-                        }
-                        ts.Complete();
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext.WriteLogItem("Product Error " + ex.Message, LogTypes.ERROR, "Product");
+                        dbContext.SubmitChanges();
                     }
-                    catch (Exception ex)
-                    {
+                    catch { }
+                }
 
-                        if (ts != null)
-                            ts.Dispose();
-                        RadWindowManagerAllProducts.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
-                        try
-                        {
-                            dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
-                            dbContext.WriteLogItem("Product Error " + ex.Message, LogTypes.ERROR, "Product");
-                            dbContext.SubmitChanges();
-                        }
-                        catch { }
-                    }
-                
             }
             getAllProducts.EditIndexes.Clear();
             getAllProducts.MasterTableView.IsItemInserted = false;

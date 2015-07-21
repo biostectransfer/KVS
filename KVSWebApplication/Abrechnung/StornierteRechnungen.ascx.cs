@@ -49,7 +49,7 @@ namespace KVSWebApplication.Abrechnung
         protected void CheckUserPermissions()
         {
             List<string> userPermissions = new List<string>();
-            userPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+            userPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (userPermissions.Count > 0)
             {
                 if (!userPermissions.Contains("RECHNUNG_ERSTELLEN"))
@@ -77,7 +77,7 @@ namespace KVSWebApplication.Abrechnung
                     RechnungVorschauErrorLabel.Visible = false;
                     foreach (GridDataItem item in RadGridAbrechnungErstellen.SelectedItems)
                     {
-                        Guid invoiceID = new Guid(item["invoiceId"].Text);
+                        var invoiceID = Int32.Parse(item["invoiceId"].Text);
                         if (invoiceID != null)
                         {
                             DataClasses1DataContext dbContext = new DataClasses1DataContext();
@@ -144,11 +144,11 @@ namespace KVSWebApplication.Abrechnung
         protected void DetailTable_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            Guid invoiceId = Guid.Empty;
-            if (e.WhereParameters["InvoiceId"] != null)
-            {
-                invoiceId = new Guid(e.WhereParameters["InvoiceId"].ToString());
-            }
+
+            //TODO if (e.WhereParameters["InvoiceId"] != null)
+            //{
+             var invoiceId = Int32.Parse(e.WhereParameters["InvoiceId"].ToString());
+            //}
             var invoiceAccounts = Accounts.generateAccountNumber(dbContext, invoiceId).ToList();
                   var invoiceItemsQuery = (from invitem in dbContext.InvoiceItem
                                      join inv in dbContext.Invoice on invitem.InvoiceId equals inv.Id
@@ -162,7 +162,7 @@ namespace KVSWebApplication.Abrechnung
                                          Count = invitem.Count,
                                          Name = invitem.Name,
                                          isPrinted = inv.IsPrinted,
-                                         AccountId = Guid.Empty,
+                                         AccountId = 0,
                                          AccountNumber = "",
                                          InvoiceItemId = invitem.Id, 
                                      }).ToList();
@@ -202,10 +202,10 @@ namespace KVSWebApplication.Abrechnung
         protected void AbrechnungLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext con = new DataClasses1DataContext();
-            Guid customerId = Guid.Empty;
+            var customerId = 0;
             if (CustomerDropDownList.SelectedValue != string.Empty)
-                customerId = new Guid(CustomerDropDownList.SelectedValue);
-            if (customerId != Guid.Empty)
+                customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
+            if (customerId != 0)
             {
                 var invoiceQuery = from inv in con.Invoice
                                    where inv.CustomerId == customerId

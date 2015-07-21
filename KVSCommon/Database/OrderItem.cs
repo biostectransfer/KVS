@@ -62,7 +62,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnCostCenterIdChanging(Guid? value)
+        partial void OnCostCenterIdChanging(int? value)
         {
             this.WriteUpdateLogItem("Kostenstelle", this.CostCenterId, value);
         }
@@ -106,7 +106,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnProductIdChanging(Guid value)
+        partial void OnProductIdChanging(int value)
         {
             this.WriteUpdateLogItem("Produkt", this.ProductId, value);
         }
@@ -154,7 +154,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="dbContext">DB Kontext</param>
         /// <param name="orderItemId">AuftragspositionID</param>
-        public static void RemoveOrderItem(DataClasses1DataContext dbContext, Guid orderItemId)
+        public static void RemoveOrderItem(DataClasses1DataContext dbContext, int orderItemId)
         {
             var orderItemToDelete = dbContext.OrderItem.FirstOrDefault(q => q.Id == orderItemId);
             if (orderItemToDelete != null)

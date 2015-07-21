@@ -10,15 +10,15 @@ namespace KVSWebApplication.Abrechnung
     /// </summary>
     class InnerItems
     {
-        public Guid ItemId { get; set; }
-        public Guid? OrderItemId { get; set; }
-        public Guid InvoiceId { get; set; }
+        public int ItemId { get; set; }
+        public int? OrderItemId { get; set; }
+        public int InvoiceId { get; set; }
         public decimal Amount { get; set; }
         public int Count { get; set; }
         public string Name { get; set; }
         public bool isPrinted { get; set; }
-        public Guid InvoiceItemId { get; set; }
-        public Guid AccountId { get; set; }
+        public int InvoiceItemId { get; set; }
+        public int AccountId { get; set; }
         public string AccountNumber { get; set; }
         public bool Active { get; set; }
     }

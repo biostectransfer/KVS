@@ -70,7 +70,6 @@ namespace KVSCommon.Database
             sh.GetHashAndSaltString(password, out passwordHash, out salt);
             var user = new User()
             {
-                Id = Guid.NewGuid(),
                 LogDBContext = dbContext,
                 Login = login,
                 Password = passwordHash,
@@ -78,7 +77,6 @@ namespace KVSCommon.Database
                 IsLocked = false,
                 Person = new Person()
                 {
-                    Id = Guid.NewGuid(),
                     LogDBContext = dbContext,
                     FirstName = firstname,
                     Name = name,
@@ -97,9 +95,8 @@ namespace KVSCommon.Database
         /// <param name="login">Benutzername des Benutzers.</param>
         /// <param name="password">Passwort des Benutzers.</param>
         /// <returns>Datenbank-Id des Benutzers, falls Logon erfolgreich.</returns>
-        public static Guid Logon(string login, string password)
-        {
-         
+        public static int Logon(string login, string password)
+        {         
             using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
             {              
         
@@ -237,7 +234,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="userId">ID des Benutzers.</param>
         /// <returns>Eine Liste mit Berechtigungen.</returns>
-        public static List<string> GetAllPermissionsByID(Guid userId)
+        public static List<string> GetAllPermissionsByID(int userId)
         {
             List<string> userPermissions = new List<string>();
 
@@ -283,7 +280,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="userid">Id des Benutzers.</param>
         /// <returns></returns>
-        public static string GetUserNamebyId(Guid userid)
+        public static string GetUserNamebyId(int userid)
         {
             using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
             {
@@ -302,7 +299,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="permissionId">Id des Rechts, das zugewiesen werden soll.</param>
         /// <param name="dbContext">Datenbank-Context, mit dem das Recht zugewiesen wird.</param>
-        public void AddPermission(Guid permissionId, DataClasses1DataContext dbContext)
+        public void AddPermission(int permissionId, DataClasses1DataContext dbContext)
         {
             var permission = dbContext.Permission.Single(q => q.Id == permissionId);
             if (this.UserPermission.Any(q => q.PermissionId == permission.Id))
@@ -322,7 +319,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="permissionId">Id des Rechts, das entzogen werden soll.</param>
         /// <param name="dbContext">Datenbank-Context, mit dem das Recht entzogen wird.</param>
-        public void RemovePermission(Guid permissionId, DataClasses1DataContext dbContext)
+        public void RemovePermission(int permissionId, DataClasses1DataContext dbContext)
         {
             var permission = dbContext.Permission.Single(q => q.Id == permissionId);
             UserPermission userPermission = this.UserPermission.SingleOrDefault(q => q.PermissionId == permission.Id);
@@ -340,7 +337,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="profileId">Id des Rechteprofils, das zugewiesen werden soll.</param>
         /// <param name="dbContext">Datenbank-Context, mit dem das Rechteprofil zugewiesen wird.</param>
-        public void AddPermissionProfile(Guid profileId, DataClasses1DataContext dbContext)
+        public void AddPermissionProfile(int profileId, DataClasses1DataContext dbContext)
         {
             var profile = dbContext.PermissionProfile.Single(q => q.Id == profileId);
             if (this.UserPermissionProfile.Any(q => q.PermissionProfileId == profile.Id))
@@ -360,7 +357,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="profileId">Id des Rechteprofils, das entzogen werden soll.</param>
         /// <param name="dbContext">Datenbank-Context, mit dem das Rechteprofil entzogen wird.</param>
-        public void RemovePermissionProfile(Guid profileId, DataClasses1DataContext dbContext)
+        public void RemovePermissionProfile(int profileId, DataClasses1DataContext dbContext)
         {
             var profile = dbContext.PermissionProfile.Single(q => q.Id == profileId);
             UserPermissionProfile userProfile = this.UserPermissionProfile.SingleOrDefault(q => q.PermissionProfileId == profile.Id);

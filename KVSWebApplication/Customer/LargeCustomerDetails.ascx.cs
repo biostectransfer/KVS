@@ -19,7 +19,7 @@ namespace KVSWebApplication.Customer
         List<string> thisUserPermissions = new List<string>();
         protected void Page_Load(object sender, EventArgs e)
         {
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (!thisUserPermissions.Contains("KUNDEN_BEARBEITEN"))
             {
                 getAllCustomer.Columns[0].Visible = false;
@@ -103,7 +103,7 @@ namespace KVSWebApplication.Customer
                             cust.Adress.Zipcode,
                             cust.Adress.City,
                             cust.Adress.Country,
-                            PersonId=  EmptyStringIfNull.ReturnEmptyStringIfNull(cost.PersonId),
+                            PersonId = EmptyStringIfNull.ReturnEmptyStringIfNull(cost.PersonId),
                             Show = cust.Id.ToString() == cust.LargeCustomer.CustomerId.ToString() ? "true" : "false",
                             SameAsAdress = cust.AdressId == cust.InvoiceAdressId ? "true" : "false",
                             SameAsInvoice = cust.InvoiceAdressId == cust.InvoiceDispatchAdressId ? "true" : "false",
@@ -122,7 +122,7 @@ namespace KVSWebApplication.Customer
                             SendZipCode = cust.InvoiceDispatchAdress.Zipcode,
                             SendCity = cust.InvoiceDispatchAdress.City,
                             SendCountry = cust.InvoiceDispatchAdress.Country,
-                            InvoiceType=cost.InvoiceTypes != null ? cost.InvoiceTypes.InvoiceTypeName : "Hinzufügen",
+                            InvoiceType = cost.InvoiceTypes != null ? cost.InvoiceTypes.InvoiceTypeName : "Hinzufügen",
                             VersandadresseKunde = cust.LargeCustomer.SendOrderFinishedNoteToCustomer == null || cust.LargeCustomer.SendOrderFinishedNoteToCustomer == false ? "false" : "true",
                             VersandadresseStandort = cust.LargeCustomer.SendOrderFinishedNoteToLocation == null || cust.LargeCustomer.SendOrderFinishedNoteToLocation == false ? "false" : "true",
                             VersandadresseTimeNothing = cust.LargeCustomer.OrderFinishedNoteSendType == 0 ? "true" : "false",
@@ -133,9 +133,9 @@ namespace KVSWebApplication.Customer
                             LieferscheinStandort = cust.LargeCustomer.SendPackingListToLocation == null || cust.LargeCustomer.SendPackingListToLocation == false ? "false" : "true",
                             MatchCode = cust.LargeCustomer.Customer.MatchCode,
                             Debitornumber = cust.LargeCustomer.Customer.Debitornumber,
-                            evbnumber  = EmptyStringIfNull.ReturnEmptyStringIfNull(cust.eVB_Number),
+                            evbnumber = EmptyStringIfNull.ReturnEmptyStringIfNull(cust.eVB_Number),
                             InternalId = cust.InternalId
-                        };          
+                        };
             e.Result = query;
         }
         protected void cmbErloeskonten_ItemsRequested(object sender, RadComboBoxItemsRequestedEventArgs e)
@@ -146,9 +146,9 @@ namespace KVSWebApplication.Customer
             cmbErloeskonten.Items.Clear();
             cmbErloeskonten.Text = string.Empty;
             var myErloeskonten = from _accounts in dbContext.Accounts
-                                 where _accounts.CustomerId == new Guid(lbl.Text)
-                             group _accounts by _accounts.AccountNumber into count
-                             select new { count.Key };
+                                 where _accounts.CustomerId == Int32.Parse(lbl.Text)
+                                 group _accounts by _accounts.AccountNumber into count
+                                 select new { count.Key };
             foreach (var myItem in myErloeskonten)
             {
                 cmbErloeskonten.Items.Add(new RadComboBoxItem(myItem.Key));
@@ -161,30 +161,30 @@ namespace KVSWebApplication.Customer
             RadComboBox rbt = rbtSender.Parent.FindControl("cmbErloeskonten") as RadComboBox;
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
-               
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+
+                try
+                {
+
+                    Accounts.DeleteAccount(Int32.Parse(lbl.Text), rbt.Text, dbContext);
+
+                    ts.Complete();
+                }
+                catch (Exception ex)
+                {
+                    if (ts != null)
+                        ts.Dispose();
+                    RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                       
-                        Accounts.DeleteAccount(new Guid(lbl.Text), rbt.Text, dbContext);
-                        
-                        ts.Complete();
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext.WriteLogItem("RemoveKonto_Click Error " + ex.Message, LogTypes.ERROR, "Customer");
+                        dbContext.SubmitChanges();
                     }
-                    catch (Exception ex)
-                    {
-                        if (ts != null)
-                            ts.Dispose();
-                        RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
-                        try
-                        {
-                            dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
-                            dbContext.WriteLogItem("RemoveKonto_Click Error " + ex.Message, LogTypes.ERROR, "Customer");
-                            dbContext.SubmitChanges();
-                        }
-                        catch { }
-                    }
+                    catch { }
+                }
 
-                
+
             }
             cmbErloeskonten_ItemsRequested(rbt, new RadComboBoxItemsRequestedEventArgs());
         }
@@ -194,40 +194,41 @@ namespace KVSWebApplication.Customer
             using (TransactionScope ts = new TransactionScope())
             {
                 DataClasses1DataContext dbContext = new DataClasses1DataContext();
-                
-                    try
+
+                try
+                {
+                    RadButton AddInvoiceType = ((RadButton)sender);
+                    GridDataItem myItem = AddInvoiceType.Parent.Parent.Parent.Parent as GridDataItem;
+                    RadComboBox cmbSelectedType = AddInvoiceType.Parent.FindControl("cmbInvoiceTypes") as RadComboBox;
+
+                    if (myItem != null && myItem["Id"].Text != string.Empty && !String.IsNullOrEmpty(myItem["Id"].Text) && cmbSelectedType != null
+                        && cmbSelectedType.SelectedValue != string.Empty && !String.IsNullOrEmpty(cmbSelectedType.SelectedValue))
                     {
-                        RadButton AddInvoiceType = ((RadButton)sender);
-                        GridDataItem myItem = AddInvoiceType.Parent.Parent.Parent.Parent as GridDataItem;
-                        RadComboBox cmbSelectedType = AddInvoiceType.Parent.FindControl("cmbInvoiceTypes") as RadComboBox;
-                        if (myItem != null && myItem["Id"].Text != string.Empty && EmptyStringIfNull.IsGuid(myItem["Id"].Text) && cmbSelectedType != null
-                            && cmbSelectedType.SelectedValue != string.Empty && EmptyStringIfNull.IsGuid(cmbSelectedType.SelectedValue))
+                        var customer = dbContext.LargeCustomer.FirstOrDefault(q => q.CustomerId == Int32.Parse(myItem["Id"].Text));
+                        if (customer != null)
                         {
-                            var customer = dbContext.LargeCustomer.FirstOrDefault(q => q.CustomerId == new Guid(myItem["Id"].Text));
-                            if (customer != null)
-                            {
-                                customer.InvoiceTypesID = new Guid(cmbSelectedType.SelectedValue);
-                                dbContext.SubmitChanges();
-                            }
-                            ts.Complete();
-                
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                      insertUpdateOk = false;
-                        if (ts != null)
-                            ts.Dispose();
-                        RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
-                        try
-                        {
-                            dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
-                            dbContext.WriteLogItem("AddInvoiceType_Click Error " + ex.Message, LogTypes.ERROR, "Customer");
+                            customer.InvoiceTypesID = Int32.Parse(cmbSelectedType.SelectedValue);
                             dbContext.SubmitChanges();
                         }
-                        catch { }
+                        ts.Complete();
+
                     }
-                
+                }
+                catch (Exception ex)
+                {
+                    insertUpdateOk = false;
+                    if (ts != null)
+                        ts.Dispose();
+                    RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
+                    try
+                    {
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext.WriteLogItem("AddInvoiceType_Click Error " + ex.Message, LogTypes.ERROR, "Customer");
+                        dbContext.SubmitChanges();
+                    }
+                    catch { }
+                }
+
             }
             if (insertUpdateOk)
             {
@@ -243,34 +244,34 @@ namespace KVSWebApplication.Customer
             RadComboBox rbt = rbtSender.Parent.FindControl("cmbErloeskonten") as RadComboBox;
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
-                
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+
+                try
+                {
+
+                    if (rbt.Text == string.Empty)
+                    {
+                        throw new Exception("Bitte tragen Sie ein gültiges Erlöskonto ein! Leer ist nicht erlaubt");
+                    }
+                    Accounts.CreateAccount(Int32.Parse(lbl.Text), rbt.Text, dbContext);
+
+                    ts.Complete();
+                }
+                catch (Exception ex)
+                {
+                    if (ts != null)
+                        ts.Dispose();
+                    RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                      
-                        if (rbt.Text == string.Empty)
-                        {
-                            throw new Exception("Bitte tragen Sie ein gültiges Erlöskonto ein! Leer ist nicht erlaubt");
-                        }
-                        Accounts.CreateAccount(new Guid(lbl.Text), rbt.Text, dbContext);
-                      
-                        ts.Complete();
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext.WriteLogItem("LargeCustomerDetails Error " + ex.Message, LogTypes.ERROR, "Customer");
+                        dbContext.SubmitChanges();
                     }
-                    catch (Exception ex)
-                    {
-                        if (ts != null)
-                            ts.Dispose();
-                        RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
-                        try
-                        {
-                            dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
-                            dbContext.WriteLogItem("LargeCustomerDetails Error " + ex.Message, LogTypes.ERROR, "Customer");
-                            dbContext.SubmitChanges();
-                        }
-                        catch { }
-                    }
-                  
-                
+                    catch { }
+                }
+
+
 
             }
             cmbErloeskonten_ItemsRequested(rbt, new RadComboBoxItemsRequestedEventArgs());
@@ -283,42 +284,42 @@ namespace KVSWebApplication.Customer
         protected void GetAllCustomerContactData_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            Guid? myPersonId = null;
-            if( e.WhereParameters["PersonId"]!=null)
+            int? myPersonId = null;
+            if (e.WhereParameters["PersonId"] != null)
             {
-                myPersonId = new Guid(e.WhereParameters["PersonId"].ToString());
+                myPersonId = Int32.Parse(e.WhereParameters["PersonId"].ToString());
             }
-            var query = from contact in dbContext.Contact 
-                        from person in dbContext.LargeCustomer.Where(p =>p.PersonId==myPersonId
-                           && p.CustomerId == new Guid(  
+            var query = from contact in dbContext.Contact
+                        from person in dbContext.LargeCustomer.Where(p => p.PersonId == myPersonId
+                           && p.CustomerId == Int32.Parse(
                             (e.WhereParameters["CustomerId"].ToString()))).DefaultIfEmpty()
                         select new
                         {
-                            TableId = "Inner",                         
-                            ContactId=contact.Id,
+                            TableId = "Inner",
+                            ContactId = contact.Id,
                             contact.Phone,
                             contact.Fax,
                             contact.MobilePhone,
                             contact.Email,
-                            CustomerId=e.WhereParameters["CustomerId"],
-                            PersonId = person.Customer.LargeCustomer.PersonId !=null? person.Customer.LargeCustomer.PersonId.ToString() :"",
-                            Title = person.Customer.LargeCustomer.PersonId != null ?EmptyStringIfNull.ReturnEmptyStringIfNull(
+                            CustomerId = e.WhereParameters["CustomerId"],
+                            PersonId = person.Customer.LargeCustomer.PersonId != null ? person.Customer.LargeCustomer.PersonId.ToString() : "",
+                            Title = person.Customer.LargeCustomer.PersonId != null ? EmptyStringIfNull.ReturnEmptyStringIfNull(
                             person.Customer.LargeCustomer.Person.Title) : "",
-                            Name = person.Customer.LargeCustomer.PersonId != null ? 
+                            Name = person.Customer.LargeCustomer.PersonId != null ?
                             EmptyStringIfNull.ReturnEmptyStringIfNull(person.Customer.LargeCustomer.Person.Name) : "",
-                            Vorname = person.Customer.LargeCustomer.PersonId != null ? 
+                            Vorname = person.Customer.LargeCustomer.PersonId != null ?
                             EmptyStringIfNull.ReturnEmptyStringIfNull(person.Customer.LargeCustomer.Person.FirstName) : "",
-                            Extension = person.Customer.LargeCustomer.PersonId != null ? 
+                            Extension = person.Customer.LargeCustomer.PersonId != null ?
                             EmptyStringIfNull.ReturnEmptyStringIfNull(person.Customer.LargeCustomer.Person.Extension) : ""
                         };
-            e.Result = query;                           
-        }  
+            e.Result = query;
+        }
         protected void bSaveAdressData_Click(object sender, EventArgs e)
         {
             bool insertUpdateOk = true;
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])); // hier kommt die Loggingid
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
                 try
                 {
                     RadButton myButton = ((RadButton)sender);
@@ -343,7 +344,7 @@ namespace KVSWebApplication.Customer
                     RadComboBox LargeCustomerEditSendCity = ((RadComboBox)myButton.Parent.FindControl("LargeCustomerEditSendCity"));
                     RadComboBox LargeCustomerEditInvoiceCountry = ((RadComboBox)myButton.Parent.FindControl("cmbLargeCustomerEditInvoiceCountry"));
                     RadComboBox LargeCustomerSendCountry = ((RadComboBox)myButton.Parent.FindControl("cmbLargeCustomerSendCountry"));
-                    var selectedCustomer = dbContext.Customer.SingleOrDefault(q => q.Id == new Guid(customerId.Text));
+                    var selectedCustomer = dbContext.Customer.SingleOrDefault(q => q.Id == Int32.Parse(customerId.Text));
                     selectedCustomer._dbContext = dbContext;
                     if (selectedCustomer != null)
                     {
@@ -377,44 +378,24 @@ namespace KVSWebApplication.Customer
                         }
                         else if (SameAsInvoice.Checked == false)
                         {
-                            //if (selectedCustomer.InvoiceAdressId == selectedCustomer.InvoiceDispatchAdressId)
-                            //{
                             var newAdress = Adress.CreateAdress(LargeEditCustomerSendStreet.Text, txbLargeEditCustomerSendStreetNr.Text, CustomerEditSendZipCode.Text, LargeCustomerEditSendCity.Text, LargeCustomerSendCountry.Text, dbContext);
                             selectedCustomer.InvoiceDispatchAdress = newAdress;
-                            //}
-                            //else
-                            //{
-                            //    //if (selectedCustomer.InvoiceDispatchAdress == null)
-                            //    //{
-                            //        var newAdress = Adress.CreateAdress(LargeEditCustomerSendStreet.Text, txbLargeEditCustomerSendStreetNr.Text, CustomerEditSendZipCode.Text, LargeCustomerEditSendCity.Text, LargeCustomerSendCountry.Text, dbContext);
-                            //        selectedCustomer.InvoiceDispatchAdress = newAdress;
-                            //    //}
-                            //    //else
-                            //    //{
-                            //    //    selectedCustomer.InvoiceDispatchAdress.LogDBContext = dbContext;
-                            //    //    selectedCustomer.InvoiceDispatchAdress.Street = LargeEditCustomerSendStreet.Text;
-                            //    //    selectedCustomer.InvoiceDispatchAdress.StreetNumber = txbLargeEditCustomerSendStreetNr.Text;
-                            //    //    selectedCustomer.InvoiceDispatchAdress.Zipcode = CustomerEditSendZipCode.Text;
-                            //    //    selectedCustomer.InvoiceDispatchAdress.City = LargeCustomerEditSendCity.Text;
-                            //    //    selectedCustomer.InvoiceDispatchAdress.Country = LargeCustomerSendCountry.Text;
-                            //    //}
-                            //}
                         }
                         dbContext.SubmitChanges();
                     }
-             
-              
+
+
                     ts.Complete();
                 }
                 catch (Exception ex)
                 {
-                  insertUpdateOk = false;
+                    insertUpdateOk = false;
                     if (ts != null)
                         ts.Dispose();
                     RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("Add/Edit LargeCustomer InvoiceAdress Error:  " + ex.Message, LogTypes.ERROR, "Customer");
                         dbContext.SubmitChanges();
                     }
@@ -491,29 +472,29 @@ namespace KVSWebApplication.Customer
         /// </summary>
         /// <param name="source"></param>
         /// <param name="e"></param>
-        protected void getAllCustomer_EditCommand(object source,  Telerik.Web.UI.GridCommandEventArgs e)
+        protected void getAllCustomer_EditCommand(object source, Telerik.Web.UI.GridCommandEventArgs e)
         {
             bool insertUpdateOk = true;
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                 Hashtable newValues = new Hashtable();
                 ((GridEditableItem)e.Item).ExtractValues(newValues);
-                
+
                 try
                 {
                     if (newValues["TableId"].ToString() == "Inner")
                     {
-                        var contactUpdate = dbContext.Contact.SingleOrDefault(q => q.Id == new Guid(newValues["ContactId"].ToString()));
+                        var contactUpdate = dbContext.Contact.SingleOrDefault(q => q.Id == Int32.Parse(newValues["ContactId"].ToString()));
                         contactUpdate.LogDBContext = dbContext;
-                        
+
                         contactUpdate.MobilePhone = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["MobilePhone"]);
                         contactUpdate.Phone = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Phone"]);
                         contactUpdate.Email = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Email"]);
                         contactUpdate.Fax = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Fax"]);
                         if (newValues["PersonId"] != null)
                         {
-                            var personUpdate = dbContext.Person.SingleOrDefault(q => q.Id == new Guid(newValues["PersonId"].ToString()));
+                            var personUpdate = dbContext.Person.SingleOrDefault(q => q.Id == Int32.Parse(newValues["PersonId"].ToString()));
                             personUpdate.LogDBContext = dbContext;
                             personUpdate.Title = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Title"]);
                             personUpdate.Name = EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Name"]);
@@ -529,7 +510,7 @@ namespace KVSWebApplication.Customer
                                 var myTempPerson = Person.CreatePerson(dbContext, EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Vorname"]),
                                      EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Name"]), EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Title"]),
                                       EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Extension"]));
-                                var myTempCustomer = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == new Guid(newValues["CustomerId"].ToString()));
+                                var myTempCustomer = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == Int32.Parse(newValues["CustomerId"].ToString()));
                                 myTempCustomer.PersonId = myTempPerson.Id;
                             }
                         }
@@ -537,7 +518,7 @@ namespace KVSWebApplication.Customer
                     }
                     else if (newValues["TableId"].ToString() == "Outer")
                     {
-                        var contactUpdate = dbContext.Customer.SingleOrDefault(q => q.Id == new Guid(newValues["Id"].ToString()));
+                        var contactUpdate = dbContext.Customer.SingleOrDefault(q => q.Id == Int32.Parse(newValues["Id"].ToString()));
                         contactUpdate._dbContext = dbContext;
                         contactUpdate.LogDBContext = dbContext;
                         if (newValues["Name"] == null || newValues["Street"] == null || newValues["StreetNumber"] == null ||
@@ -573,7 +554,7 @@ namespace KVSWebApplication.Customer
                         ts.Dispose();
                     try
                     {
-                        dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("LargeCustomerDetails Error " + ex.Message, LogTypes.ERROR, "Customer");
                         dbContext.SubmitChanges();
                     }
@@ -588,71 +569,71 @@ namespace KVSWebApplication.Customer
                 getAllCustomer.MasterTableView.IsItemInserted = false;
                 getAllCustomer.MasterTableView.Rebind();
             }
-       }
+        }
         protected void SaveSendOrder_Click(object sender, EventArgs e)
         {
-                try
+            try
+            {
+                Button saveButton = sender as Button;
+                Label lblIdkonfig = saveButton.Parent.FindControl("lblIdkonfig") as Label;
+                CheckBox chbLCustomerAuftragKunde = saveButton.Parent.FindControl("chbLCustomerAuftragKunde") as CheckBox;
+                CheckBox chbLCustomerAuftragStandort = saveButton.Parent.FindControl("chbLCustomerAuftragStandort") as CheckBox;
+                RadioButton LCustomerAuftragHourly = saveButton.Parent.FindControl("LCustomerAuftragHourly") as RadioButton;
+                RadioButton LCustomerAuftragDaily = saveButton.Parent.FindControl("LCustomerAuftragDaily") as RadioButton;
+                RadioButton LCustomerAuftragNow = saveButton.Parent.FindControl("LCustomerAuftragNow") as RadioButton;
+                RadioButton LCustomerAuftragNoInfo = saveButton.Parent.FindControl("LCustomerAuftragNoInfo") as RadioButton;
+                CheckBox chbLieferscheinKunde = saveButton.Parent.FindControl("chbLieferscheinKunde") as CheckBox;
+                CheckBox chbLieferscheinStandort = saveButton.Parent.FindControl("chbLieferscheinStandort") as CheckBox;
+                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
                 {
-                    Button saveButton = sender as Button;
-                    Label lblIdkonfig = saveButton.Parent.FindControl("lblIdkonfig") as Label;
-                    CheckBox chbLCustomerAuftragKunde = saveButton.Parent.FindControl("chbLCustomerAuftragKunde") as CheckBox;
-                    CheckBox chbLCustomerAuftragStandort = saveButton.Parent.FindControl("chbLCustomerAuftragStandort") as CheckBox;
-                    RadioButton LCustomerAuftragHourly = saveButton.Parent.FindControl("LCustomerAuftragHourly") as RadioButton;
-                    RadioButton LCustomerAuftragDaily = saveButton.Parent.FindControl("LCustomerAuftragDaily") as RadioButton;
-                    RadioButton LCustomerAuftragNow = saveButton.Parent.FindControl("LCustomerAuftragNow") as RadioButton;
-                    RadioButton LCustomerAuftragNoInfo = saveButton.Parent.FindControl("LCustomerAuftragNoInfo") as RadioButton;
-                    CheckBox chbLieferscheinKunde = saveButton.Parent.FindControl("chbLieferscheinKunde") as CheckBox;
-                    CheckBox chbLieferscheinStandort = saveButton.Parent.FindControl("chbLieferscheinStandort") as CheckBox;
-                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])))
+                    var customer = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == Int32.Parse(lblIdkonfig.Text));
+                    if (customer != null)
                     {
-                        var customer = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == new Guid(lblIdkonfig.Text));
-                        if (customer != null)
+                        customer.LogDBContext = dbContext;
+                        if (LCustomerAuftragNow.Checked == true)
                         {
-                            customer.LogDBContext = dbContext;
-                            if (LCustomerAuftragNow.Checked == true)
-                            {
-                                customer.OrderFinishedNoteSendType = 1;
-                            }
-                            if (LCustomerAuftragHourly.Checked == true)
-                            {
-                                customer.OrderFinishedNoteSendType = 2;
-                            }
-                            if (LCustomerAuftragDaily.Checked == true)
-                            {
-                                customer.OrderFinishedNoteSendType = 3;
-                            }
-                            if (LCustomerAuftragNoInfo.Checked == true)
-                            {
-                                customer.OrderFinishedNoteSendType = 0;
-                            }
-                            customer.SendOrderFinishedNoteToCustomer = chbLCustomerAuftragKunde.Checked;
-                            customer.SendOrderFinishedNoteToLocation = chbLCustomerAuftragStandort.Checked;
-                            customer.SendPackingListToCustomer = chbLieferscheinKunde.Checked;
-                            customer.SendPackingListToLocation = chbLieferscheinStandort.Checked;
-                            dbContext.SubmitChanges();
+                            customer.OrderFinishedNoteSendType = 1;
                         }
-                    }
-               
-                }
-                catch (Exception ex)
-                {
-                    RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
-                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"])))
-                    {
-                
-                        dbContext.WriteLogItem("LargeCustomerDetails Error " + ex.Message, LogTypes.ERROR, "Customer");
+                        if (LCustomerAuftragHourly.Checked == true)
+                        {
+                            customer.OrderFinishedNoteSendType = 2;
+                        }
+                        if (LCustomerAuftragDaily.Checked == true)
+                        {
+                            customer.OrderFinishedNoteSendType = 3;
+                        }
+                        if (LCustomerAuftragNoInfo.Checked == true)
+                        {
+                            customer.OrderFinishedNoteSendType = 0;
+                        }
+                        customer.SendOrderFinishedNoteToCustomer = chbLCustomerAuftragKunde.Checked;
+                        customer.SendOrderFinishedNoteToLocation = chbLCustomerAuftragStandort.Checked;
+                        customer.SendPackingListToCustomer = chbLieferscheinKunde.Checked;
+                        customer.SendPackingListToLocation = chbLieferscheinStandort.Checked;
                         dbContext.SubmitChanges();
                     }
                 }
-            
-        }       
+
+            }
+            catch (Exception ex)
+            {
+                RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
+                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                {
+
+                    dbContext.WriteLogItem("LargeCustomerDetails Error " + ex.Message, LogTypes.ERROR, "Customer");
+                    dbContext.SubmitChanges();
+                }
+            }
+
+        }
         protected void LargeCustomer_Init(object sender, System.EventArgs e)
         {
             GridFilterMenu menu = getAllCustomer.FilterMenu;
             int i = 0;
             while (i < menu.Items.Count)
             {
-                if (menu.Items[i].Text == "Ist gleich" || menu.Items[i].Text == "Ist ungleich" || menu.Items[i].Text == "Ist größer als" || menu.Items[i].Text == "Ist kleiner als" || menu.Items[i].Text == "Ist größer gleich" || menu.Items[i].Text == "Ist kleiner gleich" || menu.Items[i].Text == "Enthält" ||  menu.Items[i].Text == "Kein Filter")
+                if (menu.Items[i].Text == "Ist gleich" || menu.Items[i].Text == "Ist ungleich" || menu.Items[i].Text == "Ist größer als" || menu.Items[i].Text == "Ist kleiner als" || menu.Items[i].Text == "Ist größer gleich" || menu.Items[i].Text == "Ist kleiner gleich" || menu.Items[i].Text == "Enthält" || menu.Items[i].Text == "Kein Filter")
                 {
                     i++;
                 }
@@ -666,40 +647,40 @@ namespace KVSWebApplication.Customer
         {
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
-                
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
 
+
+                try
+                {
+                    RadButton rbtSender = ((RadButton)sender);
+                    Label lbl = rbtSender.Parent.FindControl("lblLargeCustomerId") as Label;
+                    if (!String.IsNullOrEmpty(lbl.Text))
+                        LargeCustomer.RemoveLargeCutomer(dbContext, Int32.Parse(lbl.Text));
+
+                    dbContext.SubmitChanges();
+                    ts.Complete();
+                    RadWindowManagerLargeCustomer.RadAlert("Kunde wurde erfolgreich gelöscht", 380, 180, "Info", "");
+
+
+                }
+                catch (Exception ex)
+                {
+
+                    if (ts != null)
+                        ts.Dispose();
+                    RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        RadButton rbtSender = ((RadButton)sender);
-                        Label lbl = rbtSender.Parent.FindControl("lblLargeCustomerId") as Label;
-                        if (EmptyStringIfNull.IsGuid(lbl.Text))
-                            LargeCustomer.RemoveLargeCutomer(dbContext, new Guid(lbl.Text));
-
+                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext.WriteLogItem("RemoveLargeCustomer_Click Error " + ex.Message, LogTypes.ERROR, "Customer");
                         dbContext.SubmitChanges();
-                        ts.Complete();
-                        RadWindowManagerLargeCustomer.RadAlert("Kunde wurde erfolgreich gelöscht", 380, 180, "Info", "");
-              
-                       
                     }
-                    catch (Exception ex)
-                    {
+                    catch { }
 
-                        if (ts != null)
-                            ts.Dispose();
-                        RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
-                        try
-                        {
-                            dbContext = new DataClasses1DataContext(((Guid)Session["CurrentUserId"]));
-                            dbContext.WriteLogItem("RemoveLargeCustomer_Click Error " + ex.Message, LogTypes.ERROR, "Customer");
-                            dbContext.SubmitChanges();
-                        }
-                        catch { }
+                }
 
-                    }
-                 
-                
-             
+
+
             }
             getAllCustomer.EditIndexes.Clear();
             getAllCustomer.MasterTableView.IsItemInserted = false;

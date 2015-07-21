@@ -22,7 +22,7 @@ namespace KVSWebApplication.Auftragseingang
             RadScriptManager script = auftragsEingang.getScriptManager() as RadScriptManager;
             script.RegisterPostBackControl(AddAdressButton);
             //first registration bekommt immer heutige Datum by default
-            FirstRegistrationDateBox.SelectedDate = DateTime.Now;          
+            FirstRegistrationDateBox.SelectedDate = DateTime.Now;
             if (Session["CurrentUserId"] != null)
             {
                 if (!String.IsNullOrEmpty(Session["CurrentUserId"].ToString()))
@@ -34,7 +34,7 @@ namespace KVSWebApplication.Auftragseingang
         protected void CheckUserPermissions()
         {
             List<string> userPermissions = new List<string>();
-            userPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+            userPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (userPermissions.Count > 0)
             {
                 if (userPermissions.Contains("ZULASSUNGSAUFTRAG_ANLEGEN"))
@@ -60,7 +60,7 @@ namespace KVSWebApplication.Auftragseingang
             {
                 try
                 {
-                    newQuery = newQuery.Where(q => q.CustomerId == new Guid(CustomerDropDownList.SelectedValue));
+                    newQuery = newQuery.Where(q => q.CustomerId == Int32.Parse(CustomerDropDownList.SelectedValue));
                 }
                 catch (Exception ex)
                 {
@@ -94,16 +94,16 @@ namespace KVSWebApplication.Auftragseingang
         private Price findPrice(string productId)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            Guid? locationId = null;
+            int? locationId = null;
             Price newPrice = null;
             if (!String.IsNullOrEmpty(this.LocationDropDownList.SelectedValue))
             {
-                locationId = new Guid(LocationDropDownList.SelectedValue);
-                newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == new Guid(productId) && q.LocationId == locationId);
+                locationId = Int32.Parse(LocationDropDownList.SelectedValue);
+                newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == Int32.Parse(productId) && q.LocationId == locationId);
             }
             if (String.IsNullOrEmpty(this.LocationDropDownList.SelectedValue) || newPrice == null)
             {
-                newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == new Guid(productId) && q.LocationId == null);
+                newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == Int32.Parse(productId) && q.LocationId == null);
             }
             return newPrice;
         }
@@ -111,12 +111,12 @@ namespace KVSWebApplication.Auftragseingang
         #region Index Changed
         protected void SmallLargeCustomer_Changed(object sender, EventArgs e)
         {
-                CustomerDropDownList.DataBind();
-                LocationDropDownList.Enabled = true;
-                CostCenterDropDownList.Enabled = true;
-                CustomerDropDownList.Focus();
-                ProductDropDownList.DataSource = null;
-                ProductDropDownList.DataBind();
+            CustomerDropDownList.DataBind();
+            LocationDropDownList.Enabled = true;
+            CostCenterDropDownList.Enabled = true;
+            CustomerDropDownList.Focus();
+            ProductDropDownList.DataSource = null;
+            ProductDropDownList.DataBind();
         }
         protected void DeleteNewPosButton_Clicked(object sender, EventArgs e)
         {
@@ -167,7 +167,7 @@ namespace KVSWebApplication.Auftragseingang
             RegistrationOrderDropDownList.Text = null;
             RegistrationOrderDropDownList.ClearSelection();
             CostCenterDropDownList.Text = null;
-            CostCenterDropDownList.ClearSelection();         
+            CostCenterDropDownList.ClearSelection();
             LocationDropDownList.DataBind();
             ProductDropDownList.DataBind();
             CostCenterDropDownList.DataBind();
@@ -191,33 +191,33 @@ namespace KVSWebApplication.Auftragseingang
         protected void ProductDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext con = new DataClasses1DataContext();
-            Guid selectedCustomer = Guid.Empty;
-            Guid location = Guid.Empty;
-            if (EmptyStringIfNull.IsGuid(CustomerDropDownList.SelectedValue))
-                selectedCustomer = new Guid(CustomerDropDownList.SelectedValue);
-            if (EmptyStringIfNull.IsGuid(LocationDropDownList.SelectedValue))
-                location = new Guid(LocationDropDownList.SelectedValue);
+            var selectedCustomer = 0;
+            var location = 0;
+            if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
+                selectedCustomer = Int32.Parse(CustomerDropDownList.SelectedValue);
+            if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
+                location = Int32.Parse(LocationDropDownList.SelectedValue);
             IQueryable productQuery = null;
             if (!String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue))
-            {               
-                    productQuery = from p in con.Price
-                                   join prA in con.PriceAccount on p.Id equals prA.PriceId
-                                    where (p.Product.RegistrationOrderTypeId == new Guid(RegistrationOrderDropDownList.SelectedValue) || p.Product.OrderType.Name == "Allgemein")
-                                    && p.Location.CustomerId == selectedCustomer
-                                    && p.LocationId == location
-                                   select new
-                                   {
-                                       ItemNumber = p.Product.ItemNumber,
-                                       Name = p.Product.Name,
-                                       Value = p.Product.Id,
-                                       Category = p.Product.ProductCategory.Name
-                                   };     
+            {
+                productQuery = from p in con.Price
+                               join prA in con.PriceAccount on p.Id equals prA.PriceId
+                               where (p.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) || p.Product.OrderType.Name == "Allgemein")
+                               && p.Location.CustomerId == selectedCustomer
+                               && p.LocationId == location
+                               select new
+                               {
+                                   ItemNumber = p.Product.ItemNumber,
+                                   Name = p.Product.Name,
+                                   Value = p.Product.Id,
+                                   Category = p.Product.ProductCategory.Name
+                               };
             }
             else
             {
                 productQuery = from p in con.Price
                                join prA in con.PriceAccount on p.Id equals prA.PriceId
-                               where p.Location.CustomerId == Guid.Empty
+                               where p.Location.CustomerId == null
                                select new
                                {
                                    ItemNumber = p.Product.ItemNumber,
@@ -228,7 +228,7 @@ namespace KVSWebApplication.Auftragseingang
             }
 
             //werden die vordefinierte Kundenprodukte in TreeNode geladen
-            if (productQuery != null && location != Guid.Empty && selectedCustomer != Guid.Empty && !String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue))
+            if (productQuery != null && location != 0 && selectedCustomer != 0 && !String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue))
             {
                 LoadCustomerProductsInTreeView(selectedCustomer, location);
             }
@@ -236,22 +236,22 @@ namespace KVSWebApplication.Auftragseingang
             e.Result = productQuery;
         }
 
-        private void LoadCustomerProductsInTreeView(Guid selectedCustomer, Guid location)
+        private void LoadCustomerProductsInTreeView(int selectedCustomer, int location)
         {
             using (DataClasses1DataContext con = new DataClasses1DataContext())
             {
-               var productQuery = from p in con.Price
-                                  join prA in con.PriceAccount on p.Id equals prA.PriceId
-                                  where (p.Product.RegistrationOrderTypeId == new Guid(RegistrationOrderDropDownList.SelectedValue) || p.Product.OrderType.Name == "Allgemein")
-                                  && p.Location.CustomerId == selectedCustomer
-                                  && p.LocationId == location
-                                  select new
-                                  {
-                                   ItemNumber = p.Product.ItemNumber,
-                                   Name = p.Product.Name,
-                                   Value = p.Product.Id,
-                                   Category = p.Product.ProductCategory.Name
-                                  };  
+                var productQuery = from p in con.Price
+                                   join prA in con.PriceAccount on p.Id equals prA.PriceId
+                                   where (p.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) || p.Product.OrderType.Name == "Allgemein")
+                                   && p.Location.CustomerId == selectedCustomer
+                                   && p.LocationId == location
+                                   select new
+                                   {
+                                       ItemNumber = p.Product.ItemNumber,
+                                       Name = p.Product.Name,
+                                       Value = p.Product.Id,
+                                       Category = p.Product.ProductCategory.Name
+                                   };
 
 
                 var custProds = con.CustomerProduct.Where(q => q.CustomerId == selectedCustomer);
@@ -279,24 +279,24 @@ namespace KVSWebApplication.Auftragseingang
                         }
                     }
                 }
-            }        
+            }
         }
 
         // Auswahl der KundenName
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext con = new DataClasses1DataContext();
-                var customerQuery = from cust in con.Customer
-                                    where cust.Id == cust.LargeCustomer.CustomerId
-                                    orderby cust.Name
-                                    select new
-                                    {
-                                        Name = cust.Name,
-                                        Value = cust.Id,
-                                        Matchcode = cust.MatchCode,
-                                        Kundennummer = cust.CustomerNumber
-                                    };
-                e.Result = customerQuery;
+            var customerQuery = from cust in con.Customer
+                                where cust.Id == cust.LargeCustomer.CustomerId
+                                orderby cust.Name
+                                select new
+                                {
+                                    Name = cust.Name,
+                                    Value = cust.Id,
+                                    Matchcode = cust.MatchCode,
+                                    Kundennummer = cust.CustomerNumber
+                                };
+            e.Result = customerQuery;
         }
         protected void ZulassungsstelleDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
@@ -318,7 +318,7 @@ namespace KVSWebApplication.Auftragseingang
             {
                 var locationQuery = from loc in con.Location
                                     join cust in con.Customer on loc.CustomerId equals cust.Id
-                                    where loc.CustomerId == new Guid(CustomerDropDownList.SelectedValue)
+                                    where loc.CustomerId == Int32.Parse(CustomerDropDownList.SelectedValue)
                                     select new
                                     {
                                         Name = loc.Name,
@@ -330,7 +330,7 @@ namespace KVSWebApplication.Auftragseingang
             {
                 var locationQuery = from loc in con.Location
                                     join cust in con.Customer on loc.CustomerId equals cust.Id
-                                    where loc.CustomerId == Guid.Empty
+                                    where loc.CustomerId == null
                                     select new
                                     {
                                         Name = loc.Name,
@@ -346,7 +346,7 @@ namespace KVSWebApplication.Auftragseingang
             {
                 var costCenterQuery = from cost in con.CostCenter
                                       join cust in con.Customer on cost.CustomerId equals cust.Id
-                                      where cost.CustomerId == new Guid(CustomerDropDownList.SelectedValue)
+                                      where cost.CustomerId == Int32.Parse(CustomerDropDownList.SelectedValue)
                                       select new
                                       {
                                           Name = cost.Name,
@@ -358,7 +358,7 @@ namespace KVSWebApplication.Auftragseingang
             {
                 var costCenterQuery = from cost in con.CostCenter
                                       join cust in con.Customer on cost.CustomerId equals cust.Id
-                                      where cost.CustomerId == Guid.Empty
+                                      where cost.CustomerId == 0 //TODO
                                       select new
                                       {
                                           Name = cost.Name,
@@ -511,17 +511,17 @@ namespace KVSWebApplication.Auftragseingang
         //Neue Auftragseingang
         protected void AuftragZulassenButton_Clicked(object sender, EventArgs e)
         {
-            Guid? locationId = null;
+            int? locationId = null;
             string ProduktId = "";
             string CostCenterId = "";
             ZulassungOkLabel.Visible = false;
             SubmitChangesErrorLabel.Visible = false;
             ErrorLeereTextBoxenLabel.Visible = false;
             if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
-                locationId = new Guid(LocationDropDownList.SelectedValue);
+                locationId = Int32.Parse(LocationDropDownList.SelectedValue);
 
             if (CheckIfBoxenNotEmpty()) //gibt es leer boxen, die angezeigt sind.
-            {               
+            {
                 if (DienstleistungTreeView.Nodes.Count == 0)
                 {
                     ErrorLeereTextBoxenLabel.Text = "Bitte Dienstleistung hinzufügen!";
@@ -546,7 +546,7 @@ namespace KVSWebApplication.Auftragseingang
                 {
                     ErrorLeereTextBoxenLabel.Text = "Bitte Pflichtfelder überprüfen!";
                     ErrorLeereTextBoxenLabel.Visible = true;
-                }                
+                }
             }
             else if (!String.IsNullOrEmpty(CheckIfAllProduktsHavingPrice(locationId)))
             {
@@ -562,7 +562,7 @@ namespace KVSWebApplication.Auftragseingang
                 CostCenterId = splited[1];
                 if (CostCenterId == string.Empty)
                     CostCenterId = CostCenterDropDownList.SelectedValue;
-               
+
                 ErrorLeereTextBoxenLabel.Visible = false;
                 try
                 {
@@ -570,7 +570,7 @@ namespace KVSWebApplication.Auftragseingang
                     SubmitChangesErrorLabel.Visible = false;
                     string kennzeichen = string.Empty,
                     oldKennzeichen = string.Empty;
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                     Adress newAdress = null;
                     Contact newContact = null;
                     BankAccount newBankAccount = null;
@@ -582,18 +582,27 @@ namespace KVSWebApplication.Auftragseingang
                     OrderItem newOrderItem2 = null;
                     Vehicle newVehicle = null;
                     DateTime? FirstRegistrationDate = null;
-                    Guid? costCenterId = null;
+                    int? costCenterId = null;
                     int? color = null;
                     if (!String.IsNullOrEmpty(LicenceBox1.Text))
                         kennzeichen = LicenceBox1.Text + "-" + LicenceBox2.Text + "-" + LicenceBox3.Text;
                     if (!String.IsNullOrEmpty(PreviousLicenceBox1.Text))
                         oldKennzeichen = PreviousLicenceBox1.Text + "-" + PreviousLicenceBox2.Text + "-" + PreviousLicenceBox3.Text;
+
+
+                    CostCenter costCenter = null;
+
                     if (!String.IsNullOrEmpty(CostCenterId))
-                        costCenterId = new Guid(CostCenterId);
+                    {
+                        costCenter = dbContext.CostCenter.FirstOrDefault(o => o.Id == Int32.Parse(CostCenterId));
+                    }
+
                     if (!String.IsNullOrEmpty(FirstRegistrationDateBox.SelectedDate.ToString()))
                         FirstRegistrationDate = FirstRegistrationDateBox.SelectedDate;
                     if (!String.IsNullOrEmpty(Vehicle_ColorBox.Text))
                         color = Convert.ToInt32(Vehicle_ColorBox.Text);
+
+
                     if (RegistrationOrderDropDownList.Text.Contains("Umkennzeichnung")) // Umkennzeichnung
                     {
                         FahrzeugLabel.Text = "Fahrzeug";
@@ -602,7 +611,7 @@ namespace KVSWebApplication.Auftragseingang
                         {
                             if (!String.IsNullOrEmpty(VehicleIdField.Value)) //falls auto gefunden wurde
                             {
-                                newVehicle = dbContext.Vehicle.SingleOrDefault(q => q.Id == new Guid(VehicleIdField.Value));
+                                newVehicle = dbContext.Vehicle.SingleOrDefault(q => q.Id == Int32.Parse(VehicleIdField.Value));
                             }
                             else // neues Auto muss angelegt werden
                             {
@@ -612,10 +621,11 @@ namespace KVSWebApplication.Auftragseingang
                             // another logic after new/existing Vehicle
                             newAdress = Adress.CreateAdress(Adress_StreetBox.Text, Adress_StreetNumberBox.Text, Adress_ZipcodeBox.Text, Adress_CityBox.Text, Adress_CountryBox.Text, dbContext);
                             newContact = Contact.CreateContact(Contact_PhoneBox.Text, Contact_FaxBox.Text, Contact_MobilePhoneBox.Text, Contact_EmailBox.Text, dbContext);
-                            newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text, BankAccount_BankCodeBox.Text, txbBancAccountIban.Text, txbBancAccountBIC.Text);
-                           
-                            
-                            newCarOwner = CarOwner.CreateCarOwner(CarOwner_NameBox.Text, CarOwner_FirstnameBox.Text, newBankAccount.Id, newContact.Id, newAdress.Id, dbContext);
+                            newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text,
+                                BankAccount_BankCodeBox.Text, txbBancAccountIban.Text, txbBancAccountBIC.Text);
+
+
+                            newCarOwner = CarOwner.CreateCarOwner(CarOwner_NameBox.Text, CarOwner_FirstnameBox.Text, newBankAccount, newContact, newAdress, dbContext);
                             DateTime newZulassungsDatum = DateTime.Now;
                             if (ZulassungsdatumPicker.SelectedDate != null)
                             {
@@ -624,7 +634,8 @@ namespace KVSWebApplication.Auftragseingang
                                     newZulassungsDatum = (DateTime)ZulassungsdatumPicker.SelectedDate;
                                 }
                             }
-                            newRegistration = Registration.CreateRegistration(newCarOwner.Id, newVehicle.Id, kennzeichen, Registration_eVBNumberBox.Text, Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
+                            newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text,
+                                Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
                             price = findPrice(ProduktId);
                             if (price == null)
                             {
@@ -632,12 +643,17 @@ namespace KVSWebApplication.Auftragseingang
                                 ErrorLeereTextBoxenLabel.Visible = true;
                                 return;
                             }
-                            newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(new Guid(Session["CurrentUserId"].ToString()), new Guid(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle.Id, newRegistration.Id, new Guid("03C828A1-CB90-4A32-AE0E-8B367A1259DD"), locationId, new Guid(ZulassungsstelleComboBox.SelectedValue), dbContext);
+                            newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(Int32.Parse(Session["CurrentUserId"].ToString()),
+                                Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration,
+                                //TODO
+                                //Int32.Parse("03C828A1-CB90-4A32-AE0E-8B367A1259DD")
+                                0, locationId, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
                             newKennzeichenRegOrder.Order.FreeText = FreiTextBox.Text;
-                            newOrderItem1 = newKennzeichenRegOrder.Order.AddOrderItem(new Guid(ProduktId), price.Amount, 1, costCenterId, null, false, dbContext);
+
+                            newOrderItem1 = newKennzeichenRegOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.Amount, 1, costCenter, null, false, dbContext);
                             if (price.AuthorativeCharge.HasValue)
                             {
-                                newOrderItem2 = newKennzeichenRegOrder.Order.AddOrderItem(new Guid(ProduktId), price.AuthorativeCharge.Value, 1, costCenterId, newOrderItem1.Id, true, dbContext);
+                                newOrderItem2 = newKennzeichenRegOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.AuthorativeCharge.Value, 1, costCenter, newOrderItem1.Id, true, dbContext);
                             }
                             dbContext.SubmitChanges();
                             if (DienstleistungTreeView.Nodes.Count > 1)
@@ -650,8 +666,8 @@ namespace KVSWebApplication.Auftragseingang
                                 dbContext.SubmitChanges();
                             }
                             //ZulassungOkLabel.Visible = true;
-                           if(((RadButton)(sender)).ID != "rbtSameOrder")
-                            MakeAllControlsEmpty();
+                            if (((RadButton)(sender)).ID != "rbtSameOrder")
+                                MakeAllControlsEmpty();
                             ScriptManager.RegisterStartupScript(Page, Page.GetType(), "finishedMessage", "alert('Auftrag wurde erfolgreich angelegt.');", true);
                         }
                         else
@@ -664,7 +680,7 @@ namespace KVSWebApplication.Auftragseingang
                     {
                         if (!String.IsNullOrEmpty(VehicleIdField.Value)) //falls auto gefunden wurde
                         {
-                            newVehicle = dbContext.Vehicle.SingleOrDefault(q => q.Id == new Guid(VehicleIdField.Value));
+                            newVehicle = dbContext.Vehicle.SingleOrDefault(q => q.Id == Int32.Parse(VehicleIdField.Value));
                         }
                         else // neues Auto muss angelegt werden
                         {
@@ -673,8 +689,9 @@ namespace KVSWebApplication.Auftragseingang
                         // another logic after new/existing Vehicle
                         newAdress = Adress.CreateAdress(Adress_StreetBox.Text, Adress_StreetNumberBox.Text, Adress_ZipcodeBox.Text, Adress_CityBox.Text, Adress_CountryBox.Text, dbContext);
                         newContact = Contact.CreateContact(Contact_PhoneBox.Text, Contact_FaxBox.Text, Contact_MobilePhoneBox.Text, Contact_EmailBox.Text, dbContext);
-                        newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text, BankAccount_BankCodeBox.Text, txbBancAccountIban.Text, txbBancAccountBIC.Text);
-                        newCarOwner = CarOwner.CreateCarOwner(CarOwner_NameBox.Text, CarOwner_FirstnameBox.Text, newBankAccount.Id, newContact.Id, newAdress.Id, dbContext);
+                        newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text,
+                            BankAccount_BankCodeBox.Text, txbBancAccountIban.Text, txbBancAccountBIC.Text);
+                        newCarOwner = CarOwner.CreateCarOwner(CarOwner_NameBox.Text, CarOwner_FirstnameBox.Text, newBankAccount, newContact, newAdress, dbContext);
                         DateTime newZulassungsDatum = DateTime.Now;
                         if (ZulassungsdatumPicker.SelectedDate != null)
                         {
@@ -683,7 +700,8 @@ namespace KVSWebApplication.Auftragseingang
                                 newZulassungsDatum = (DateTime)ZulassungsdatumPicker.SelectedDate;
                             }
                         }
-                        newRegistration = Registration.CreateRegistration(newCarOwner.Id, newVehicle.Id, kennzeichen, Registration_eVBNumberBox.Text, Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
+                        newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text,
+                            Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
                         price = findPrice(ProduktId);
                         if (price == null)
                         {
@@ -691,15 +709,19 @@ namespace KVSWebApplication.Auftragseingang
                             ErrorLeereTextBoxenLabel.Visible = true;
                             return;
                         }
-                        newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(new Guid(Session["CurrentUserId"].ToString()), new Guid(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle.Id, newRegistration.Id, new Guid("FEEBA978-D01C-40A8-A212-7CB6BB6E74D9"), locationId, new Guid(ZulassungsstelleComboBox.SelectedValue), dbContext);
+                        newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(Int32.Parse(Session["CurrentUserId"].ToString()),
+                            Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration,
+                            //TODO
+                            //Int32.Parse("FEEBA978-D01C-40A8-A212-7CB6BB6E74D9")
+                            0, locationId, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
                         if (!String.IsNullOrEmpty(FreiTextBox.Text))
                         {
                             newKennzeichenRegOrder.Order.FreeText = FreiTextBox.Text;
                         }
-                        newOrderItem1 = newKennzeichenRegOrder.Order.AddOrderItem(new Guid(ProduktId), price.Amount, 1, costCenterId, null, false, dbContext);
+                        newOrderItem1 = newKennzeichenRegOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.Amount, 1, costCenter, null, false, dbContext);
                         if (price.AuthorativeCharge.HasValue)
                         {
-                            newOrderItem2 = newKennzeichenRegOrder.Order.AddOrderItem(new Guid(ProduktId), price.AuthorativeCharge.Value, 1, costCenterId, newOrderItem1.Id, true, dbContext);
+                            newOrderItem2 = newKennzeichenRegOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.AuthorativeCharge.Value, 1, costCenter, newOrderItem1.Id, true, dbContext);
                         }
                         dbContext.SubmitChanges();
                         if (DienstleistungTreeView.Nodes.Count > 1)
@@ -711,16 +733,16 @@ namespace KVSWebApplication.Auftragseingang
                             newVehicle.CurrentRegistrationId = newRegistration.Id;
                             dbContext.SubmitChanges();
                         }
-                       // ZulassungOkLabel.Visible = true;
+                        // ZulassungOkLabel.Visible = true;
                         if (((RadButton)(sender)).ID != "rbtSameOrder")
-                        MakeAllControlsEmpty();
+                            MakeAllControlsEmpty();
                         ScriptManager.RegisterStartupScript(Page, Page.GetType(), "finishedMessage", "alert('Auftrag wurde erfolgreich angelegt.');", true);
                     }
                     else // Neuzulassung
                     {
                         if (!String.IsNullOrEmpty(VehicleIdField.Value)) //falls auto gefunden wurde
                         {
-                            newVehicle = dbContext.Vehicle.SingleOrDefault(q => q.Id == new Guid(VehicleIdField.Value));
+                            newVehicle = dbContext.Vehicle.SingleOrDefault(q => q.Id == Int32.Parse(VehicleIdField.Value));
                         }
                         else // neues Auto muss angelegt werden
                         {
@@ -728,8 +750,9 @@ namespace KVSWebApplication.Auftragseingang
                         }
                         newAdress = Adress.CreateAdress(Adress_StreetBox.Text, Adress_StreetNumberBox.Text, Adress_ZipcodeBox.Text, Adress_CityBox.Text, Adress_CountryBox.Text, dbContext);
                         newContact = Contact.CreateContact(Contact_PhoneBox.Text, Contact_FaxBox.Text, Contact_MobilePhoneBox.Text, Contact_EmailBox.Text, dbContext);
-                        newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text, BankAccount_BankCodeBox.Text, txbBancAccountIban.Text, txbBancAccountBIC.Text);
-                        newCarOwner = CarOwner.CreateCarOwner(CarOwner_NameBox.Text, CarOwner_FirstnameBox.Text, newBankAccount.Id, newContact.Id, newAdress.Id, dbContext);
+                        newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text, BankAccount_BankCodeBox.Text,
+                            txbBancAccountIban.Text, txbBancAccountBIC.Text);
+                        newCarOwner = CarOwner.CreateCarOwner(CarOwner_NameBox.Text, CarOwner_FirstnameBox.Text, newBankAccount, newContact, newAdress, dbContext);
                         DateTime newZulassungsDatum = DateTime.Now;
                         if (ZulassungsdatumPicker.SelectedDate != null)
                         {
@@ -738,7 +761,8 @@ namespace KVSWebApplication.Auftragseingang
                                 newZulassungsDatum = (DateTime)ZulassungsdatumPicker.SelectedDate;
                             }
                         }
-                        newRegistration = Registration.CreateRegistration(newCarOwner.Id, newVehicle.Id, kennzeichen, Registration_eVBNumberBox.Text, Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
+                        newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text,
+                            Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
                         price = findPrice(ProduktId);
                         if (price == null)
                         {
@@ -746,15 +770,19 @@ namespace KVSWebApplication.Auftragseingang
                             ErrorLeereTextBoxenLabel.Visible = true;
                             return;
                         }
-                        newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(new Guid(Session["CurrentUserId"].ToString()), new Guid(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle.Id, newRegistration.Id, new Guid("1DF35583-034F-42B9-A3AC-EBD07835B14B"), locationId, new Guid(ZulassungsstelleComboBox.SelectedValue), dbContext);
+                        newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(Int32.Parse(Session["CurrentUserId"].ToString()),
+                            Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration,
+                            //TODO
+                            //Int32.Parse("1DF35583-034F-42B9-A3AC-EBD07835B14B")
+                            0, locationId, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
                         if (!String.IsNullOrEmpty(FreiTextBox.Text))
                         {
                             newKennzeichenRegOrder.Order.FreeText = FreiTextBox.Text;
                         }
-                        newOrderItem1 = newKennzeichenRegOrder.Order.AddOrderItem(new Guid(ProduktId), price.Amount, 1, costCenterId, null, false, dbContext);
+                        newOrderItem1 = newKennzeichenRegOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.Amount, 1, costCenter, null, false, dbContext);
                         if (price.AuthorativeCharge.HasValue)
                         {
-                            newOrderItem2 = newKennzeichenRegOrder.Order.AddOrderItem(new Guid(ProduktId), price.AuthorativeCharge.Value, 1, costCenterId, newOrderItem1.Id, true, dbContext);
+                            newOrderItem2 = newKennzeichenRegOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.AuthorativeCharge.Value, 1, costCenter, newOrderItem1.Id, true, dbContext);
                         }
                         dbContext.SubmitChanges();
                         if (DienstleistungTreeView.Nodes.Count > 1)
@@ -763,8 +791,8 @@ namespace KVSWebApplication.Auftragseingang
                         }
                         newVehicle.CurrentRegistrationId = newRegistration.Id;
                         dbContext.SubmitChanges();
-                         if(((RadButton)(sender)).ID != "rbtSameOrder")
-                           MakeAllControlsEmpty();              
+                        if (((RadButton)(sender)).ID != "rbtSameOrder")
+                            MakeAllControlsEmpty();
                         ScriptManager.RegisterStartupScript(Page, Page.GetType(), "finishedMessage", "alert('Auftrag wurde erfolgreich angelegt.');", true);
                     }
                     VehicleIdField.Value = "";
@@ -790,7 +818,8 @@ namespace KVSWebApplication.Auftragseingang
                 txbBancAccountIban.Text += long.Parse(BankAccount_AccountnumberBox.Text).ToString("0000000000").Substring(8, 2);
                 using (DataClasses1DataContext dataContext = new DataClasses1DataContext())
                 {
-                    var bicNr = dataContext.BIC_DE.FirstOrDefault(q => q.Bankleitzahl.Contains(BankAccount_BankCodeBox.Text) && (q.Bezeichnung.Contains(BankAccount_BankNameBox.Text) || q.Kurzbezeichnung.Contains(BankAccount_BankNameBox.Text)));
+                    var bicNr = dataContext.BIC_DE.FirstOrDefault(q => q.Bankleitzahl.Contains(BankAccount_BankCodeBox.Text) && (q.Bezeichnung.Contains(BankAccount_BankNameBox.Text) ||
+                        q.Kurzbezeichnung.Contains(BankAccount_BankNameBox.Text)));
                     if (bicNr != null)
                     {
                         if (!String.IsNullOrEmpty(bicNr.BIC.ToString()))
@@ -800,7 +829,7 @@ namespace KVSWebApplication.Auftragseingang
             }
         }
         #endregion
-        protected string CheckIfAllProduktsHavingPrice(Guid? locationId)
+        protected string CheckIfAllProduktsHavingPrice(int? locationId)
         {
             string allesHatGutGelaufen = "";
             string ProduktId = "";
@@ -815,14 +844,14 @@ namespace KVSWebApplication.Auftragseingang
                     {
                         try
                         {
-                            DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                             Price newPrice;
                             ProduktId = splited[0];
                             CostCenterId = splited[1];
                             if (!String.IsNullOrEmpty(ProduktId))
                             {
-                                Guid productId = new Guid(ProduktId);
-                                Guid costCenterId = Guid.Empty;
+                                var productId = Int32.Parse(ProduktId);
+ 
                                 KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == productId);
                                 if (locationId == null) //small
                                 {
@@ -837,7 +866,7 @@ namespace KVSWebApplication.Auftragseingang
                                 }
                                 else //large
                                 {
-                                    costCenterId = new Guid(CostCenterId);
+                                    var costCenterId = Int32.Parse(CostCenterId);
                                     newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == locationId);
                                     if (newPrice == null)
                                         newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == null);
@@ -860,7 +889,7 @@ namespace KVSWebApplication.Auftragseingang
             }
             return allesHatGutGelaufen;
         }
-        protected bool AddAnotherProducts(RegistrationOrder regOrd, Guid? locationId)
+        protected bool AddAnotherProducts(RegistrationOrder regOrd, int? locationId)
         {
             bool allesHatGutGelaufen = false;
             string ProduktId = "";
@@ -877,8 +906,8 @@ namespace KVSWebApplication.Auftragseingang
                         {
                             try
                             {
-                                DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
-                                Guid orderId = regOrd.OrderId;
+                                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                                var orderId = regOrd.OrderId;
                                 Price newPrice;
                                 OrderItem newOrderItem1 = null;
                                 OrderItem newOrderItem2 = null;
@@ -886,8 +915,8 @@ namespace KVSWebApplication.Auftragseingang
                                 CostCenterId = splited[1];
                                 if (!String.IsNullOrEmpty(ProduktId))
                                 {
-                                    Guid productId = new Guid(ProduktId);
-                                    Guid costCenterId = Guid.Empty;
+                                    var productId = Int32.Parse(ProduktId);
+                                    int? costCenterId = null;
                                     KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == productId);
                                     if (locationId == null) //small
                                     {
@@ -895,7 +924,7 @@ namespace KVSWebApplication.Auftragseingang
                                     }
                                     else //large
                                     {
-                                        costCenterId = new Guid(CostCenterId);
+                                        costCenterId = Int32.Parse(CostCenterId);
                                         newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == locationId);
                                         if (newPrice == null)
                                             newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == null);
@@ -903,12 +932,19 @@ namespace KVSWebApplication.Auftragseingang
                                     var orderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
                                     orderToUpdate.LogDBContext = dbContext;
                                     if (orderToUpdate != null)
-                                    {                                      
-                                            newOrderItem1 = orderToUpdate.AddOrderItem(newProduct.Id, newPrice.Amount, 1, costCenterId, null, false, dbContext);
-                                            if (newPrice.AuthorativeCharge.HasValue)
-                                            {
-                                                orderToUpdate.AddOrderItem(newProduct.Id, newPrice.AuthorativeCharge.Value, 1, costCenterId, newOrderItem1.Id, newPrice.AuthorativeCharge.HasValue, dbContext);
-                                            }       
+                                    {
+                                        CostCenter costCenter = null;
+                                        if (costCenterId.HasValue)
+                                        {
+                                            costCenter = dbContext.CostCenter.FirstOrDefault(o => o.Id == costCenterId.Value);
+                                        }
+
+                                        newOrderItem1 = orderToUpdate.AddOrderItem(newProduct.Id, newPrice.Amount, 1, costCenter, null, false, dbContext);
+                                        if (newPrice.AuthorativeCharge.HasValue)
+                                        {
+                                            orderToUpdate.AddOrderItem(newProduct.Id, newPrice.AuthorativeCharge.Value, 1, costCenter, newOrderItem1.Id,
+                                                newPrice.AuthorativeCharge.HasValue, dbContext);
+                                        }
                                         dbContext.SubmitChanges();
                                         allesHatGutGelaufen = true;
                                     }
@@ -930,11 +966,11 @@ namespace KVSWebApplication.Auftragseingang
             }
             return allesHatGutGelaufen;
         }
-        protected void MakeInvoiceForSmallCustomer(Guid customerId, RegistrationOrder regOrder)
+        protected void MakeInvoiceForSmallCustomer(int customerId, RegistrationOrder regOrder)
         {
             try
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                 var newOrder = dbContext.Order.Single(q => q.CustomerId == customerId && q.Id == regOrder.OrderId);
                 smallCustomerOrderHiddenField.Value = regOrder.OrderId.ToString();
                 //updating order status
@@ -972,7 +1008,7 @@ namespace KVSWebApplication.Auftragseingang
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
             var locationQuery = (from adr in dbContext.Adress
                                  join cust in dbContext.Customer on adr.Id equals cust.InvoiceAdressId
-                                 where cust.Id == new Guid(CustomerDropDownList.SelectedValue)
+                                 where cust.Id == Int32.Parse(CustomerDropDownList.SelectedValue)
                                  select adr).SingleOrDefault();
             if (locationQuery != null)
             {
@@ -1004,8 +1040,7 @@ namespace KVSWebApplication.Auftragseingang
             // OrderItem Eigenschaften
             string ProductName = "";
             decimal Amount = 0;
-            Guid customerId = new Guid(CustomerDropDownList.SelectedValue);
-            Guid? costCenterId = null;
+
             street = StreetTextBox.Text;
             streetNumber = StreetNumberTextBox.Text;
             zipcode = ZipcodeTextBox.Text;
@@ -1015,24 +1050,33 @@ namespace KVSWebApplication.Auftragseingang
             int itemCount = 0;
             try
             {
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString())))
+                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
                 {
                     var newAdress = Adress.CreateAdress(street, streetNumber, zipcode, city, country, dbContext);
-                    var newInvoice = Invoice.CreateInvoice(dbContext, new Guid(Session["CurrentUserId"].ToString()), invoiceRecipient, newAdress.Id, new Guid(CustomerDropDownList.SelectedValue), txbDiscount.Value, "Einzelrechnung");
-                     //Submiting new Invoice and Adress
+                    var newInvoice = Invoice.CreateInvoice(dbContext, Int32.Parse(Session["CurrentUserId"].ToString()), invoiceRecipient, newAdress,
+                        Int32.Parse(CustomerDropDownList.SelectedValue), txbDiscount.Value, "Einzelrechnung");
+                    //Submiting new Invoice and Adress
                     dbContext.SubmitChanges();
-                    var orderQuery = dbContext.Order.SingleOrDefault(q => q.Id == new Guid(smallCustomerOrderHiddenField.Value));
+                    var orderQuery = dbContext.Order.SingleOrDefault(q => q.Id == Int32.Parse(smallCustomerOrderHiddenField.Value));
                     foreach (OrderItem ordItem in orderQuery.OrderItem)
                     {
                         ProductName = ordItem.ProductName;
                         Amount = ordItem.Amount;
-                        Guid orderItemId = ordItem.Id;
-                        if (!String.IsNullOrEmpty(ordItem.CostCenterId.ToString()) && ordItem.CostCenterId.ToString().Length > 8)
+                        
+                        //TODO
+                        //if (!String.IsNullOrEmpty(ordItem.CostCenterId.ToString()) && ordItem.CostCenterId.ToString().Length > 8)
+                        //{
+                        //    costCenterId = Int32.Parse(ordItem.CostCenterId.ToString());
+                        //}
+                        
+                        CostCenter costCenter = null;
+                        if (ordItem.CostCenterId.HasValue)
                         {
-                            costCenterId = new Guid(ordItem.CostCenterId.ToString());
+                            costCenter = dbContext.CostCenter.FirstOrDefault(o => o.Id == ordItem.CostCenterId.Value);
                         }
+
                         itemCount = ordItem.Count;
-                        InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(ProductName, Convert.ToDecimal(Amount), itemCount, orderItemId, costCenterId, dbContext);
+                        InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(ProductName, Convert.ToDecimal(Amount), itemCount, ordItem, costCenter, dbContext);
                         ordItem.LogDBContext = dbContext;
                         ordItem.Status = 900;
                         dbContext.SubmitChanges();
@@ -1061,7 +1105,8 @@ namespace KVSWebApplication.Auftragseingang
             {
                 Directory.CreateDirectory(ConfigurationManager.AppSettings["DataPath"] + "/" + Session["CurrentUserId"].ToString());
             }
-            newPdfPathAndName = ConfigurationManager.AppSettings["DataPath"] + "/" + Session["CurrentUserId"].ToString() + "/Lieferschein_" + DateTime.Today.Day + "_" + DateTime.Today.Month + "_" + DateTime.Today.Year + "_" + Guid.NewGuid() + ".pdf";
+            newPdfPathAndName = ConfigurationManager.AppSettings["DataPath"] + "/" + Session["CurrentUserId"].ToString() + "/Lieferschein_" + DateTime.Today.Day + "_" +
+                DateTime.Today.Month + "_" + DateTime.Today.Year + "_" + Guid.NewGuid() + ".pdf";
             return newPdfPathAndName;
         }
         private void OpenPrintfile(string myFile)
@@ -1120,60 +1165,61 @@ namespace KVSWebApplication.Auftragseingang
             //fallse leer - soll aus der Logik rausgenommen
             if (String.IsNullOrEmpty(PruefzifferBox.Text))
                 PruefzifferBox.Enabled = false;
-            if (String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue) || String.IsNullOrEmpty(ZulassungsstelleComboBox.SelectedValue) || String.IsNullOrEmpty(CostCenterDropDownList.SelectedValue) || String.IsNullOrEmpty(LocationDropDownList.SelectedValue) || DienstleistungTreeView.Nodes.Count == 0)
-                {
-                    return true;
-                }
+            if (String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue) || String.IsNullOrEmpty(ZulassungsstelleComboBox.SelectedValue) ||
+                String.IsNullOrEmpty(CostCenterDropDownList.SelectedValue) || String.IsNullOrEmpty(LocationDropDownList.SelectedValue) || DienstleistungTreeView.Nodes.Count == 0)
+            {
+                return true;
+            }
 
-                foreach (Control control in allControls)
+            foreach (Control control in allControls)
+            {
+                if (control.Visible == true)
                 {
-                    if (control.Visible == true)
+                    iFound1VisibleBox = true;
+                    foreach (Control subControl in control.Controls)
                     {
-                        iFound1VisibleBox = true;
-                        foreach (Control subControl in control.Controls)
+                        if (subControl is RadTextBox)
                         {
-                            if (subControl is RadTextBox)
+                            RadTextBox box = subControl as RadTextBox;
+                            if (box.ID == "CarOwner_NameBox" || box.ID == "CarOwner_FirstnameBox")
                             {
-                                RadTextBox box = subControl as RadTextBox;
-                                if (box.ID == "CarOwner_NameBox" || box.ID == "CarOwner_FirstnameBox")
+
+                                if (box.Text != string.Empty)
                                 {
-
-                                    if (box.Text != string.Empty)
-                                    {
-                                        carOwnerMin = true;
-                                    }
-                                    else if (!carOwnerMin )
-                                    {
-                                        count++;
-                                    }
-                                    else
-                                    {
-                                        box.BorderColor = System.Drawing.Color.Black;
-                                    }
-                                    if (count > 1)
-                                    {
-                                        box.BorderColor = System.Drawing.Color.Red;
-                                        gibtsBoxenDieLeerSind = true;
-
-                                    }
-                                    continue;
+                                    carOwnerMin = true;
                                 }
-
-                                else if (box.Enabled == true && String.IsNullOrEmpty(box.Text))
+                                else if (!carOwnerMin)
                                 {
-                                        box.BorderColor = System.Drawing.Color.Red;
-                                        gibtsBoxenDieLeerSind = true;
+                                    count++;
                                 }
                                 else
                                 {
                                     box.BorderColor = System.Drawing.Color.Black;
                                 }
+                                if (count > 1)
+                                {
+                                    box.BorderColor = System.Drawing.Color.Red;
+                                    gibtsBoxenDieLeerSind = true;
+
+                                }
+                                continue;
+                            }
+
+                            else if (box.Enabled == true && String.IsNullOrEmpty(box.Text))
+                            {
+                                box.BorderColor = System.Drawing.Color.Red;
+                                gibtsBoxenDieLeerSind = true;
+                            }
+                            else
+                            {
+                                box.BorderColor = System.Drawing.Color.Black;
                             }
                         }
                     }
                 }
-                if (!PruefzifferBox.Enabled)
-                    PruefzifferBox.Enabled = true;
+            }
+            if (!PruefzifferBox.Enabled)
+                PruefzifferBox.Enabled = true;
             if (iFound1VisibleBox == false)
                 gibtsBoxenDieLeerSind = true;
             return gibtsBoxenDieLeerSind;
@@ -1205,7 +1251,7 @@ namespace KVSWebApplication.Auftragseingang
                         }
                     }
                 }
-            }           
+            }
         }
         protected void NaechtenAuftragButton_Clicked(object sender, EventArgs e)
         {
@@ -1218,10 +1264,10 @@ namespace KVSWebApplication.Auftragseingang
             HideAllControls();
             DataClasses1DataContext con = new DataClasses1DataContext();
             var cont = from largCust in con.LargeCustomerRequiredField
-                        join reqFiled in con.RequiredField on largCust.RequiredFieldId equals reqFiled.Id
-                        join ordTyp in con.OrderType on reqFiled.OrderTypeId equals ordTyp.Id
-                        where largCust.LargeCustomerId == new Guid(CustomerDropDownList.SelectedValue) && ordTyp.Name == "Zulassung"
-                        select reqFiled.Name;         
+                       join reqFiled in con.RequiredField on largCust.RequiredFieldId equals reqFiled.Id
+                       join ordTyp in con.OrderType on reqFiled.OrderTypeId equals ordTyp.Id
+                       where largCust.LargeCustomerId == Int32.Parse(CustomerDropDownList.SelectedValue) && ordTyp.Name == "Zulassung"
+                       select reqFiled.Name;
             foreach (var nameCon in cont)
             {
                 foreach (Control control in listOfControls)
@@ -1229,9 +1275,13 @@ namespace KVSWebApplication.Auftragseingang
                     if (control.ID == nameCon)
                     {
                         control.Visible = true;
-                        if (control.ID == "Vehicle_VIN" || control.ID == "Vehicle_Variant" || control.ID == "Vehicle_Color" || control.ID == "Registration_Licencenumber" || control.ID == "RegistrationOrder_PreviousLicencenumber" || control.ID == "Registration_GeneralInspectionDate" || control.ID == "Vehicle_FirstRegistrationDate" || control.ID == "Vehicle_TSN" || control.ID == "Vehicle_HSN" || control.ID == "Registration_eVBNumber" || control.ID == "Registration_RegistrationDocumentNumber" || control.ID == "Registration_EmissionCode" || control.ID == "Order_Freitext")
+                        if (control.ID == "Vehicle_VIN" || control.ID == "Vehicle_Variant" || control.ID == "Vehicle_Color" || control.ID == "Registration_Licencenumber" ||
+                            control.ID == "RegistrationOrder_PreviousLicencenumber" || control.ID == "Registration_GeneralInspectionDate" ||
+                            control.ID == "Vehicle_FirstRegistrationDate" || control.ID == "Vehicle_TSN" || control.ID == "Vehicle_HSN" || control.ID == "Registration_eVBNumber" ||
+                            control.ID == "Registration_RegistrationDocumentNumber" || control.ID == "Registration_EmissionCode" || control.ID == "Order_Freitext")
                             FahrzeugLabel.Visible = true;
-                        if (control.ID == "CarOwner_Name" || control.ID == "CarOwner_Firstname" || control.ID == "Adress_Street" || control.ID == "Adress_StreetNumber" || control.ID == "Adress_Zipcode" || control.ID == "Adress_City" || control.ID == "Adress_Country")
+                        if (control.ID == "CarOwner_Name" || control.ID == "CarOwner_Firstname" || control.ID == "Adress_Street" || control.ID == "Adress_StreetNumber" ||
+                            control.ID == "Adress_Zipcode" || control.ID == "Adress_City" || control.ID == "Adress_Country")
                             HalterLabel.Visible = true;
                         if (control.ID == "BankAccount_BankName" || control.ID == "BankAccount_Accountnumber" || control.ID == "BankAccount_BankCode")
                         {
@@ -1242,7 +1292,7 @@ namespace KVSWebApplication.Auftragseingang
                             KontaktdatenLabel.Visible = true;
                     }
                 }
-            }            
+            }
         }
         protected void setCarOwnerData()
         {
@@ -1257,7 +1307,8 @@ namespace KVSWebApplication.Auftragseingang
                 Registration_eVBNumberBox.Text = string.Empty;
                 if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue) && !String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
                 {
-                    var customerDetils = con.Location.FirstOrDefault(q => q.Id == new Guid(LocationDropDownList.SelectedValue) && q.CustomerId == new Guid(CustomerDropDownList.SelectedValue));
+                    var customerDetils = con.Location.FirstOrDefault(q => q.Id == Int32.Parse(LocationDropDownList.SelectedValue) && 
+                        q.CustomerId == Int32.Parse(CustomerDropDownList.SelectedValue));
                     if (customerDetils != null)
                     {
                         CarOwner_NameBox.Text = customerDetils.LargeCustomer.Customer.Name;
@@ -1270,7 +1321,7 @@ namespace KVSWebApplication.Auftragseingang
                             Adress_StreetNumberBox.Text = customerDetils.Adress.StreetNumber;
                             Adress_ZipcodeBox.Text = customerDetils.Adress.Zipcode;
                             Adress_CityBox.Text = customerDetils.Adress.City;
-                            Adress_CountryBox.Text = customerDetils.Adress.Country;                                                      
+                            Adress_CountryBox.Text = customerDetils.Adress.Country;
                         }
                     }
                 }
@@ -1336,6 +1387,6 @@ namespace KVSWebApplication.Auftragseingang
                 controls.Add(IBANPanel);
             }
             return controls;
-        }         
+        }
     }
 }

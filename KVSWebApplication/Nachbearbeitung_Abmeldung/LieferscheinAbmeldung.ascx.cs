@@ -137,19 +137,19 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             OffenePanel.Visible = false;
             AllesIstOkeyLabelLieferschein.Visible = false;
             ErrorLabelLieferschein.Visible = false;
-            Guid orderId;
+
             if (RadGridLieferscheine.SelectedItems.Count > 0)
             {
                 try
                 {
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
 
                     List<LocationOrderJoins> locationIdList = new List<LocationOrderJoins>();
                     foreach (GridDataItem item in RadGridLieferscheine.SelectedItems)
                     {
-                        var myOrder = dbContext.Order.FirstOrDefault(q => q.Id == new Guid(item["OrderId"].Text));
+                        var myOrder = dbContext.Order.FirstOrDefault(q => q.Id == Int32.Parse(item["OrderId"].Text));
                         LocationOrderJoins orJ = new LocationOrderJoins();
-                        orJ.LocationId = new Guid(item["locationId"].Text);
+                        orJ.LocationId = Int32.Parse(item["locationId"].Text);
                         orJ.Order = myOrder;
                         locationIdList.Add(orJ);
                     }
@@ -157,7 +157,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     foreach (var gr in groupedOrder)
                     {
                         var locationQuery = dbContext.Location.SingleOrDefault(q => q.Id == gr.First().LocationId);
-                        var packingList = PackingList.CreatePackingList(locationQuery.Name, locationQuery.AdressId, dbContext);
+                        var packingList = PackingList.CreatePackingList(locationQuery.Name, locationQuery.Adress, dbContext);
                         packingList.LogDBContext = dbContext;
                         // für alle, die selected sind - ins package list hinzufügen
                         foreach (var orders in gr)
@@ -183,11 +183,10 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         protected void LieferscheineOffeneLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            Guid locationId = Guid.Empty;
             if (RadGridLieferscheine.SelectedItems.Count > 0)
             {
                 GridDataItem item = RadGridLieferscheine.SelectedItems[0] as GridDataItem;
-                locationId = new Guid(item["locationId"].Text);
+                var locationId = Int32.Parse(item["locationId"].Text);
                 DataClasses1DataContext con = new DataClasses1DataContext();
                 var largeCustomerQuery = from ord in con.Order
                                          join ordst in con.OrderStatus on ord.Status equals ordst.Id
@@ -260,9 +259,9 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             AllesIsOkeyBeiOffene.Visible = false;
             if (e.Item is GridDataItem)
             {
-                GridDataItem fertigStellenItem = e.Item as GridDataItem;
-                Guid orderId = new Guid(fertigStellenItem["OrderId"].Text);
-                Guid customerID = new Guid(fertigStellenItem["customerID"].Text);
+                var fertigStellenItem = e.Item as GridDataItem;
+                var orderId = Int32.Parse(fertigStellenItem["OrderId"].Text);
+                var customerID = Int32.Parse(fertigStellenItem["customerID"].Text);
                 if (!CheckDienstleistungAndAmtGebuhr(orderId))
                 {
                     ErrorOffeneLabel.Text = "Bei den ausgewählten Auftrag fehlt noch die Dienstleistung und/oder amtliche Gebühr! In dem Reiter 'Zulassungstelle' können Sie den Auftrag bearbeiten. ";
@@ -275,7 +274,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 {
                     try
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString()));
+                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                         var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.Id == orderId);
                         if (newOrder != null)
                         {
@@ -307,11 +306,11 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             }
         }
         //Checked if amt.gebühr UND mind.eine Dienstleistung vorhanden ist
-        protected bool CheckDienstleistungAndAmtGebuhr(Guid orderId)
+        protected bool CheckDienstleistungAndAmtGebuhr(int orderId)
         {
             bool DienstVorhanden = false;
             bool AmtGebuhVorhanden = false;
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(new Guid(Session["CurrentUserId"].ToString())))
+            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
             {
                 var searchOrderQuery = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
                 if (searchOrderQuery != null)

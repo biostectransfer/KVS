@@ -89,23 +89,7 @@ namespace KVSWebApplication
                 return false;
             }           
         }
-        /// <summary>
-        /// Pruefe ob der angegebener String auch eine Guid ist
-        /// </summary>
-        /// <param name="myValue"></param>
-        /// <returns></returns>
-        public static bool IsGuid(string myValue)
-        {
-            try
-            {
-                Guid.Parse(myValue);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+
         /// <summary>
         /// Gibt 0 zurueck, wenn der eingegebene Wert null ist
         /// </summary>

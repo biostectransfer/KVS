@@ -28,7 +28,7 @@ namespace KVSWebApplication.Permission
         List<string> thisUserPermissions = new List<string>();
         protected void Page_Load(object sender, System.EventArgs e)
         {           
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(((Guid)Session["CurrentUserId"])));
+            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (!Page.IsPostBack)
             {
                 if (thisUserPermissions.Contains("RECHTEPROFIL_BEARBEITEN") || thisUserPermissions.Contains("RECHTEPROFIL_UEBERSICHT"))

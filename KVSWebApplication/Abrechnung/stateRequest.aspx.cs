@@ -18,11 +18,11 @@ namespace KVSWebApplication.Abrechnung
         {
             string id = Request.Form["invoiceRunId"];
             int? write = 0;
-            if (EmptyStringIfNull.IsGuid(id))
+            if (!String.IsNullOrEmpty(id))
             {
                 using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
                 {
-                    write = dbContext.InvoiceRunReport.FirstOrDefault(q => q.Id == new Guid(id)).InvoiceRunProgress;
+                    write = dbContext.InvoiceRunReport.FirstOrDefault(q => q.Id == Int32.Parse(id)).InvoiceRunProgress;
                     if (write == null)
                         write = null;
                     if (write > 100)

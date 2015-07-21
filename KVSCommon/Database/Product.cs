@@ -45,7 +45,8 @@ namespace KVSCommon.Database
         /// <param name="registrationOrderTypeId">Id der Zulassungsauftragsart, falls benötigt.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Das neue Produkt.</returns>
-        public static Product CreateProduct(string name, Guid? productCategoryId, decimal priceAmount, decimal? authorativeCharge, string itemNumber, Guid orderTypeId, Guid? registrationOrderTypeId, bool needsVAT, DataClasses1DataContext dbContext)
+        public static Product CreateProduct(string name, int? productCategoryId, decimal priceAmount, decimal? authorativeCharge, string itemNumber, 
+            int orderTypeId, int? registrationOrderTypeId, bool needsVAT, DataClasses1DataContext dbContext)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -59,7 +60,6 @@ namespace KVSCommon.Database
 
             var product = new Product()
             {
-                Id = Guid.NewGuid(),
                 Name = name,
                 ProductCategoryId = productCategoryId,
                 ItemNumber = itemNumber,
@@ -72,7 +72,6 @@ namespace KVSCommon.Database
 
             var price = new Price()
             {
-                Id = Guid.NewGuid(),
                 Amount = priceAmount,
                 AuthorativeCharge = authorativeCharge,
                 
@@ -98,7 +97,8 @@ namespace KVSCommon.Database
         /// <param name="registrationOrderTypeId">Id der Zulassungsauftragsart, falls benötigt.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Preis.</returns>
-        public static Price CreateProduct(string name, Guid? productCategoryId, decimal priceAmount, decimal? authorativeCharge, string itemNumber, Guid orderTypeId, Guid? registrationOrderTypeId, bool needsVAT, bool accountId,  DataClasses1DataContext dbContext)
+        public static Price CreateProduct(string name, int? productCategoryId, decimal priceAmount, decimal? authorativeCharge, string itemNumber,
+            int orderTypeId, int? registrationOrderTypeId, bool needsVAT, bool accountId,  DataClasses1DataContext dbContext)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -112,7 +112,6 @@ namespace KVSCommon.Database
            
             var product = new Product()
             {
-                Id = Guid.NewGuid(),
                 Name = name,
                 ProductCategoryId = productCategoryId,
                 ItemNumber = itemNumber,
@@ -125,7 +124,6 @@ namespace KVSCommon.Database
 
             var price = new Price()
             {
-                Id = Guid.NewGuid(),
                 Amount = priceAmount,
                 AuthorativeCharge = authorativeCharge,
                 
@@ -141,7 +139,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="productId">Id des Products.</param>
         /// <param name="dbContext"></param>
-        public static void RemoveProduct(Guid productId, DataClasses1DataContext dbContext)
+        public static void RemoveProduct(int productId, DataClasses1DataContext dbContext)
         {
             Price[] pr = dbContext.Price.Where(q => q.ProductId == productId).ToArray();
             Product prod = dbContext.Product.SingleOrDefault(q => q.Id == productId);
@@ -201,7 +199,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnProductCategoryIdChanging(Guid? value)
+        partial void OnProductCategoryIdChanging(int? value)
         {
             if (this.EntityState != Database.EntityState.New)
             {
@@ -236,7 +234,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnOrderTypeIdChanging(Guid value)
+        partial void OnOrderTypeIdChanging(int value)
         {
             this.WriteUpdateLogItem("Auftragsart", this.OrderTypeId, value);
         }
@@ -244,7 +242,7 @@ namespace KVSCommon.Database
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnRegistrationOrderTypeIdChanging(Guid? value)
+        partial void OnRegistrationOrderTypeIdChanging(int? value)
         {
             this.WriteUpdateLogItem("Zulassungsauftragsart", this.RegistrationOrderTypeId, value);
         }

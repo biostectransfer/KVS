@@ -10,7 +10,7 @@ namespace KVSCommon.PDF
     /// </summary>
     public class GroupedAppendix
     {
-        public Guid? OrderItemId;
+        public int? OrderItemId;
       
         public int PosNumber;
         public string Bezeichnung;

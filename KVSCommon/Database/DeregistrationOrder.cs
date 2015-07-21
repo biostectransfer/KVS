@@ -41,21 +41,21 @@ namespace KVSCommon.Database
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Abmeldeauftrag.</returns>
         /// <remarks>Erstellt auch gleichzeitig den Order-Datensatz.</remarks>
-        public static DeregistrationOrder CreateDeregistrationOrder(Guid userId, Guid customerId, Guid vehicleId, Guid registrationId, Guid? locationId, Guid zulassungsstelleId, DataClasses1DataContext dbContext)
+        public static DeregistrationOrder CreateDeregistrationOrder(int userId, int customerId, Vehicle vehicle, Registration registration, int? locationId, 
+            int zulassungsstelleId, DataClasses1DataContext dbContext)
         {
-            Guid orderTypeId = dbContext.OrderType.Single(q => q.Name == "Abmeldung").Id;
-            Order order = Order.CreateOrder(userId, customerId, orderTypeId, zulassungsstelleId, dbContext); //Guid.Empty ersetzen mit ZulassungstelleID
+            var orderTypeId = dbContext.OrderType.Single(q => q.Name == "Abmeldung").Id;
+            Order order = Order.CreateOrder(userId, customerId, orderTypeId, zulassungsstelleId, dbContext); 
             order.LocationId = locationId;
             DeregistrationOrder deregistrationOrder = new DeregistrationOrder()
             {
                 Order = order,
-                VehicleId = vehicleId,
-                RegistrationId = registrationId
+                Vehicle = vehicle,
+                Registration = registration
             };
 
-            //  var vehicleVIN = dbContext.Vehicle.Where(q => q.Id == vehicleId).Select(q => q.VIN).Single();
             dbContext.DeregistrationOrder.InsertOnSubmit(deregistrationOrder);
-            dbContext.WriteLogItem("Abmeldeauftrag angelegt.", LogTypes.INSERT, deregistrationOrder.OrderId, "DeregistrationOrder", vehicleId);
+            dbContext.WriteLogItem("Abmeldeauftrag angelegt.", LogTypes.INSERT, deregistrationOrder.OrderId, "DeregistrationOrder", vehicle.Id);
             return deregistrationOrder;
         }
         /// <summary>
