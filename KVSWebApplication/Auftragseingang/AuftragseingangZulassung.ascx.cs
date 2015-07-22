@@ -443,12 +443,14 @@ namespace KVSWebApplication.Auftragseingang
                     if (autoQuery != null)
                     {
                         //wird als cache field für die Kennzeichnung bei der Umkennzeichnung benutzt
-                        if (autoQuery.Registration1 != null)
+                        if (autoQuery.CurrentRegistrationId.HasValue)
                         {
+                            var registration = dbContext.Registration.Single(q => q.Id == autoQuery.CurrentRegistrationId.Value);
+                        
                             string kennzeichen = string.Empty;
-                            LicenceNumberCacheField.Value = autoQuery.Registration1.Licencenumber;
-                            RegistrationIdField.Value = autoQuery.Registration1.Id.ToString();
-                            kennzeichen = autoQuery.Registration1.Licencenumber;
+                            LicenceNumberCacheField.Value = registration.Licencenumber;
+                            RegistrationIdField.Value = registration.Id.ToString();
+                            kennzeichen = registration.Licencenumber;
                             string[] newKennzeichen = kennzeichen.Split('-');
                             if (newKennzeichen.Length == 3)
                             {
@@ -456,18 +458,11 @@ namespace KVSWebApplication.Auftragseingang
                                 LicenceBox2.Text = newKennzeichen[1];
                                 LicenceBox3.Text = newKennzeichen[2];
                             }
-                            Registration_GeneralInspectionDateBox.SelectedDate = autoQuery.Registration1.GeneralInspectionDate;
-                            RegDocNumBox.Text = autoQuery.Registration1.RegistrationDocumentNumber;
-                            EmissionsCodeBox.Text = autoQuery.Registration1.EmissionCode;
-                        }
-                        VehicleIdField.Value = autoQuery.Id.ToString();
-                        Vehicle_VariantBox.Text = autoQuery.Variant;
-                        HSNBox.Text = autoQuery.HSN;
-                        TSNBox.Text = autoQuery.TSN;
-                        Vehicle_ColorBox.Text = autoQuery.ColorCode.ToString();
-                        if (autoQuery.Registration1 != null)
-                        {
-                            CarOwner owner = autoQuery.Registration1.CarOwner;
+                            Registration_GeneralInspectionDateBox.SelectedDate = registration.GeneralInspectionDate;
+                            RegDocNumBox.Text = registration.RegistrationDocumentNumber;
+                            EmissionsCodeBox.Text = registration.EmissionCode;
+
+                            CarOwner owner = registration.CarOwner;
                             if (owner != null)
                             {
                                 CarOwner_NameBox.Text = owner.Name;
@@ -495,7 +490,13 @@ namespace KVSWebApplication.Auftragseingang
                                 }
                                 PruefzifferBox.Focus();
                             }
-                        }                        
+                        }
+
+                        VehicleIdField.Value = autoQuery.Id.ToString();
+                        Vehicle_VariantBox.Text = autoQuery.Variant;
+                        HSNBox.Text = autoQuery.HSN;
+                        TSNBox.Text = autoQuery.TSN;
+                        Vehicle_ColorBox.Text = autoQuery.ColorCode.ToString();                   
                     }                                  
                 }
                 // falls kein Fahrzeug gefunden

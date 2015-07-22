@@ -332,7 +332,11 @@ namespace KVSWebApplication.Auftragseingang
                     if (!String.IsNullOrEmpty(vehicleIdField.Value)) //falls Auto schon gefunden wurde
                     {
                         newVehicle = dbContext.Vehicle.Single(q => q.Id == Int32.Parse(vehicleIdField.Value));
-                        newRegistration = newVehicle.Registration1;
+
+                        if (newVehicle.CurrentRegistrationId.HasValue)
+                        {
+                            newRegistration = dbContext.Registration.Single(q => q.Id == newVehicle.CurrentRegistrationId.Value);
+                        }
                     }
                     else // falls ein neues Auto soll erstellt werden
                     {
@@ -546,12 +550,14 @@ namespace KVSWebApplication.Auftragseingang
                     DataClasses1DataContext dbContext = new DataClasses1DataContext();
                     var autoQuery = dbContext.Vehicle.Single(q => q.VIN == VINBox.Text);
                     vehicleIdField.Value = autoQuery.Id.ToString();
-                    if (autoQuery.Registration1 != null)
+                    if (autoQuery.CurrentRegistrationId.HasValue)
                     {
+                        var registration = dbContext.Registration.Single(q => q.Id == autoQuery.CurrentRegistrationId.Value);
+                        
                         string kennzeichen = string.Empty;
                         VINBox.Text = VINBox.Text;
                         Vehicle_VariantBox.Text = autoQuery.Variant;
-                        kennzeichen = autoQuery.Registration1.Licencenumber;
+                        kennzeichen = registration.Licencenumber;
                         string[] newKennzeichen = kennzeichen.Split('-');
                         if (newKennzeichen.Length == 3)
                         {
@@ -559,27 +565,27 @@ namespace KVSWebApplication.Auftragseingang
                             LicenceBox2.Text = newKennzeichen[1];
                             LicenceBox3.Text = newKennzeichen[2];
                         }
-                        Registration_GeneralInspectionDateBox.SelectedDate = autoQuery.Registration1.GeneralInspectionDate;
+                        Registration_GeneralInspectionDateBox.SelectedDate = registration.GeneralInspectionDate;
                         Vehicle_VariantBox.Text = autoQuery.Variant;
                         HSNAbmBox.Text = autoQuery.HSN;
                         TSNAbmBox.Text = autoQuery.TSN;
                         Vehicle_ColorBox.Text = autoQuery.ColorCode.ToString();
-                        RegDocNumBox.Text = autoQuery.Registration1.RegistrationDocumentNumber;
-                        EmissionsCodeBox.Text = autoQuery.Registration1.EmissionCode;
-                        CarOwner_NameBox.Text = autoQuery.Registration1.CarOwner.Name;
-                        Adress_StreetBox.Text = autoQuery.Registration1.CarOwner.Adress.Street;
-                        CarOwner_FirstnameBox.Text = autoQuery.Registration1.CarOwner.FirstName;
-                        Adress_StreetNumberBox.Text = autoQuery.Registration1.CarOwner.Adress.StreetNumber;
-                        Adress_ZipcodeBox.Text = autoQuery.Registration1.CarOwner.Adress.Zipcode;
-                        Adress_CityBox.Text = autoQuery.Registration1.CarOwner.Adress.City;
-                        Adress_CountryBox.Text = autoQuery.Registration1.CarOwner.Adress.Country;
-                        Contact_PhoneBox.Text = autoQuery.Registration1.CarOwner.Contact.Phone;
-                        Contact_FaxBox.Text = autoQuery.Registration1.CarOwner.Contact.Fax;
-                        Contact_MobilePhoneBox.Text = autoQuery.Registration1.CarOwner.Contact.MobilePhone;
-                        Contact_EmailBox.Text = autoQuery.Registration1.CarOwner.Contact.Email;
-                        BankAccount_BankNameBox.Text = autoQuery.Registration1.CarOwner.BankAccount.BankName;
-                        BankAccount_AccountnumberBox.Text = autoQuery.Registration1.CarOwner.BankAccount.Accountnumber;
-                        BankAccount_BankCodeBox.Text = autoQuery.Registration1.CarOwner.BankAccount.BankCode;
+                        RegDocNumBox.Text = registration.RegistrationDocumentNumber;
+                        EmissionsCodeBox.Text = registration.EmissionCode;
+                        CarOwner_NameBox.Text = registration.CarOwner.Name;
+                        Adress_StreetBox.Text = registration.CarOwner.Adress.Street;
+                        CarOwner_FirstnameBox.Text = registration.CarOwner.FirstName;
+                        Adress_StreetNumberBox.Text = registration.CarOwner.Adress.StreetNumber;
+                        Adress_ZipcodeBox.Text = registration.CarOwner.Adress.Zipcode;
+                        Adress_CityBox.Text = registration.CarOwner.Adress.City;
+                        Adress_CountryBox.Text = registration.CarOwner.Adress.Country;
+                        Contact_PhoneBox.Text = registration.CarOwner.Contact.Phone;
+                        Contact_FaxBox.Text = registration.CarOwner.Contact.Fax;
+                        Contact_MobilePhoneBox.Text = registration.CarOwner.Contact.MobilePhone;
+                        Contact_EmailBox.Text = registration.CarOwner.Contact.Email;
+                        BankAccount_BankNameBox.Text = registration.CarOwner.BankAccount.BankName;
+                        BankAccount_AccountnumberBox.Text = registration.CarOwner.BankAccount.Accountnumber;
+                        BankAccount_BankCodeBox.Text = registration.CarOwner.BankAccount.BankCode;
                         PruefzifferBox.Focus();
                     }
                 }

@@ -1930,13 +1930,13 @@ namespace KVSCommon.Database
 		
 		private EntitySet<Invoice> _Invoice;
 		
+		private EntitySet<Order> _Order;
+		
 		private EntitySet<WebServiceLoginCustomer> _WebServiceLoginCustomer;
 		
 		private EntityRef<LargeCustomer> _LargeCustomer;
 		
 		private EntitySet<CustomerProduct> _CustomerProduct;
-		
-		private EntitySet<Order> _Order;
 		
 		private EntityRef<Contact> _Contact;
 		
@@ -1982,10 +1982,10 @@ namespace KVSCommon.Database
 		{
 			this._SmallCustomer = default(EntityRef<SmallCustomer>);
 			this._Invoice = new EntitySet<Invoice>(new Action<Invoice>(this.attach_Invoice), new Action<Invoice>(this.detach_Invoice));
+			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
 			this._WebServiceLoginCustomer = new EntitySet<WebServiceLoginCustomer>(new Action<WebServiceLoginCustomer>(this.attach_WebServiceLoginCustomer), new Action<WebServiceLoginCustomer>(this.detach_WebServiceLoginCustomer));
 			this._LargeCustomer = default(EntityRef<LargeCustomer>);
 			this._CustomerProduct = new EntitySet<CustomerProduct>(new Action<CustomerProduct>(this.attach_CustomerProduct), new Action<CustomerProduct>(this.detach_CustomerProduct));
-			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
 			this._Contact = default(EntityRef<Contact>);
 			this._Adress = default(EntityRef<Adress>);
 			this._InvoiceAdress = default(EntityRef<Adress>);
@@ -2311,6 +2311,19 @@ namespace KVSCommon.Database
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Customer_Order", Storage="_Order", ThisKey="Id", OtherKey="CustomerId")]
+		public EntitySet<Order> Order
+		{
+			get
+			{
+				return this._Order;
+			}
+			set
+			{
+				this._Order.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Customer_WebServiceLoginCustomer", Storage="_WebServiceLoginCustomer", ThisKey="Id", OtherKey="CustomerId")]
 		public EntitySet<WebServiceLoginCustomer> WebServiceLoginCustomer
 		{
@@ -2363,19 +2376,6 @@ namespace KVSCommon.Database
 			set
 			{
 				this._CustomerProduct.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Customer_Order", Storage="_Order", ThisKey="Id", OtherKey="CustomerId")]
-		public EntitySet<Order> Order
-		{
-			get
-			{
-				return this._Order;
-			}
-			set
-			{
-				this._Order.Assign(value);
 			}
 		}
 		
@@ -2547,6 +2547,18 @@ namespace KVSCommon.Database
 			entity.Customer = null;
 		}
 		
+		private void attach_Order(Order entity)
+		{
+			this.SendPropertyChanging();
+			entity.Customer = this;
+		}
+		
+		private void detach_Order(Order entity)
+		{
+			this.SendPropertyChanging();
+			entity.Customer = null;
+		}
+		
 		private void attach_WebServiceLoginCustomer(WebServiceLoginCustomer entity)
 		{
 			this.SendPropertyChanging();
@@ -2566,18 +2578,6 @@ namespace KVSCommon.Database
 		}
 		
 		private void detach_CustomerProduct(CustomerProduct entity)
-		{
-			this.SendPropertyChanging();
-			entity.Customer = null;
-		}
-		
-		private void attach_Order(Order entity)
-		{
-			this.SendPropertyChanging();
-			entity.Customer = this;
-		}
-		
-		private void detach_Order(Order entity)
 		{
 			this.SendPropertyChanging();
 			entity.Customer = null;
@@ -2843,13 +2843,13 @@ namespace KVSCommon.Database
 		
 		private EntitySet<Mailinglist> _Mailinglist;
 		
+		private EntitySet<Order> _Order;
+		
 		private EntitySet<Price> _Price;
 		
 		private EntitySet<LargeCustomer> _LargeCustomer1;
 		
 		private EntitySet<LargeCustomer> _LargeCustomer2;
-		
-		private EntitySet<Order> _Order;
 		
 		private EntityRef<Contact> _Contact;
 		
@@ -2888,10 +2888,10 @@ namespace KVSCommon.Database
 		public Location()
 		{
 			this._Mailinglist = new EntitySet<Mailinglist>(new Action<Mailinglist>(this.attach_Mailinglist), new Action<Mailinglist>(this.detach_Mailinglist));
+			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
 			this._Price = new EntitySet<Price>(new Action<Price>(this.attach_Price), new Action<Price>(this.detach_Price));
 			this._LargeCustomer1 = new EntitySet<LargeCustomer>(new Action<LargeCustomer>(this.attach_LargeCustomer1), new Action<LargeCustomer>(this.detach_LargeCustomer1));
 			this._LargeCustomer2 = new EntitySet<LargeCustomer>(new Action<LargeCustomer>(this.attach_LargeCustomer2), new Action<LargeCustomer>(this.detach_LargeCustomer2));
-			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
 			this._Contact = default(EntityRef<Contact>);
 			this._Adress = default(EntityRef<Adress>);
 			this._InvoiceAdress = default(EntityRef<Adress>);
@@ -3113,6 +3113,19 @@ namespace KVSCommon.Database
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Location_Order", Storage="_Order", ThisKey="Id", OtherKey="LocationId")]
+		public EntitySet<Order> Order
+		{
+			get
+			{
+				return this._Order;
+			}
+			set
+			{
+				this._Order.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Location_Price", Storage="_Price", ThisKey="Id", OtherKey="LocationId")]
 		public EntitySet<Price> Price
 		{
@@ -3149,19 +3162,6 @@ namespace KVSCommon.Database
 			set
 			{
 				this._LargeCustomer2.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Location_Order", Storage="_Order", ThisKey="Id", OtherKey="LocationId")]
-		public EntitySet<Order> Order
-		{
-			get
-			{
-				return this._Order;
-			}
-			set
-			{
-				this._Order.Assign(value);
 			}
 		}
 		
@@ -3367,6 +3367,18 @@ namespace KVSCommon.Database
 			entity.Location = null;
 		}
 		
+		private void attach_Order(Order entity)
+		{
+			this.SendPropertyChanging();
+			entity.Location = this;
+		}
+		
+		private void detach_Order(Order entity)
+		{
+			this.SendPropertyChanging();
+			entity.Location = null;
+		}
+		
 		private void attach_Price(Price entity)
 		{
 			this.SendPropertyChanging();
@@ -3401,18 +3413,6 @@ namespace KVSCommon.Database
 		{
 			this.SendPropertyChanging();
 			entity.MainLocation = null;
-		}
-		
-		private void attach_Order(Order entity)
-		{
-			this.SendPropertyChanging();
-			entity.Location = this;
-		}
-		
-		private void detach_Order(Order entity)
-		{
-			this.SendPropertyChanging();
-			entity.Location = null;
 		}
 	}
 	
@@ -3824,9 +3824,9 @@ namespace KVSCommon.Database
 		
 		private EntitySet<RequiredField> _RequiredField;
 		
-		private EntitySet<Product> _Product;
-		
 		private EntitySet<Order> _Order;
+		
+		private EntitySet<Product> _Product;
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
@@ -3841,8 +3841,8 @@ namespace KVSCommon.Database
 		public OrderType()
 		{
 			this._RequiredField = new EntitySet<RequiredField>(new Action<RequiredField>(this.attach_RequiredField), new Action<RequiredField>(this.detach_RequiredField));
-			this._Product = new EntitySet<Product>(new Action<Product>(this.attach_Product), new Action<Product>(this.detach_Product));
 			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
+			this._Product = new EntitySet<Product>(new Action<Product>(this.attach_Product), new Action<Product>(this.detach_Product));
 			OnCreated();
 		}
 		
@@ -3899,19 +3899,6 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="OrderType_Product", Storage="_Product", ThisKey="Id", OtherKey="OrderTypeId")]
-		public EntitySet<Product> Product
-		{
-			get
-			{
-				return this._Product;
-			}
-			set
-			{
-				this._Product.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="OrderType_Order", Storage="_Order", ThisKey="Id", OtherKey="OrderTypeId")]
 		public EntitySet<Order> Order
 		{
@@ -3922,6 +3909,19 @@ namespace KVSCommon.Database
 			set
 			{
 				this._Order.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="OrderType_Product", Storage="_Product", ThisKey="Id", OtherKey="OrderTypeId")]
+		public EntitySet<Product> Product
+		{
+			get
+			{
+				return this._Product;
+			}
+			set
+			{
+				this._Product.Assign(value);
 			}
 		}
 		
@@ -3957,18 +3957,6 @@ namespace KVSCommon.Database
 			entity.OrderType = null;
 		}
 		
-		private void attach_Product(Product entity)
-		{
-			this.SendPropertyChanging();
-			entity.OrderType = this;
-		}
-		
-		private void detach_Product(Product entity)
-		{
-			this.SendPropertyChanging();
-			entity.OrderType = null;
-		}
-		
 		private void attach_Order(Order entity)
 		{
 			this.SendPropertyChanging();
@@ -3976,6 +3964,18 @@ namespace KVSCommon.Database
 		}
 		
 		private void detach_Order(Order entity)
+		{
+			this.SendPropertyChanging();
+			entity.OrderType = null;
+		}
+		
+		private void attach_Product(Product entity)
+		{
+			this.SendPropertyChanging();
+			entity.OrderType = this;
+		}
+		
+		private void detach_Product(Product entity)
 		{
 			this.SendPropertyChanging();
 			entity.OrderType = null;
@@ -5445,11 +5445,11 @@ namespace KVSCommon.Database
 		
 		private EntitySet<Invoice> _Invoice;
 		
+		private EntitySet<PackingList> _PackingList;
+		
 		private EntitySet<RegistrationLocation> _RegistrationLocation;
 		
 		private EntitySet<DocketList> _DocketList;
-		
-		private EntitySet<PackingList> _PackingList;
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
@@ -5479,9 +5479,9 @@ namespace KVSCommon.Database
 			this._Location1 = new EntitySet<Location>(new Action<Location>(this.attach_Location1), new Action<Location>(this.detach_Location1));
 			this._Location2 = new EntitySet<Location>(new Action<Location>(this.attach_Location2), new Action<Location>(this.detach_Location2));
 			this._Invoice = new EntitySet<Invoice>(new Action<Invoice>(this.attach_Invoice), new Action<Invoice>(this.detach_Invoice));
+			this._PackingList = new EntitySet<PackingList>(new Action<PackingList>(this.attach_PackingList), new Action<PackingList>(this.detach_PackingList));
 			this._RegistrationLocation = new EntitySet<RegistrationLocation>(new Action<RegistrationLocation>(this.attach_RegistrationLocation), new Action<RegistrationLocation>(this.detach_RegistrationLocation));
 			this._DocketList = new EntitySet<DocketList>(new Action<DocketList>(this.attach_DocketList), new Action<DocketList>(this.detach_DocketList));
-			this._PackingList = new EntitySet<PackingList>(new Action<PackingList>(this.attach_PackingList), new Action<PackingList>(this.detach_PackingList));
 			OnCreated();
 		}
 		
@@ -5709,6 +5709,19 @@ namespace KVSCommon.Database
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Adress_PackingList", Storage="_PackingList", ThisKey="Id", OtherKey="RecipientAdressId")]
+		public EntitySet<PackingList> PackingList
+		{
+			get
+			{
+				return this._PackingList;
+			}
+			set
+			{
+				this._PackingList.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Adress_RegistrationLocation", Storage="_RegistrationLocation", ThisKey="Id", OtherKey="RegistrationLocationAdressId")]
 		public EntitySet<RegistrationLocation> RegistrationLocation
 		{
@@ -5732,19 +5745,6 @@ namespace KVSCommon.Database
 			set
 			{
 				this._DocketList.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Adress_PackingList", Storage="_PackingList", ThisKey="Id", OtherKey="RecipientAdressId")]
-		public EntitySet<PackingList> PackingList
-		{
-			get
-			{
-				return this._PackingList;
-			}
-			set
-			{
-				this._PackingList.Assign(value);
 			}
 		}
 		
@@ -5864,6 +5864,18 @@ namespace KVSCommon.Database
 			entity.Adress = null;
 		}
 		
+		private void attach_PackingList(PackingList entity)
+		{
+			this.SendPropertyChanging();
+			entity.Adress = this;
+		}
+		
+		private void detach_PackingList(PackingList entity)
+		{
+			this.SendPropertyChanging();
+			entity.Adress = null;
+		}
+		
 		private void attach_RegistrationLocation(RegistrationLocation entity)
 		{
 			this.SendPropertyChanging();
@@ -5883,18 +5895,6 @@ namespace KVSCommon.Database
 		}
 		
 		private void detach_DocketList(DocketList entity)
-		{
-			this.SendPropertyChanging();
-			entity.Adress = null;
-		}
-		
-		private void attach_PackingList(PackingList entity)
-		{
-			this.SendPropertyChanging();
-			entity.Adress = this;
-		}
-		
-		private void detach_PackingList(PackingList entity)
 		{
 			this.SendPropertyChanging();
 			entity.Adress = null;
@@ -7781,8 +7781,6 @@ namespace KVSCommon.Database
 		
 		private EntitySet<RegistrationOrder> _RegistrationOrder;
 		
-		private EntitySet<Vehicle> _Vehicle1;
-		
 		private EntityRef<CarOwner> _CarOwner;
 		
 		private EntityRef<Vehicle> _Vehicle;
@@ -7815,7 +7813,6 @@ namespace KVSCommon.Database
 		{
 			this._DeregistrationOrder = new EntitySet<DeregistrationOrder>(new Action<DeregistrationOrder>(this.attach_DeregistrationOrder), new Action<DeregistrationOrder>(this.detach_DeregistrationOrder));
 			this._RegistrationOrder = new EntitySet<RegistrationOrder>(new Action<RegistrationOrder>(this.attach_RegistrationOrder), new Action<RegistrationOrder>(this.detach_RegistrationOrder));
-			this._Vehicle1 = new EntitySet<Vehicle>(new Action<Vehicle>(this.attach_Vehicle1), new Action<Vehicle>(this.detach_Vehicle1));
 			this._CarOwner = default(EntityRef<CarOwner>);
 			this._Vehicle = default(EntityRef<Vehicle>);
 			OnCreated();
@@ -8035,19 +8032,6 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Registration_Vehicle", Storage="_Vehicle1", ThisKey="Id", OtherKey="CurrentRegistrationId")]
-		public EntitySet<Vehicle> Vehicle1
-		{
-			get
-			{
-				return this._Vehicle1;
-			}
-			set
-			{
-				this._Vehicle1.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CarOwner_Registration", Storage="_CarOwner", ThisKey="CarOwnerId", OtherKey="Id", IsForeignKey=true)]
 		public CarOwner CarOwner
 		{
@@ -8158,18 +8142,6 @@ namespace KVSCommon.Database
 		{
 			this.SendPropertyChanging();
 			entity.Registration = null;
-		}
-		
-		private void attach_Vehicle1(Vehicle entity)
-		{
-			this.SendPropertyChanging();
-			entity.Registration1 = this;
-		}
-		
-		private void detach_Vehicle1(Vehicle entity)
-		{
-			this.SendPropertyChanging();
-			entity.Registration1 = null;
 		}
 	}
 	
@@ -8681,8 +8653,6 @@ namespace KVSCommon.Database
 		
 		private EntitySet<RegistrationOrder> _RegistrationOrder;
 		
-		private EntityRef<Registration> _Registration1;
-		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -8710,7 +8680,6 @@ namespace KVSCommon.Database
 			this._DeregistrationOrder = new EntitySet<DeregistrationOrder>(new Action<DeregistrationOrder>(this.attach_DeregistrationOrder), new Action<DeregistrationOrder>(this.detach_DeregistrationOrder));
 			this._Registration = new EntitySet<Registration>(new Action<Registration>(this.attach_Registration), new Action<Registration>(this.detach_Registration));
 			this._RegistrationOrder = new EntitySet<RegistrationOrder>(new Action<RegistrationOrder>(this.attach_RegistrationOrder), new Action<RegistrationOrder>(this.detach_RegistrationOrder));
-			this._Registration1 = default(EntityRef<Registration>);
 			OnCreated();
 		}
 		
@@ -8805,10 +8774,6 @@ namespace KVSCommon.Database
 			{
 				if ((this._CurrentRegistrationId != value))
 				{
-					if (this._Registration1.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
 					this.OnCurrentRegistrationIdChanging(value);
 					this.SendPropertyChanging();
 					this._CurrentRegistrationId = value;
@@ -8914,40 +8879,6 @@ namespace KVSCommon.Database
 			set
 			{
 				this._RegistrationOrder.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Registration_Vehicle", Storage="_Registration1", ThisKey="CurrentRegistrationId", OtherKey="Id", IsForeignKey=true)]
-		public Registration Registration1
-		{
-			get
-			{
-				return this._Registration1.Entity;
-			}
-			set
-			{
-				Registration previousValue = this._Registration1.Entity;
-				if (((previousValue != value) 
-							|| (this._Registration1.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Registration1.Entity = null;
-						previousValue.Vehicle1.Remove(this);
-					}
-					this._Registration1.Entity = value;
-					if ((value != null))
-					{
-						value.Vehicle1.Add(this);
-						this._CurrentRegistrationId = value.Id;
-					}
-					else
-					{
-						this._CurrentRegistrationId = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("Registration1");
-				}
 			}
 		}
 		
