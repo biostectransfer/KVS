@@ -161,7 +161,7 @@ namespace KVSCommon.Database
             if (orderItemToDelete != null)
             {
 
-                if (orderItemToDelete.Status > 100)
+                if (orderItemToDelete.Status > (int)OrderItemStatusTypes.Open)
                     throw new Exception("Der Auftragsstatus ist nicht mehr Offen, löschen nicht möglich");
                 if (orderItemToDelete.Order.DocketList != null)
                     throw new Exception("Laufzettel wurde bereits erstellt, löschen nicht möglich");
