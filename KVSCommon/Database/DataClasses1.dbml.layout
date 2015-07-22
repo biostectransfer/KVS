@@ -954,13 +954,6 @@
         <elementListCompartment Id="e0bc8811-ea48-4fa4-a486-b6ab61d75e84" absoluteBounds="9.015, 3.21, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(6.75 : 28.1151738230387); (6.33333333333333 : 28.1151738230387 : JumpStart); (6.04166666666667 : 28.1151738230387 : JumpEnd); (5.95833333333333 : 28.1151738230387 : JumpStart); (5.79166666666667 : 28.1151738230387 : JumpEnd); (5.67708333333333 : 28.1151738230387 : JumpStart); (5.51041666666667 : 28.1151738230387 : JumpEnd); (5.5 : 28.1151738230387)]" fixedFrom="NotFixed" fixedTo="NotFixed">
-      <AssociationMoniker Name="/DataClasses1DataContext/Order/Order_PackingList" />
-      <nodes>
-        <classShapeMoniker Id="d16dfa58-d75b-47c9-883c-a40327be059a" />
-        <classShapeMoniker Id="574e35b4-6a80-4883-b35c-25033f068e3b" />
-      </nodes>
-    </associationConnector>
     <associationConnector edgePoints="[(2.75 : 25.2801674054988); (2.91666666666667 : 25.2801674054988 : JumpStart); (3.45833333333333 : 25.2801674054988 : JumpEnd); (5.59375 : 25.2801674054988); (5.59375 : 30.5)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/DataClasses1DataContext/Adress/Adress_DocketList" />
       <nodes>

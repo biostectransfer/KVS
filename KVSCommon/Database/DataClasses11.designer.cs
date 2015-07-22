@@ -10121,8 +10121,6 @@ namespace KVSCommon.Database
 		
 		private EntitySet<Order> _Order;
 		
-		private EntityRef<Order> _Order1;
-		
 		private EntityRef<Document> _Document;
 		
 		private EntityRef<Adress> _Adress;
@@ -10152,7 +10150,6 @@ namespace KVSCommon.Database
 		public PackingList()
 		{
 			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
-			this._Order1 = default(EntityRef<Order>);
 			this._Document = default(EntityRef<Document>);
 			this._Adress = default(EntityRef<Adress>);
 			OnCreated();
@@ -10317,10 +10314,6 @@ namespace KVSCommon.Database
 			{
 				if ((this._OldOrderId != value))
 				{
-					if (this._Order1.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
 					this.OnOldOrderIdChanging(value);
 					this.SendPropertyChanging();
 					this._OldOrderId = value;
@@ -10340,40 +10333,6 @@ namespace KVSCommon.Database
 			set
 			{
 				this._Order.Assign(value);
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_PackingList", Storage="_Order1", ThisKey="OldOrderId", OtherKey="OrderNumber", IsForeignKey=true)]
-		public Order Order1
-		{
-			get
-			{
-				return this._Order1.Entity;
-			}
-			set
-			{
-				Order previousValue = this._Order1.Entity;
-				if (((previousValue != value) 
-							|| (this._Order1.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Order1.Entity = null;
-						previousValue.PackingList2.Remove(this);
-					}
-					this._Order1.Entity = value;
-					if ((value != null))
-					{
-						value.PackingList2.Add(this);
-						this._OldOrderId = value.OrderNumber;
-					}
-					else
-					{
-						this._OldOrderId = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("Order1");
-				}
 			}
 		}
 		
@@ -10528,8 +10487,6 @@ namespace KVSCommon.Database
 		
 		private EntityRef<RegistrationOrder> _RegistrationOrder;
 		
-		private EntitySet<PackingList> _PackingList2;
-		
 		private EntityRef<PackingList> _PackingList;
 		
 		private EntityRef<RegistrationLocation> _RegistrationLocation;
@@ -10594,7 +10551,6 @@ namespace KVSCommon.Database
 			this._OrderInvoice = new EntitySet<OrderInvoice>(new Action<OrderInvoice>(this.attach_OrderInvoice), new Action<OrderInvoice>(this.detach_OrderInvoice));
 			this._OrderItem = new EntitySet<OrderItem>(new Action<OrderItem>(this.attach_OrderItem), new Action<OrderItem>(this.detach_OrderItem));
 			this._RegistrationOrder = default(EntityRef<RegistrationOrder>);
-			this._PackingList2 = new EntitySet<PackingList>(new Action<PackingList>(this.attach_PackingList2), new Action<PackingList>(this.detach_PackingList2));
 			this._PackingList = default(EntityRef<PackingList>);
 			this._RegistrationLocation = default(EntityRef<RegistrationLocation>);
 			this._DocketList = default(EntityRef<DocketList>);
@@ -11082,19 +11038,6 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_PackingList", Storage="_PackingList2", ThisKey="OrderNumber", OtherKey="OldOrderId")]
-		public EntitySet<PackingList> PackingList2
-		{
-			get
-			{
-				return this._PackingList2;
-			}
-			set
-			{
-				this._PackingList2.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PackingList_Order", Storage="_PackingList", ThisKey="PackingListNumber", OtherKey="PackingListNumber", IsForeignKey=true)]
 		public PackingList PackingList
 		{
@@ -11409,18 +11352,6 @@ namespace KVSCommon.Database
 		{
 			this.SendPropertyChanging();
 			entity.Order = null;
-		}
-		
-		private void attach_PackingList2(PackingList entity)
-		{
-			this.SendPropertyChanging();
-			entity.Order1 = this;
-		}
-		
-		private void detach_PackingList2(PackingList entity)
-		{
-			this.SendPropertyChanging();
-			entity.Order1 = null;
 		}
 	}
 	

@@ -433,7 +433,6 @@
       <Column Name="DocumentId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="OldOrderId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Association Name="PackingList_Order" Member="Order" ThisKey="PackingListNumber" OtherKey="PackingListNumber" Type="Order" />
-      <Association Name="Order_PackingList" Member="Order1" ThisKey="OldOrderId" OtherKey="OrderNumber" Type="Order" IsForeignKey="true" />
       <Association Name="Document_PackingList" Member="Document" ThisKey="DocumentId" OtherKey="Id" Type="Document" IsForeignKey="true" />
       <Association Name="Adress_PackingList" Member="Adress" ThisKey="RecipientAdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
     </Type>
@@ -462,7 +461,6 @@
       <Association Name="Order_OrderInvoice" Member="OrderInvoice" ThisKey="OrderNumber" OtherKey="OrderNumber" Type="OrderInvoice" />
       <Association Name="Order_OrderItem" Member="OrderItem" ThisKey="OrderNumber" OtherKey="OrderNumber" Type="OrderItem" />
       <Association Name="Order_RegistrationOrder" Member="RegistrationOrder" ThisKey="OrderNumber" OtherKey="OrderNumber" Type="RegistrationOrder" Cardinality="One" />
-      <Association Name="Order_PackingList" Member="PackingList2" ThisKey="OrderNumber" OtherKey="OldOrderId" Type="PackingList" />
       <Association Name="PackingList_Order" Member="PackingList" ThisKey="PackingListNumber" OtherKey="PackingListNumber" Type="PackingList" IsForeignKey="true" />
       <Association Name="RegistrationLocation_Order" Member="RegistrationLocation" ThisKey="Zulassungsstelle" OtherKey="ID" Type="RegistrationLocation" IsForeignKey="true" />
       <Association Name="DocketList_Order" Member="DocketList" ThisKey="DocketListNumber" OtherKey="DocketListNumber" Type="DocketList" IsForeignKey="true" />
