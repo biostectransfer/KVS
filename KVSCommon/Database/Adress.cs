@@ -52,8 +52,9 @@ namespace KVSCommon.Database
                 Country = country
             };
 
-            dbContext.WriteLogItem("Adresse angelegt.", LogTypes.INSERT, adress.Id, "Adress");
             dbContext.Adress.InsertOnSubmit(adress);
+            dbContext.SubmitChanges();
+            dbContext.WriteLogItem("Adresse angelegt.", LogTypes.INSERT, adress.Id, "Adress");
             return adress;
         }
 
@@ -88,8 +89,9 @@ namespace KVSCommon.Database
                 Country = adress.Country
             };
 
-            dbContext.WriteLogItem("Adresse kopiert.", LogTypes.INSERT, copy.Id, "Adress", adress.Id);
             dbContext.Adress.InsertOnSubmit(copy);
+            dbContext.SubmitChanges();
+            dbContext.WriteLogItem("Adresse kopiert.", LogTypes.INSERT, copy.Id, "Adress", adress.Id);
             return copy;
         }
 

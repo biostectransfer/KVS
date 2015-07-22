@@ -56,6 +56,7 @@ namespace KVSCommon.Database
             };
 
             dbContext.DeregistrationOrder.InsertOnSubmit(deregistrationOrder);
+            dbContext.SubmitChanges();
             dbContext.WriteLogItem("Abmeldeauftrag angelegt.", LogTypes.INSERT, deregistrationOrder.OrderNumber, "DeregistrationOrder", vehicle.Id);
             return deregistrationOrder;
         }

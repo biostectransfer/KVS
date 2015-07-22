@@ -625,7 +625,6 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             TransactionScope ts = null;
             try
             {
-
                 if (String.IsNullOrEmpty(ZulassungsDatumPicker.SelectedDate.ToString()))
                 {
                     LieferscheinePath.Text = "Wählen Sie bitte das Zulassungsdatum aus!";
@@ -633,9 +632,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 }
                 else
                 {
-
-
-                    List<string> laufzettel = new List<string>();
+                    var laufzettel = new List<string>();
                     script.RegisterPostBackControl(ZulassungsstelleLieferscheineButton);
                     using (DataClasses1DataContext con = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
                     {
@@ -656,43 +653,40 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
                             foreach (var location in grouptedOrders)
                             {
-                                DocketList docketList = new DocketList();
-                                MemoryStream ms = new MemoryStream();
+                                var docketList = new DocketList();
+                                var ms = new MemoryStream();
+
                                 if (location.Count() > 0)
                                 {
-
                                     docketList = DocketList.CreateDocketList(
                                         location.First().RegistrationLocation.RegistrationLocationName,
                                         location.First().RegistrationLocation.Adress, con);
                                     docketList.LogDBContext = con;
                                     docketList.IsSelfDispatch = true;
                                 }
+
                                 foreach (var order in location)
                                 {
-                                    foreach (var order2 in location)
+                                    if (order != null)
                                     {
-                                        if (order2 != null)
-                                        {
-                                            docketList.AddOrderById(order2.OrderNumber, con);
-                                            //updating order status
-                                            order2.LogDBContext = con;
-                                            order2.Status = (int)OrderStatusTypes.AdmissionPoint;
+                                        docketList.AddOrderById(order.OrderNumber, con);
+                                        //updating order status
+                                        order.LogDBContext = con;
+                                        order.Status = (int)OrderStatusTypes.AdmissionPoint;
 
-                                            //updating orderitems status                          
-                                            foreach (OrderItem ordItem in order2.OrderItem)
+                                        //updating orderitems status                          
+                                        foreach (OrderItem ordItem in order.OrderItem)
+                                        {
+                                            ordItem.LogDBContext = con;
+                                            if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                                             {
-                                                ordItem.LogDBContext = con;
-                                                if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
-                                                {
-                                                    ordItem.Status = (int)OrderItemStatusTypes.InProgress;
-                                                }
+                                                ordItem.Status = (int)OrderItemStatusTypes.InProgress;
                                             }
                                         }
                                     }
-
-                                    con.SubmitChanges();
-
                                 }
+
+                                con.SubmitChanges();
 
                                 string myPackListFileName = EmptyStringIfNull.CheckIfFolderExistsAndReturnPathForPdf(Session["CurrentUserId"].ToString(), true);
 

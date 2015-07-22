@@ -45,6 +45,7 @@ namespace KVSCommon.Database
             };
 
             dbContext.ProductCategory.InsertOnSubmit(item);
+            dbContext.SubmitChanges();
             dbContext.WriteLogItem("Produktkategorie " + item.Name + " angelegt.", LogTypes.INSERT, item.Id, "ProductCategory");
             return item;
         }

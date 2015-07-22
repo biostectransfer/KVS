@@ -57,9 +57,10 @@ namespace KVSCommon.Database
                 EmissionCode = emissionCode
             };
 
-            //   var vehicleVIN = dbContext.Vehicle.Single(q => q.Id == vehicleId).VIN;
-            dbContext.WriteLogItem("Zulassung wurde angelegt.", LogTypes.INSERT, registration.Id, "Registration", vehicle.Id);
             dbContext.Registration.InsertOnSubmit(registration);
+            dbContext.SubmitChanges();
+            dbContext.WriteLogItem("Zulassung wurde angelegt.", LogTypes.INSERT, registration.Id, "Registration", vehicle.Id);
+
             return registration;
         }
         /// <summary>

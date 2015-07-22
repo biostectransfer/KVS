@@ -134,11 +134,13 @@ namespace KVSWebApplication.Abrechnung
             {
                 StandortDropDown.DataBind();
             }
+
+            var con = new DataClasses1DataContext();
+
             //select all values for small customers
             if (CustomerDropDownList.SelectedValue != null && RadComboBoxCustomer.SelectedValue == "1" && CustomerDropDownList.SelectedValue != "")
             {
                 var customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
-                DataClasses1DataContext con = new DataClasses1DataContext();
                 var query = from cust in con.Customer
                             join ord in con.Order on cust.Id equals ord.CustomerId
                             join orditm in con.OrderItem on ord.OrderNumber equals orditm.OrderNumber
@@ -166,7 +168,6 @@ namespace KVSWebApplication.Abrechnung
             //select all values for large customers
             else if (CustomerDropDownList.SelectedValue != null && CustomerDropDownList.SelectedValue != "" && RadComboBoxCustomer.SelectedValue == "2")
             {
-                var con = new DataClasses1DataContext();
                 var customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
                 if (RechnungsTypComboBox.SelectedValue != "Einzel")
                 {
@@ -350,6 +351,32 @@ namespace KVSWebApplication.Abrechnung
                     }
                     e.Result = query;
                 }
+            }
+            else
+            {
+                var query = from cust in con.Customer
+                            join ord in con.Order on cust.Id equals ord.CustomerId
+                            join orditm in con.OrderItem on ord.OrderNumber equals orditm.OrderNumber
+                            join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
+                            where cust.Id == 0 //TODO empty query
+                            orderby ord.OrderNumber descending
+                            select new
+                            {
+                                OrderNumber = ord.OrderNumber,
+                                OrderItemId = orditm.Id,
+                                Location = ord.Location.Name,
+                                CostCenterId = orditm.CostCenterId,
+                                CostCenterName = orditm.CostCenter.Name,
+                                Amount = orditm.Amount,
+                                ItemCount = orditm.Count,
+                                ProductName = orditm.ProductName,
+                                ItemStatus = orditmsts.Name,
+                                ExecutionDate = ord.ExecutionDate,
+                                OrderLocation = ord.LocationId,
+                                OrderDate = ord.ExecutionDate
+                            };
+
+                e.Result = query;
             }
         }
         #endregion

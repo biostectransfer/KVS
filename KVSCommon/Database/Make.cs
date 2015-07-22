@@ -51,6 +51,7 @@ namespace KVSCommon.Database
             };
 
             dbContext.Make.InsertOnSubmit(make);
+            dbContext.SubmitChanges();
             dbContext.WriteLogItem("Fahrzeughersteller " + name + " wurde angelegt.", LogTypes.INSERT, make.Id, "Make");
             return make;
         }

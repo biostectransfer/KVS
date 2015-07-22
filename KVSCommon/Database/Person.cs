@@ -80,9 +80,11 @@ namespace KVSCommon.Database
                 Extension = extension,
                 
             };
-            dbContext.WriteLogItem("Kontaktperson " + firstname + " " + name + " wurde angelegt.", LogTypes.INSERT, person.Id, "LargeCustomer");
+            
             dbContext.Person.InsertOnSubmit(person);
-      
+            dbContext.SubmitChanges();
+            dbContext.WriteLogItem("Kontaktperson " + firstname + " " + name + " wurde angelegt.", LogTypes.INSERT, person.Id, "LargeCustomer");
+
             return person;
 
         }

@@ -54,9 +54,10 @@ namespace KVSCommon.Database
                 Adress = recipientAdress,
                 Recipient = recipient
             };
-
-            dbContext.WriteLogItem("Laufzettel erstellt.", LogTypes.INSERT, docketList.DocketListNumber, "DocketList");
+                        
             dbContext.DocketList.InsertOnSubmit(docketList);
+            dbContext.SubmitChanges();
+            dbContext.WriteLogItem("Laufzettel erstellt.", LogTypes.INSERT, docketList.DocketListNumber, "DocketList");
             return docketList;
         }
 
@@ -72,9 +73,11 @@ namespace KVSCommon.Database
                 throw new Exception("Der Auftrag kann zum Lieferschein nicht hinzugefügt werden. Der Lieferschein wurde bereits gedruckt.");
             }
 
-            Order order = dbContext.Order.Single(q => q.OrderNumber == orderNumber);
+            var order = dbContext.Order.Single(q => q.OrderNumber == orderNumber);
             order.LogDBContext = dbContext;
             order.DocketListNumber = this.DocketListNumber;
+            this.Order.Add(order);
+
             dbContext.WriteLogItem("Auftrag zum Laufzettel hinzugefügt.", LogTypes.UPDATE, this.DocketListNumber, "DocketList", orderNumber);
         }
         /// <summary>

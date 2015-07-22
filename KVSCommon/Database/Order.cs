@@ -92,9 +92,10 @@ namespace KVSCommon.Database
                 UserId = userId,
                 Zulassungsstelle = zulassungsstelleId
             };
-
-            dbContext.WriteLogItem("Auftrag angelegt.", LogTypes.INSERT, order.OrderNumber, "Order");
+                        
             dbContext.Order.InsertOnSubmit(order);
+            dbContext.SubmitChanges();
+            dbContext.WriteLogItem("Auftrag angelegt.", LogTypes.INSERT, order.OrderNumber, "Order");
             return order;
         }
 
@@ -316,6 +317,7 @@ namespace KVSCommon.Database
             };
 
             this.OrderItem.Add(item);
+            dbContext.SubmitChanges();
             dbContext.WriteLogItem("Auftragsposition " + product.Name + " für Auftrag " + this.OrderNumber + " angelegt.", LogTypes.INSERT, item.Id, "OrderItem");
             return item;
         }
@@ -393,7 +395,7 @@ namespace KVSCommon.Database
 
                     if (order.PackingList != null)
                     {
-                        order.PackingList.OldOrderId = order.OrderNumber;
+                        order.PackingList.OldOrderNumber = order.OrderNumber;
                         temp_packingListId = order.PackingList.PackingListNumber;
 
                         dbContext.WriteLogItem("Lieferschein: " + temp_packingListId + " zum Auftrag: " + order.OrderNumber + "  wurde gelöscht. ", LogTypes.UPDATE, 

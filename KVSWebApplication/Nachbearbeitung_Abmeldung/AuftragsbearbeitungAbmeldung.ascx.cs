@@ -494,7 +494,6 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         protected void ZulassungsstelleLieferscheineButton_Clicked(object sender, EventArgs e)
         {
-
             TransactionScope ts = null;
 
             try
@@ -523,8 +522,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                             var grouptedOrders = zulQuery2.GroupBy(q => q.Zulassungsstelle.Value);
                             foreach (var location in grouptedOrders)
                             {
-                                DocketList docketList = new DocketList();
-                                MemoryStream ms = new MemoryStream();
+                                var docketList = new DocketList();
+                                var ms = new MemoryStream();
                                 if (location.Count() > 0)
                                 {
 
@@ -534,30 +533,31 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                     docketList.LogDBContext = con;
                                     docketList.IsSelfDispatch = true;
                                 }
+
                                 foreach (var order in location)
                                 {
-                                    foreach (var order2 in location)
+                                    if (order != null)
                                     {
-                                        if (order2 != null)
-                                        {
-                                            docketList.AddOrderById(order2.OrderNumber, con);
-                                            //updating order status
-                                            order2.LogDBContext = con;
-                                            order2.Status = (int)OrderStatusTypes.AdmissionPoint;
+                                        docketList.AddOrderById(order.OrderNumber, con);
+                                        //updating order status
+                                        order.LogDBContext = con;
+                                        order.Status = (int)OrderStatusTypes.AdmissionPoint;
 
-                                            //updating orderitems status                          
-                                            foreach (OrderItem ordItem in order2.OrderItem)
+                                        //updating orderitems status                          
+                                        foreach (OrderItem ordItem in order.OrderItem)
+                                        {
+                                            ordItem.LogDBContext = con;
+                                            if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                                             {
-                                                ordItem.LogDBContext = con;
-                                                if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
-                                                {
-                                                    ordItem.Status = (int)OrderItemStatusTypes.InProgress;
-                                                }
+                                                ordItem.Status = (int)OrderItemStatusTypes.InProgress;
                                             }
                                         }
                                     }
-                                    con.SubmitChanges();
                                 }
+                                
+                                con.SubmitChanges();
+
+
                                 string myPackListFileName = EmptyStringIfNull.CheckIfFolderExistsAndReturnPathForPdf(Session["CurrentUserId"].ToString(), true);
                                 docketList.Print(ms, string.Empty, con, "/UserData/" + Session["CurrentUserId"].ToString() + "/" + Path.GetFileName(myPackListFileName), true);
                                 con.SubmitChanges();

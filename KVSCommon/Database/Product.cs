@@ -76,14 +76,15 @@ namespace KVSCommon.Database
                 AuthorativeCharge = authorativeCharge,
                 
             };
+
             product.Price.Add(price);
             dbContext.Product.InsertOnSubmit(product);
+            dbContext.SubmitChanges();
             dbContext.WriteLogItem("Produkt " + name + " wurde angelegt.", LogTypes.INSERT, product.Id, "Product");
-          
-
 
             return product;
         }
+
         /// <summary>
         /// Erstellt ein neues Produkt.
         /// </summary>
@@ -130,6 +131,7 @@ namespace KVSCommon.Database
             };
             product.Price.Add(price);
             dbContext.Product.InsertOnSubmit(product);
+            dbContext.SubmitChanges();
             dbContext.WriteLogItem("Produkt " + name + " wurde angelegt.", LogTypes.INSERT, product.Id, "Product");
 
             return price;

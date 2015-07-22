@@ -56,8 +56,10 @@ namespace KVSCommon.Database
                 Recipient = recipient
             };
 
-            dbContext.WriteLogItem("Lieferschein erstellt.", LogTypes.INSERT, packingList.PackingListNumber, "PackingList");
             dbContext.PackingList.InsertOnSubmit(packingList);
+            dbContext.SubmitChanges();
+            dbContext.WriteLogItem("Lieferschein erstellt.", LogTypes.INSERT, packingList.PackingListNumber, "PackingList");
+            
             return packingList;
         }
 

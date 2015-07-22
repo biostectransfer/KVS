@@ -41,17 +41,29 @@ namespace KVSWebApplication.Product
             }
             if (!Page.IsPostBack)
             {
-                Session["selectedProductId"] = "";
+                Session["selectedProductId"] = null;
             }
         }
         protected void GetCustomerProductsDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            
+
+            int? customerId = null;
+            if (!String.IsNullOrEmpty(AllCustomer.SelectedValue))
+            {
+                customerId = Int32.Parse(AllCustomer.SelectedValue);
+            }
+
+            int? locationId = null;
+            if (!String.IsNullOrEmpty(cmbLocations.SelectedValue))
+            {
+                locationId = Int32.Parse(cmbLocations.SelectedValue);
+            }
+
             var query = from price in dbContext.Price
                         join products in dbContext.Product on price.ProductId equals products.Id
-                        where price.Location.CustomerId == Int32.Parse(AllCustomer.SelectedValue) &&
-                        price.LocationId == Int32.Parse(cmbLocations.SelectedValue.ToString())
+                        where price.Location.CustomerId == customerId &&
+                        price.LocationId == locationId
                         orderby products.ItemNumber
                         select new
                         {
@@ -196,7 +208,7 @@ namespace KVSWebApplication.Product
                 if (e.Item is GridDataItem)
                 {
                     GridDataItem item = (GridDataItem)e.Item;
-                    Session["selectedProductId"] = item["PriceId"].Text;
+                    Session["selectedProductId"] = item["Id"].Text;
                 }
                 if (((ImageButton)e.CommandSource).CommandName == "Edit")
                 {
@@ -211,16 +223,11 @@ namespace KVSWebApplication.Product
             }
         }
 
-
-
-
-
-
         protected void cmbErloeskonten_OnInit(object sender, EventArgs e)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
             RadComboBox cmbErloeskonten = ((RadComboBox)sender);
-            if (Session["selectedProductId"] != null && Session["selectedProductId"].ToString() != string.Empty)
+            if (Session["selectedProductId"] != null && !String.IsNullOrEmpty(Session["selectedProductId"].ToString()))
             {
                 string lblPriceId = Session["selectedProductId"].ToString();
                 cmbErloeskonten.Items.Clear();
@@ -330,7 +337,7 @@ namespace KVSWebApplication.Product
                             PriceAccountHelper.CreateAccount(erloesKonto, myPrice, dbContext, true);
                         }
                         dbContext.SubmitChanges();
-                        Session["selectedProductId"] = "";
+                        Session["selectedProductId"] = null;
                     }
                     else if ((bool)Session["InsertCustomerProduktEdit"] == true)
                     {
@@ -339,7 +346,7 @@ namespace KVSWebApplication.Product
                             var newPrice = Price.CreatePrice(price, autCharge, Int32.Parse(cmbSelectedProduct.SelectedValue), Int32.Parse(cmbLocations.SelectedValue), null, dbContext);
                             PriceAccountHelper.CreateAccount(erloesKonto, newPrice, dbContext, true);
                             dbContext.SubmitChanges();
-                            Session["selectedProductId"] = "";
+                            Session["selectedProductId"] = null;
                         }
                         else
                         {
@@ -369,7 +376,7 @@ namespace KVSWebApplication.Product
         }
         protected void btnAbortProduct_Click(object sender, EventArgs e)
         {
-            Session["selectedProductId"] = "";
+            Session["selectedProductId"] = null;
             getCustomerPrice.EditIndexes.Clear();
             getCustomerPrice.MasterTableView.IsItemInserted = false;
             getCustomerPrice.MasterTableView.Rebind();

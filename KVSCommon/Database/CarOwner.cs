@@ -70,8 +70,9 @@ namespace KVSCommon.Database
                 Adress = adress
             };
 
-            dbContext.WriteLogItem("Halter " + name + " wurde angelegt.", LogTypes.INSERT, owner.Id, "CarOwner");
             dbContext.CarOwner.InsertOnSubmit(owner);
+            dbContext.SubmitChanges();
+            dbContext.WriteLogItem("Halter " + name + " wurde angelegt.", LogTypes.INSERT, owner.Id, "CarOwner");
             return owner;
         }
         /// <summary>

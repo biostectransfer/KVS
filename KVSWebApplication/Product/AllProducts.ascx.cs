@@ -48,8 +48,8 @@ namespace KVSWebApplication.Product
                     Session["myOrderTypeNames"] = new Dictionary<int, string>();
                     Session["myRegistrationOrderTypeNames"] = new Dictionary<int, string>();
                     Session["InsertEdit"] = false;
-                    Session["selectedProductId"] = "";
-                    Session["editableProductId"] = "";
+                    Session["selectedProductId"] = null;
+                    Session["editableProductId"] = null;
                 }
             }
             catch (Exception ex)
@@ -207,7 +207,7 @@ namespace KVSWebApplication.Product
             {
                 try
                 {
-                    if (Session["editableProductId"] != null && Session["editableProductId"].ToString() != string.Empty)
+                    if (Session["editableProductId"] != null && !String.IsNullOrEmpty(Session["editableProductId"].ToString()))
                     {
                         string myProductId = Session["editableProductId"].ToString();
                         Box.Visible = true;
@@ -295,7 +295,7 @@ namespace KVSWebApplication.Product
             RadComboBox myCombobox = (RadComboBox)((RadComboBox)o).Parent.FindControl("cmbRegistrationOrderTypeName");
             try
             {
-                if(Int32.Parse(e.Value) == (int)OrderTypes.Admission)
+                if (Int32.Parse(e.Value) == (int)OrderTypes.Admission)
                     myCombobox.Enabled = true;
                 else
                     myCombobox.Enabled = false;
@@ -314,7 +314,7 @@ namespace KVSWebApplication.Product
                 {
 
                     RadComboBox cmbErloeskonten = ((RadComboBox)sender);
-                    if (Session["selectedProductId"] != null && Session["selectedProductId"].ToString() != string.Empty)
+                    if (Session["selectedProductId"] != null && !String.IsNullOrEmpty(Session["selectedProductId"].ToString()))
                     {
                         string lblPriceId = Session["selectedProductId"].ToString();
                         cmbErloeskonten.Items.Clear();
@@ -463,12 +463,8 @@ namespace KVSWebApplication.Product
                                     PriceAccountHelper.CreateAccount(erloesKonto, editPrice, dbContext);
                                 }
                                 dbContext.SubmitChanges();
-                                Session["selectedProductId"] = "";
-                                //getAllProducts.EditIndexes.Clear();
-                                //getAllProducts.MasterTableView.IsItemInserted = false;
-                                //getAllProducts.MasterTableView.Rebind();
+                                Session["selectedProductId"] = null;
                             }
-
                         }
                         else if ((bool)Session["InsertEdit"] == true)
                         {
@@ -478,15 +474,12 @@ namespace KVSWebApplication.Product
                             }
                             Price newPrice = KVSCommon.Database.Product.CreateProduct(productName.Text, Int32.Parse(Category.SelectedValue), price, autCharge, productNumber.Text,
                                 Int32.Parse(comboCmbOrderTypeName.SelectedValue),
-                                ((comboRegisOrTypeName.SelectedValue != string.Empty || comboRegisOrTypeName.SelectedIndex != -1) ? Int32.Parse(comboRegisOrTypeName.SelectedValue) : 
+                                ((comboRegisOrTypeName.SelectedValue != string.Empty || comboRegisOrTypeName.SelectedIndex != -1) ? Int32.Parse(comboRegisOrTypeName.SelectedValue) :
                                 (int?)null), chbVat.Checked, true, dbContext);
 
                             PriceAccountHelper.CreateAccount(erloesKonto, newPrice, dbContext);
-                            dbContext.SubmitChanges();
-                            Session["selectedProductId"] = "";
-                            //getAllProducts.EditIndexes.Clear();
-                            //getAllProducts.MasterTableView.IsItemInserted = false;
-                            //getAllProducts.MasterTableView.Rebind();
+
+                            Session["selectedProductId"] = null;
                         }
                     }
                     ts.Complete();
@@ -539,10 +532,10 @@ namespace KVSWebApplication.Product
                         {
                             if (Item.Checked) //checked and not exists - insert
                             {
-                                CustomerProduct newCustProd = new CustomerProduct 
-                                { 
+                                CustomerProduct newCustProd = new CustomerProduct
+                                {
                                     CustomerId = Int32.Parse(Item.Value),
-                                    ProductId = Int32.Parse(productId) 
+                                    ProductId = Int32.Parse(productId)
                                 };
 
                                 dbContext.CustomerProduct.InsertOnSubmit(newCustProd);
@@ -563,7 +556,7 @@ namespace KVSWebApplication.Product
         {
             try
             {
-                Session["selectedProductId"] = "";
+                Session["selectedProductId"] = null;
                 getAllProducts.EditIndexes.Clear();
                 getAllProducts.MasterTableView.IsItemInserted = false;
                 getAllProducts.MasterTableView.Rebind();
@@ -583,7 +576,7 @@ namespace KVSWebApplication.Product
                     if (e.Item is GridDataItem)
                     {
                         GridDataItem item = (GridDataItem)e.Item;
-                        Session["selectedProductId"] = item["PriceId"].Text;
+                        Session["selectedProductId"] = item["Id"].Text;
                     }
                     if (((ImageButton)e.CommandSource).CommandName == "Edit")
                     {

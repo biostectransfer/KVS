@@ -108,9 +108,11 @@ namespace KVSCommon.Database
                 Customer = customer,
                 Person = person
             };
-
-            dbContext.WriteLogItem("Kunde " + firstName + " " + name + " wurde angelegt.", LogTypes.INSERT, customer.Id, "SmallCustomer");
+                        
             dbContext.SmallCustomer.InsertOnSubmit(smallCustomer);
+            dbContext.SubmitChanges();
+            dbContext.WriteLogItem("Kunde " + firstName + " " + name + " wurde angelegt.", LogTypes.INSERT, customer.Id, "SmallCustomer");
+
             return smallCustomer;
         }
         /// <summary>

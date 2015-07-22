@@ -65,6 +65,8 @@ namespace KVSCommon.Database
             };
 
             dbContext.RegistrationOrder.InsertOnSubmit(registrationOrder);
+            dbContext.SubmitChanges();
+
             dbContext.WriteLogItem("Zulassungsauftrag wurde angelegt.", LogTypes.INSERT, registrationOrder.OrderNumber, "RegistrationOrder", vehicle.Id);
             return registrationOrder;
         }

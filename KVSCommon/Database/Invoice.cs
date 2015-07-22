@@ -67,6 +67,7 @@ namespace KVSCommon.Database
             };
 
             dbContext.Invoice.InsertOnSubmit(invoice);
+            dbContext.SubmitChanges();
             dbContext.WriteLogItem("Rechnung wurde angelegt.", LogTypes.INSERT, invoice.Id, "Invoice");
             return invoice;
         }
@@ -227,6 +228,7 @@ namespace KVSCommon.Database
             };
 
             this.InvoiceItem.Add(item);
+            dbContext.SubmitChanges();
             dbContext.WriteLogItem("Rechnungsposition " + name + " zur Rechnung hinzugefügt.", LogTypes.INSERT, this.Id, "InvoiceItem", item.Id);
             if (orderItem != null)
             {
@@ -357,6 +359,7 @@ namespace KVSCommon.Database
 
             this.Document = doc;
             dbContext.Document.InsertOnSubmit(doc);
+            dbContext.SubmitChanges();
             dbContext.WriteLogItem("Rechnung " + num.Number.ToString() + " wurde gedruckt.", LogTypes.UPDATE, this.Id, "Invoice", doc.Id);
             this.IsPrinted = true;
             this.PrintDate = DateTime.Now;

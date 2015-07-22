@@ -129,6 +129,7 @@ namespace KVSCommon.Database
 
             var customer = Customer.CreateCustomer(name, street, streetnumber, zipcode, city, country, phone, fax, mobilephone, email, vat, termOfCredit, customerNumber, matchcode, Debitornumber, evbNumber);
             customer._dbContext = dbContext;
+
             var largeCustomer = new LargeCustomer()
             {
                 Customer = customer,
@@ -136,19 +137,25 @@ namespace KVSCommon.Database
                 SendInvoiceByEmail = sendInvoiceByEmail,
                 SendInvoiceToMainLocation = sendInvoiceToMainLocation,
                 OrderFinishedNoteSendType = 0,
-                InvoiceTypesID = InvoiceType
+                InvoiceTypesID = InvoiceType,
+
             };
 
-            dbContext.WriteLogItem("Kunde " + name + " wurde angelegt.", LogTypes.INSERT, customer.Id, "LargeCustomer");
             dbContext.LargeCustomer.InsertOnSubmit(largeCustomer);
             dbContext.SubmitChanges();
+            dbContext.WriteLogItem("Kunde " + name + " wurde angelegt.", LogTypes.INSERT, customer.Id, "LargeCustomer");
+            
             var mainLocation = largeCustomer.AddNewLocation("Hauptstandort", street, streetnumber, zipcode, city, country, phone, fax, mobilephone, email, vat, dbContext);
             dbContext.SubmitChanges();
 
             largeCustomer.MainLocationId = mainLocation.Id;
             mainLocation._dbContext = dbContext;
             dbContext.SubmitChanges();
-            
+
+            dbContext.WriteLogItem(String.Format("Hauptstandort '{0} {1}, {2} {3}' für Kunde '{4}' wurde angelegt.",
+                street, streetnumber, zipcode, city, customer.Name),
+                LogTypes.INSERT, mainLocation.Id, "Location");
+
             return largeCustomer;
         }
 
@@ -203,6 +210,7 @@ namespace KVSCommon.Database
             location._dbContext = dbContext;
             this.Location.Add(location);
             
+            dbContext.SubmitChanges();
             dbContext.WriteLogItem("Neuer Standort " + name + " angelegt.", LogTypes.INSERT, this.CustomerId, "Customer", location.Id);
             return location;
         }
@@ -238,6 +246,7 @@ namespace KVSCommon.Database
             };
             costcenter._dbContext = dbContext;
             this.CostCenter.Add(costcenter);
+            dbContext.SubmitChanges();
             dbContext.WriteLogItem("Neue Kostenstelle " + name + " angelegt.", LogTypes.INSERT, this.CustomerId, "Customer", costcenter.Id);
             return costcenter;
         }
@@ -258,6 +267,7 @@ namespace KVSCommon.Database
             }
 
             var ml = Database.Mailinglist.CreateMailinglistItem(email, typeId, this.CustomerId, null, dbContext);
+            dbContext.SubmitChanges();
             dbContext.WriteLogItem("Neue Email " + email + " in den Verteiler " + type + " des Kunden " + this.Customer.Name + " aufgenommen.", LogTypes.INSERT, this.CustomerId, "LargeCustomer", ml.Id);
             return ml;
         }

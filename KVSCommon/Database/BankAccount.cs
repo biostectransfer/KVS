@@ -69,6 +69,7 @@ namespace KVSCommon.Database
             };
 
             dbContext.BankAccount.InsertOnSubmit(bankaccount);
+            dbContext.SubmitChanges();
             dbContext.WriteLogItem("Bankverbindung angelegt.", LogTypes.INSERT, bankaccount.Id, "BankAccount");
             return bankaccount;
         }

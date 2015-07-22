@@ -61,8 +61,11 @@ namespace KVSCommon.Database
                 ProductId = productId,
                
             };
-            dbContext.WriteLogItem("Preis für Produkt " + productName + standortText + " eingetragen.", LogTypes.INSERT, price.Id, "Price");
+            
             dbContext.Price.InsertOnSubmit(price);
+            dbContext.SubmitChanges();
+            dbContext.WriteLogItem("Preis für Produkt " + productName + standortText + " eingetragen.", LogTypes.INSERT, price.Id, "Price");
+            
             if (accountId.HasValue)
             {
                 
@@ -73,9 +76,9 @@ namespace KVSCommon.Database
 
                 };
                 dbContext.PriceAccount.InsertOnSubmit(account);
+                dbContext.SubmitChanges();
                 dbContext.WriteLogItem("Account für Produkt " + productName + standortText + " eingetragen.", LogTypes.INSERT, price.Id, "Price");
-            }
-          
+            }          
             
             return price;
         }

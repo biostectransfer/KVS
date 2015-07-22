@@ -71,9 +71,11 @@ namespace KVSCommon.Database
                 ColorCode = colorCode,
                 FirstRegistrationDate = firstRegistrationDate
             };
-
-            dbContext.WriteLogItem("Fahrzeug " + vin + " angelegt.", LogTypes.INSERT, vehicle.Id, "Vehicle");
+                        
             dbContext.Vehicle.InsertOnSubmit(vehicle);
+            dbContext.SubmitChanges();
+            dbContext.WriteLogItem("Fahrzeug " + vin + " angelegt.", LogTypes.INSERT, vehicle.Id, "Vehicle");
+
             return vehicle;
         }
         /// <summary>

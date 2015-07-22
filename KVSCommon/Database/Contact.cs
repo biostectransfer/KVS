@@ -47,9 +47,10 @@ namespace KVSCommon.Database
                 MobilePhone = mobilePhone,
                 Email = email
             };
-
-            dbContext.WriteLogItem("Kontakt angelegt.", LogTypes.INSERT, contact.Id, "Contact");
+            
             dbContext.Contact.InsertOnSubmit(contact);
+            dbContext.SubmitChanges();
+            dbContext.WriteLogItem("Kontakt angelegt.", LogTypes.INSERT, contact.Id, "Contact");
             return contact;
         }
         /// <summary>

@@ -498,7 +498,7 @@ namespace KVSWebApplication.Customer
                                 costCenter.BankAccountId = bankAccount.Id;
                             }
 
-                            newCustomer.Customer.InternalId = Guid.NewGuid();
+                            //TODO newCustomer.Customer.InternalId = Guid.NewGuid();
 
                             lg = newCustomer;
                             dbContext.SubmitChanges();

@@ -56,6 +56,7 @@ namespace KVSCommon.Database
             };
 
             dbContext.PermissionProfile.InsertOnSubmit(profile);
+            dbContext.SubmitChanges();
             dbContext.WriteLogItem("Rechteprofil " + name + " angelegt.", LogTypes.INSERT, profile.Id, "PermissionProfile");
             return profile;
         }
