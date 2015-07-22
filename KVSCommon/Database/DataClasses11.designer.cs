@@ -2849,8 +2849,6 @@ namespace KVSCommon.Database
 		
 		private EntitySet<LargeCustomer> _LargeCustomer1;
 		
-		private EntitySet<LargeCustomer> _LargeCustomer2;
-		
 		private EntityRef<Contact> _Contact;
 		
 		private EntityRef<Adress> _Adress;
@@ -2891,7 +2889,6 @@ namespace KVSCommon.Database
 			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
 			this._Price = new EntitySet<Price>(new Action<Price>(this.attach_Price), new Action<Price>(this.detach_Price));
 			this._LargeCustomer1 = new EntitySet<LargeCustomer>(new Action<LargeCustomer>(this.attach_LargeCustomer1), new Action<LargeCustomer>(this.detach_LargeCustomer1));
-			this._LargeCustomer2 = new EntitySet<LargeCustomer>(new Action<LargeCustomer>(this.attach_LargeCustomer2), new Action<LargeCustomer>(this.detach_LargeCustomer2));
 			this._Contact = default(EntityRef<Contact>);
 			this._Adress = default(EntityRef<Adress>);
 			this._InvoiceAdress = default(EntityRef<Adress>);
@@ -3152,19 +3149,6 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Location_LargeCustomer1", Storage="_LargeCustomer2", ThisKey="Id", OtherKey="MainLocationId")]
-		public EntitySet<LargeCustomer> LargeCustomer2
-		{
-			get
-			{
-				return this._LargeCustomer2;
-			}
-			set
-			{
-				this._LargeCustomer2.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Contact_Location", Storage="_Contact", ThisKey="ContactId", OtherKey="Id", IsForeignKey=true)]
 		public Contact Contact
 		{
@@ -3401,18 +3385,6 @@ namespace KVSCommon.Database
 		{
 			this.SendPropertyChanging();
 			entity.Location1 = null;
-		}
-		
-		private void attach_LargeCustomer2(LargeCustomer entity)
-		{
-			this.SendPropertyChanging();
-			entity.MainLocation = this;
-		}
-		
-		private void detach_LargeCustomer2(LargeCustomer entity)
-		{
-			this.SendPropertyChanging();
-			entity.MainLocation = null;
 		}
 	}
 	
@@ -14213,8 +14185,6 @@ namespace KVSCommon.Database
 		
 		private EntityRef<Person> _Person;
 		
-		private EntityRef<Location> _MainLocation;
-		
 		private EntityRef<InvoiceTypes> _InvoiceTypes;
 		
     #region Definitionen der Erweiterungsmethoden
@@ -14254,7 +14224,6 @@ namespace KVSCommon.Database
 			this._Customer = default(EntityRef<Customer>);
 			this._Location1 = default(EntityRef<Location>);
 			this._Person = default(EntityRef<Person>);
-			this._MainLocation = default(EntityRef<Location>);
 			this._InvoiceTypes = default(EntityRef<InvoiceTypes>);
 			OnCreated();
 		}
@@ -14294,7 +14263,7 @@ namespace KVSCommon.Database
 			{
 				if ((this._MainLocationId != value))
 				{
-					if ((this._Location1.HasLoadedOrAssignedValue || this._MainLocation.HasLoadedOrAssignedValue))
+					if (this._Location1.HasLoadedOrAssignedValue)
 					{
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 					}
@@ -14645,40 +14614,6 @@ namespace KVSCommon.Database
 						this._PersonId = default(Nullable<int>);
 					}
 					this.SendPropertyChanged("Person");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Location_LargeCustomer1", Storage="_MainLocation", ThisKey="MainLocationId", OtherKey="Id", IsForeignKey=true)]
-		public Location MainLocation
-		{
-			get
-			{
-				return this._MainLocation.Entity;
-			}
-			set
-			{
-				Location previousValue = this._MainLocation.Entity;
-				if (((previousValue != value) 
-							|| (this._MainLocation.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._MainLocation.Entity = null;
-						previousValue.LargeCustomer2.Remove(this);
-					}
-					this._MainLocation.Entity = value;
-					if ((value != null))
-					{
-						value.LargeCustomer2.Add(this);
-						this._MainLocationId = value.Id;
-					}
-					else
-					{
-						this._MainLocationId = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("MainLocation");
 				}
 			}
 		}

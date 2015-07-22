@@ -47,8 +47,12 @@ namespace KVSCommon.Database
             if (lmCustomer.Customer.CustomerProduct != null && lmCustomer.Customer.CustomerProduct.Count > 0)
                 throw new Exception("Das löschen ist nicht möglich, da der Kunde bereits mit Produkten verknüpft ist");
 
-            if (lmCustomer.MainLocationId != null)
-                KVSCommon.Database.Location.ChangeLocations(dbContext, lmCustomer.MainLocation);
+            if (lmCustomer.MainLocationId.HasValue)
+            {
+                var mainLocation = dbContext.Location.Single(q => q.Id == lmCustomer.MainLocationId.Value);
+                KVSCommon.Database.Location.ChangeLocations(dbContext, mainLocation);
+            }
+
             if (lmCustomer.Location != null && lmCustomer.Location.Count > 0)
             {
                 foreach (var loc in lmCustomer.Location)
@@ -139,9 +143,12 @@ namespace KVSCommon.Database
             dbContext.LargeCustomer.InsertOnSubmit(largeCustomer);
             dbContext.SubmitChanges();
             var mainLocation = largeCustomer.AddNewLocation("Hauptstandort", street, streetnumber, zipcode, city, country, phone, fax, mobilephone, email, vat, dbContext);
-            largeCustomer.MainLocation = mainLocation;
+            dbContext.SubmitChanges();
+
+            largeCustomer.MainLocationId = mainLocation.Id;
             mainLocation._dbContext = dbContext;
             dbContext.SubmitChanges();
+            
             return largeCustomer;
         }
 

@@ -104,7 +104,6 @@
       <Association Name="Location_Order" Member="Order" ThisKey="Id" OtherKey="LocationId" Type="Order" />
       <Association Name="Location_Price" Member="Price" ThisKey="Id" OtherKey="LocationId" Type="Price" />
       <Association Name="Location_LargeCustomer" Member="LargeCustomer1" ThisKey="Id" OtherKey="MainLocationId" Type="LargeCustomer" />
-      <Association Name="Location_LargeCustomer1" Member="LargeCustomer2" ThisKey="Id" OtherKey="MainLocationId" Type="LargeCustomer" />
       <Association Name="Contact_Location" Member="Contact" ThisKey="ContactId" OtherKey="Id" Type="Contact" IsForeignKey="true" />
       <Association Name="Adress_Location" Member="Adress" ThisKey="AdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
       <Association Name="Adress_Location1" Member="InvoiceAdress" ThisKey="InvoiceAdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
@@ -634,7 +633,6 @@
       <Association Name="Customer_LargeCustomer" Member="Customer" ThisKey="CustomerId" OtherKey="Id" Type="Customer" IsForeignKey="true" />
       <Association Name="Location_LargeCustomer" Member="Location1" ThisKey="MainLocationId" OtherKey="Id" Type="Location" IsForeignKey="true" />
       <Association Name="Person_LargeCustomer" Member="Person" ThisKey="PersonId" OtherKey="Id" Type="Person" IsForeignKey="true" DeleteRule="CASCADE" />
-      <Association Name="Location_LargeCustomer1" Member="MainLocation" ThisKey="MainLocationId" OtherKey="Id" Type="Location" IsForeignKey="true" />
       <Association Name="InvoiceTypes_LargeCustomer" Member="InvoiceTypes" ThisKey="InvoiceTypesID" OtherKey="ID" Type="InvoiceTypes" IsForeignKey="true" />
     </Type>
   </Table>

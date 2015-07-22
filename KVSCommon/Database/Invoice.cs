@@ -102,11 +102,13 @@ namespace KVSCommon.Database
             LargeCustomer largeCustomer = customer.LargeCustomer;
             if (largeCustomer != null)
             {
-                if (largeCustomer.SendInvoiceToMainLocation)
+                if (largeCustomer.SendInvoiceToMainLocation && largeCustomer.MainLocationId.HasValue)
                 {
-                    if (largeCustomer.MainLocation.InvoiceAdress != null)
+                    var mainLocation = dbContext.Location.Single(q => q.Id == largeCustomer.MainLocationId.Value);
+
+                    if (mainLocation.InvoiceAdress != null)
                     {
-                        return largeCustomer.MainLocation.InvoiceAdress;
+                        return mainLocation.InvoiceAdress;
                     }
                 }
                 else if (locationId.HasValue)
@@ -132,11 +134,13 @@ namespace KVSCommon.Database
             LargeCustomer largeCustomer = customer.LargeCustomer;
             if (largeCustomer != null)
             {
-                if (largeCustomer.SendInvoiceToMainLocation)
+                if (largeCustomer.SendInvoiceToMainLocation && largeCustomer.MainLocationId.HasValue)
                 {
-                    if (largeCustomer.MainLocation.InvoiceDispatchAdress != null)
+                    var mainLocation = dbContext.Location.Single(q => q.Id == largeCustomer.MainLocationId.Value);
+
+                    if (mainLocation.InvoiceDispatchAdress != null)
                     {
-                        return largeCustomer.MainLocation.InvoiceDispatchAdress;
+                        return mainLocation.InvoiceDispatchAdress;
                     }
                 }
                 else if (locationId.HasValue)
