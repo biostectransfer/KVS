@@ -64,7 +64,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          join derord in con.DeregistrationOrder on ord.OrderNumber equals derord.OrderNumber
                                          join reg in con.Registration on derord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on derord.VehicleId equals veh.Id
-                                         where ordtype.Name == "Abmeldung" && ord.HasError.GetValueOrDefault(false) != false
+                                         where ordtype.Id == (int)OrderTypes.Cancellation && ord.HasError.GetValueOrDefault(false) != false
                                          select new
                                          {
                                              OrderNumber = ord.OrderNumber,
@@ -118,7 +118,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          join derord in con.DeregistrationOrder on ord.OrderNumber equals derord.OrderNumber
                                          join reg in con.Registration on derord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on derord.VehicleId equals veh.Id
-                                         where ord.HasError.GetValueOrDefault(false) != false && ordtype.Name == "Abmeldung"
+                                         where ord.HasError.GetValueOrDefault(false) != false && ordtype.Id == (int)OrderTypes.Cancellation
                                          select new
                                          {
                                              OrderNumber = ord.OrderNumber,

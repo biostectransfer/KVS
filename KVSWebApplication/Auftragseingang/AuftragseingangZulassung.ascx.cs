@@ -1274,7 +1274,7 @@ namespace KVSWebApplication.Auftragseingang
                 var cont = from largCust in con.LargeCustomerRequiredField
                            join reqFiled in con.RequiredField on largCust.RequiredFieldId equals reqFiled.Id
                            join ordTyp in con.OrderType on reqFiled.OrderTypeId equals ordTyp.Id
-                           where largCust.LargeCustomerId == Int32.Parse(CustomerDropDownList.SelectedValue) && ordTyp.Name == "Zulassung" 
+                           where largCust.LargeCustomerId == Int32.Parse(CustomerDropDownList.SelectedValue) && ordTyp.Id == (int)OrderTypes.Admission
                            select reqFiled.Name;
                 foreach (var nameCon in cont)
                 {

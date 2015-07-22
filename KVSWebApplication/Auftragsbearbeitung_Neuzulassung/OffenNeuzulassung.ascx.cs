@@ -103,16 +103,11 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     }
                 }
             }
-
-            //else
-            //{
-            //    RadGridOffNeuzulassung.Enabled = true;
-            //    RadGridOffNeuzulassung.DataBind();
-            //}
         }
         protected void CheckOpenedOrders()
         {
-            ordersCount.Text = Order.getUnfineshedOrdersCount(new DataClasses1DataContext(), "Zulassung", 100).ToString();
+            ordersCount.Text = Order.getUnfineshedOrdersCount(new DataClasses1DataContext(), OrderTypes.Admission,
+                OrderStatusTypes.Open).ToString();
             if (ordersCount.Text == "" || ordersCount.Text == "0")
             {
                 go.Visible = false;
@@ -144,7 +139,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          join veh in con.Vehicle on regord.VehicleId equals veh.Id
                                          join smc in con.SmallCustomer on cust.Id equals smc.CustomerId
                                          orderby ord.OrderNumber descending
-                                         where ord.Status == (int)OrderStatusTypes.Open && ordtype.Id == (int)OrderTypes.Admission && 
+                                         where ord.Status == (int)OrderStatusTypes.Open && ordtype.Id == (int)OrderTypes.Admission &&
                                          ord.HasError.GetValueOrDefault(false) != true
                                          select new
                                          {
@@ -153,7 +148,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                              customerID = ord.CustomerId,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
-                                             CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " + 
+                                             CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " +
                                              cust.SmallCustomer.Person.Name : cust.Name,
                                              CustomerLocation = "",
                                              Kennzeichen = reg.Licencenumber,
@@ -191,7 +186,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                      join veh in con.Vehicle on regord.VehicleId equals veh.Id
                                      join lmc in con.LargeCustomer on cust.Id equals lmc.CustomerId
                                      orderby ord.OrderNumber descending
-                                     where ord.Status == (int)OrderStatusTypes.Open && ordtype.Id == (int)OrderTypes.Admission && 
+                                     where ord.Status == (int)OrderStatusTypes.Open && ordtype.Id == (int)OrderTypes.Admission &&
                                      ord.HasError.GetValueOrDefault(false) != true
                                      select new
                                      {
@@ -336,7 +331,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             var dbContext = new DataClasses1DataContext();
             var item = (GridDataItem)e.DetailTableView.ParentItem;
             var orderNumber = Int32.Parse(item["OrderNumber"].Text);
-            
+
             var positionQuery = from ord in dbContext.Order
                                 join orditem in dbContext.OrderItem on ord.OrderNumber equals orditem.OrderNumber
                                 let authCharge = dbContext.OrderItem.FirstOrDefault(s => s.SuperOrderItemId == orditem.Id)
@@ -834,7 +829,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             CustomerDropDownListOffenNeuzulassung.ClearSelection();
             RadGridOffNeuzulassung.Rebind();
         }
-                
+
         /// <summary>
         /// Event um eine neue Zulassung zu erstellen
         /// </summary>

@@ -202,7 +202,8 @@ namespace KVSWebApplication.Auftragseingang
             {
                 productQuery = from p in con.Price
                                join prA in con.PriceAccount on p.Id equals prA.PriceId
-                               where (p.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) || p.Product.OrderType.Name == "Allgemein")
+                               where (p.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) ||
+                               p.Product.OrderType.Id == (int)OrderTypes.Common)
                                && p.Location.CustomerId == selectedCustomer
                                && p.LocationId == location
                                select new
@@ -242,7 +243,8 @@ namespace KVSWebApplication.Auftragseingang
             {
                 var productQuery = from p in con.Price
                                    join prA in con.PriceAccount on p.Id equals prA.PriceId
-                                   where (p.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) || p.Product.OrderType.Name == "Allgemein")
+                                   where (p.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) ||
+                                   p.Product.OrderType.Id == (int)OrderTypes.Common)
                                    && p.Location.CustomerId == selectedCustomer
                                    && p.LocationId == location
                                    select new
@@ -1254,7 +1256,7 @@ namespace KVSWebApplication.Auftragseingang
             var cont = from largCust in con.LargeCustomerRequiredField
                        join reqFiled in con.RequiredField on largCust.RequiredFieldId equals reqFiled.Id
                        join ordTyp in con.OrderType on reqFiled.OrderTypeId equals ordTyp.Id
-                       where largCust.LargeCustomerId == Int32.Parse(CustomerDropDownList.SelectedValue) && ordTyp.Name == "Zulassung"
+                       where largCust.LargeCustomerId == Int32.Parse(CustomerDropDownList.SelectedValue) && ordTyp.Id == (int)OrderTypes.Admission
                        select reqFiled.Name;
             foreach (var nameCon in cont)
             {
@@ -1323,7 +1325,7 @@ namespace KVSWebApplication.Auftragseingang
             var cont = from largCust in con.LargeCustomerRequiredField
                        join reqFiled in con.RequiredField on largCust.RequiredFieldId equals reqFiled.Id
                        join ordTyp in con.OrderType on reqFiled.OrderTypeId equals ordTyp.Id
-                       where ordTyp.Name == "Zulassung"
+                       where ordTyp.Id == (int)OrderTypes.Admission
                        select reqFiled.Name;
             foreach (var nameCon in cont)
             {

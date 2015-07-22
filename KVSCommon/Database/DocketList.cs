@@ -6,6 +6,7 @@ using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using System.IO;
 using System.Net.Mail;
+using KVSCommon.Enums;
 
 namespace KVSCommon.Database
 {
@@ -149,7 +150,7 @@ namespace KVSCommon.Database
             Document doc = new Document()
             {
                 Data = ms.ToArray(),
-                DocumentType = dbContext.DocumentType.Where(q => q.Name == "Laufzettel").Single(),
+                DocumentType = dbContext.DocumentType.Where(q => q.Id == (int)DocumentTypes.DocketList).Single(),
                 FileName = fileName,
                 MimeType = "application/pdf"
             };        
@@ -195,12 +196,14 @@ namespace KVSCommon.Database
 
                 if (largeCustomer.SendPackingListToCustomer.GetValueOrDefault(false))
                 {
-                    emails.AddRange(largeCustomer.Mailinglist.Where(q => q.MailinglistType.Name == "Laufzettel" && q.Location == null).Select(q => q.Email).ToList());
+                    emails.AddRange(largeCustomer.Mailinglist.Where(q => q.MailinglistType.Id == (int)MailingListTypes.DocketList && 
+                        q.Location == null).Select(q => q.Email).ToList());
                 }
 
                 if (largeCustomer.SendPackingListToLocation.GetValueOrDefault(false))
                 {
-                    emails.AddRange(largeCustomer.Mailinglist.Where(q => q.MailinglistType.Name == "Laufzettel" && q.Location == this.Order.First().Location).Select(q => q.Email).ToList());
+                    emails.AddRange(largeCustomer.Mailinglist.Where(q => q.MailinglistType.Id == (int)MailingListTypes.DocketList && 
+                        q.Location == this.Order.First().Location).Select(q => q.Email).ToList());
                 }
 
 

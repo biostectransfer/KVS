@@ -504,7 +504,7 @@ namespace KVSWebApplication.Auftragseingang
             productQuery1 = from prod in con.Product
                             let price = con.Price.SingleOrDefault(q => q.ProductId == prod.Id && q.LocationId == null)
                             join prA in con.PriceAccount on price.Id equals prA.PriceId
-                            where (prod.OrderType.Name == "Abmeldung" || prod.OrderType.Name == "Allgemein")
+                            where (prod.OrderType.Id == (int)OrderTypes.Cancellation || prod.OrderType.Id == (int)OrderTypes.Common)
                             orderby prod.Name
                             select new
                             {
@@ -728,7 +728,7 @@ namespace KVSWebApplication.Auftragseingang
             var cont = from largCust in con.LargeCustomerRequiredField
                        join reqFiled in con.RequiredField on largCust.RequiredFieldId equals reqFiled.Id
                        join ordTyp in con.OrderType on reqFiled.OrderTypeId equals ordTyp.Id
-                       where ordTyp.Name == "Abmeldung"
+                       where ordTyp.Id == (int)OrderTypes.Cancellation
                        select reqFiled.Name;
             foreach (var nameCon in cont)
             {

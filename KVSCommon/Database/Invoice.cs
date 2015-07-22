@@ -177,7 +177,7 @@ namespace KVSCommon.Database
                 }
                 if (toAdresses == null)
                 {
-                    toAdresses = invoice.Customer.LargeCustomer.GetMailinglistAdresses(dbContext, locationId, "Rechnung");
+                    toAdresses = invoice.Customer.LargeCustomer.GetMailinglistAdresses(dbContext, locationId, MailingListTypes.Invoice);
                 }
                 var mailBody = dbContext.DocumentConfiguration.FirstOrDefault(q => q.Id == "MAILBODY");
 
@@ -346,7 +346,7 @@ namespace KVSCommon.Database
             Document doc = new Document()
             {
                 Data = ms.ToArray(),
-                DocumentType = dbContext.DocumentType.Where(q => q.Name == "Rechnung").Single(),
+                DocumentType = dbContext.DocumentType.Where(q => q.Id == (int)DocumentTypes.Invoice).Single(),
                 FileName = "Rechnung_" + num.Number.ToString() + ".pdf",
                 MimeType = "application/pdf"
             };

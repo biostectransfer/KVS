@@ -69,7 +69,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         protected void CheckOpenedOrders()
         {
-            ordersCount.Text = Order.getUnfineshedOrdersCount(new DataClasses1DataContext(), "Abmeldung", 400).ToString();
+            ordersCount.Text = Order.getUnfineshedOrdersCount(new DataClasses1DataContext(), OrderTypes.Cancellation,
+                OrderStatusTypes.AdmissionPoint).ToString();
             if (ordersCount.Text == "" || ordersCount.Text == "0")
             {
                 go.Visible = false;

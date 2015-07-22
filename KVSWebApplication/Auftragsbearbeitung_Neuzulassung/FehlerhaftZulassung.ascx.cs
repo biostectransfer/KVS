@@ -72,7 +72,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
                                          join reg in con.Registration on regord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on regord.VehicleId equals veh.Id
-                                         where ord.HasError.GetValueOrDefault(false) != false && ordtype.Name == "Zulassung"
+                                         where ord.HasError.GetValueOrDefault(false) != false && ordtype.Id == (int)OrderTypes.Admission
                                          select new
                                          {
                                              OrderNumber = ord.OrderNumber,
@@ -125,7 +125,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
                                          join reg in con.Registration on regord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on regord.VehicleId equals veh.Id
-                                         where ordtype.Name == "Zulassung" && ord.HasError.GetValueOrDefault(false) != false
+                                         where ordtype.Id == (int)OrderTypes.Admission && ord.HasError.GetValueOrDefault(false) != false
                                          select new
                                          {
                                              OrderNumber = ord.OrderNumber,

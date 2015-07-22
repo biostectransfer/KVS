@@ -6,6 +6,7 @@ using System.IO;
 using System.Net.Mail;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
+using KVSCommon.Enums;
 
 namespace KVSCommon.Database
 {
@@ -54,7 +55,7 @@ namespace KVSCommon.Database
                 Adress = recipientAdress,
                 Recipient = recipient
             };
-            
+
             dbContext.WriteLogItem("Lieferschein erstellt.", LogTypes.INSERT, packingList.PackingListNumber, "PackingList");
             dbContext.PackingList.InsertOnSubmit(packingList);
             return packingList;
@@ -158,12 +159,12 @@ namespace KVSCommon.Database
                 KVSCommon.PDF.PackingListPDF pdf = new PDF.PackingListPDF(dbContext, this, headerLogoPath);
                 pdf.WritePDF(ms);
             }
-           
+
 
             Document doc = new Document()
             {
                 Data = ms.ToArray(),
-                DocumentType = dbContext.DocumentType.Where(q => q.Name == "Lieferschein").Single(),
+                DocumentType = dbContext.DocumentType.Where(q => q.Id == (int)DocumentTypes.PackagingList).Single(),
                 FileName = fileName,
                 MimeType = "application/pdf"
             };
@@ -173,7 +174,7 @@ namespace KVSCommon.Database
             this.DocumentId = doc.Id;
 
             dbContext.WriteLogItem("Lieferschein " + fileName + " wurde gedruckt.", LogTypes.UPDATE, this.PackingListNumber, "Versand", doc.Id);
-          
+
 
             if (this.LogDBContext == null)
             {
@@ -207,34 +208,33 @@ namespace KVSCommon.Database
             List<string> emails = new List<string>();
             if (largeCustomer != null)
             {
-             
-            if (largeCustomer.SendPackingListToCustomer.GetValueOrDefault(false))
-            {
-                emails.AddRange(largeCustomer.Mailinglist.Where(q => q.MailinglistType.Name == "Lieferschein" && q.Location == null).Select(q => q.Email).ToList());
-            }
 
-            if (largeCustomer.SendPackingListToLocation.GetValueOrDefault(false))
-            {
-                emails.AddRange(largeCustomer.Mailinglist.Where(q => q.MailinglistType.Name == "Lieferschein" && q.Location == this.Order.First().Location).Select(q => q.Email).ToList());
-            }
+                if (largeCustomer.SendPackingListToCustomer.GetValueOrDefault(false))
+                {
+                    emails.AddRange(largeCustomer.Mailinglist.Where(q => q.MailinglistType.Id == (int)MailingListTypes.PackagingList && q.Location == null).
+                        Select(q => q.Email).ToList());
+                }
 
-          
-
+                if (largeCustomer.SendPackingListToLocation.GetValueOrDefault(false))
+                {
+                    emails.AddRange(largeCustomer.Mailinglist.Where(q => q.MailinglistType.Id == (int)MailingListTypes.PackagingList &&
+                        q.Location == this.Order.First().Location).Select(q => q.Email).ToList());
+                }
             }
             if (emails.Count != 0)
             {
-          
-            List<Attachment> attachments = new List<Attachment>();
-            attachments.Add(new Attachment(ms, "Lieferschein.pdf", "application/pdf"));
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("<p>Sehr geehrte Damen und Herren, </p>");
-            sb.AppendLine("<br/>");
-            sb.AppendLine("<p>im Anhang finden Sie einen Lieferschein zu abgeschlossenen Aufträgen.</p>");
-            sb.AppendLine("<br/>");
-            sb.AppendLine("<p>Mit freundlichen Grüßen,<br/>");
-            sb.AppendLine("Ihr CASE-Team</p>");
-            Utility.Email.SendMail(fromAddress, emails, "Lieferschein " + this.PackingListNumber.ToString(), sb.ToString(), null, null, smtpServer, attachments);
-          
+
+                List<Attachment> attachments = new List<Attachment>();
+                attachments.Add(new Attachment(ms, "Lieferschein.pdf", "application/pdf"));
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("<p>Sehr geehrte Damen und Herren, </p>");
+                sb.AppendLine("<br/>");
+                sb.AppendLine("<p>im Anhang finden Sie einen Lieferschein zu abgeschlossenen Aufträgen.</p>");
+                sb.AppendLine("<br/>");
+                sb.AppendLine("<p>Mit freundlichen Grüßen,<br/>");
+                sb.AppendLine("Ihr CASE-Team</p>");
+                Utility.Email.SendMail(fromAddress, emails, "Lieferschein " + this.PackingListNumber.ToString(), sb.ToString(), null, null, smtpServer, attachments);
+
             }
         }
         /// <summary>

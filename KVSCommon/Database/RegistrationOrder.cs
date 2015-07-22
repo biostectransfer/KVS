@@ -49,7 +49,7 @@ namespace KVSCommon.Database
         public static RegistrationOrder CreateRegistrationOrder(int userId, int customerId, string licencenumber, string previousLicencenumber, string evbNumber, 
             Vehicle vehicle, Registration registration, RegistrationOrderTypes registrationOrderType, int? locationId, int zulassungsstelleId, DataClasses1DataContext dbContext)
         {
-            var orderTypeId = dbContext.OrderType.Single(q => q.Name == "Zulassung").Id;
+            var orderTypeId = dbContext.OrderType.Single(q => q.Id == (int)OrderTypes.Admission).Id;
             Order order = Order.CreateOrder(userId, customerId, orderTypeId, zulassungsstelleId, dbContext);
             order.LocationId = locationId;
 

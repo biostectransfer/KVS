@@ -240,10 +240,10 @@ namespace KVSCommon.Database
                         {
                             var location = group.Key;
                             List<string> emails = new List<string>();
-                            emails.AddRange(customer.GetMailinglistAdresses(dbContext, location.Id, "Auftragserledigung"));
+                            emails.AddRange(customer.GetMailinglistAdresses(dbContext, location.Id, MailingListTypes.OrderComplete));
                             if (customer.SendOrderFinishedNoteToCustomer.GetValueOrDefault(false))
                             {
-                                emails.AddRange(customer.GetMailinglistAdresses(dbContext, null, "Auftragserledigung"));
+                                emails.AddRange(customer.GetMailinglistAdresses(dbContext, null, MailingListTypes.OrderComplete));
                             }
 
                             if (emails.Count > 0)
@@ -261,7 +261,7 @@ namespace KVSCommon.Database
                     }
                     else if (customer.SendOrderFinishedNoteToCustomer.GetValueOrDefault(false))
                     {
-                        List<string> emails = customer.GetMailinglistAdresses(dbContext, null, "Auftragserledigung");
+                        List<string> emails = customer.GetMailinglistAdresses(dbContext, null, MailingListTypes.OrderComplete);
                         if (emails.Count > 0)
                         {
                             SendOrderFinishedNote(orders, emails, fromEmailAddress, smtpServer);
@@ -283,10 +283,10 @@ namespace KVSCommon.Database
         /// <param name="dbContext"></param>
         /// <param name="OrdertypeName">z. B Zulassung</param>
         /// <returns>Int</returns>
-        public static int getUnfineshedOrdersCount(DataClasses1DataContext dbContext, string OrdertypeName, int orderstate)
+        public static int getUnfineshedOrdersCount(DataClasses1DataContext dbContext, OrderTypes orderType, OrderStatusTypes orderStatus)
         {
-            //ord.Status == 100 && ordtype.Name == "Zulassung" && ord.HasError.GetValueOrDefault(false) != true
-            return dbContext.Order.Count(q => q.Status == orderstate && q.OrderType.Name == OrdertypeName && q.HasError.GetValueOrDefault(false) != true);
+            return dbContext.Order.Count(q => q.Status == (int)orderStatus && 
+                q.OrderType.Id == (int)orderType && q.HasError.GetValueOrDefault(false) != true);
         }
         /// <summary>
         /// Fügt dem Auftrag eine neue Position hinzu.

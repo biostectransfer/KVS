@@ -177,7 +177,8 @@ namespace KVSWebApplication.Auftragseingang
                 productQuery = from prd in con.Product
                                let price = con.Price.SingleOrDefault(q => q.ProductId == prd.Id && q.LocationId == null)
                                join prA in con.PriceAccount on price.Id equals prA.PriceId
-                               where (prd.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) || prd.OrderType.Name == "Allgemein")
+                               where (prd.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) ||
+                               prd.OrderType.Id == (int)OrderTypes.Common)
                                orderby prd.Name
                                select new
                                {
@@ -1070,7 +1071,7 @@ namespace KVSWebApplication.Auftragseingang
             var cont = from largCust in con.LargeCustomerRequiredField
                        join reqFiled in con.RequiredField on largCust.RequiredFieldId equals reqFiled.Id
                        join ordTyp in con.OrderType on reqFiled.OrderTypeId equals ordTyp.Id
-                       where ordTyp.Name == "Zulassung"
+                       where ordTyp.Id == (int)OrderTypes.Admission
                        select reqFiled.Name;
             foreach (var nameCon in cont)
             {

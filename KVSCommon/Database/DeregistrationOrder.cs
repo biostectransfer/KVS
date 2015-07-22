@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KVSCommon.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,7 +45,7 @@ namespace KVSCommon.Database
         public static DeregistrationOrder CreateDeregistrationOrder(int userId, int customerId, Vehicle vehicle, Registration registration, int? locationId, 
             int zulassungsstelleId, DataClasses1DataContext dbContext)
         {
-            var orderTypeId = dbContext.OrderType.Single(q => q.Name == "Abmeldung").Id;
+            var orderTypeId = dbContext.OrderType.Single(q => q.Id == (int)OrderTypes.Cancellation).Id;
             Order order = Order.CreateOrder(userId, customerId, orderTypeId, zulassungsstelleId, dbContext); 
             order.LocationId = locationId;
             DeregistrationOrder deregistrationOrder = new DeregistrationOrder()

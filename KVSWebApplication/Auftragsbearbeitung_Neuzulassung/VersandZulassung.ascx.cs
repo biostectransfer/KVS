@@ -51,12 +51,11 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             var versandQuery = from packList in con.PackingList
                                //join ord in con.Order on packList.Id equals ord.PackingListId
                                let CustomerNameLet = con.Order.Where(q => q.PackingListNumber == packList.PackingListNumber).FirstOrDefault()
-                              // where ord.OrderType.Name == "Zulassung"
                                orderby packList.PackingListNumber descending
                                select new
                                {
                                    listId = packList.PackingListNumber,
-                                   CustomerName = //CustomerNameLet.Customer.Name,
+                                   CustomerName = 
                                      CustomerNameLet.Customer.SmallCustomer != null &&
                                         CustomerNameLet.Customer.SmallCustomer.Person != null ?
                                         CustomerNameLet.Customer.SmallCustomer.Person.FirstName + " " +
@@ -64,12 +63,11 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                    Order = CustomerNameLet,
                                    listNumber = packList.PackingListNumber,
                                    isPrinted = packList.IsPrinted == true ? "Ja" : "Nein",
-                                   //PostBackUrl = packList.Document.FileName == null ? "" : "@<a href=" + '\u0022' + ConfigurationManager.AppSettings["BaseUrl"] + "/" + packList.Document.FileName + '\u0022' + " target=" + '\u0022' + "_blank" + '\u0022' + ">Test Link</a>"
                                    PostBackUrl = packList.Document.FileName == null ? "" : "<a href=" + '\u0022' + packList.Document.FileName + '\u0022' + " target=" + '\u0022' + "_blank" + '\u0022' + "> Lieferschein " + packList.PackingListNumber + " öffnen</a>",
                                     DispatchOrderNumber = (packList != null)? packList.DispatchOrderNumber: "",
                                     IsSelf = (packList != null && packList.IsSelfDispatch.HasValue) ? packList.IsSelfDispatch.Value : false,
                                };
-           versandQuery = versandQuery.Where(q => q.Order.OrderType.Name == "Zulassung" && q.Order.Status==600);
+            versandQuery = versandQuery.Where(q => q.Order.OrderType.Id == (int)OrderTypes.Admission && q.Order.Status == (int)OrderStatusTypes.Closed);
             e.Result = versandQuery;
         }      
         protected void PruefenButton_Clicked(object sender, GridCommandEventArgs e)

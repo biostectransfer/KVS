@@ -127,11 +127,11 @@ namespace KVSWebApplication.Statistic
                     List<Order> orderList = con.Order.Where(q => q.CustomerId == customerQuery.Id && q.Status == (int)OrderStatusTypes.Payed).ToList();
                     foreach (Order order in orderList)
                     {
-                        if (order.OrderType.Name.Contains("Abmeldung"))
+                        if (order.OrderType.Id == (int)OrderTypes.Cancellation)
                         {
                             anzAbm++;
                         }
-                        if (order.OrderType.Name.Contains("Zulassung"))
+                        if (order.OrderType.Id == (int)OrderTypes.Admission)
                         {
                             anzZul++;
                         }
@@ -146,12 +146,12 @@ namespace KVSWebApplication.Statistic
                 List<Order> orderList = con.Order.Where(q => q.Status == (int)OrderStatusTypes.Payed).ToList();
                 foreach (Order order in orderList)
                 {
-                    if (order.OrderType.Name.Contains("Abmeldung"))
+                    if (order.OrderType.Id == (int)OrderTypes.Cancellation)
                     {
                         anzAbm++;
                     }
 
-                    if (order.OrderType.Name.Contains("Zulassung"))
+                    if (order.OrderType.Id == (int)OrderTypes.Admission)
                     {
                         anzZul++;
                     }

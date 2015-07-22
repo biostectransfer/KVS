@@ -123,7 +123,7 @@ namespace KVSWebApplication.Product
                             OrderTypeName = products.OrderType != null ? products.OrderType.Name : "",
                             ProductCategorieName = products.ProductCategory != null ? products.ProductCategory.Name : "",
                             RegistrationOrderTypeName = products.RegistrationOrderType != null ? products.RegistrationOrderType.Name : "",
-                            EnableDropDown = products.OrderType.Name.ToString() == "Zulassung" ? "true" : "false",
+                            EnableDropDown = products.OrderType.Id == (int)OrderTypes.Admission ? "true" : "false",
                             Amount = EmptyStringIfNull.ReturnEmptyStringIfNull(products.Price.SingleOrDefault(q => q.ProductId == products.Id && q.LocationId == null).Amount.ToString()),
                             AutoCharge = EmptyStringIfNull.ReturnEmptyStringIfNull(products.Price.SingleOrDefault(q => q.ProductId == products.Id && q.LocationId == null).AuthorativeCharge.ToString()),
                             Vat = products.NeedsVAT != null && products.NeedsVAT == true ? "true" : "false",

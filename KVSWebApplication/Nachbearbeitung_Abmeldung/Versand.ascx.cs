@@ -49,15 +49,13 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         {
             DataClasses1DataContext con = new DataClasses1DataContext();
             var versandQuery = from packList in con.PackingList
-                               //join myOrder in con.Order on packList.Id equals myOrder.PackingListId 
                                let CustomerNameLet = con.Order.Where(q => q.PackingListNumber == packList.PackingListNumber).FirstOrDefault()
-                               //where myOrder.OrderType.Name != "Zulassung" 
                                orderby packList.PackingListNumber descending
                                select new
                                {
                                    listId = packList.PackingListNumber,
                                    OrderNumber = CustomerNameLet != null ? CustomerNameLet.OrderNumber : (int?)null,
-                                   CustomerName = //CustomerNameLet.Customer.Name,
+                                   CustomerName = 
                                     CustomerNameLet.Customer.SmallCustomer != null &&
                                         CustomerNameLet.Customer.SmallCustomer.Person != null ?
                                         CustomerNameLet.Customer.SmallCustomer.Person.FirstName + " " +

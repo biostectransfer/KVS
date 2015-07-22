@@ -120,7 +120,7 @@ namespace KVSWebApplication.Auftragseingang
             {
                 var productQuery = from p in con.Price
                                    join prA in con.PriceAccount on p.Id equals prA.PriceId
-                                   where (p.Product.OrderType.Name == "Abmeldung" || p.Product.OrderType.Name == "Allgemein")
+                                   where (p.Product.OrderType.Id == (int)OrderTypes.Cancellation || p.Product.OrderType.Id == (int)OrderTypes.Common)
                                    && p.Location.CustomerId == selectedCustomer
                                    && p.LocationId == location
                                    select new
@@ -659,7 +659,7 @@ namespace KVSWebApplication.Auftragseingang
             IQueryable productQuery1 = null;
             productQuery1 = from p in con.Price
                             join prA in con.PriceAccount on p.Id equals prA.PriceId
-                            where (p.Product.OrderType.Name == "Abmeldung" || p.Product.OrderType.Name == "Allgemein")
+                            where (p.Product.OrderType.Id == (int)OrderTypes.Cancellation || p.Product.OrderType.Id == (int)OrderTypes.Common)
                             && p.Location.CustomerId == selectedCustomer
                             && p.LocationId == location
                             select new
@@ -843,7 +843,7 @@ namespace KVSWebApplication.Auftragseingang
             var cont = from largCust in con.LargeCustomerRequiredField
                        join reqFiled in con.RequiredField on largCust.RequiredFieldId equals reqFiled.Id
                        join ordTyp in con.OrderType on reqFiled.OrderTypeId equals ordTyp.Id
-                       where largCust.LargeCustomerId == Int32.Parse(CustomerDropDownList.SelectedValue) && ordTyp.Name == "Abmeldung"
+                       where largCust.LargeCustomerId == Int32.Parse(CustomerDropDownList.SelectedValue) && ordTyp.Id == (int)OrderTypes.Cancellation
                        select reqFiled.Name;
             foreach (var nameCon in cont)
             {
@@ -937,7 +937,7 @@ namespace KVSWebApplication.Auftragseingang
             var cont = from largCust in con.LargeCustomerRequiredField
                        join reqFiled in con.RequiredField on largCust.RequiredFieldId equals reqFiled.Id
                        join ordTyp in con.OrderType on reqFiled.OrderTypeId equals ordTyp.Id
-                       where ordTyp.Name == "Abmeldung"
+                       where ordTyp.Id == (int)OrderTypes.Cancellation
                        select reqFiled.Name;
             foreach (var nameCon in cont)
             {

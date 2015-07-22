@@ -85,7 +85,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         }
         protected void CheckOpenedOrders()
         {
-            ordersCount.Text = Order.getUnfineshedOrdersCount(new DataClasses1DataContext(), "Zulassung", 400).ToString();
+            ordersCount.Text = Order.getUnfineshedOrdersCount(new DataClasses1DataContext(), OrderTypes.Admission,
+                OrderStatusTypes.AdmissionPoint).ToString();
             if (ordersCount.Text == "" || ordersCount.Text == "0")
             {
                 go.Visible = false;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KVSCommon.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -328,12 +329,13 @@ namespace KVSCommon.Database
         /// <param name="type">Art des Verteilers.</param>
         /// <returns>Liste mit Emailadressen.</returns>
         /// <remarks>Wenn der Verteiler eines Standorts abgefragt wird, und dieser leer ist, werden die Adressen aus dem Verteiler des Kunden zurückgegeben.</remarks>
-        public List<string> GetMailinglistAdresses(DataClasses1DataContext dbContext, int? locationId, string type)
+        public List<string> GetMailinglistAdresses(DataClasses1DataContext dbContext, int? locationId, MailingListTypes type)
         {
             if (locationId.HasValue)
             {
           
-                    var emails = dbContext.Mailinglist.Where(q => q.LocationId == locationId.Value && q.MailinglistType.Name == type).Select(q => q.Email);
+                    var emails = dbContext.Mailinglist.Where(q => q.LocationId == locationId.Value && 
+                        q.MailinglistType.Id == (int)type).Select(q => q.Email);
                     if (emails.Count() > 0)
                     {
                         return emails.ToList();
@@ -341,7 +343,7 @@ namespace KVSCommon.Database
               
             }
 
-            return this.Mailinglist.Where(q => q.LocationId.HasValue == false && q.MailinglistType.Name == type).Select(q => q.Email).ToList();
+            return this.Mailinglist.Where(q => q.LocationId.HasValue == false && q.MailinglistType.Id == (int)type).Select(q => q.Email).ToList();
         }
         /// <summary>
         /// Aenderungsevents für die Historie
