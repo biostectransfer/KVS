@@ -11,6 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Configuration;
 using System.Transactions;
+using KVSCommon.Enums;
 namespace KVSWebApplication.Abrechnung
 {
     public partial class AbrechnungSave : System.Web.UI.UserControl
@@ -129,9 +130,6 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void AbrechnungLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            //if (CustomerDropDownList.SelectedValue == string.Empty)
-            //    CustomerDropDownList.SelectedValue = .Empty.ToString();
-
             if (String.IsNullOrEmpty(StandortDropDown.SelectedValue.ToString()))
             {
                 StandortDropDown.DataBind();
@@ -146,7 +144,8 @@ namespace KVSWebApplication.Abrechnung
                             join orditm in con.OrderItem on ord.OrderNumber equals orditm.OrderNumber
                             join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
                             join lrcust in con.SmallCustomer on cust.Id equals lrcust.CustomerId
-                            where cust.Id == customerId && orditm.Status == 600 && ord.Status == 600
+                            where cust.Id == customerId && orditm.Status == (int)OrderItemStatusTypes.Closed &&
+                            ord.Status == (int)OrderStatusTypes.Closed
                             orderby ord.OrderNumber descending
                             select new
                             {
@@ -180,7 +179,9 @@ namespace KVSWebApplication.Abrechnung
                                 join orditm in con.OrderItem on ord.OrderNumber equals orditm.OrderNumber
                                 join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
                                 join lrcust in con.LargeCustomer on cust.Id equals lrcust.CustomerId
-                                where cust.Id == customerId && (ord.Status == 600 || ord.Status == 700) && orditm.Status == 600
+                                where cust.Id == customerId && 
+                                (ord.Status == (int)OrderStatusTypes.Closed || ord.Status == (int)OrderStatusTypes.PartiallyPayed) &&
+                                orditm.Status == (int)OrderItemStatusTypes.Closed
                                 orderby ord.OrderNumber descending
                                 select new
                                 {
@@ -214,7 +215,9 @@ namespace KVSWebApplication.Abrechnung
                                 join orditm in con.OrderItem on ord.OrderNumber equals orditm.OrderNumber
                                 join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
                                 join lrcust in con.LargeCustomer on cust.Id equals lrcust.CustomerId
-                                where cust.Id == customerId && (ord.Status == 600 || ord.Status == 700) && orditm.Status == 600
+                                where cust.Id == customerId && 
+                                (ord.Status == (int)OrderStatusTypes.Closed || ord.Status == (int)OrderStatusTypes.PartiallyPayed) &&
+                                orditm.Status == (int)OrderItemStatusTypes.Closed
                                 orderby ord.OrderNumber descending
                                 select new
                                 {
@@ -253,7 +256,9 @@ namespace KVSWebApplication.Abrechnung
                                 join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
                                 join lrcust in con.LargeCustomer on cust.Id equals lrcust.CustomerId
                                 where
-                                cust.Id == customerId && (ord.Status == 600 || ord.Status == 700) && orditm.Status == 600
+                                cust.Id == customerId && 
+                                (ord.Status == (int)OrderStatusTypes.Closed || ord.Status == (int)OrderStatusTypes.PartiallyPayed) &&
+                                orditm.Status == (int)OrderItemStatusTypes.Closed
                                 && ord.ExecutionDate.Value > startingDate && ord.ExecutionDate < endDate
                                 orderby ord.OrderNumber descending
                                 select new
@@ -287,7 +292,9 @@ namespace KVSWebApplication.Abrechnung
                                 join orditm in con.OrderItem on ord.OrderNumber equals orditm.OrderNumber
                                 join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
                                 join lrcust in con.LargeCustomer on cust.Id equals lrcust.CustomerId
-                                where cust.Id == customerId && (ord.Status == 600 || ord.Status == 700) && orditm.Status == 600
+                                where cust.Id == customerId && 
+                                (ord.Status == (int)OrderStatusTypes.Closed || ord.Status == (int)OrderStatusTypes.PartiallyPayed) && 
+                                    orditm.Status == (int)OrderItemStatusTypes.Closed
                                 && ord.ExecutionDate.Value.Month == DateTime.Now.Month
                                 orderby ord.OrderNumber descending
                                 select new
@@ -374,7 +381,7 @@ namespace KVSWebApplication.Abrechnung
                     currItem.ProductName = item["ProductName"].Text;
                     currItem.Amount = decimal.Parse(item["Amount"].Text, NumberStyles.Currency).ToString();
                     currItem.OrderItemId = Int32.Parse(item["OrderItemId"].Text);
-                    if (!String.IsNullOrEmpty(item["CostCenterId"].Text))//TODO && item["CostCenterId"].Text.Length > 8)
+                    if (!String.IsNullOrEmpty(item["CostCenterId"].Text))
                     {
                         currItem.CostCenterId = Int32.Parse(item["CostCenterId"].Text);
                     }
@@ -528,7 +535,7 @@ namespace KVSWebApplication.Abrechnung
 
                     currItem.OrderItemId = Int32.Parse(item["OrderItemId"].Text);
 
-                    if (!String.IsNullOrEmpty(item["CostCenterId"].Text))//TODO && item["CostCenterId"].Text.Length > 8)
+                    if (!String.IsNullOrEmpty(item["CostCenterId"].Text))
                     {
                         currItem.CostCenterId = Int32.Parse(item["CostCenterId"].Text);
                     }
@@ -559,7 +566,7 @@ namespace KVSWebApplication.Abrechnung
                             {
                                 var OrderItemToUpdate = dbContext.OrderItem.SingleOrDefault(q => q.Id == item.OrderItemId);
                                 OrderItemToUpdate.LogDBContext = dbContext;
-                                OrderItemToUpdate.Status = 900;
+                                OrderItemToUpdate.Status = (int)OrderItemStatusTypes.Payed;
                                 if (myCustomer.SmallCustomer != null)
                                 {
                                     newInvoiceItem.VAT = myCustomer.VAT;
@@ -655,23 +662,23 @@ namespace KVSWebApplication.Abrechnung
             orderQuery.LogDBContext = con;
             foreach (OrderItem item in orderQuery.OrderItem)
             {
-                if (item.Status == 600)
+                if (item.Status == (int)OrderItemStatusTypes.Closed)
                 {
                     shouldBeUpdated = true;
                 }
 
-                if (item.Status == 900)
+                if (item.Status == (int)OrderItemStatusTypes.Payed)
                 {
                     hasAbgerechnetItem = true;
                 }
             }
             if (shouldBeUpdated == true && hasAbgerechnetItem == true) // teil
             {
-                orderQuery.Status = 700;
+                orderQuery.Status = (int)OrderStatusTypes.PartiallyPayed;
             }
             else if (shouldBeUpdated == false && hasAbgerechnetItem == true) //komplet abgerechnet
             {
-                orderQuery.Status = 900;
+                orderQuery.Status = (int)OrderStatusTypes.Payed;
             }
             con.SubmitChanges();
         }

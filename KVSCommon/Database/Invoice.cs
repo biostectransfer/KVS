@@ -11,6 +11,7 @@ namespace KVSCommon.Database
     using PdfSharp.Drawing;
     using System.Net.Mail;
     using System.Configuration;
+    using KVSCommon.Enums;
     /// <summary>
     /// Erweiterungsklasse für die Tabelle Invoice
     /// </summary>
@@ -225,12 +226,12 @@ namespace KVSCommon.Database
             dbContext.WriteLogItem("Rechnungsposition " + name + " zur Rechnung hinzugefügt.", LogTypes.INSERT, this.Id, "InvoiceItem", item.Id);
             if (orderItem != null)
             {
-                if (orderItem.Status == (int)OrderItemState.Abgerechnet)
+                if (orderItem.Status == (int)OrderItemStatusTypes.Payed)
                 {
                     throw new Exception("Die Auftragsposition ist bereits abgerechnet.");
                 }
 
-                if (orderItem.Status != (int)OrderItemState.Abgeschlossen)
+                if (orderItem.Status != (int)OrderItemStatusTypes.Closed)
                 {
                     throw new Exception("Die Auftragsposition ist nicht abgeschlossen.");
                 }
@@ -253,7 +254,7 @@ namespace KVSCommon.Database
                 }
 
                 orderItem.LogDBContext = dbContext;
-                orderItem.Status = (int)OrderItemState.Abgerechnet;
+                orderItem.Status = (int)OrderItemStatusTypes.Payed;
                 var order = orderItem.Order;
                 if (!dbContext.OrderInvoice.Any(q => q.OrderNumber == order.OrderNumber && q.InvoiceId == this.Id))
                 {
@@ -378,16 +379,16 @@ namespace KVSCommon.Database
                 if (item.OrderItem != null)
                 {
                     item.OrderItem.LogDBContext = dbContext;
-                    item.OrderItem.Status = (int)OrderItemState.Abgeschlossen;
+                    item.OrderItem.Status = (int)OrderItemStatusTypes.Closed;
                 }
             }
 
             foreach (var item in this.OrderInvoice)
             {
-                if (item.Order.OrderItem.All(q => q.Status == (int)OrderItemState.Abgeschlossen))
+                if (item.Order.OrderItem.All(q => q.Status == (int)OrderItemStatusTypes.Closed))
                 {
                     item.Order.LogDBContext = dbContext;
-                    item.Order.Status = (int)OrderState.Abgeschlossen;
+                    item.Order.Status = (int)OrderStatusTypes.Closed;
                 }
             }
 

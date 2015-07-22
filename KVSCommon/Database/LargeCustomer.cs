@@ -230,7 +230,7 @@ namespace KVSCommon.Database
             };
             costcenter._dbContext = dbContext;
             this.CostCenter.Add(costcenter);
-            //TODO dbContext.WriteLogItem("Neue Kostenstelle " + name + " angelegt.", LogTypes.INSERT, this.CustomerId, "Customer", costcenter.Id);
+            dbContext.WriteLogItem("Neue Kostenstelle " + name + " angelegt.", LogTypes.INSERT, this.CustomerId, "Customer", costcenter.Id);
             return costcenter;
         }
 

@@ -8,6 +8,7 @@ using KVSCommon.Database;
 using Telerik.Web.UI;
 using System.IO;
 using System.Configuration;
+using KVSCommon.Enums;
 namespace KVSWebApplication.Auftragseingang
 {
     /// <summary>
@@ -75,7 +76,7 @@ namespace KVSWebApplication.Auftragseingang
             DataClasses1DataContext con = new DataClasses1DataContext();
             var newQuery = from ord in con.Order
                            let registration = ord.DeregistrationOrder != null ? ord.DeregistrationOrder.Registration : ord.DeregistrationOrder.Registration
-                           where ord.Status == 900
+                           where ord.Status == (int)OrderStatusTypes.Payed
                            select new
                            {
                                CustomerId = ord.CustomerId,
@@ -103,9 +104,9 @@ namespace KVSWebApplication.Auftragseingang
                 {
                     foreach (OrderItem orderItem in order.OrderItem)
                     {
-                        if (orderItem.IsAuthorativeCharge && orderItem.Status == 900)
+                        if (orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
                             gebuehren = gebuehren + orderItem.Amount;
-                        else if (!orderItem.IsAuthorativeCharge && orderItem.Status == 900)
+                        else if (!orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
                             umsatz = umsatz + orderItem.Amount;
                     }
                 }
@@ -621,7 +622,7 @@ namespace KVSWebApplication.Auftragseingang
             {
                 var costCenterQuery = from cost in con.CostCenter
                                       join cust in con.Customer on cost.CustomerId equals cust.Id
-                                      where cost.CustomerId == 0 //TODO
+                                      //where cost.CustomerId == 0 //TODO
                                       select new
                                       {
                                           Name = cost.Name,
@@ -963,20 +964,20 @@ namespace KVSWebApplication.Auftragseingang
                 smallCustomerOrderHiddenField.Value = regOrder.OrderNumber.ToString();
                 //updating order status
                 newOrder.LogDBContext = dbContext;
-                newOrder.Status = 600;
+                newOrder.Status = (int)OrderStatusTypes.Closed;
                 //updating orderitems status                          
                 foreach (OrderItem ordItem in newOrder.OrderItem)
                 {
                     ordItem.LogDBContext = dbContext;
-                    if (ordItem.Status != (int)OrderItemState.Storniert)
+                    if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                     {
-                        ordItem.Status = 600;
+                        ordItem.Status = (int)OrderItemStatusTypes.Closed;
                     }
                 }
                 dbContext.SubmitChanges();
                 //updating order und items status one more time to make it abgerechnet
                 newOrder.LogDBContext = dbContext;
-                newOrder.Status = 900;
+                newOrder.Status = (int)OrderStatusTypes.Payed;
                 dbContext.SubmitChanges();
                 //opening window for adress
                 string script = "function f(){$find(\"" + AddAdressRadWindow.ClientID + "\").show(); Sys.Application.remove_load(f);}Sys.Application.add_load(f);";
@@ -1050,11 +1051,6 @@ namespace KVSWebApplication.Auftragseingang
                         ProductName = ordItem.ProductName;
                         Amount = ordItem.Amount;
 
-                        //TODO 
-                        //if (!String.IsNullOrEmpty(ordItem.CostCenterId.ToString()) && ordItem.CostCenterId.ToString().Length > 8)
-                        //{
-                        //    costCenterId = Int32.Parse(ordItem.CostCenterId.ToString());
-                        //}
                         itemCount = ordItem.Count;
 
                         CostCenter costCenter = null;
@@ -1065,7 +1061,7 @@ namespace KVSWebApplication.Auftragseingang
 
                         InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(ProductName, Convert.ToDecimal(Amount), itemCount, ordItem, costCenter, dbContext);
                         ordItem.LogDBContext = dbContext;
-                        ordItem.Status = 900;
+                        ordItem.Status = (int)OrderItemStatusTypes.Payed;
                         dbContext.SubmitChanges();
                     }
                     dbContext.SubmitChanges();

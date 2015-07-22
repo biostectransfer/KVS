@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using KVSCommon.Database;
 using Telerik.Web.UI;
 using System.Data.SqlClient;
+using KVSCommon.Enums;
 
 namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 {
@@ -301,13 +302,13 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     orderToUpdate.DeregistrationOrder.Registration.CarOwner.Contact.Phone = phone;
                     orderToUpdate.DeregistrationOrder.Registration.CarOwner.Contact.MobilePhone = mobile;
                     orderToUpdate.DeregistrationOrder.Registration.CarOwner.Contact.Fax = fax;
-                    orderToUpdate.Status = 100;
+                    orderToUpdate.Status = (int)OrderStatusTypes.Open;
                     orderToUpdate.HasError = false;
                     orderToUpdate.ErrorReason = string.Empty;
                     foreach (var orderItem in orderToUpdate.OrderItem)
                     {
                         orderItem.LogDBContext = dbContext;
-                        orderItem.Status = 100;
+                        orderItem.Status = (int)OrderItemStatusTypes.Open;
                     }
                     dbContext.SubmitChanges();
                 }

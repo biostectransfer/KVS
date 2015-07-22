@@ -10,6 +10,7 @@ using System.Collections;
 using System.Configuration;
 using System.IO;
 using System.Transactions;
+using KVSCommon.Enums;
 
 namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 {
@@ -95,7 +96,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          join veh in con.Vehicle on derord.VehicleId equals veh.Id
                                          join smc in con.SmallCustomer on cust.Id equals smc.CustomerId
                                          orderby ord.OrderNumber descending
-                                         where  ord.Status == 400 && ordtype.Name == "Abmeldung" && ord.HasError.GetValueOrDefault(false) != true
+                                         where ord.Status == (int)OrderStatusTypes.AdmissionPoint && ordtype.Id == (int)OrderTypes.Cancellation && 
+                                         ord.HasError.GetValueOrDefault(false) != true
                                          select new
                                          {
                                              OrderNumber = ord.OrderNumber,
@@ -132,7 +134,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                           join veh in con.Vehicle on derord.VehicleId equals veh.Id
                                           join lmc in con.LargeCustomer on cust.Id equals lmc.CustomerId
                                           orderby ord.OrderNumber descending
-                                          where  ord.Status == 400 && ordtype.Name == "Abmeldung" && ord.HasError.GetValueOrDefault(false) != true
+                                          where ord.Status == (int)OrderStatusTypes.AdmissionPoint && ordtype.Id == (int)OrderTypes.Cancellation && 
+                                          ord.HasError.GetValueOrDefault(false) != true
                                           select new
                                           {
                                               OrderNumber = ord.OrderNumber,
@@ -384,13 +387,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         {
                             ProductName = ordItem.ProductName;
                             Amount = ordItem.Amount;
-                            
-                            //TODO
-                            //if (!String.IsNullOrEmpty(ordItem.CostCenterId.ToString()) && ordItem.CostCenterId.ToString().Length > 8)
-                            //{
-                            //    costCenterId = Int32.Parse(ordItem.CostCenterId.ToString());
-                            //}
-                            
+                                                        
                             itemCount = ordItem.Count;
 
                             CostCenter costCenter = null;
@@ -402,7 +399,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                             InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(ProductName, Convert.ToDecimal(Amount), itemCount, ordItem, costCenter, dbContext);
                             ordItem.LogDBContext = dbContext;
                             newInvoiceItem.VAT = myCustomer.VAT;
-                            ordItem.Status = 900;
+                            ordItem.Status = (int)OrderItemStatusTypes.Payed;
                             dbContext.SubmitChanges();
                         }
                         // Submiting new InvoiceItems
@@ -412,7 +409,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
                         Print(newInvoice, dbContext);
                         orderQuery.LogDBContext = dbContext;
-                        orderQuery.Status = 900;
+                        orderQuery.Status = (int)OrderStatusTypes.Payed;
                         dbContext.SubmitChanges();
                         scope.Complete();                       
                     }
@@ -558,15 +555,15 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                 {
                                     //updating order status
                                     newOrder.LogDBContext = dbContext;
-                                    newOrder.Status = 600;
+                                    newOrder.Status = (int)OrderStatusTypes.Closed;
                                     newOrder.ExecutionDate = DateTime.Now;
                                     //updating orderitems status                          
                                     foreach (OrderItem ordItem in newOrder.OrderItem)
                                     {
                                         ordItem.LogDBContext = dbContext;
-                                        if (ordItem.Status != (int)OrderItemState.Storniert)
+                                        if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                                         {
-                                            ordItem.Status = 600;
+                                            ordItem.Status = (int)OrderItemStatusTypes.Closed;
                                         }
                                     }
                                     dbContext.SubmitChanges();
@@ -579,15 +576,15 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                 {
                                     //updating order status
                                     newOrder.LogDBContext = dbContext;
-                                    newOrder.Status = 600;
+                                    newOrder.Status = (int)OrderStatusTypes.Closed;
                                     newOrder.ExecutionDate = DateTime.Now;
                                     //updating orderitems status                          
                                     foreach (OrderItem ordItem in newOrder.OrderItem)
                                     {
                                         ordItem.LogDBContext = dbContext;
-                                        if (ordItem.Status != (int)OrderItemState.Storniert)
+                                        if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                                         {
-                                            ordItem.Status = 600;
+                                            ordItem.Status = (int)OrderItemStatusTypes.Closed;
                                         }
                                     }
                                     dbContext.SubmitChanges();
@@ -825,12 +822,12 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         var newOrder = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
                         //updating order status
                         newOrder.LogDBContext = dbContext;
-                        newOrder.Status = (int)OrderItemState.Storniert;
+                        newOrder.Status = (int)OrderStatusTypes.Cancelled;
                         //updating orderitems status                          
                         foreach (OrderItem ordItem in newOrder.OrderItem)
                         {
                             ordItem.LogDBContext = dbContext;
-                            ordItem.Status = (int)OrderItemState.Storniert;
+                            ordItem.Status = (int)OrderItemStatusTypes.Cancelled;
                         }
                         dbContext.SubmitChanges();
                         RadGridAbmeldung.Rebind();

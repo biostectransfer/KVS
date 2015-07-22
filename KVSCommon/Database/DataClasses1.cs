@@ -36,8 +36,7 @@ namespace KVSCommon.Database
                 throw new Exception("Der Tabellenname darf nicht leer sein.");
             }
 
-            //TODO
-            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, (int?)null, tableName, null, null));
+            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, null, tableName, null, null));
         }
         
         partial void OnCreated()
@@ -65,8 +64,7 @@ namespace KVSCommon.Database
         /// <param name="type">Typ des Logeintrages.</param>
         public void WriteLogItem(string logText, LogTypes type)
         {
-            //TODO
-            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, (int?)null, null, null, (int?)null));
+            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, null, null, null, null));
         }
 
         /// <summary>
@@ -102,7 +100,7 @@ namespace KVSCommon.Database
                 throw new Exception("Der Tabellenname darf nicht leer sein.");
             }
 
-            //TODO this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, null, null));
+            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, null, null));
         }
 
         /// <summary>
@@ -130,7 +128,7 @@ namespace KVSCommon.Database
                 throw new Exception("Die ChildReferenceId darf nicht leer sein.");
             }
 
-            //TODO this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, null, childReferenceId));
+            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, null, childReferenceId));
         }
 
         /// <summary>
@@ -158,7 +156,7 @@ namespace KVSCommon.Database
                 throw new Exception("Der Feldname darf nicht leer sein.");
             }
 
-            //TODO this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, propertyName, null));
+            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, propertyName, null));
         }
         
         /// <summary>
@@ -191,8 +189,8 @@ namespace KVSCommon.Database
                 LogTypeId = (int)type,
                 TableName = tableName,
                 TableProperty = propertyName,
-                //TODO ReferenceId = referenceId,
-                //ChildReferenceId = childReferenceId
+                ReferenceId = referenceId,
+                ChildReferenceId = childReferenceId
             };
         }
     }

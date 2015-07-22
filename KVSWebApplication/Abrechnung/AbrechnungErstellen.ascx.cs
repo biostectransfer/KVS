@@ -263,10 +263,8 @@ namespace KVSWebApplication.Abrechnung
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
 
             bool isPrinted = false;
-            //TODO if (e.WhereParameters["InvoiceId"] != null)
-            //{
             var invoiceId = Int32.Parse(e.WhereParameters["InvoiceId"].ToString());
-            //}
+
             if (e.WhereParameters["isPrinted"] != null)
             {
                 isPrinted = Convert.ToBoolean(e.WhereParameters["isPrinted"].ToString());

@@ -8,6 +8,7 @@ using KVSCommon.Database;
 using System.IO;
 using System.Configuration;
 using Telerik.Web.UI;
+using KVSCommon.Enums;
 namespace KVSWebApplication.Auftragseingang
 {
     /// <summary>
@@ -49,7 +50,7 @@ namespace KVSWebApplication.Auftragseingang
             DataClasses1DataContext con = new DataClasses1DataContext();
             var newQuery = from ord in con.Order
                            let registration = ord.RegistrationOrder != null ? ord.RegistrationOrder.Registration : ord.DeregistrationOrder.Registration
-                           where ord.Status == 900
+                           where ord.Status == (int)OrderStatusTypes.Payed
                            select new
                            {
                                OrderNumber = ord.OrderNumber,
@@ -79,9 +80,9 @@ namespace KVSWebApplication.Auftragseingang
                 {
                     foreach (OrderItem orderItem in order.OrderItem)
                     {
-                        if (orderItem.IsAuthorativeCharge && orderItem.Status == 900)
+                        if (orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
                             gebuehren = gebuehren + orderItem.Amount;
-                        else if (!orderItem.IsAuthorativeCharge && orderItem.Status == 900)
+                        else if (!orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
                             umsatz = umsatz + orderItem.Amount;
                     }
                 }
@@ -357,7 +358,7 @@ namespace KVSWebApplication.Auftragseingang
             {
                 var costCenterQuery = from cost in con.CostCenter
                                       join cust in con.Customer on cost.CustomerId equals cust.Id
-                                      where cost.CustomerId == 0 //TODO
+                                      //where cost.CustomerId == 0 //TODO
                                       select new
                                       {
                                           Name = cost.Name,
@@ -581,7 +582,7 @@ namespace KVSWebApplication.Auftragseingang
                     OrderItem newOrderItem2 = null;
                     Vehicle newVehicle = null;
                     DateTime? FirstRegistrationDate = null;
-                    int? costCenterId = null;
+
                     int? color = null;
                     if (!String.IsNullOrEmpty(LicenceBox1.Text))
                         kennzeichen = LicenceBox1.Text + "-" + LicenceBox2.Text + "-" + LicenceBox3.Text;
@@ -644,9 +645,7 @@ namespace KVSWebApplication.Auftragseingang
                             }
                             newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(Int32.Parse(Session["CurrentUserId"].ToString()),
                                 Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration,
-                                //TODO
-                                //Int32.Parse("03C828A1-CB90-4A32-AE0E-8B367A1259DD")
-                                0, locationId, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
+                                RegistrationOrderTypes.Renumbering, locationId, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
                             newKennzeichenRegOrder.Order.FreeText = FreiTextBox.Text;
 
                             newOrderItem1 = newKennzeichenRegOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.Amount, 1, costCenter, null, false, dbContext);
@@ -710,9 +709,7 @@ namespace KVSWebApplication.Auftragseingang
                         }
                         newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(Int32.Parse(Session["CurrentUserId"].ToString()),
                             Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration,
-                            //TODO
-                            //Int32.Parse("FEEBA978-D01C-40A8-A212-7CB6BB6E74D9")
-                            0, locationId, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
+                            RegistrationOrderTypes.Readmission, locationId, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
                         if (!String.IsNullOrEmpty(FreiTextBox.Text))
                         {
                             newKennzeichenRegOrder.Order.FreeText = FreiTextBox.Text;
@@ -771,9 +768,7 @@ namespace KVSWebApplication.Auftragseingang
                         }
                         newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(Int32.Parse(Session["CurrentUserId"].ToString()),
                             Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration,
-                            //TODO
-                            //Int32.Parse("1DF35583-034F-42B9-A3AC-EBD07835B14B")
-                            0, locationId, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
+                            RegistrationOrderTypes.NewAdmission, locationId, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
                         if (!String.IsNullOrEmpty(FreiTextBox.Text))
                         {
                             newKennzeichenRegOrder.Order.FreeText = FreiTextBox.Text;
@@ -974,21 +969,21 @@ namespace KVSWebApplication.Auftragseingang
                 smallCustomerOrderHiddenField.Value = regOrder.OrderNumber.ToString();
                 //updating order status
                 newOrder.LogDBContext = dbContext;
-                newOrder.Status = 600;
+                newOrder.Status = (int)OrderStatusTypes.Closed;
                 //updating orderitems status                          
                 foreach (OrderItem ordItem in newOrder.OrderItem)
                 {
                     ordItem.LogDBContext = dbContext;
-                    if (ordItem.Status != (int)OrderItemState.Storniert)
+                    if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                     {
-                        ordItem.Status = 600;
+                        ordItem.Status = (int)OrderItemStatusTypes.Closed;
                     }
                 }
                 dbContext.SubmitChanges();
                 //updating order und items status one more time to make it abgerechnet
                 newOrder.LogDBContext = dbContext;
                 newOrder.ExecutionDate = DateTime.Now;
-                newOrder.Status = 900;
+                newOrder.Status = (int)OrderStatusTypes.Payed;
                 dbContext.SubmitChanges();
                 //opening window for adress
                 string script = "function f(){$find(\"" + AddAdressRadWindow.ClientID + "\").show(); Sys.Application.remove_load(f);}Sys.Application.add_load(f);";
@@ -1061,13 +1056,7 @@ namespace KVSWebApplication.Auftragseingang
                     {
                         ProductName = ordItem.ProductName;
                         Amount = ordItem.Amount;
-                        
-                        //TODO
-                        //if (!String.IsNullOrEmpty(ordItem.CostCenterId.ToString()) && ordItem.CostCenterId.ToString().Length > 8)
-                        //{
-                        //    costCenterId = Int32.Parse(ordItem.CostCenterId.ToString());
-                        //}
-                        
+                                               
                         CostCenter costCenter = null;
                         if (ordItem.CostCenterId.HasValue)
                         {
@@ -1077,7 +1066,7 @@ namespace KVSWebApplication.Auftragseingang
                         itemCount = ordItem.Count;
                         InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(ProductName, Convert.ToDecimal(Amount), itemCount, ordItem, costCenter, dbContext);
                         ordItem.LogDBContext = dbContext;
-                        ordItem.Status = 900;
+                        ordItem.Status = (int)OrderItemStatusTypes.Payed;
                         dbContext.SubmitChanges();
                     }
                     // Submiting new InvoiceItems

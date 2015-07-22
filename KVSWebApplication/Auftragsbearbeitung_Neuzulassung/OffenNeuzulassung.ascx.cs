@@ -11,6 +11,7 @@ using System.Configuration;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using System.Transactions;
+using KVSCommon.Enums;
 
 namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 {
@@ -143,7 +144,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          join veh in con.Vehicle on regord.VehicleId equals veh.Id
                                          join smc in con.SmallCustomer on cust.Id equals smc.CustomerId
                                          orderby ord.OrderNumber descending
-                                         where ord.Status == 100 && ordtype.Name == "Zulassung" && ord.HasError.GetValueOrDefault(false) != true
+                                         where ord.Status == (int)OrderStatusTypes.Open && ordtype.Id == (int)OrderTypes.Admission && 
+                                         ord.HasError.GetValueOrDefault(false) != true
                                          select new
                                          {
                                              OrderNumber = ord.OrderNumber,
@@ -151,7 +153,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                              customerID = ord.CustomerId,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
-                                             CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " + cust.SmallCustomer.Person.Name : cust.Name,
+                                             CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " + 
+                                             cust.SmallCustomer.Person.Name : cust.Name,
                                              CustomerLocation = "",
                                              Kennzeichen = reg.Licencenumber,
                                              VIN = veh.VIN,
@@ -188,7 +191,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                      join veh in con.Vehicle on regord.VehicleId equals veh.Id
                                      join lmc in con.LargeCustomer on cust.Id equals lmc.CustomerId
                                      orderby ord.OrderNumber descending
-                                     where ord.Status == 100 && ordtype.Name == "Zulassung" && ord.HasError.GetValueOrDefault(false) != true
+                                     where ord.Status == (int)OrderStatusTypes.Open && ordtype.Id == (int)OrderTypes.Admission && 
+                                     ord.HasError.GetValueOrDefault(false) != true
                                      select new
                                      {
                                          OrderNumber = ord.OrderNumber,
@@ -647,7 +651,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                             join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
                                             join regLoc in con.RegistrationLocation on ord.Zulassungsstelle equals regLoc.ID
                                             join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
-                                            where ord.Status == 100 && ordtype.Name == "Zulassung" &&
+                                            where ord.Status == (int)OrderStatusTypes.Open && ordtype.Id == (int)OrderTypes.Admission &&
                                             ord.HasError.GetValueOrDefault(false) != true &&
                                             ord.RegistrationOrder.Registration.RegistrationDate <=
                                             ZulassungsDatumPicker.SelectedDate
@@ -677,15 +681,15 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                             docketList.AddOrderById(order2.OrderNumber, con);
                                             //updating order status
                                             order2.LogDBContext = con;
-                                            order2.Status = 400;
+                                            order2.Status = (int)OrderStatusTypes.AdmissionPoint;
 
                                             //updating orderitems status                          
                                             foreach (OrderItem ordItem in order2.OrderItem)
                                             {
                                                 ordItem.LogDBContext = con;
-                                                if (ordItem.Status != (int)OrderItemState.Storniert)
+                                                if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                                                 {
-                                                    ordItem.Status = 300;
+                                                    ordItem.Status = (int)OrderItemStatusTypes.InProgress;
                                                 }
                                             }
                                         }
@@ -789,15 +793,15 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 {
                     //updating order status
                     newOrder.LogDBContext = dbContext;
-                    newOrder.Status = 400;
+                    newOrder.Status = (int)OrderStatusTypes.AdmissionPoint;
 
                     //updating orderitems status                          
                     foreach (OrderItem ordItem in newOrder.OrderItem)
                     {
                         ordItem.LogDBContext = dbContext;
-                        if (ordItem.Status != (int)OrderItemState.Storniert)
+                        if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                         {
-                            ordItem.Status = 300;
+                            ordItem.Status = (int)OrderItemStatusTypes.InProgress;
                         }
                     }
 
@@ -958,15 +962,15 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         {
                             //updating order status
                             newOrder.LogDBContext = dbContext;
-                            newOrder.Status = 400;
+                            newOrder.Status = (int)OrderStatusTypes.AdmissionPoint;
 
                             //updating orderitems status                          
                             foreach (OrderItem ordItem in newOrder.OrderItem)
                             {
                                 ordItem.LogDBContext = dbContext;
-                                if (ordItem.Status != (int)OrderItemState.Storniert)
+                                if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                                 {
-                                    ordItem.Status = 300;
+                                    ordItem.Status = (int)OrderItemStatusTypes.InProgress;
                                 }
                             }
 
@@ -1103,13 +1107,13 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
                         //updating order status
                         newOrder.LogDBContext = dbContext;
-                        newOrder.Status = (int)OrderItemState.Storniert;
+                        newOrder.Status = (int)OrderStatusTypes.Cancelled;
 
                         //updating orderitems status                          
                         foreach (OrderItem ordItem in newOrder.OrderItem)
                         {
                             ordItem.LogDBContext = dbContext;
-                            ordItem.Status = (int)OrderItemState.Storniert;
+                            ordItem.Status = (int)OrderItemStatusTypes.Cancelled;
                         }
 
                         dbContext.SubmitChanges();

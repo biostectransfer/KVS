@@ -10,6 +10,7 @@ using System.IO;
 using System.Configuration;
 using System.Web.Caching;
 using System.Transactions;
+using KVSCommon.Enums;
 namespace KVSWebApplication.Auftragseingang
 {
     //Neuzulassung Laufkunde
@@ -61,7 +62,7 @@ namespace KVSWebApplication.Auftragseingang
             DataClasses1DataContext con = new DataClasses1DataContext();
             var newQuery = from ord in con.Order
                            let registration = ord.RegistrationOrder != null ? ord.RegistrationOrder.Registration : ord.DeregistrationOrder.Registration
-                           where ord.Status == 900
+                           where ord.Status == (int)OrderStatusTypes.Payed
                            select new
                            {
                                CustomerId = ord.CustomerId,
@@ -91,9 +92,9 @@ namespace KVSWebApplication.Auftragseingang
                 {
                     foreach (OrderItem orderItem in order.OrderItem)
                     {
-                        if (orderItem.IsAuthorativeCharge && orderItem.Status == 900)
+                        if (orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
                             gebuehren = gebuehren + orderItem.Amount;
-                        else if (!orderItem.IsAuthorativeCharge && orderItem.Status == 900)
+                        else if (!orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
                             umsatz = umsatz + orderItem.Amount;
                     }
                 }
@@ -478,10 +479,8 @@ namespace KVSWebApplication.Auftragseingang
                             newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text, 
                                 Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
                             newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(Int32.Parse(Session["CurrentUserId"].ToString()), 
-                                Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration, 
-                                //TODO
-                                //Int32.Parse("03C828A1-CB90-4A32-AE0E-8B367A1259DD")
-                                0, null, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
+                                Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration,
+                                RegistrationOrderTypes.Renumbering, null, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
                             newKennzeichenRegOrder.Order.FreeText = FreiTextBox.Text;
                             dbContext.SubmitChanges();
                             AddAnotherProducts(newKennzeichenRegOrder, null);                           
@@ -540,10 +539,8 @@ namespace KVSWebApplication.Auftragseingang
                             return;
                         }
                         newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(Int32.Parse(Session["CurrentUserId"].ToString()), 
-                            Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration, 
-                            //TODO
-                            //Int32.Parse("FEEBA978-D01C-40A8-A212-7CB6BB6E74D9")
-                            0, null, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
+                            Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration,
+                            RegistrationOrderTypes.Readmission, null, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
                         if (!String.IsNullOrEmpty(FreiTextBox.Text))
                         {
                             newKennzeichenRegOrder.Order.FreeText = FreiTextBox.Text;
@@ -598,10 +595,8 @@ namespace KVSWebApplication.Auftragseingang
                             return;
                         }
                         newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(Int32.Parse(Session["CurrentUserId"].ToString()),
-                            Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration, 
-                            //TODO
-                            //Int32.Parse("1DF35583-034F-42B9-A3AC-EBD07835B14B")
-                            0, null, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
+                            Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration,
+                            RegistrationOrderTypes.NewAdmission, null, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
                         if (!String.IsNullOrEmpty(FreiTextBox.Text))
                         {
                             newKennzeichenRegOrder.Order.FreeText = FreiTextBox.Text;
@@ -791,21 +786,21 @@ namespace KVSWebApplication.Auftragseingang
                 smallCustomerOrderHiddenField.Value = regOrder.OrderNumber.ToString();
                 //updating order status
                 newOrder.LogDBContext = dbContext;
-                newOrder.Status = 600;
+                newOrder.Status = (int)OrderStatusTypes.Closed;
                 //updating orderitems status                          
                 foreach (OrderItem ordItem in newOrder.OrderItem)
                 {
                     ordItem.LogDBContext = dbContext;
-                    if (ordItem.Status != (int)OrderItemState.Storniert)
+                    if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                     {
-                        ordItem.Status = 600;
+                        ordItem.Status = (int)OrderItemStatusTypes.Closed;
                     }
                 }
                 dbContext.SubmitChanges();
                 //updating order und items status one more time to make it abgerechnet
                 newOrder.LogDBContext = dbContext;
                 newOrder.ExecutionDate = DateTime.Now;
-                newOrder.Status = 900;
+                newOrder.Status = (int)OrderStatusTypes.Payed;
                 dbContext.SubmitChanges();
                 //opening window for adress
                 string script = "function f(){$find(\"" + AddAdressRadWindow.ClientID + "\").show(); Sys.Application.remove_load(f);}Sys.Application.add_load(f);";
@@ -882,7 +877,7 @@ namespace KVSWebApplication.Auftragseingang
                             Amount = ordItem.Amount;
                             
                             CostCenter costCenter = null;
-                            if (ordItem.CostCenterId.HasValue)//TODO && ordItem.CostCenterId.ToString().Length > 8)
+                            if (ordItem.CostCenterId.HasValue)
                             {
                                 costCenter = dbContext.CostCenter.FirstOrDefault(o => o.Id == ordItem.CostCenterId.Value);
                             }
@@ -891,7 +886,7 @@ namespace KVSWebApplication.Auftragseingang
                             InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(ProductName, Convert.ToDecimal(Amount), itemCount, ordItem, costCenter, dbContext);
                             ordItem.LogDBContext = dbContext;
                            // newInvoiceItem.VAT = myCustomer.VAT;
-                            ordItem.Status = 900;
+                            ordItem.Status = (int)OrderItemStatusTypes.Payed;
                             dbContext.SubmitChanges();
                         }
                         // Submiting new InvoiceItems

@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using KVSCommon.Database;
 using Telerik.Web.UI;
+using KVSCommon.Enums;
 namespace KVSWebApplication.Statistic
 {
     /// <summary>
@@ -31,7 +32,7 @@ namespace KVSWebApplication.Statistic
             DataClasses1DataContext con = new DataClasses1DataContext();
             var newQuery = from ord in con.Order
                            let registration = ord.RegistrationOrder != null ? ord.RegistrationOrder.Registration : ord.DeregistrationOrder.Registration
-                           where ord.Status == 900
+                           where ord.Status == (int)OrderStatusTypes.Payed
                            select new
                            {
                                OrderNumber = ord.OrderNumber,
@@ -102,9 +103,9 @@ namespace KVSWebApplication.Statistic
                 { 
                     foreach (OrderItem orderItem in order.OrderItem)
                     {
-                        if (orderItem.IsAuthorativeCharge && orderItem.Status == 900)
+                        if (orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
                             gebuehren = gebuehren + orderItem.Amount;
-                        else if (!orderItem.IsAuthorativeCharge && orderItem.Status == 900)
+                        else if (!orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
                             umsatz = umsatz + orderItem.Amount;
                     }
                 }
@@ -123,7 +124,7 @@ namespace KVSWebApplication.Statistic
                 var customerQuery = con.Customer.SingleOrDefault(q => q.Id == Int32.Parse(CustomerNameBox.SelectedValue));
                 if (customerQuery != null)
                 {
-                    List<Order> orderList = con.Order.Where(q => q.CustomerId == customerQuery.Id && q.Status == 900).ToList();
+                    List<Order> orderList = con.Order.Where(q => q.CustomerId == customerQuery.Id && q.Status == (int)OrderStatusTypes.Payed).ToList();
                     foreach (Order order in orderList)
                     {
                         if (order.OrderType.Name.Contains("Abmeldung"))
@@ -142,7 +143,7 @@ namespace KVSWebApplication.Statistic
             else
             {
                 DataClasses1DataContext con = new DataClasses1DataContext();
-                List<Order> orderList = con.Order.Where(q => q.Status == 900).ToList();
+                List<Order> orderList = con.Order.Where(q => q.Status == (int)OrderStatusTypes.Payed).ToList();
                 foreach (Order order in orderList)
                 {
                     if (order.OrderType.Name.Contains("Abmeldung"))
@@ -167,7 +168,7 @@ namespace KVSWebApplication.Statistic
                             select cust.Id; 
             foreach (var custId in Customer1)
             {
-                var order = con.Order.Count(q => q.CustomerId == custId && q.Status == 900);
+                var order = con.Order.Count(q => q.CustomerId == custId && q.Status == (int)OrderStatusTypes.Payed);
                 if (order != 0)
                 {
                     var customerName = con.Customer.SingleOrDefault(q => q.Id == custId).Name;
@@ -185,7 +186,7 @@ namespace KVSWebApplication.Statistic
             foreach (var custId in Customer1)
             {
                 var orders = (from ord in con.Order
-                             where ord.CustomerId == custId && ord.Status == 900
+                              where ord.CustomerId == custId && ord.Status == (int)OrderStatusTypes.Payed
                              select ord).ToList();
                 var customerName = con.Customer.SingleOrDefault(q => q.Id == custId).Name;
                 double sum = 0;
@@ -196,7 +197,7 @@ namespace KVSWebApplication.Statistic
                     {
                         foreach (OrderItem item in order.OrderItem)
                         {
-                            if (!item.IsAuthorativeCharge && item.Status == 900)
+                            if (!item.IsAuthorativeCharge && item.Status == (int)OrderItemStatusTypes.Payed)
                             {
                                 sum = sum + Convert.ToDouble(item.Amount);                               
                             }

@@ -112,7 +112,7 @@
 <CommandItemSettings ShowAddNewRecordButton="false"  ShowRefreshButton="true"  />
     <Columns>
         <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderNumber" HeaderText="Auftragsnummer"
-        SortExpression="OrderNumber" <%-- Display = "false"--%> UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
+        SortExpression="OrderNumber" UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
         ShowFilterIcon="false">
     </telerik:GridBoundColumn>   
         <telerik:GridBoundColumn FilterControlWidth="105px" DataField="locationId" HeaderText="locationId"

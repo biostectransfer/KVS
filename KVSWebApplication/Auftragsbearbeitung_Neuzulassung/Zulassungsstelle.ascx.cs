@@ -11,6 +11,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Configuration;
 using System.Transactions;
+using KVSCommon.Enums;
 namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 {
     public partial class Zulassungsstelle : System.Web.UI.UserControl
@@ -111,7 +112,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          join veh in con.Vehicle on regord.VehicleId equals veh.Id
                                          join smc in con.SmallCustomer on cust.Id equals smc.CustomerId
                                          orderby ord.OrderNumber descending
-                                         where ord.Status == 400 && ordtype.Name == "Zulassung" && ord.HasError.GetValueOrDefault(false) != true
+                                         where ord.Status == (int)OrderStatusTypes.AdmissionPoint && ordtype.Id == (int)OrderTypes.Admission && ord.HasError.GetValueOrDefault(false) != true
                                          select new
                                          {
                                              OrderNumber = ord.OrderNumber,
@@ -149,7 +150,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                           join veh in con.Vehicle on regord.VehicleId equals veh.Id
                                           join lmc in con.LargeCustomer on cust.Id equals lmc.CustomerId
                                           orderby ord.OrderNumber descending
-                                          where ord.Status == 400 && ordtype.Name == "Zulassung" && ord.HasError.GetValueOrDefault(false) != true
+                                          where ord.Status == (int)OrderStatusTypes.AdmissionPoint && ordtype.Id == (int)OrderTypes.Admission && ord.HasError.GetValueOrDefault(false) != true
                                           select new
                                           {
                                               OrderNumber = ord.OrderNumber,
@@ -529,15 +530,15 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                             {
                                 //updating order status
                                 newOrder.LogDBContext = dbContext;
-                                newOrder.Status = 600;
+                                newOrder.Status = (int)OrderStatusTypes.Closed;
                                 newOrder.ExecutionDate = DateTime.Now;
                                 //updating orderitems status                          
                                 foreach (OrderItem ordItem in newOrder.OrderItem)
                                 {
                                     ordItem.LogDBContext = dbContext;
-                                    if (ordItem.Status != (int)OrderItemState.Storniert)
+                                    if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                                     {
-                                        ordItem.Status = 600;
+                                        ordItem.Status = (int)OrderItemStatusTypes.Closed;
                                     }
                                 }
                                 dbContext.SubmitChanges();
@@ -550,15 +551,15 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                             {
                                 //updating order status
                                 newOrder.LogDBContext = dbContext;
-                                newOrder.Status = 600;
+                                newOrder.Status = (int)OrderStatusTypes.Closed;
                                 newOrder.ExecutionDate = DateTime.Now;
                                 //updating orderitems status                          
                                 foreach (OrderItem ordItem in newOrder.OrderItem)
                                 {
                                     ordItem.LogDBContext = dbContext;
-                                    if (ordItem.Status != (int)OrderItemState.Storniert)
+                                    if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                                     {
-                                        ordItem.Status = 600;
+                                        ordItem.Status = (int)OrderItemStatusTypes.Closed;
                                     }
                                 }
                                 dbContext.SubmitChanges();
@@ -650,7 +651,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                             Amount = ordItem.Amount;
 
                             CostCenter costCenter = null;
-                            if (ordItem.CostCenterId.HasValue)//TODO && ordItem.CostCenterId.ToString().Length > 8)
+                            if (ordItem.CostCenterId.HasValue)
                             {
                                 costCenter = dbContext.CostCenter.FirstOrDefault(o => o.Id == ordItem.CostCenterId.Value);
                             }
@@ -659,7 +660,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                             InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(ProductName, Convert.ToDecimal(Amount), itemCount, ordItem, costCenter, dbContext);
                             ordItem.LogDBContext = dbContext;
                             newInvoiceItem.VAT = myCustomer.VAT;
-                            ordItem.Status = 900;
+                            ordItem.Status = (int)OrderItemStatusTypes.Payed;
                             dbContext.SubmitChanges();
                         }
                         // Submiting new InvoiceItems
@@ -669,7 +670,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
                         Print(newInvoice, dbContext);
                         orderQuery.LogDBContext = dbContext;
-                        orderQuery.Status = 900;
+                        orderQuery.Status = (int)OrderStatusTypes.Payed;
                         dbContext.SubmitChanges();
                         scope.Complete();
                     }
@@ -754,10 +755,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     {
                         var orderNumber = Int32.Parse(item["OrderNumber"].Text);
                         KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == Int32.Parse(productDropDown.SelectedValue));
-                        
-                        //TODO newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == locationId);
-                        
-                        if (!String.IsNullOrEmpty(item["locationId"].Text))//TODO && item["locationId"].Text.Length > 6)
+                                                
+                        if (!String.IsNullOrEmpty(item["locationId"].Text))
                         {
                             var locationId = Int32.Parse(item["locationId"].Text);
                             newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == locationId);
@@ -875,12 +874,12 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         var newOrder = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
                         //updating order status
                         newOrder.LogDBContext = dbContext;
-                        newOrder.Status = (int)OrderItemState.Storniert;
+                        newOrder.Status = (int)OrderStatusTypes.Cancelled;
                         //updating orderitems status                          
                         foreach (OrderItem ordItem in newOrder.OrderItem)
                         {
                             ordItem.LogDBContext = dbContext;
-                            ordItem.Status = (int)OrderItemState.Storniert;
+                            ordItem.Status = (int)OrderItemStatusTypes.Cancelled;
                         }
                         dbContext.SubmitChanges();
                         RadGridNeuzulassung.Rebind();

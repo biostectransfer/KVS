@@ -89,8 +89,6 @@
     <Compile Include="Database\Order.cs" />
     <Compile Include="Database\OrderInvoice.cs" />
     <Compile Include="Database\OrderItem.cs" />
-    <Compile Include="Database\OrderItemState.cs" />
-    <Compile Include="Database\OrderState.cs" />
     <Compile Include="Database\PackingList.cs" />
     <Compile Include="Database\PathPosition.cs" />
     <Compile Include="Database\Permission.cs" />
@@ -106,6 +104,10 @@
     <Compile Include="Database\User.cs" />
     <Compile Include="Database\Vehicle.cs" />
     <Compile Include="Database\_Accounts.cs" />
+    <Compile Include="Enums\OrderItemStatusTypes.cs" />
+    <Compile Include="Enums\OrderStatusTypes.cs" />
+    <Compile Include="Enums\OrderTypes.cs" />
+    <Compile Include="Enums\RegistrationOrderTypes.cs" />
     <Compile Include="PDF\AbstractPDFCreator.cs" />
     <Compile Include="PDF\GroupedAppendix.cs" />
     <Compile Include="PDF\InvoicePDF.cs" />

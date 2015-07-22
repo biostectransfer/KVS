@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using KVSCommon.Database;
 using Telerik.Web.UI;
 using System.Data.SqlClient;
+using KVSCommon.Enums;
 
 namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 {
@@ -42,69 +43,70 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 }
                 if (!target.Contains("LieferungButton") && !target.Contains("Button1"))
                 {
-                }   
-            }                    
-        }    
-     protected void LieferscheineLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {
-                DataClasses1DataContext con = new DataClasses1DataContext();
-                var largeCustomerQuery = from ord in con.Order
-                                         join ordst in con.OrderStatus on ord.Status equals ordst.Id
-                                         join cust in con.Customer on ord.CustomerId equals cust.Id
-                                         join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
-                                         join loc in con.Location on ord.LocationId equals loc.Id
-                                         join derord in con.DeregistrationOrder on ord.OrderNumber equals derord.OrderNumber
-                                         join reg in con.Registration on derord.RegistrationId equals reg.Id
-                                         join veh in con.Vehicle on derord.VehicleId equals veh.Id
-                                         where ord.Status == 600 && ordtype.Name == "Abmeldung" && (ord.ReadyToSend == false || ord.ReadyToSend == null)
-                                         select new 
-                                         {
-                                             OrderNumber = ord.OrderNumber,
-                                             locationId = loc.Id,
-                                             CreateDate = ord.CreateDate,
-                                             Status = ordst.Name,
-                                             CustomerName = cust.Name,
-                                             Kennzeichen = reg.Licencenumber,
-                                             VIN = veh.VIN,
-                                             TSN = veh.TSN,
-                                             HSN = veh.HSN,
-                                             CustomerLocation = loc.Name,
-                                             CustomerLocationId = loc.Id,
-                                             Kundenname = cust.Name,
-                                             CustomerId = ord.CustomerId,
-                                             Standort = loc.Name,
-                                             OrderTyp = ordtype.Name
-                                         };              
-                e.Result = largeCustomerQuery;      
+                }
+            }
         }
-     protected void LieferItems_Selected(object sender, EventArgs e)
-     {
-         if (RadGridLieferscheine.SelectedItems.Count > 0)
-         {
-             BitteTextBox.Visible = false;
-             GridDataItem itemToCheck = RadGridLieferscheine.SelectedItems[0] as GridDataItem;
-             bool statusFromCheck = CheckForOpenValues(itemToCheck["CustomerLocation"].Text);
-             //Falls es gibt noch values - start javascript und raus
-             if (statusFromCheck == true)
-             {
-                 ScriptManager.RegisterStartupScript(this.Page, typeof(Page), "UserResponce", "Closewindow()", true);
-             }
-             else
-             {
-                 ScriptManager.RegisterStartupScript(this.Page, typeof(Page), "UserResponce2", "CreatePacking()", true);               
-             }
-         }
-         else
-         {
-             BitteTextBox.Visible = true;
-         }
-     }
-     protected void OnAddAdressButton_Clicked(object sender, EventArgs e)
-     {
-         AllesIstOkeyLabelLieferschein.Visible = true;
-         LieferscheinErstellen();
-         RadGridLieferscheine.Rebind(); 
-     }
+        protected void LieferscheineLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
+        {
+            DataClasses1DataContext con = new DataClasses1DataContext();
+            var largeCustomerQuery = from ord in con.Order
+                                     join ordst in con.OrderStatus on ord.Status equals ordst.Id
+                                     join cust in con.Customer on ord.CustomerId equals cust.Id
+                                     join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
+                                     join loc in con.Location on ord.LocationId equals loc.Id
+                                     join derord in con.DeregistrationOrder on ord.OrderNumber equals derord.OrderNumber
+                                     join reg in con.Registration on derord.RegistrationId equals reg.Id
+                                     join veh in con.Vehicle on derord.VehicleId equals veh.Id
+                                     where ord.Status == (int)OrderStatusTypes.Closed && ordtype.Id == (int)OrderTypes.Cancellation && 
+                                     (ord.ReadyToSend == false || ord.ReadyToSend == null)
+                                     select new
+                                     {
+                                         OrderNumber = ord.OrderNumber,
+                                         locationId = loc.Id,
+                                         CreateDate = ord.CreateDate,
+                                         Status = ordst.Name,
+                                         CustomerName = cust.Name,
+                                         Kennzeichen = reg.Licencenumber,
+                                         VIN = veh.VIN,
+                                         TSN = veh.TSN,
+                                         HSN = veh.HSN,
+                                         CustomerLocation = loc.Name,
+                                         CustomerLocationId = loc.Id,
+                                         Kundenname = cust.Name,
+                                         CustomerId = ord.CustomerId,
+                                         Standort = loc.Name,
+                                         OrderTyp = ordtype.Name
+                                     };
+            e.Result = largeCustomerQuery;
+        }
+        protected void LieferItems_Selected(object sender, EventArgs e)
+        {
+            if (RadGridLieferscheine.SelectedItems.Count > 0)
+            {
+                BitteTextBox.Visible = false;
+                GridDataItem itemToCheck = RadGridLieferscheine.SelectedItems[0] as GridDataItem;
+                bool statusFromCheck = CheckForOpenValues(itemToCheck["CustomerLocation"].Text);
+                //Falls es gibt noch values - start javascript und raus
+                if (statusFromCheck == true)
+                {
+                    ScriptManager.RegisterStartupScript(this.Page, typeof(Page), "UserResponce", "Closewindow()", true);
+                }
+                else
+                {
+                    ScriptManager.RegisterStartupScript(this.Page, typeof(Page), "UserResponce2", "CreatePacking()", true);
+                }
+            }
+            else
+            {
+                BitteTextBox.Visible = true;
+            }
+        }
+        protected void OnAddAdressButton_Clicked(object sender, EventArgs e)
+        {
+            AllesIstOkeyLabelLieferschein.Visible = true;
+            LieferscheinErstellen();
+            RadGridLieferscheine.Rebind();
+        }
         /// <summary>
         /// Prüft die Datenbank für Aufträge, die nicht geschlossen sind.
         /// </summary>
@@ -114,13 +116,13 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         {
             bool statusFromCheck = false;
             if (!String.IsNullOrEmpty(location))
-            {                     
+            {
                 DataClasses1DataContext con = new DataClasses1DataContext();
                 var values = (from ord in con.Order
-                             join loc in con.Location on ord.LocationId equals loc.Id
-                             join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
-                             where loc.Name == location && ord.Status == 400 && ordtype.Name == "Abmeldung"
-                             select ord.LocationId).ToList();
+                              join loc in con.Location on ord.LocationId equals loc.Id
+                              join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
+                              where loc.Name == location && ord.Status == (int)OrderStatusTypes.AdmissionPoint && ordtype.Id == (int)OrderTypes.Cancellation
+                              select ord.LocationId).ToList();
 
                 if (values.Count > 0)
                 {
@@ -132,7 +134,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         //erstellt die Lieferscheine
         protected void LieferscheinErstellen()
-        {           
+        {
             OffenePanel.Visible = false;
             AllesIstOkeyLabelLieferschein.Visible = false;
             ErrorLabelLieferschein.Visible = false;
@@ -152,7 +154,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         orJ.Order = myOrder;
                         locationIdList.Add(orJ);
                     }
-                   var groupedOrder = locationIdList.GroupBy(q => q.LocationId);
+                    var groupedOrder = locationIdList.GroupBy(q => q.LocationId);
                     foreach (var gr in groupedOrder)
                     {
                         var locationQuery = dbContext.Location.SingleOrDefault(q => q.Id == gr.First().LocationId);
@@ -177,8 +179,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 {
                     ErrorLabelLieferschein.Visible = true;
                     ErrorLabelLieferschein.Text = "Fehler: " + ex.Message;
-                }             
-            }                  
+                }
+            }
         }
         protected void LieferscheineOffeneLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
@@ -195,14 +197,14 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          join derord in con.DeregistrationOrder on ord.OrderNumber equals derord.OrderNumber
                                          join reg in con.Registration on derord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on derord.VehicleId equals veh.Id
-                                         where ord.Status == 400 && ordtype.Name == "Abmeldung" && loc.Id == locationId
+                                         where ord.Status == (int)OrderStatusTypes.AdmissionPoint && ordtype.Id == (int)OrderTypes.Cancellation && loc.Id == locationId
                                          select new
                                          {
                                              OrderNumber = ord.OrderNumber,
                                              customerID = cust.Id,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
-                                             CustomerName =  cust.Name,
+                                             CustomerName = cust.Name,
                                              Kennzeichen = reg.Licencenumber,
                                              VIN = veh.VIN,
                                              TSN = veh.TSN,
@@ -225,14 +227,16 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          join derord in con.DeregistrationOrder on ord.OrderNumber equals derord.OrderNumber
                                          join reg in con.Registration on derord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on derord.VehicleId equals veh.Id
-                                         where ord.Status == 400 && ordtype.Name == "Abmeldung" && loc.Name == LocationIdHiddenField.Value
+                                         where ord.Status == (int)OrderStatusTypes.AdmissionPoint && ordtype.Id == (int)OrderTypes.Cancellation && 
+                                         loc.Name == LocationIdHiddenField.Value
                                          select new
                                          {
                                              OrderNumber = ord.OrderNumber,
                                              customerID = cust.Id,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
-                                             CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " + cust.SmallCustomer.Person.Name : cust.Name,
+                                             CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " + 
+                                             cust.SmallCustomer.Person.Name : cust.Name,
                                              Kennzeichen = reg.Licencenumber,
                                              VIN = veh.VIN,
                                              TSN = veh.TSN,
@@ -249,7 +253,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 OffenePanel.Visible = false;
                 NochOffenAuftraegeRadGrid.Enabled = false;
                 AllesIsOkeyBeiOffene.Visible = false;
-            }             
+            }
         }
         protected void FertigstellenButton_Clicked(object sender, GridCommandEventArgs e)
         {
@@ -277,15 +281,15 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         {
                             //updating order status
                             newOrder.LogDBContext = dbContext;
-                            newOrder.Status = 600;
+                            newOrder.Status = (int)OrderStatusTypes.Closed;
                             newOrder.ExecutionDate = DateTime.Now;
                             //updating orderitems status                          
                             foreach (OrderItem ordItem in newOrder.OrderItem)
                             {
                                 ordItem.LogDBContext = dbContext;
-                                if (ordItem.Status != (int)OrderItemState.Storniert)
+                                if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                                 {
-                                    ordItem.Status = 600;
+                                    ordItem.Status = (int)OrderItemStatusTypes.Closed;
                                 }
                             }
                             dbContext.SubmitChanges();
@@ -337,7 +341,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             if (String.IsNullOrEmpty(fertigStellenItem["VIN"].Text))
             {
                 shouldBeUpdated = false;
-            }            
+            }
             return shouldBeUpdated;
         }
     }

@@ -153,9 +153,8 @@ namespace KVSCommon.Database
                 FileName = fileName,
                 MimeType = "application/pdf"
             };        
+
             dbContext.Document.InsertOnSubmit(doc);
-            
-            //TODO check this
             dbContext.SubmitChanges();
 
             this.DocumentId = doc.Id;

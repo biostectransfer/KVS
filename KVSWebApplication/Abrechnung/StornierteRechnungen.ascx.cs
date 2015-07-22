@@ -144,11 +144,8 @@ namespace KVSWebApplication.Abrechnung
         protected void DetailTable_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            var invoiceId = Int32.Parse(e.WhereParameters["InvoiceId"].ToString());
 
-            //TODO if (e.WhereParameters["InvoiceId"] != null)
-            //{
-             var invoiceId = Int32.Parse(e.WhereParameters["InvoiceId"].ToString());
-            //}
             var invoiceAccounts = Accounts.generateAccountNumber(dbContext, invoiceId).ToList();
                   var invoiceItemsQuery = (from invitem in dbContext.InvoiceItem
                                      join inv in dbContext.Invoice on invitem.InvoiceId equals inv.Id

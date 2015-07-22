@@ -10256,7 +10256,7 @@
                     // Apply zIndex to all handles - see #7960
                     axis.css({ zIndex: o.zIndex });
 
-                    //TODO : What's going on here?
+                    // What's going on here?
                     if ("se" === handle) {
                         axis.addClass("ui-icon ui-icon-gripsmall-diagonal-se");
                     }
@@ -10300,14 +10300,14 @@
 
                     }
 
-                    //TODO: What's that good for? There's not anything to be executed left
+                    //What's that good for? There's not anything to be executed left
                     if (!$(this.handles[i]).length) {
                         continue;
                     }
                 }
             };
 
-            //TODO: make renderAxis a prototype function
+            //make renderAxis a prototype function
             this._renderAxis(this.element);
 
             this._handles = $(".ui-resizable-handle", this.element)
@@ -10362,7 +10362,7 @@
 					.removeData("resizable").removeData("ui-resizable").unbind(".resizable").find(".ui-resizable-handle").remove();
 			};
 
-            //TODO: Unwrap at same DOM position
+            //Unwrap at same DOM position
             if (this.elementIsWrapper) {
                 _destroy(this.element);
                 wrapper = this.element;
@@ -10713,7 +10713,7 @@
                     position: "absolute",
                     left: this.elementOffset.left + "px",
                     top: this.elementOffset.top + "px",
-                    zIndex: ++o.zIndex //TODO: Don't modify option
+                    zIndex: ++o.zIndex //: Don't modify option
                 });
 
                 this.helper

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Configuration;
+using KVSCommon.Enums;
 
 namespace KVSCommon.Database
 {
@@ -86,7 +87,7 @@ namespace KVSCommon.Database
             {
                 CreateDate = DateTime.Now,
                 CustomerId = customerId,
-                Status = (int)OrderState.Offen,
+                Status = (int)OrderStatusTypes.Open,
                 OrderTypeId = orderTypeId,
                 UserId = userId,
                 Zulassungsstelle = zulassungsstelleId
@@ -105,17 +106,18 @@ namespace KVSCommon.Database
         public static void UpdateOrderStates(List<int> orderNumbers, DataClasses1DataContext dbContext)
         {
             IQueryable<Order> orders = dbContext.Order.Where(q => orderNumbers.Contains(q.OrderNumber));
-            foreach (var order in orders.Where(q => q.OrderItem.Any(p => p.Status == (int)OrderItemState.Abgerechnet) && 
-                !q.OrderItem.All(r => r.Status == (int)OrderItemState.Abgerechnet || r.Status == (int)OrderItemState.Storniert)))
+            foreach (var order in orders.Where(q => q.OrderItem.Any(p => p.Status == (int)OrderItemStatusTypes.Payed) &&
+                !q.OrderItem.All(r => r.Status == (int)OrderItemStatusTypes.Payed || r.Status == (int)OrderItemStatusTypes.Cancelled)))
             {
                 order.LogDBContext = dbContext;
-                order.Status = (int)OrderState.Teilabgerechnet;
+                order.Status = (int)OrderStatusTypes.PartiallyPayed;
             }
 
-            foreach (var order in orders.Where(q => q.OrderItem.All(p => p.Status == (int)OrderItemState.Storniert || p.Status == (int)OrderItemState.Abgerechnet)))
+            foreach (var order in orders.Where(q => q.OrderItem.All(p => p.Status == (int)OrderItemStatusTypes.Cancelled ||
+                p.Status == (int)OrderItemStatusTypes.Payed)))
             {
                 order.LogDBContext = dbContext;
-                order.Status = (int)OrderState.Abgerechnet;
+                order.Status = (int)OrderStatusTypes.Payed;
             }
         }
 
@@ -229,7 +231,8 @@ namespace KVSCommon.Database
 
                 foreach (var customer in customers)
                 {
-                    var orders = customer.Customer.Order.Where(q => q.Status >= (int)OrderState.Abgeschlossen && !q.HasFinishedNoteBeenSent.GetValueOrDefault(false));
+                    var orders = customer.Customer.Order.Where(q => q.Status >= (int)OrderStatusTypes.Closed && 
+                        !q.HasFinishedNoteBeenSent.GetValueOrDefault(false));
                     if (customer.SendOrderFinishedNoteToLocation.GetValueOrDefault(false))
                     {
                         var locationOrders = orders.GroupBy(q => q.Location);
@@ -304,7 +307,7 @@ namespace KVSCommon.Database
                 Amount = priceAmount,
                 CostCenter = costCenter,
                 ProductId = productId,
-                Status = (int)OrderItemState.Offen,
+                Status = (int)OrderItemStatusTypes.Open,
                 ProductName = product.Name,
                 SuperOrderItemId = superOrderItemId,
                 Count = count,
@@ -398,14 +401,14 @@ namespace KVSCommon.Database
 
                     }
                     order.PackingList = null;
-                    order.Status = (int)OrderState.Zulassungsstelle;
+                    order.Status = (int)OrderStatusTypes.AdmissionPoint;
                     order.ReadyToSend = false;
                     order.FinishDate = null;
 
                     foreach (var orIt in order.OrderItem)
                     {
                         orIt.LogDBContext = dbContext;
-                        orIt.Status = (int)OrderItemState.InBearbeitung;
+                        orIt.Status = (int)OrderItemStatusTypes.InProgress;
 
                     }
 
@@ -438,12 +441,12 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnStatusChanging(int value)
         {
-            if (value == (int)OrderState.Storniert && this.Status >= (int)OrderState.Teilabgerechnet)
+            if (value == (int)OrderStatusTypes.Cancelled && this.Status >= (int)OrderStatusTypes.PartiallyPayed)
             {
                 throw new Exception("Der Auftrag kann nicht storniert werden, da er bereits (teilweise) abgerechnet ist.");
             }
 
-            if (value == (int)OrderState.Abgeschlossen && !this.FinishDate.HasValue)
+            if (value == (int)OrderStatusTypes.Closed && !this.FinishDate.HasValue)
             {
                 this.FinishDate = DateTime.Now;
             }

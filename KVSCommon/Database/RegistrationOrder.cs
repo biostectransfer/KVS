@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KVSCommon.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,13 +41,13 @@ namespace KVSCommon.Database
         /// <param name="evbNumber">eVB-Nummer der Fahrzeugversicherung.</param>
         /// <param name="vehicleId">Id des Fahrzeugs.</param>
         /// <param name="registrationId">Id der Zulassung.</param>
-        /// <param name="registrationOrderTypeId">Id der Zulassungsart.</param>
+        /// <param name="registrationOrderType">Id der Zulassungsart.</param>
         /// <param name="locationId">Id des Standorts (Pflicht bei Grosskunden, sonst null).</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Zulassungsauftrag.</returns>
         /// <remarks>Erstellt auch gleichzeitig den Order-Datensatz.</remarks>
         public static RegistrationOrder CreateRegistrationOrder(int userId, int customerId, string licencenumber, string previousLicencenumber, string evbNumber, 
-            Vehicle vehicle, Registration registration, int registrationOrderTypeId, int? locationId, int zulassungsstelleId, DataClasses1DataContext dbContext)
+            Vehicle vehicle, Registration registration, RegistrationOrderTypes registrationOrderType, int? locationId, int zulassungsstelleId, DataClasses1DataContext dbContext)
         {
             var orderTypeId = dbContext.OrderType.Single(q => q.Name == "Zulassung").Id;
             Order order = Order.CreateOrder(userId, customerId, orderTypeId, zulassungsstelleId, dbContext);
@@ -59,11 +60,10 @@ namespace KVSCommon.Database
                 Vehicle = vehicle,
                 Registration = registration,
                 PreviousLicencenumber = previousLicencenumber,
-                RegistrationOrderTypeId = registrationOrderTypeId,
+                RegistrationOrderTypeId = (int)registrationOrderType,
                 eVBNumber = evbNumber
             };
 
-            //var vehicleVIN = dbContext.Vehicle.Where(q => q.Id == vehicleId).Select(q => q.VIN).Single();
             dbContext.RegistrationOrder.InsertOnSubmit(registrationOrder);
             dbContext.WriteLogItem("Zulassungsauftrag wurde angelegt.", LogTypes.INSERT, registrationOrder.OrderNumber, "RegistrationOrder", vehicle.Id);
             return registrationOrder;

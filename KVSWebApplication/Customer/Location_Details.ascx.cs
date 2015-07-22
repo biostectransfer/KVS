@@ -421,7 +421,7 @@ namespace KVSWebApplication.Customer
                                     Zipcode = location != null && location.Adress != null ? location.Adress.Zipcode : null,
                                     City = location != null && location.Adress != null ? location.Adress.City : null,
                                     Country = location != null && location.Adress != null ? location.Adress.Country : null,
-                                    //TODO SuperLocation = location != null ? location.Location1.Name : null,
+                                    SuperLocation = location != null ? location.SuperLocationId : null,
                                     DefaulLocation = large.MainLocationId != null && large.MainLocationId == location.Id ? "true" : "false",
                                     Vat = location != null ? EmptyStringIfNull.ReturnEmptyStringIfNull(location.VAT) : null,
                                     InvoiceStreet = location != null && location.InvoiceAdress != null ? location.InvoiceAdress.Street : null,

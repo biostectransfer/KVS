@@ -9,6 +9,7 @@ using Telerik.Web.UI;
 using System.IO;
 using System.Configuration;
 using System.Transactions;
+using KVSCommon.Enums;
 
 namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 {
@@ -68,7 +69,9 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                    DispatchOrderNumber = (packList != null) ? packList.DispatchOrderNumber : "",
                                    IsSelf = (packList != null && packList.IsSelfDispatch.HasValue) ? packList.IsSelfDispatch.Value : false,                                   
                                };
-            versandQuery = versandQuery.Where(q => q.Order.OrderType.Name != "Zulassung" && q.Order.Status == 600);
+
+            versandQuery = versandQuery.Where(q => q.Order.OrderType.Id != (int)OrderTypes.Admission && q.Order.Status == (int)OrderStatusTypes.Closed);
+
             e.Result = versandQuery;
         }
         protected void OrdersDetailedTabel_DetailTable(object source, GridDetailTableDataBindEventArgs e)
@@ -77,11 +80,12 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             var _item = (GridDataItem)e.DetailTableView.ParentItem;
             var listId = Int32.Parse(_item["listId"].Text);
             var orderQuery = from ord in dbContext.Order
-                             where ord.PackingListNumber == listId && ord.Status == 600 && ord.HasError.GetValueOrDefault(false) != true
+                             where ord.PackingListNumber == listId && ord.Status == (int)OrderStatusTypes.Closed && 
+                             ord.HasError.GetValueOrDefault(false) != true
                              select new
                              {
                                  OrderNumber = ord.OrderNumber,
-                                 CustomerName = //ord.Customer.Name,
+                                 CustomerName = 
                                  ord.Customer.SmallCustomer != null &&
                                         ord.Customer.SmallCustomer.Person != null ?
                                         ord.Customer.SmallCustomer.Person.FirstName + " " +
@@ -107,11 +111,11 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             {
                 var listId = Int32.Parse(mylistId.Text);
                 var orderQuery = from ord in dbContext.Order
-                                 where ord.PackingListNumber == listId && ord.Status == 600 && ord.HasError.GetValueOrDefault(false) != true
+                                 where ord.PackingListNumber == listId && ord.Status == (int)OrderStatusTypes.Closed && ord.HasError.GetValueOrDefault(false) != true
                                  select new
                                  {
                                      OrderNumber = ord.OrderNumber,
-                                     CustomerName = //ord.Customer.Name,
+                                     CustomerName = 
                                       ord.Customer.SmallCustomer != null &&
                                         ord.Customer.SmallCustomer.Person != null ?
                                         ord.Customer.SmallCustomer.Person.FirstName + " " +

@@ -231,7 +231,6 @@ namespace KVSCommon.Database
         {
             if (value.HasValue)
             {
-
                 if (_dbContext != null)
                 {
                     var superLocation = _dbContext.Location.SingleOrDefault(q => q.Id == value.Value);
@@ -248,8 +247,7 @@ namespace KVSCommon.Database
             }
             else
             {
-                //TODO var location = _dbContext.Location.
-                //this.LogDBContext.WriteLogItem("Standort " + this.Name + " wurde dem Standort " + this.Location1.Name + " entzogen.", LogTypes.UPDATE, this.Location1.Id, "Location", this.Id);
+                this.LogDBContext.WriteLogItem("Standort " + this.Name + " wurde entzogen.", LogTypes.UPDATE, "Location");
             }
         }
     }

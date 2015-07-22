@@ -47,13 +47,7 @@ namespace KVSWebApplication.Product
         protected void GetCustomerProductsDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
-
-            //TODO
-            //if (cmbLocations.SelectedValue == "")
-            //    cmbLocations.SelectedValue = String.Empty;
-            //if (AllCustomer.SelectedValue == "")
-            //    AllCustomer.SelectedValue = String.Empty;
-
+            
             var query = from price in dbContext.Price
                         join products in dbContext.Product on price.ProductId equals products.Id
                         where price.Location.CustomerId == Int32.Parse(AllCustomer.SelectedValue) &&

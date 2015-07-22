@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using KVSCommon.Database;
 using Telerik.Web.UI;
 using System.Transactions;
+using KVSCommon.Enums;
 namespace KVSWebApplication.Product
 {
     /// <summary>
@@ -294,9 +295,7 @@ namespace KVSWebApplication.Product
             RadComboBox myCombobox = (RadComboBox)((RadComboBox)o).Parent.FindControl("cmbRegistrationOrderTypeName");
             try
             {
-                //if Int32.Parse(e.Value) == Int32.Parse("C7D1B831-ADF5-4A36-AD2A-E70B2590E755"))
-                //TODO
-                if(Int32.Parse(e.Value) == 0)
+                if(Int32.Parse(e.Value) == (int)OrderTypes.Admission)
                     myCombobox.Enabled = true;
                 else
                     myCombobox.Enabled = false;

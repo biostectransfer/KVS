@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KVSCommon.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -51,7 +52,7 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnNeedsVATChanging(bool value)
         {
-            if (this.Status == (int)OrderItemState.Abgerechnet)
+            if (this.Status == (int)OrderItemStatusTypes.Payed)
             {
                 throw new Exception("Die Mehrwersteuerpflicht kann nicht geändert werden, da die Auftragsposition bereits abgerechnet ist.");
             }
@@ -80,21 +81,21 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnStatusChanging(int value)
         {
-            if (value == (int)OrderItemState.Storniert)
+            if (value == (int)OrderItemStatusTypes.Cancelled)
             {
-                if (this.Status == (int)OrderItemState.Abgerechnet)
+                if (this.Status == (int)OrderItemStatusTypes.Payed)
                 {
                     throw new Exception("Die Auftragsposition kann nicht storniert werden, da sie bereits abgerechnet ist.");
                 }
             }
-            else if (value == (int)OrderItemState.Abgerechnet)
+            else if (value == (int)OrderItemStatusTypes.Payed)
             {
-                if (this.Status == (int)OrderItemState.Storniert)
+                if (this.Status == (int)OrderItemStatusTypes.Cancelled)
                 {
                     throw new Exception("Die Auftragsposition kann nicht abgerechnet werden, da sie storniert ist.");
                 }
 
-                if (this.Status != (int)OrderItemState.Abgeschlossen)
+                if (this.Status != (int)OrderItemStatusTypes.Closed)
                 {
                     throw new Exception("Die Auftragsposition kann nicht abgerechnet werden, da sie nicht abgeschlossen ist.");
                 }
@@ -116,7 +117,7 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnAmountChanging(decimal value)
         {
-            if (this.Status == (int)OrderItemState.Abgerechnet)
+            if (this.Status == (int)OrderItemStatusTypes.Payed)
             {
                 throw new Exception("Der Betrag kann nicht geändert werden, da die Auftragsposition bereits abgerechnet ist.");
             }
@@ -129,7 +130,7 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnIsAuthorativeChargeChanging(bool value)
         {
-            if (this.Status == (int)OrderItemState.Abgerechnet)
+            if (this.Status == (int)OrderItemStatusTypes.Payed)
             {
                 throw new Exception("Die amtliche Gebühr kann nicht geändert werden, da die Auftragsposition bereits abgerechnet ist.");
             }
@@ -142,7 +143,7 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnCountChanging(int value)
         {
-            if (this.Status == (int)OrderItemState.Abgerechnet)
+            if (this.Status == (int)OrderItemStatusTypes.Payed)
             {
                 throw new Exception("Die Anzahl kann nicht geändert werden, da die Auftragsposition bereits abgerechnet ist.");
             }

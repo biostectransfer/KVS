@@ -108,11 +108,6 @@ namespace KVSWebApplication.Mailing
         protected void GetMailAdresses_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {            
             DataClasses1DataContext dbContext = new DataClasses1DataContext();
-            //TODO
-            //if (cmbLocations.SelectedValue == ""  || cmbLocations.Enabled == false)
-            //    cmbLocations.SelectedValue = String.Empty;
-            //if (AllCustomer.SelectedValue == "" )
-            //    AllCustomer.SelectedValue = String.Empty;
 
             if (rbtCustomerMail.Checked == true && !String.IsNullOrEmpty(AllCustomer.SelectedValue))
             {

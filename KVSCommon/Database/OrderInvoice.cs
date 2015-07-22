@@ -62,7 +62,6 @@ namespace KVSCommon.Database
             var item = dbContext.OrderInvoice.SingleOrDefault(q => q.OrderNumber == orderNumber && q.InvoiceId == invoiceId);
             if (item == null)
             {
-                //todo delete var orderNumber = dbContext.Order.Where(q => q.OrderNumber == orderNumber).Select(q => q.OrderNumber).SingleOrDefault();
                 var invoiceNumber = dbContext.Invoice.Where(q => q.Id == invoiceId).Select(q => q.InvoiceNumber.Number).SingleOrDefault();
                 throw new Exception("Es existiert keine Verknüpfung zwischen dem Auftrag Nr. " + orderNumber + " und der Rechnung Nr. " + invoiceNumber);
             }

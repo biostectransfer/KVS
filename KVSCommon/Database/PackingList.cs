@@ -169,8 +169,6 @@ namespace KVSCommon.Database
             };
 
             dbContext.Document.InsertOnSubmit(doc);
-
-            //TODO check this
             dbContext.SubmitChanges();
             this.DocumentId = doc.Id;
 

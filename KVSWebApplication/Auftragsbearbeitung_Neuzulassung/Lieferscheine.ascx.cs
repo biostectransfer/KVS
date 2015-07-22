@@ -8,6 +8,7 @@ using KVSCommon.Database;
 using Telerik.Web.UI;
 using System.Data;
 using System.Data.SqlClient;
+using KVSCommon.Enums;
 
 namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 {
@@ -61,7 +62,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                      join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
                                      join reg in con.Registration on regord.RegistrationId equals reg.Id
                                      join veh in con.Vehicle on regord.VehicleId equals veh.Id
-                                     where ord.Status == 600 && ordtype.Name == "Zulassung" && (ord.ReadyToSend == false || ord.ReadyToSend == null)
+                                     where ord.Status == (int)OrderStatusTypes.Closed && ordtype.Id == (int)OrderTypes.Admission && 
+                                     (ord.ReadyToSend == false || ord.ReadyToSend == null)
                                      select new
                                      {
                                          OrderNumber = ord.OrderNumber,
@@ -134,7 +136,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 var values = (from ord in con.Order
                               join loc in con.Location on ord.LocationId equals loc.Id
                               join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
-                              where loc.Name == location && ord.Status == 400 && ordtype.Name == "Zulassung"
+                              where loc.Name == location && ord.Status == (int)OrderStatusTypes.AdmissionPoint && ordtype.Id == (int)OrderTypes.Admission
                               select ord.LocationId).ToList();
                 if (values.Count > 0)
                 {
@@ -227,15 +229,15 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         {
                             //updating order status
                             newOrder.LogDBContext = dbContext;
-                            newOrder.Status = 600;
+                            newOrder.Status = (int)OrderStatusTypes.Closed;
                             newOrder.ExecutionDate = DateTime.Now;
                             //updating orderitems status                          
                             foreach (OrderItem ordItem in newOrder.OrderItem)
                             {
                                 ordItem.LogDBContext = dbContext;
-                                if (ordItem.Status != (int)OrderItemState.Storniert)
+                                if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                                 {
-                                    ordItem.Status = 600;
+                                    ordItem.Status = (int)OrderItemStatusTypes.Closed;
                                 }
                             }
                             dbContext.SubmitChanges();
@@ -319,7 +321,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
                                          join reg in con.Registration on regord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on regord.VehicleId equals veh.Id
-                                         where ord.Status == 400 && ordtype.Name == "Zulassung" && loc.Id == locationId
+                                         where ord.Status == (int)OrderStatusTypes.AdmissionPoint && ordtype.Id == (int)OrderTypes.Admission && loc.Id == locationId
                                          select new
                                          {
                                              OrderNumber = ord.OrderNumber,
@@ -349,7 +351,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
                                          join reg in con.Registration on regord.RegistrationId equals reg.Id
                                          join veh in con.Vehicle on regord.VehicleId equals veh.Id
-                                         where ord.Status == 400 && ordtype.Name == "Zulassung" && loc.Name == LocationIdHiddenField.Value
+                                         where ord.Status == (int)OrderStatusTypes.AdmissionPoint && ordtype.Id == (int)OrderTypes.Admission && loc.Name == LocationIdHiddenField.Value
                                          select new
                                          {
                                              OrderNumber = ord.OrderNumber,
