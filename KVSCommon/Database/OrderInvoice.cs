@@ -47,8 +47,8 @@ namespace KVSCommon.Database
 
             dbContext.OrderInvoice.InsertOnSubmit(item);
             ///  var invoiceNumber = dbContext.Invoice.Where(q => q.Id == invoiceId).Select(q => q.InvoiceNumber).Single();
-            var orderNumber = dbContext.Order.Where(q => q.Id == order.Id).Select(q => q.OrderNumber).Single();
-            dbContext.WriteLogItem("Rechnung wurde mit Auftrag " + orderNumber + " verknüpft.", LogTypes.INSERT, order.Id, "OrderInvoice", invoice.Id);
+            var orderNumber = dbContext.Order.Where(q => q.OrderNumber == order.OrderNumber).Select(q => q.OrderNumber).Single();
+            dbContext.WriteLogItem("Rechnung wurde mit Auftrag " + orderNumber + " verknüpft.", LogTypes.INSERT, order.OrderNumber, "OrderInvoice", invoice.Id);
             return item;
         }
         /// <summary>
@@ -68,7 +68,8 @@ namespace KVSCommon.Database
             }
 
             dbContext.OrderInvoice.DeleteOnSubmit(item);
-            dbContext.WriteLogItem("Verknüpfung zwischen Auftrag Nr. " + item.Order.OrderNumber + " und Rechnung Nr. " + item.Invoice.InvoiceNumber.Number + " wurde gelöscht.", 
+            dbContext.WriteLogItem("Verknüpfung zwischen Auftrag Nr. " + item.Order.OrderNumber + " und Rechnung Nr. " + 
+                item.Invoice.InvoiceNumber.Number + " wurde gelöscht.", 
                 LogTypes.DELETE, orderNumber, "OrderInvoice", invoiceId);
         }
         /// <summary>

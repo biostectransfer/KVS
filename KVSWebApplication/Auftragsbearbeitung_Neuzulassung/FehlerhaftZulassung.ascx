@@ -68,8 +68,8 @@ DataTextField = "Name" DataValueField = "Value" ID = "CustomerDropDownList"
              <CommandItemSettings ShowAddNewRecordButton="false"  ShowRefreshButton="true"  />
                <Columns>
                 <telerik:GridEditCommandColumn ButtonType="PushButton" EditText = "Auftrag bearbeiten" UniqueName = "EditOffenColumn"  />                        
-                  <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderNumber" HeaderText="OrderNumber" ForceExtractValue="Always"
-                    SortExpression="OrderNumber" Display = "false" UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
+                  <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderNumber" HeaderText="Auftragsnummer" ForceExtractValue="Always"
+                    SortExpression="OrderNumber"   UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
                 </telerik:GridBoundColumn> 
                 <telerik:GridBoundColumn FilterControlWidth="105px" DataField="locationId" HeaderText="locationId" ForceExtractValue="Always"
@@ -80,10 +80,10 @@ DataTextField = "Name" DataValueField = "Value" ID = "CustomerDropDownList"
                     SortExpression="CustomerName" UniqueName="CustomerName" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
                 </telerik:GridBoundColumn>
-                <telerik:GridBoundColumn FilterControlWidth="105px" DataField="Ordernumber" HeaderText="Auftragsnummer"
+                <%--<telerik:GridBoundColumn FilterControlWidth="105px" DataField="Ordernumber" HeaderText="Auftragsnummer"
                     SortExpression="Ordernumber" UniqueName="Ordernumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
-                </telerik:GridBoundColumn>
+                </telerik:GridBoundColumn>--%>
                 <telerik:GridBoundColumn FilterControlWidth="105px" DataField="Status" HeaderText="Auftragsstatus"
                     SortExpression="Status" UniqueName="Status" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
@@ -120,7 +120,7 @@ DataTextField = "Name" DataValueField = "Value" ID = "CustomerDropDownList"
                     ShowFilterIcon="false">
                 </telerik:GridBoundColumn>
               </Columns>
-            <EditFormSettings PopUpSettings-Width = "1000" CaptionFormatString = "Here können Sie alle Daten von dem Auftrag {0} bearbeiten und speichern" CaptionDataField="Ordernumber" InsertCaption="Status ändern" FormMainTableStyle-Width = "1000" FormCaptionStyle-Width = "500" EditColumn-ItemStyle-Width = "500"  EditColumn-HeaderText="Status ändern: " EditFormType="Template" PopUpSettings-Modal="true">
+            <EditFormSettings PopUpSettings-Width = "1000" CaptionFormatString = "Here können Sie alle Daten von dem Auftrag {0} bearbeiten und speichern" CaptionDataField="OrderNumber" InsertCaption="Status ändern" FormMainTableStyle-Width = "1000" FormCaptionStyle-Width = "500" EditColumn-ItemStyle-Width = "500"  EditColumn-HeaderText="Status ändern: " EditFormType="Template" PopUpSettings-Modal="true">
                 <FormTemplate>   
                  <table width = "1000">                            
                  <tr>                

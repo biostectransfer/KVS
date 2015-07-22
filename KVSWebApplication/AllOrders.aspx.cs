@@ -98,11 +98,11 @@ namespace KVSWebApplication
         {
             var dbContext = new DataClasses1DataContext();
             var item = (GridDataItem)e.DetailTableView.ParentItem;
-            var orderId = Int32.Parse(item["OrderNumber"].Text);
+            var orderNumber = Int32.Parse(item["OrderNumber"].Text);
             var positionQuery = from ord in dbContext.Order
                                 join orditem in dbContext.OrderItem on ord.OrderNumber equals orditem.OrderNumber
                                 let authCharge = dbContext.OrderItem.FirstOrDefault(s => s.SuperOrderItemId == orditem.Id)
-                                where ord.Id == orderId && (orditem.SuperOrderItemId == null)
+                                where ord.OrderNumber == orderNumber && (orditem.SuperOrderItemId == null)
                                 select new
                                 {
                                     OrderItemId = orditem.Id,
@@ -132,9 +132,8 @@ namespace KVSWebApplication
                                          where ord.Status >= 600  && ord.HasError.GetValueOrDefault(false) != true
                                          select new
                                          {
-                                             OrderId = ord.Id,
-                                             customerId = cust.Id,
                                              OrderNumber = ord.OrderNumber,
+                                             customerId = cust.Id,
                                              customerID = ord.CustomerId,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
@@ -172,10 +171,9 @@ namespace KVSWebApplication
                                      where ord.Status >= 600 && ord.ReadyToSend.GetValueOrDefault(false) == true && ord.HasError.GetValueOrDefault(false) != true
                                      select new
                                      {
-                                         OrderId = ord.Id,
+                                         OrderNumber = ord.OrderNumber,
                                          locationId = loc.Id,
                                          customerID = cust.Id,
-                                         OrderNumber = ord.OrderNumber,
                                          CreateDate = ord.CreateDate,
                                          Status = ordst.Name,
                                          CustomerName = cust.Name,                                       

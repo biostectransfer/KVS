@@ -114,9 +114,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          where ord.Status == 400 && ordtype.Name == "Zulassung" && ord.HasError.GetValueOrDefault(false) != true
                                          select new
                                          {
-                                             OrderId = ord.Id,
-                                             locationId = "",
                                              OrderNumber = ord.OrderNumber,
+                                             locationId = "",
                                              CreateDate = ord.CreateDate,
                                              customerID = ord.CustomerId,
                                              Status = ordst.Name,
@@ -153,10 +152,9 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                           where ord.Status == 400 && ordtype.Name == "Zulassung" && ord.HasError.GetValueOrDefault(false) != true
                                           select new
                                           {
-                                              OrderId = ord.Id,
+                                              OrderNumber = ord.OrderNumber,
                                               locationId = loc.Id,
                                               customerID = ord.CustomerId,
-                                              OrderNumber = ord.OrderNumber,
                                               CreateDate = ord.CreateDate,
                                               Status = ordst.Name,
                                               CustomerName = cust.Name,
@@ -264,8 +262,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 Label amtGebLabel = amtGebCheckBox.FindControl("AmtGebLabel") as Label;
                 amtGebBox.Visible = false;
                 amtGebLabel.Visible = false;
-                var orderId = Int32.Parse(orderIdBox.Text);
-                var searchOrderQuery = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
+                var orderNumber = Int32.Parse(orderIdBox.Text);
+                var searchOrderQuery = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
                 if (searchOrderQuery != null)
                 {
                     foreach (OrderItem item in searchOrderQuery.OrderItem)
@@ -366,11 +364,11 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         {
             var dbContext = new DataClasses1DataContext();
             var item = (GridDataItem)e.DetailTableView.ParentItem;
-            var orderId = Int32.Parse(item["OrderNumber"].Text);
+            var orderNumber = Int32.Parse(item["OrderNumber"].Text);
             var positionQuery = from ord in dbContext.Order
                                 join orditem in dbContext.OrderItem on ord.OrderNumber equals orditem.OrderNumber
                                 let authCharge = dbContext.OrderItem.FirstOrDefault(s => s.SuperOrderItemId == orditem.Id)
-                                where ord.Id == orderId && (orditem.SuperOrderItemId == null)
+                                where ord.OrderNumber == orderNumber && (orditem.SuperOrderItemId == null)
                                 select new
                                 {
                                     OrderItemId = orditem.Id,
@@ -406,7 +404,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             TextBox amtGebBox = item.FindControl("AmtGebTextBox") as TextBox;
             kennzeichen = kennzeichenBox.Text.ToUpper();
             VIN = vinBox.Text;
-            var orderId = Int32.Parse(orderIdBox.Text);
+            var orderNumber = Int32.Parse(orderIdBox.Text);
             if (!String.IsNullOrEmpty(CustomerDropDownListZulassungsstelle.SelectedValue.ToString()))
                 customerId = Int32.Parse(CustomerDropDownListZulassungsstelle.SelectedValue);
             else
@@ -423,7 +421,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 try
                 {
                     DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
-                    var OrderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId && q.CustomerId == customerId);
+                    var OrderToUpdate = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber && q.CustomerId == customerId);
                     OrderToUpdate.LogDBContext = dbContext;
                     OrderToUpdate.HasError = true;
                     OrderToUpdate.ErrorReason = errorReason;
@@ -443,7 +441,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 bool amtlGebVor = false;
                 bool kennzeichenVorh = false;
                 DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
-                var myOrder = dbContext.Order.SingleOrDefault(q => q.Id == orderId && q.CustomerId == customerId);
+                var myOrder = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber && q.CustomerId == customerId);
                 foreach (var orderItem in myOrder.OrderItem)
                 {
                     if (orderItem.IsAuthorativeCharge)
@@ -464,7 +462,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     ZulassungErrLabel.Visible = false;
                     try
                     {
-                        updateDataBase(kennzeichen, VIN, tsn, hsn, orderId, customerId);
+                        updateDataBase(kennzeichen, VIN, tsn, hsn, orderNumber, customerId);
                         UpdateOrderAndItemsStatus();
                         ZulassungErfolgtLabel.Visible = true;
                     }
@@ -517,14 +515,14 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     else
                         customerID = Int32.Parse(item["customerID"].Text);
                     
-                    var orderId = Int32.Parse(item["OrderNumber"].Text);
+                    var orderNumber = Int32.Parse(item["OrderNumber"].Text);
                     
-                    smallCustomerOrderHiddenField.Value = orderId.ToString();
+                    smallCustomerOrderHiddenField.Value = orderNumber.ToString();
                     CustomerIdHiddenField.Value = customerID.ToString();
                     try
                     {
                         DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
-                        var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.Id == orderId);
+                        var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.OrderNumber == orderNumber);
                         if (newOrder != null)
                         {
                             if (RadComboBoxCustomerZulassungsstelle.SelectedIndex == 1) // small
@@ -645,7 +643,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         InvoiceIdHidden.Value = newInvoice.Id.ToString();
                         //Submiting new Invoice and Adress
                         dbContext.SubmitChanges();
-                        var orderQuery = dbContext.Order.SingleOrDefault(q => q.Id == Int32.Parse(smallCustomerOrderHiddenField.Value));
+                        var orderQuery = dbContext.Order.SingleOrDefault(q => q.OrderNumber == Int32.Parse(smallCustomerOrderHiddenField.Value));
                         foreach (OrderItem ordItem in orderQuery.OrderItem)
                         {
                             ProductName = ordItem.ProductName;
@@ -754,7 +752,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     var product = Int32.Parse(productDropDown.SelectedValue);
                     foreach (GridDataItem item in RadGridNeuzulassung.SelectedItems)
                     {
-                        var orderId = Int32.Parse(item["OrderNumber"].Text);
+                        var orderNumber = Int32.Parse(item["OrderNumber"].Text);
                         KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == Int32.Parse(productDropDown.SelectedValue));
                         
                         //TODO newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == locationId);
@@ -769,8 +767,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         {
                             newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == null);
                         }
-                        
-                        var orderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
+
+                        var orderToUpdate = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
                         if (newPrice == null || newProduct == null || orderToUpdate == null)
                             throw new Exception("Achtung, die Position kann nicht hinzugefügt werden, es konnte entweder kein Preis, Produkt oder der Auftrag gefunden werden!");
                         orderToUpdate.LogDBContext = dbContext;
@@ -836,11 +834,11 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             itemIndexHiddenField.Value = dataItem.ItemIndex.ToString();
         }
         // Updating Order und setzen Status 600 - Fertig
-        protected void updateDataBase(string kennzeichen, string vin, string tsn, string hsn, int orderId, int customerId)
+        protected void updateDataBase(string kennzeichen, string vin, string tsn, string hsn, int orderNumber, int customerId)
         {
             using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
             {
-                var orderUpdateQuery = dbContext.Order.Single(q => q.Id == orderId && q.CustomerId == customerId);
+                var orderUpdateQuery = dbContext.Order.Single(q => q.OrderNumber == orderNumber && q.CustomerId == customerId);
                 orderUpdateQuery.LogDBContext = dbContext;
                 orderUpdateQuery.RegistrationOrder.LogDBContext = dbContext;
                 orderUpdateQuery.RegistrationOrder.Registration.LogDBContext = dbContext;
@@ -870,11 +868,11 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 StornierungErfolgLabel.Visible = false;
                 foreach (GridDataItem item in RadGridNeuzulassung.SelectedItems)
                 {
-                    var orderId = Int32.Parse(item["OrderNumber"].Text);
+                    var orderNumber = Int32.Parse(item["OrderNumber"].Text);
                     try
                     {
                         DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
-                        var newOrder = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
+                        var newOrder = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
                         //updating order status
                         newOrder.LogDBContext = dbContext;
                         newOrder.Status = (int)OrderItemState.Storniert;

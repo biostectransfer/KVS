@@ -59,9 +59,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          where ord.Status == 600 && ordtype.Name == "Abmeldung" && (ord.ReadyToSend == false || ord.ReadyToSend == null)
                                          select new 
                                          {
-                                             OrderId = ord.Id,
-                                             locationId = loc.Id,
                                              OrderNumber = ord.OrderNumber,
+                                             locationId = loc.Id,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
                                              CustomerName = cust.Name,
@@ -147,7 +146,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     List<LocationOrderJoins> locationIdList = new List<LocationOrderJoins>();
                     foreach (GridDataItem item in RadGridLieferscheine.SelectedItems)
                     {
-                        var myOrder = dbContext.Order.FirstOrDefault(q => q.Id == Int32.Parse(item["OrderNumber"].Text));
+                        var myOrder = dbContext.Order.FirstOrDefault(q => q.OrderNumber == Int32.Parse(item["OrderNumber"].Text));
                         LocationOrderJoins orJ = new LocationOrderJoins();
                         orJ.LocationId = Int32.Parse(item["locationId"].Text);
                         orJ.Order = myOrder;
@@ -162,7 +161,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         // für alle, die selected sind - ins package list hinzufügen
                         foreach (var orders in gr)
                         {
-                            packingList.AddOrderById(orders.Order.Id, dbContext);
+                            packingList.AddOrderById(orders.Order.OrderNumber, dbContext);
                             orders.Order.LogDBContext = dbContext;
                             orders.Order.PackingListNumber = packingList.PackingListNumber;
                             orders.Order.ReadyToSend = true;
@@ -199,9 +198,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          where ord.Status == 400 && ordtype.Name == "Abmeldung" && loc.Id == locationId
                                          select new
                                          {
-                                             OrderId = ord.Id,
-                                             customerID = cust.Id,
                                              OrderNumber = ord.OrderNumber,
+                                             customerID = cust.Id,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
                                              CustomerName =  cust.Name,
@@ -230,9 +228,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                          where ord.Status == 400 && ordtype.Name == "Abmeldung" && loc.Name == LocationIdHiddenField.Value
                                          select new
                                          {
-                                             OrderId = ord.Id,
-                                             customerID = cust.Id,
                                              OrderNumber = ord.OrderNumber,
+                                             customerID = cust.Id,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
                                              CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " + cust.SmallCustomer.Person.Name : cust.Name,
@@ -260,9 +257,9 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             if (e.Item is GridDataItem)
             {
                 var fertigStellenItem = e.Item as GridDataItem;
-                var orderId = Int32.Parse(fertigStellenItem["OrderNumber"].Text);
+                var orderNumber = Int32.Parse(fertigStellenItem["OrderNumber"].Text);
                 var customerID = Int32.Parse(fertigStellenItem["customerID"].Text);
-                if (!CheckDienstleistungAndAmtGebuhr(orderId))
+                if (!CheckDienstleistungAndAmtGebuhr(orderNumber))
                 {
                     ErrorOffeneLabel.Text = "Bei den ausgewählten Auftrag fehlt noch die Dienstleistung und/oder amtliche Gebühr! In dem Reiter 'Zulassungstelle' können Sie den Auftrag bearbeiten. ";
                 }
@@ -275,7 +272,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     try
                     {
                         DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
-                        var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.Id == orderId);
+                        var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.OrderNumber == orderNumber);
                         if (newOrder != null)
                         {
                             //updating order status
@@ -306,13 +303,13 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             }
         }
         //Checked if amt.gebühr UND mind.eine Dienstleistung vorhanden ist
-        protected bool CheckDienstleistungAndAmtGebuhr(int orderId)
+        protected bool CheckDienstleistungAndAmtGebuhr(int orderNumber)
         {
             bool DienstVorhanden = false;
             bool AmtGebuhVorhanden = false;
             using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
             {
-                var searchOrderQuery = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
+                var searchOrderQuery = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
                 if (searchOrderQuery != null)
                 {
                     foreach (OrderItem item in searchOrderQuery.OrderItem)

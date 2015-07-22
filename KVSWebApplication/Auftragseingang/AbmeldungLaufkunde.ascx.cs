@@ -89,7 +89,6 @@ namespace KVSWebApplication.Auftragseingang
                            where ord.Status == 900
                            select new
                            {
-                               OrderId = ord.Id,
                                CustomerId = ord.CustomerId,
                                OrderNumber = ord.OrderNumber,
                            };
@@ -110,7 +109,7 @@ namespace KVSWebApplication.Auftragseingang
             //Amtliche Gebühr
             foreach (var newOrder in newQuery)
             {
-                var order = con.Order.SingleOrDefault(q => q.Id == newOrder.OrderId);
+                var order = con.Order.SingleOrDefault(q => q.OrderNumber == newOrder.OrderNumber);
                 if (order != null)
                 {
                     foreach (OrderItem orderItem in order.OrderItem)
@@ -837,7 +836,7 @@ namespace KVSWebApplication.Auftragseingang
                             Int32.Parse(CustomerDropDownList.SelectedValue), txbDiscount.Value, "Einzelrechnung");
                         //Submiting new Invoice and Adress
                         dbContext.SubmitChanges();
-                        var orderQuery = dbContext.Order.SingleOrDefault(q => q.Id == Int32.Parse(smallCustomerOrderHiddenField.Value));
+                        var orderQuery = dbContext.Order.SingleOrDefault(q => q.OrderNumber == Int32.Parse(smallCustomerOrderHiddenField.Value));
                         foreach (OrderItem ordItem in orderQuery.OrderItem)
                         {
                             ProductName = ordItem.ProductName;

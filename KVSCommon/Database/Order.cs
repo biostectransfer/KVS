@@ -29,7 +29,7 @@ namespace KVSCommon.Database
         {
             get
             {
-                return this.Id;
+                return this.OrderNumber;
             }
         }
 
@@ -92,7 +92,7 @@ namespace KVSCommon.Database
                 Zulassungsstelle = zulassungsstelleId
             };
 
-            dbContext.WriteLogItem("Auftrag angelegt.", LogTypes.INSERT, order.Id, "Order");
+            dbContext.WriteLogItem("Auftrag angelegt.", LogTypes.INSERT, order.OrderNumber, "Order");
             dbContext.Order.InsertOnSubmit(order);
             return order;
         }
@@ -100,12 +100,13 @@ namespace KVSCommon.Database
         /// <summary>
         /// Aktualisiert den Auftragsstatus
         /// </summary>
-        /// <param name="orderIds">List mit OrderIds</param>
+        /// <param name="orderNumbers">List mit OrderIds</param>
         /// <param name="dbContext">DB Kontext</param>
-        public static void UpdateOrderStates(List<int> orderIds, DataClasses1DataContext dbContext)
+        public static void UpdateOrderStates(List<int> orderNumbers, DataClasses1DataContext dbContext)
         {
-            IQueryable<Order> orders = dbContext.Order.Where(q => orderIds.Contains(q.Id));
-            foreach (var order in orders.Where(q => q.OrderItem.Any(p => p.Status == (int)OrderItemState.Abgerechnet) && !q.OrderItem.All(r => r.Status == (int)OrderItemState.Abgerechnet || r.Status == (int)OrderItemState.Storniert)))
+            IQueryable<Order> orders = dbContext.Order.Where(q => orderNumbers.Contains(q.OrderNumber));
+            foreach (var order in orders.Where(q => q.OrderItem.Any(p => p.Status == (int)OrderItemState.Abgerechnet) && 
+                !q.OrderItem.All(r => r.Status == (int)OrderItemState.Abgerechnet || r.Status == (int)OrderItemState.Storniert)))
             {
                 order.LogDBContext = dbContext;
                 order.Status = (int)OrderState.Teilabgerechnet;
@@ -389,7 +390,7 @@ namespace KVSCommon.Database
 
                     if (order.PackingList != null)
                     {
-                        order.PackingList.OldOrderId = order.Id;
+                        order.PackingList.OldOrderId = order.OrderNumber;
                         temp_packingListId = order.PackingList.PackingListNumber;
 
                         dbContext.WriteLogItem("Lieferschein: " + temp_packingListId + " zum Auftrag: " + order.OrderNumber + "  wurde gelöscht. ", LogTypes.UPDATE, 
@@ -408,7 +409,8 @@ namespace KVSCommon.Database
 
                     }
 
-                    dbContext.WriteLogItem("Auftrag: " + order.OrderNumber + "  wurde wieder in die Zulassungsstelle versetzt.", LogTypes.UPDATE, order.Id, "Order");
+                    dbContext.WriteLogItem("Auftrag: " + order.OrderNumber + "  wurde wieder in die Zulassungsstelle versetzt.", 
+                        LogTypes.UPDATE, order.OrderNumber, "Order");
                 }
                 dbContext.SubmitChanges();
 

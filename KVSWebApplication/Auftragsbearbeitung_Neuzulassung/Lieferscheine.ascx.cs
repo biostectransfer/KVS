@@ -64,9 +64,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                      where ord.Status == 600 && ordtype.Name == "Zulassung" && (ord.ReadyToSend == false || ord.ReadyToSend == null)
                                      select new
                                      {
-                                         OrderId = ord.Id,
-                                         locationId = loc.Id,
                                          OrderNumber = ord.OrderNumber,
+                                         locationId = loc.Id,
                                          CreateDate = ord.CreateDate,
                                          Status = ordst.Name,
                                          CustomerName = cust.Name,
@@ -161,7 +160,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     List<LocationOrderJoins> locationIdList = new List<LocationOrderJoins>();
                     foreach (GridDataItem item in RadGridLieferscheine.SelectedItems)
                     {
-                        var myOrder = dbContext.Order.FirstOrDefault(q => q.Id == Int32.Parse(item["OrderNumber"].Text));
+                        var myOrder = dbContext.Order.FirstOrDefault(q => q.OrderNumber == Int32.Parse(item["OrderNumber"].Text));
                         LocationOrderJoins orJ = new LocationOrderJoins();
                         orJ.LocationId = Int32.Parse(item["locationId"].Text);
                         orJ.Order = myOrder;
@@ -176,7 +175,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         // für alle, die selected sind - daten zu packing list
                         foreach (var orders in gr)
                         {
-                            packingList.AddOrderById(orders.Order.Id, dbContext);
+                            packingList.AddOrderById(orders.Order.OrderNumber, dbContext);
                             orders.Order.LogDBContext = dbContext;
                             orders.Order.PackingListNumber = packingList.PackingListNumber;
                             orders.Order.ReadyToSend = true;
@@ -208,9 +207,9 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             {
 
                 GridDataItem fertigStellenItem = e.Item as GridDataItem;
-                var orderId = Int32.Parse(fertigStellenItem["OrderNumber"].Text);
+                var orderNumber = Int32.Parse(fertigStellenItem["OrderNumber"].Text);
                 var customerID = Int32.Parse(fertigStellenItem["customerID"].Text);
-                if (!CheckDienstleistungAndAmtGebuhr(orderId))
+                if (!CheckDienstleistungAndAmtGebuhr(orderNumber))
                 {
                     ErrorOffeneLabel.Text = "Bei den ausgewählten Auftrag fehlt noch die Dienstleistung und/oder amtliche Gebühr! In dem Reiter 'Zulassungstelle' können Sie den Auftrag bearbeiten. ";
                 }
@@ -223,7 +222,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                     try
                     {
-                        var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.Id == orderId);
+                        var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.OrderNumber == orderNumber);
                         if (newOrder != null)
                         {
                             //updating order status
@@ -259,13 +258,13 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         /// </summary>
         /// <param name="OrderNumber"></param>
         /// <returns></returns>
-        protected bool CheckDienstleistungAndAmtGebuhr(int orderId)
+        protected bool CheckDienstleistungAndAmtGebuhr(int orderNumber)
         {
             bool DienstVorhanden = false;
             bool AmtGebuhVorhanden = false;
             using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
             {
-                var searchOrderQuery = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
+                var searchOrderQuery = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
                 if (searchOrderQuery != null)
                 {
                     foreach (OrderItem item in searchOrderQuery.OrderItem)
@@ -323,9 +322,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          where ord.Status == 400 && ordtype.Name == "Zulassung" && loc.Id == locationId
                                          select new
                                          {
-                                             OrderId = ord.Id,
-                                             customerID = cust.Id,
                                              OrderNumber = ord.OrderNumber,
+                                             customerID = cust.Id,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
                                              CustomerName = cust.Name,
@@ -354,9 +352,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          where ord.Status == 400 && ordtype.Name == "Zulassung" && loc.Name == LocationIdHiddenField.Value
                                          select new
                                          {
-                                             OrderId = ord.Id,
-                                             customerID = cust.Id,
                                              OrderNumber = ord.OrderNumber,
+                                             customerID = cust.Id,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
                                              CustomerName = cust.Name,

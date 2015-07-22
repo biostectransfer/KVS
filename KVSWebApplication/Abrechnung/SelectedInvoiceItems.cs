@@ -33,11 +33,11 @@ namespace KVSWebApplication.Abrechnung
             get { return costCenterId; }
             set { costCenterId = value; }
         }
-        private int orderId;
-        public int OrderId
+        private int orderNumber;
+        public int OrderNumber
         {
-            get { return orderId; }
-            set { orderId = value; }
+            get { return orderNumber; }
+            set { orderNumber = value; }
         }
         private int itemCount;
         public int ItemCount

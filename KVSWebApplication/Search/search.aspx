@@ -91,7 +91,7 @@
 
                                     <telerik:GridEditCommandColumn ButtonType="PushButton" EditText="Details" UniqueName="EditOffenColumn" />
                                     <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderNumber" HeaderText="OrderNumber"
-                                        SortExpression="OrderNumber" Display="false" UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
+                                        SortExpression="OrderNumber" UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                                         ShowFilterIcon="false">
                                     </telerik:GridBoundColumn>
                                     <telerik:GridTemplateColumn AllowFiltering="false">
@@ -112,10 +112,10 @@
                                         ShowFilterIcon="false">
                                     </telerik:GridBoundColumn>
 
-                                    <telerik:GridBoundColumn FilterControlWidth="105px" DataField="Ordernumber" HeaderText="Auftragsnummer"
+                                    <%--<telerik:GridBoundColumn FilterControlWidth="105px" DataField="Ordernumber" HeaderText="Auftragsnummer"
                                         SortExpression="Ordernumber" UniqueName="Ordernumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                                         ShowFilterIcon="false">
-                                    </telerik:GridBoundColumn>
+                                    </telerik:GridBoundColumn>--%>
 
                                     <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderTyp" HeaderText="Auftragstyp"
                                         SortExpression="OrderTyp" UniqueName="OrderTyp" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"

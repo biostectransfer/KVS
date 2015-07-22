@@ -69,10 +69,10 @@
       <Column Name="InternalId" Type="System.Guid" CanBeNull="true" />
       <Association Name="Customer_SmallCustomer" Member="SmallCustomer" ThisKey="Id" OtherKey="CustomerId" Type="SmallCustomer" Cardinality="One" />
       <Association Name="Customer_Invoice" Member="Invoice" ThisKey="Id" OtherKey="CustomerId" Type="Invoice" />
-      <Association Name="Customer_Order" Member="Order" ThisKey="Id" OtherKey="CustomerId" Type="Order" />
       <Association Name="Customer_WebServiceLoginCustomer" Member="WebServiceLoginCustomer" ThisKey="Id" OtherKey="CustomerId" Type="WebServiceLoginCustomer" />
       <Association Name="Customer_LargeCustomer" Member="LargeCustomer" ThisKey="Id" OtherKey="CustomerId" Type="LargeCustomer" Cardinality="One" />
       <Association Name="Customer_CustomerProduct" Member="CustomerProduct" ThisKey="Id" OtherKey="CustomerId" Type="CustomerProduct" />
+      <Association Name="Customer_Order" Member="Order" ThisKey="Id" OtherKey="CustomerId" Type="Order" />
       <Association Name="Contact_Customer" Member="Contact" ThisKey="ContactId" OtherKey="Id" Type="Contact" IsForeignKey="true" />
       <Association Name="Adress_Customer" Member="Adress" ThisKey="AdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
       <Association Name="Adress_Customer1" Member="InvoiceAdress" ThisKey="InvoiceAdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
@@ -101,10 +101,10 @@
       <Column Name="InvoiceDispatchAdressId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
       <Association Name="Location_Mailinglist" Member="Mailinglist" ThisKey="Id" OtherKey="LocationId" Type="Mailinglist" />
-      <Association Name="Location_Order" Member="Order" ThisKey="Id" OtherKey="LocationId" Type="Order" />
       <Association Name="Location_Price" Member="Price" ThisKey="Id" OtherKey="LocationId" Type="Price" />
       <Association Name="Location_LargeCustomer" Member="LargeCustomer1" ThisKey="Id" OtherKey="MainLocationId" Type="LargeCustomer" />
       <Association Name="Location_LargeCustomer1" Member="LargeCustomer2" ThisKey="Id" OtherKey="MainLocationId" Type="LargeCustomer" />
+      <Association Name="Location_Order" Member="Order" ThisKey="Id" OtherKey="LocationId" Type="Order" />
       <Association Name="Contact_Location" Member="Contact" ThisKey="ContactId" OtherKey="Id" Type="Contact" IsForeignKey="true" />
       <Association Name="Adress_Location" Member="Adress" ThisKey="AdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
       <Association Name="Adress_Location1" Member="InvoiceAdress" ThisKey="InvoiceAdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
@@ -139,8 +139,8 @@
       <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
       <Association Name="OrderType_RequiredField" Member="RequiredField" ThisKey="Id" OtherKey="OrderTypeId" Type="RequiredField" />
-      <Association Name="OrderType_Order" Member="Order" ThisKey="Id" OtherKey="OrderTypeId" Type="Order" />
       <Association Name="OrderType_Product" Member="Product" ThisKey="Id" OtherKey="OrderTypeId" Type="Product" />
+      <Association Name="OrderType_Order" Member="Order" ThisKey="Id" OtherKey="OrderTypeId" Type="Order" />
     </Type>
   </Table>
   <Table Name="dbo.Permission" Member="Permission">
@@ -442,7 +442,6 @@
   </Table>
   <Table Name="dbo.[Order]" Member="Order">
     <Type Name="Order">
-      <Column Name="Id" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="CustomerId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="LocationId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="OrderTypeId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
@@ -466,14 +465,14 @@
       <Association Name="Order_OrderItem" Member="OrderItem" ThisKey="OrderNumber" OtherKey="OrderNumber" Type="OrderItem" />
       <Association Name="Order_RegistrationOrder" Member="RegistrationOrder" ThisKey="OrderNumber" OtherKey="OrderNumber" Type="RegistrationOrder" Cardinality="One" />
       <Association Name="Order_PackingList" Member="PackingList2" ThisKey="OrderNumber" OtherKey="OldOrderId" Type="PackingList" />
-      <Association Name="Customer_Order" Member="Customer" ThisKey="CustomerId" OtherKey="Id" Type="Customer" IsForeignKey="true" />
-      <Association Name="Location_Order" Member="Location" ThisKey="LocationId" OtherKey="Id" Type="Location" IsForeignKey="true" />
-      <Association Name="OrderStatus_Order" Member="OrderStatus" ThisKey="Status" OtherKey="Id" Type="OrderStatus" IsForeignKey="true" />
-      <Association Name="OrderType_Order" Member="OrderType" ThisKey="OrderTypeId" OtherKey="Id" Type="OrderType" IsForeignKey="true" />
       <Association Name="PackingList_Order" Member="PackingList" ThisKey="PackingListNumber" OtherKey="PackingListNumber" Type="PackingList" IsForeignKey="true" />
-      <Association Name="User_Order" Member="User" ThisKey="UserId" OtherKey="Id" Type="User" IsForeignKey="true" />
       <Association Name="RegistrationLocation_Order" Member="RegistrationLocation" ThisKey="Zulassungsstelle" OtherKey="ID" Type="RegistrationLocation" IsForeignKey="true" />
       <Association Name="DocketList_Order" Member="DocketList" ThisKey="DocketListNumber" OtherKey="DocketListNumber" Type="DocketList" IsForeignKey="true" />
+      <Association Name="User_Order" Member="User" ThisKey="UserId" OtherKey="Id" Type="User" IsForeignKey="true" />
+      <Association Name="OrderType_Order" Member="OrderType" ThisKey="OrderTypeId" OtherKey="Id" Type="OrderType" IsForeignKey="true" />
+      <Association Name="OrderStatus_Order" Member="OrderStatus" ThisKey="Status" OtherKey="Id" Type="OrderStatus" IsForeignKey="true" />
+      <Association Name="Location_Order" Member="Location" ThisKey="LocationId" OtherKey="Id" Type="Location" IsForeignKey="true" />
+      <Association Name="Customer_Order" Member="Customer" ThisKey="CustomerId" OtherKey="Id" Type="Customer" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.MailinglistType" Member="MailinglistType">
@@ -772,10 +771,10 @@
   </Table>
   <Table Name="dbo.AuthorativeChargeAccounts" Member="AuthorativeChargeAccounts">
     <Type Name="AuthorativeChargeAccounts">
-      <Column Name="OrderItemId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="OrderItemId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="InvoiceId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="InvoiceItemAccountItemId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
-      <Column Name="InvoiceItemId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="InvoiceItemId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="RevenueAccountText" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="IsAuthorativeCharge" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
     </Type>

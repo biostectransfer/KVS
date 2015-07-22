@@ -116,7 +116,6 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                      where ord.Status == 100 && ordtype.Name == "Abmeldung" && ord.HasError.GetValueOrDefault(false) != true
                                      select new
                                      {
-                                         OrderId = ord.Id,
                                          OrderNumber = ord.OrderNumber,
                                          customerID = ord.CustomerId,
                                          CreateDate = ord.CreateDate,
@@ -156,9 +155,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                      where ord.Status == 100 && ordtype.Name == "Abmeldung" && ord.HasError.GetValueOrDefault(false) != true
                                      select new
                                      {
-                                         OrderId = ord.Id,
-                                         locationId = loc.Id,
                                          OrderNumber = ord.OrderNumber,
+                                         locationId = loc.Id,
                                          customerID = ord.CustomerId,
                                          CreateDate = ord.CreateDate,
                                          Status = ordst.Name,
@@ -413,7 +411,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         //hier
                         KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == Int32.Parse(productDropDown.SelectedValue));
 
-                        var orderId = Int32.Parse(item["OrderNumber"].Text);
+                        var orderNumber = Int32.Parse(item["OrderNumber"].Text);
                         if (!String.IsNullOrEmpty(item["locationId"].Text))
                         {
                             var locationId = Int32.Parse(item["locationId"].Text);
@@ -425,7 +423,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                             newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == null);
                         }
 
-                        var orderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
+                        var orderToUpdate = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
                         orderToUpdate.LogDBContext = dbContext;
                         if (newPrice == null || newProduct == null || orderToUpdate == null)
                             throw new Exception("Achtung, die Position kann nicht hinzugefügt werden, es konnte entweder kein Preis, Produkt oder der Auftrag gefunden werden!");
@@ -465,11 +463,11 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         {
             var dbContext = new DataClasses1DataContext();
             var item = (GridDataItem)e.DetailTableView.ParentItem;
-            var orderId = Int32.Parse(item["OrderNumber"].Text.ToString());
+            var orderNumber = Int32.Parse(item["OrderNumber"].Text.ToString());
             var positionQuery = from ord in dbContext.Order
                                 join orditem in dbContext.OrderItem on ord.OrderNumber equals orditem.OrderNumber
                                 let authCharge = dbContext.OrderItem.FirstOrDefault(s => s.SuperOrderItemId == orditem.Id)
-                                where ord.Id == orderId && (orditem.SuperOrderItemId == null)
+                                where ord.OrderNumber == orderNumber && (orditem.SuperOrderItemId == null)
                                 select new
                                 {
                                     OrderItemId = orditem.Id,
@@ -537,7 +535,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                     {
                                         if (order2 != null)
                                         {
-                                            docketList.AddOrderById(order2.Id, con);
+                                            docketList.AddOrderById(order2.OrderNumber, con);
                                             //updating order status
                                             order2.LogDBContext = con;
                                             order2.Status = 400;
@@ -616,11 +614,11 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         private void UpdateOrderAfterZulassungsstelle(int customerIdToUpdate, int orderIdToUpdate)
         {
             var customerID = customerIdToUpdate;
-            var orderId = orderIdToUpdate;
+            var orderNumber = orderIdToUpdate;
             try
             {
                 DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
-                var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.Id == orderId);
+                var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.OrderNumber == orderNumber);
                 if (newOrder != null)
                 {
                     //updating order status
@@ -664,7 +662,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 var errorReasonTextBox = item.FindControl("ErrorReasonTextBox") as TextBox;
                 var HSNBox = item.FindControl("HSNAbmFormBox") as TextBox;
                 var TSNBox = item.FindControl("TSNAbmFormBox") as TextBox;
-                var orderId = Int32.Parse(orderIdBox.Text);
+                var orderNumber = Int32.Parse(orderIdBox.Text);
                 
                 if (!String.IsNullOrEmpty(CustomerDropDownListAbmeldungOffen.SelectedValue.ToString()))
                     customerId = Int32.Parse(CustomerDropDownListAbmeldungOffen.SelectedValue);
@@ -681,7 +679,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     try
                     {
                         DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
-                        var OrderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId && q.CustomerId == customerId);
+                        var OrderToUpdate = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber && q.CustomerId == customerId);
                         OrderToUpdate.LogDBContext = dbContext;
                         OrderToUpdate.HasError = true;
                         OrderToUpdate.ErrorReason = errorReason;
@@ -701,7 +699,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     kennzeichen = kennzeichenBox.Text;
                     try
                     {
-                        updateDataBase(VIN, TSN, HSN, orderId, customerId, kennzeichen);
+                        updateDataBase(VIN, TSN, HSN, orderNumber, customerId, kennzeichen);
                     }
                     catch (Exception ex)
                     {
@@ -733,11 +731,11 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     else
                         customerID = Int32.Parse(item["customerID"].Text);
 
-                    var orderId = Int32.Parse(item["OrderNumber"].Text);
+                    var orderNumber = Int32.Parse(item["OrderNumber"].Text);
                     try
                     {
                         DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
-                        var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.Id == orderId);
+                        var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.OrderNumber == orderNumber);
                         if (newOrder != null)
                         {
                             //updating order status
@@ -841,11 +839,11 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 
                 foreach (GridDataItem item in RadGridAbmeldung.SelectedItems)
                 {
-                    var orderId = Int32.Parse(item["OrderNumber"].Text);
+                    var orderNumber = Int32.Parse(item["OrderNumber"].Text);
                     try
                     {
                         DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
-                        var newOrder = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
+                        var newOrder = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
                         //updating order status
                         newOrder.LogDBContext = dbContext;
                         newOrder.Status = (int)OrderItemState.Storniert;

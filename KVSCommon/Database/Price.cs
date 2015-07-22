@@ -111,28 +111,6 @@ namespace KVSCommon.Database
                     dbContext.Price.DeleteOnSubmit(price);
                     dbContext.WriteLogItem("Price mit der Id:" + price.Id + " wurde gelöscht.", LogTypes.DELETE, price.Id, "Id");
              }
-            
-            //if (callFromProduct)
-            //{
-            //    var price = dbContext.Price.Where(q => q.ProductId == productId && q.LocationId == locationId);
-            //    var orders = (from order in dbContext.Order
-            //                  join orderserivce in dbContext.OrderItem on order.Id equals orderserivce.OrderId
-            //                  where order.LocationId == locationId && orderserivce.ProductId == productId
-            //                  select new { order }).ToList();
-            //    if (orders.Count() > 0)
-            //    {
-            //        throw new Exception("Löschen nicht möglich! Zu diesem Preis sind bereits Auftragspositionen vorhanden!");
-            //    }
-            //    //var priceAccount = dbContext.PriceAccount.Where(q => q.PriceId == price.Id);
-            //    //dbContext.PriceAccount.DeleteAllOnSubmit(priceAccount);
-            //    //dbContext.WriteLogItem("PriceAccounts mit der Id:" + price.Id + " wurden gelöscht.", LogTypes.DELETE, price.Id, "PriceAccounts");
-
-            //    //var customerProducts = dbContext.CustomerProduct.Where(q => q.ProductId == price.ProductId);
-            //    //dbContext.CustomerProduct.DeleteAllOnSubmit(customerProducts);
-            //    //dbContext.WriteLogItem("CustomerProduct mit der Id:" + price.ProductId + " wurden gelöscht.", LogTypes.DELETE, price.Id, "CustomerProduct");
-            //    //dbContext.Price.DeleteOnSubmit(price);
-            //    //dbContext.WriteLogItem("Price mit der Id:" + price.Id + " wurde gelöscht.", LogTypes.DELETE, price.Id, "Id");
-            //}
         }
         partial void OnCreated()
         {

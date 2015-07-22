@@ -64,17 +64,17 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="OrderNumber">Id des Auftrags.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void AddOrderById(int orderId, DataClasses1DataContext dbContext)
+        public void AddOrderById(int orderNumber, DataClasses1DataContext dbContext)
         {
             if (this.IsPrinted.GetValueOrDefault(false))
             {
                 throw new Exception("Der Auftrag kann zum Lieferschein nicht hinzugefügt werden. Der Lieferschein wurde bereits gedruckt.");
             }
 
-            Order order = dbContext.Order.Single(q => q.Id == orderId);
+            Order order = dbContext.Order.Single(q => q.OrderNumber == orderNumber);
             order.LogDBContext = dbContext;
             order.DocketListNumber = this.DocketListNumber;
-            dbContext.WriteLogItem("Auftrag zum Laufzettel hinzugefügt.", LogTypes.UPDATE, this.DocketListNumber, "DocketList", orderId);
+            dbContext.WriteLogItem("Auftrag zum Laufzettel hinzugefügt.", LogTypes.UPDATE, this.DocketListNumber, "DocketList", orderNumber);
         }
         /// <summary>
         /// Merged PDFs
@@ -106,17 +106,17 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="OrderNumber">Id des Auftrags, der entfernt werden soll.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void RemoveOrderById(int orderId, DataClasses1DataContext dbContext)
+        public void RemoveOrderById(int orderNumber, DataClasses1DataContext dbContext)
         {
             if (this.IsPrinted.GetValueOrDefault(false))
             {
                 throw new Exception("Der Auftrag kann nicht aus dem Laufzettel entfernt werden. Der Laufzettel wurde bereits gedruckt.");
             }
 
-            Order order = dbContext.Order.Single(q => q.Id == orderId);
+            Order order = dbContext.Order.Single(q => q.OrderNumber == orderNumber);
             order.LogDBContext = dbContext;
             order.DocketListNumber = null;
-            dbContext.WriteLogItem("Auftrag aus Laufzettel entfernt.", LogTypes.UPDATE, this.DocketListNumber, "DocketList", orderId);
+            dbContext.WriteLogItem("Auftrag aus Laufzettel entfernt.", LogTypes.UPDATE, this.DocketListNumber, "DocketList", orderNumber);
         }
 
         /// <summary>

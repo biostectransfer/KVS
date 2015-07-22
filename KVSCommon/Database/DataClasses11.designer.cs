@@ -1930,13 +1930,13 @@ namespace KVSCommon.Database
 		
 		private EntitySet<Invoice> _Invoice;
 		
-		private EntitySet<Order> _Order;
-		
 		private EntitySet<WebServiceLoginCustomer> _WebServiceLoginCustomer;
 		
 		private EntityRef<LargeCustomer> _LargeCustomer;
 		
 		private EntitySet<CustomerProduct> _CustomerProduct;
+		
+		private EntitySet<Order> _Order;
 		
 		private EntityRef<Contact> _Contact;
 		
@@ -1982,10 +1982,10 @@ namespace KVSCommon.Database
 		{
 			this._SmallCustomer = default(EntityRef<SmallCustomer>);
 			this._Invoice = new EntitySet<Invoice>(new Action<Invoice>(this.attach_Invoice), new Action<Invoice>(this.detach_Invoice));
-			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
 			this._WebServiceLoginCustomer = new EntitySet<WebServiceLoginCustomer>(new Action<WebServiceLoginCustomer>(this.attach_WebServiceLoginCustomer), new Action<WebServiceLoginCustomer>(this.detach_WebServiceLoginCustomer));
 			this._LargeCustomer = default(EntityRef<LargeCustomer>);
 			this._CustomerProduct = new EntitySet<CustomerProduct>(new Action<CustomerProduct>(this.attach_CustomerProduct), new Action<CustomerProduct>(this.detach_CustomerProduct));
+			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
 			this._Contact = default(EntityRef<Contact>);
 			this._Adress = default(EntityRef<Adress>);
 			this._InvoiceAdress = default(EntityRef<Adress>);
@@ -2311,19 +2311,6 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Customer_Order", Storage="_Order", ThisKey="Id", OtherKey="CustomerId")]
-		public EntitySet<Order> Order
-		{
-			get
-			{
-				return this._Order;
-			}
-			set
-			{
-				this._Order.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Customer_WebServiceLoginCustomer", Storage="_WebServiceLoginCustomer", ThisKey="Id", OtherKey="CustomerId")]
 		public EntitySet<WebServiceLoginCustomer> WebServiceLoginCustomer
 		{
@@ -2376,6 +2363,19 @@ namespace KVSCommon.Database
 			set
 			{
 				this._CustomerProduct.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Customer_Order", Storage="_Order", ThisKey="Id", OtherKey="CustomerId")]
+		public EntitySet<Order> Order
+		{
+			get
+			{
+				return this._Order;
+			}
+			set
+			{
+				this._Order.Assign(value);
 			}
 		}
 		
@@ -2547,18 +2547,6 @@ namespace KVSCommon.Database
 			entity.Customer = null;
 		}
 		
-		private void attach_Order(Order entity)
-		{
-			this.SendPropertyChanging();
-			entity.Customer = this;
-		}
-		
-		private void detach_Order(Order entity)
-		{
-			this.SendPropertyChanging();
-			entity.Customer = null;
-		}
-		
 		private void attach_WebServiceLoginCustomer(WebServiceLoginCustomer entity)
 		{
 			this.SendPropertyChanging();
@@ -2578,6 +2566,18 @@ namespace KVSCommon.Database
 		}
 		
 		private void detach_CustomerProduct(CustomerProduct entity)
+		{
+			this.SendPropertyChanging();
+			entity.Customer = null;
+		}
+		
+		private void attach_Order(Order entity)
+		{
+			this.SendPropertyChanging();
+			entity.Customer = this;
+		}
+		
+		private void detach_Order(Order entity)
 		{
 			this.SendPropertyChanging();
 			entity.Customer = null;
@@ -2843,13 +2843,13 @@ namespace KVSCommon.Database
 		
 		private EntitySet<Mailinglist> _Mailinglist;
 		
-		private EntitySet<Order> _Order;
-		
 		private EntitySet<Price> _Price;
 		
 		private EntitySet<LargeCustomer> _LargeCustomer1;
 		
 		private EntitySet<LargeCustomer> _LargeCustomer2;
+		
+		private EntitySet<Order> _Order;
 		
 		private EntityRef<Contact> _Contact;
 		
@@ -2888,10 +2888,10 @@ namespace KVSCommon.Database
 		public Location()
 		{
 			this._Mailinglist = new EntitySet<Mailinglist>(new Action<Mailinglist>(this.attach_Mailinglist), new Action<Mailinglist>(this.detach_Mailinglist));
-			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
 			this._Price = new EntitySet<Price>(new Action<Price>(this.attach_Price), new Action<Price>(this.detach_Price));
 			this._LargeCustomer1 = new EntitySet<LargeCustomer>(new Action<LargeCustomer>(this.attach_LargeCustomer1), new Action<LargeCustomer>(this.detach_LargeCustomer1));
 			this._LargeCustomer2 = new EntitySet<LargeCustomer>(new Action<LargeCustomer>(this.attach_LargeCustomer2), new Action<LargeCustomer>(this.detach_LargeCustomer2));
+			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
 			this._Contact = default(EntityRef<Contact>);
 			this._Adress = default(EntityRef<Adress>);
 			this._InvoiceAdress = default(EntityRef<Adress>);
@@ -3113,19 +3113,6 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Location_Order", Storage="_Order", ThisKey="Id", OtherKey="LocationId")]
-		public EntitySet<Order> Order
-		{
-			get
-			{
-				return this._Order;
-			}
-			set
-			{
-				this._Order.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Location_Price", Storage="_Price", ThisKey="Id", OtherKey="LocationId")]
 		public EntitySet<Price> Price
 		{
@@ -3162,6 +3149,19 @@ namespace KVSCommon.Database
 			set
 			{
 				this._LargeCustomer2.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Location_Order", Storage="_Order", ThisKey="Id", OtherKey="LocationId")]
+		public EntitySet<Order> Order
+		{
+			get
+			{
+				return this._Order;
+			}
+			set
+			{
+				this._Order.Assign(value);
 			}
 		}
 		
@@ -3367,18 +3367,6 @@ namespace KVSCommon.Database
 			entity.Location = null;
 		}
 		
-		private void attach_Order(Order entity)
-		{
-			this.SendPropertyChanging();
-			entity.Location = this;
-		}
-		
-		private void detach_Order(Order entity)
-		{
-			this.SendPropertyChanging();
-			entity.Location = null;
-		}
-		
 		private void attach_Price(Price entity)
 		{
 			this.SendPropertyChanging();
@@ -3413,6 +3401,18 @@ namespace KVSCommon.Database
 		{
 			this.SendPropertyChanging();
 			entity.MainLocation = null;
+		}
+		
+		private void attach_Order(Order entity)
+		{
+			this.SendPropertyChanging();
+			entity.Location = this;
+		}
+		
+		private void detach_Order(Order entity)
+		{
+			this.SendPropertyChanging();
+			entity.Location = null;
 		}
 	}
 	
@@ -3824,9 +3824,9 @@ namespace KVSCommon.Database
 		
 		private EntitySet<RequiredField> _RequiredField;
 		
-		private EntitySet<Order> _Order;
-		
 		private EntitySet<Product> _Product;
+		
+		private EntitySet<Order> _Order;
 		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
@@ -3841,8 +3841,8 @@ namespace KVSCommon.Database
 		public OrderType()
 		{
 			this._RequiredField = new EntitySet<RequiredField>(new Action<RequiredField>(this.attach_RequiredField), new Action<RequiredField>(this.detach_RequiredField));
-			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
 			this._Product = new EntitySet<Product>(new Action<Product>(this.attach_Product), new Action<Product>(this.detach_Product));
+			this._Order = new EntitySet<Order>(new Action<Order>(this.attach_Order), new Action<Order>(this.detach_Order));
 			OnCreated();
 		}
 		
@@ -3899,19 +3899,6 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="OrderType_Order", Storage="_Order", ThisKey="Id", OtherKey="OrderTypeId")]
-		public EntitySet<Order> Order
-		{
-			get
-			{
-				return this._Order;
-			}
-			set
-			{
-				this._Order.Assign(value);
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="OrderType_Product", Storage="_Product", ThisKey="Id", OtherKey="OrderTypeId")]
 		public EntitySet<Product> Product
 		{
@@ -3922,6 +3909,19 @@ namespace KVSCommon.Database
 			set
 			{
 				this._Product.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="OrderType_Order", Storage="_Order", ThisKey="Id", OtherKey="OrderTypeId")]
+		public EntitySet<Order> Order
+		{
+			get
+			{
+				return this._Order;
+			}
+			set
+			{
+				this._Order.Assign(value);
 			}
 		}
 		
@@ -3957,18 +3957,6 @@ namespace KVSCommon.Database
 			entity.OrderType = null;
 		}
 		
-		private void attach_Order(Order entity)
-		{
-			this.SendPropertyChanging();
-			entity.OrderType = this;
-		}
-		
-		private void detach_Order(Order entity)
-		{
-			this.SendPropertyChanging();
-			entity.OrderType = null;
-		}
-		
 		private void attach_Product(Product entity)
 		{
 			this.SendPropertyChanging();
@@ -3976,6 +3964,18 @@ namespace KVSCommon.Database
 		}
 		
 		private void detach_Product(Product entity)
+		{
+			this.SendPropertyChanging();
+			entity.OrderType = null;
+		}
+		
+		private void attach_Order(Order entity)
+		{
+			this.SendPropertyChanging();
+			entity.OrderType = this;
+		}
+		
+		private void detach_Order(Order entity)
 		{
 			this.SendPropertyChanging();
 			entity.OrderType = null;
@@ -10553,8 +10553,6 @@ namespace KVSCommon.Database
 		
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
-		private int _Id;
-		
 		private int _CustomerId;
 		
 		private System.Nullable<int> _LocationId;
@@ -10601,28 +10599,26 @@ namespace KVSCommon.Database
 		
 		private EntitySet<PackingList> _PackingList2;
 		
-		private EntityRef<Customer> _Customer;
-		
-		private EntityRef<Location> _Location;
-		
-		private EntityRef<OrderStatus> _OrderStatus;
-		
-		private EntityRef<OrderType> _OrderType;
-		
 		private EntityRef<PackingList> _PackingList;
-		
-		private EntityRef<User> _User;
 		
 		private EntityRef<RegistrationLocation> _RegistrationLocation;
 		
 		private EntityRef<DocketList> _DocketList;
 		
+		private EntityRef<User> _User;
+		
+		private EntityRef<OrderType> _OrderType;
+		
+		private EntityRef<OrderStatus> _OrderStatus;
+		
+		private EntityRef<Location> _Location;
+		
+		private EntityRef<Customer> _Customer;
+		
     #region Definitionen der Erweiterungsmethoden
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnIdChanging(int value);
-    partial void OnIdChanged();
     partial void OnCustomerIdChanging(int value);
     partial void OnCustomerIdChanged();
     partial void OnLocationIdChanging(System.Nullable<int> value);
@@ -10668,35 +10664,15 @@ namespace KVSCommon.Database
 			this._OrderItem = new EntitySet<OrderItem>(new Action<OrderItem>(this.attach_OrderItem), new Action<OrderItem>(this.detach_OrderItem));
 			this._RegistrationOrder = default(EntityRef<RegistrationOrder>);
 			this._PackingList2 = new EntitySet<PackingList>(new Action<PackingList>(this.attach_PackingList2), new Action<PackingList>(this.detach_PackingList2));
-			this._Customer = default(EntityRef<Customer>);
-			this._Location = default(EntityRef<Location>);
-			this._OrderStatus = default(EntityRef<OrderStatus>);
-			this._OrderType = default(EntityRef<OrderType>);
 			this._PackingList = default(EntityRef<PackingList>);
-			this._User = default(EntityRef<User>);
 			this._RegistrationLocation = default(EntityRef<RegistrationLocation>);
 			this._DocketList = default(EntityRef<DocketList>);
+			this._User = default(EntityRef<User>);
+			this._OrderType = default(EntityRef<OrderType>);
+			this._OrderStatus = default(EntityRef<OrderStatus>);
+			this._Location = default(EntityRef<Location>);
+			this._Customer = default(EntityRef<Customer>);
 			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="int NOT NULL")]
-		public int Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustomerId", DbType="int NOT NULL")]
@@ -11188,142 +11164,6 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Customer_Order", Storage="_Customer", ThisKey="CustomerId", OtherKey="Id", IsForeignKey=true)]
-		public Customer Customer
-		{
-			get
-			{
-				return this._Customer.Entity;
-			}
-			set
-			{
-				Customer previousValue = this._Customer.Entity;
-				if (((previousValue != value) 
-							|| (this._Customer.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Customer.Entity = null;
-						previousValue.Order.Remove(this);
-					}
-					this._Customer.Entity = value;
-					if ((value != null))
-					{
-						value.Order.Add(this);
-						this._CustomerId = value.Id;
-					}
-					else
-					{
-						this._CustomerId = default(int);
-					}
-					this.SendPropertyChanged("Customer");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Location_Order", Storage="_Location", ThisKey="LocationId", OtherKey="Id", IsForeignKey=true)]
-		public Location Location
-		{
-			get
-			{
-				return this._Location.Entity;
-			}
-			set
-			{
-				Location previousValue = this._Location.Entity;
-				if (((previousValue != value) 
-							|| (this._Location.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._Location.Entity = null;
-						previousValue.Order.Remove(this);
-					}
-					this._Location.Entity = value;
-					if ((value != null))
-					{
-						value.Order.Add(this);
-						this._LocationId = value.Id;
-					}
-					else
-					{
-						this._LocationId = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("Location");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="OrderStatus_Order", Storage="_OrderStatus", ThisKey="Status", OtherKey="Id", IsForeignKey=true)]
-		public OrderStatus OrderStatus
-		{
-			get
-			{
-				return this._OrderStatus.Entity;
-			}
-			set
-			{
-				OrderStatus previousValue = this._OrderStatus.Entity;
-				if (((previousValue != value) 
-							|| (this._OrderStatus.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._OrderStatus.Entity = null;
-						previousValue.Order.Remove(this);
-					}
-					this._OrderStatus.Entity = value;
-					if ((value != null))
-					{
-						value.Order.Add(this);
-						this._Status = value.Id;
-					}
-					else
-					{
-						this._Status = default(int);
-					}
-					this.SendPropertyChanged("OrderStatus");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="OrderType_Order", Storage="_OrderType", ThisKey="OrderTypeId", OtherKey="Id", IsForeignKey=true)]
-		public OrderType OrderType
-		{
-			get
-			{
-				return this._OrderType.Entity;
-			}
-			set
-			{
-				OrderType previousValue = this._OrderType.Entity;
-				if (((previousValue != value) 
-							|| (this._OrderType.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._OrderType.Entity = null;
-						previousValue.Order.Remove(this);
-					}
-					this._OrderType.Entity = value;
-					if ((value != null))
-					{
-						value.Order.Add(this);
-						this._OrderTypeId = value.Id;
-					}
-					else
-					{
-						this._OrderTypeId = default(int);
-					}
-					this.SendPropertyChanged("OrderType");
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PackingList_Order", Storage="_PackingList", ThisKey="PackingListNumber", OtherKey="PackingListNumber", IsForeignKey=true)]
 		public PackingList PackingList
 		{
@@ -11354,40 +11194,6 @@ namespace KVSCommon.Database
 						this._PackingListId = default(Nullable<int>);
 					}
 					this.SendPropertyChanged("PackingList");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Order", Storage="_User", ThisKey="UserId", OtherKey="Id", IsForeignKey=true)]
-		public User User
-		{
-			get
-			{
-				return this._User.Entity;
-			}
-			set
-			{
-				User previousValue = this._User.Entity;
-				if (((previousValue != value) 
-							|| (this._User.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._User.Entity = null;
-						previousValue.Order.Remove(this);
-					}
-					this._User.Entity = value;
-					if ((value != null))
-					{
-						value.Order.Add(this);
-						this._UserId = value.Id;
-					}
-					else
-					{
-						this._UserId = default(Nullable<int>);
-					}
-					this.SendPropertyChanged("User");
 				}
 			}
 		}
@@ -11456,6 +11262,176 @@ namespace KVSCommon.Database
 						this._DocketListId = default(Nullable<int>);
 					}
 					this.SendPropertyChanged("DocketList");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Order", Storage="_User", ThisKey="UserId", OtherKey="Id", IsForeignKey=true)]
+		public User User
+		{
+			get
+			{
+				return this._User.Entity;
+			}
+			set
+			{
+				User previousValue = this._User.Entity;
+				if (((previousValue != value) 
+							|| (this._User.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._User.Entity = null;
+						previousValue.Order.Remove(this);
+					}
+					this._User.Entity = value;
+					if ((value != null))
+					{
+						value.Order.Add(this);
+						this._UserId = value.Id;
+					}
+					else
+					{
+						this._UserId = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("User");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="OrderType_Order", Storage="_OrderType", ThisKey="OrderTypeId", OtherKey="Id", IsForeignKey=true)]
+		public OrderType OrderType
+		{
+			get
+			{
+				return this._OrderType.Entity;
+			}
+			set
+			{
+				OrderType previousValue = this._OrderType.Entity;
+				if (((previousValue != value) 
+							|| (this._OrderType.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._OrderType.Entity = null;
+						previousValue.Order.Remove(this);
+					}
+					this._OrderType.Entity = value;
+					if ((value != null))
+					{
+						value.Order.Add(this);
+						this._OrderTypeId = value.Id;
+					}
+					else
+					{
+						this._OrderTypeId = default(int);
+					}
+					this.SendPropertyChanged("OrderType");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="OrderStatus_Order", Storage="_OrderStatus", ThisKey="Status", OtherKey="Id", IsForeignKey=true)]
+		public OrderStatus OrderStatus
+		{
+			get
+			{
+				return this._OrderStatus.Entity;
+			}
+			set
+			{
+				OrderStatus previousValue = this._OrderStatus.Entity;
+				if (((previousValue != value) 
+							|| (this._OrderStatus.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._OrderStatus.Entity = null;
+						previousValue.Order.Remove(this);
+					}
+					this._OrderStatus.Entity = value;
+					if ((value != null))
+					{
+						value.Order.Add(this);
+						this._Status = value.Id;
+					}
+					else
+					{
+						this._Status = default(int);
+					}
+					this.SendPropertyChanged("OrderStatus");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Location_Order", Storage="_Location", ThisKey="LocationId", OtherKey="Id", IsForeignKey=true)]
+		public Location Location
+		{
+			get
+			{
+				return this._Location.Entity;
+			}
+			set
+			{
+				Location previousValue = this._Location.Entity;
+				if (((previousValue != value) 
+							|| (this._Location.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Location.Entity = null;
+						previousValue.Order.Remove(this);
+					}
+					this._Location.Entity = value;
+					if ((value != null))
+					{
+						value.Order.Add(this);
+						this._LocationId = value.Id;
+					}
+					else
+					{
+						this._LocationId = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("Location");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Customer_Order", Storage="_Customer", ThisKey="CustomerId", OtherKey="Id", IsForeignKey=true)]
+		public Customer Customer
+		{
+			get
+			{
+				return this._Customer.Entity;
+			}
+			set
+			{
+				Customer previousValue = this._Customer.Entity;
+				if (((previousValue != value) 
+							|| (this._Customer.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Customer.Entity = null;
+						previousValue.Order.Remove(this);
+					}
+					this._Customer.Entity = value;
+					if ((value != null))
+					{
+						value.Order.Add(this);
+						this._CustomerId = value.Id;
+					}
+					else
+					{
+						this._CustomerId = default(int);
+					}
+					this.SendPropertyChanged("Customer");
 				}
 			}
 		}
@@ -16933,13 +16909,13 @@ namespace KVSCommon.Database
 	public partial class AuthorativeChargeAccounts
 	{
 		
-		private System.Guid _OrderItemId;
+		private int _OrderItemId;
 		
 		private int _InvoiceId;
 		
 		private int _InvoiceItemAccountItemId;
 		
-		private System.Guid _InvoiceItemId;
+		private int _InvoiceItemId;
 		
 		private string _RevenueAccountText;
 		
@@ -16949,8 +16925,8 @@ namespace KVSCommon.Database
 		{
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OrderItemId", DbType="UniqueIdentifier NOT NULL")]
-		public System.Guid OrderItemId
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OrderItemId", DbType="int NOT NULL")]
+		public int OrderItemId
 		{
 			get
 			{
@@ -16997,8 +16973,8 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InvoiceItemId", DbType="UniqueIdentifier NOT NULL")]
-		public System.Guid InvoiceItemId
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InvoiceItemId", DbType="int NOT NULL")]
+		public int InvoiceItemId
 		{
 			get
 			{

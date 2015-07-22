@@ -55,7 +55,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                select new
                                {
                                    listId = packList.PackingListNumber,
-                                   orderId = CustomerNameLet!=null ? CustomerNameLet.Id : (int?)null,
+                                   OrderNumber = CustomerNameLet != null ? CustomerNameLet.OrderNumber : (int?)null,
                                    CustomerName = //CustomerNameLet.Customer.Name,
                                     CustomerNameLet.Customer.SmallCustomer != null &&
                                         CustomerNameLet.Customer.SmallCustomer.Person != null ?
@@ -80,14 +80,13 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                              where ord.PackingListNumber == listId && ord.Status == 600 && ord.HasError.GetValueOrDefault(false) != true
                              select new
                              {
-                                 OrderId = ord.Id,
+                                 OrderNumber = ord.OrderNumber,
                                  CustomerName = //ord.Customer.Name,
                                  ord.Customer.SmallCustomer != null &&
                                         ord.Customer.SmallCustomer.Person != null ?
                                         ord.Customer.SmallCustomer.Person.FirstName + " " +
                                         ord.Customer.SmallCustomer.Person.Name : ord.Customer.Name, 
                                  OrderLocation = ord.Location.Name,
-                                 OrderNumber = ord.OrderNumber,
                                  Status = ord.OrderStatus.Name,
                                  OrderType = ord.OrderType.Name,
                                  OrderError = ord.HasError == true ? "Ja" : "Nein"
@@ -111,14 +110,13 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                  where ord.PackingListNumber == listId && ord.Status == 600 && ord.HasError.GetValueOrDefault(false) != true
                                  select new
                                  {
-                                     OrderId = ord.Id,
+                                     OrderNumber = ord.OrderNumber,
                                      CustomerName = //ord.Customer.Name,
                                       ord.Customer.SmallCustomer != null &&
                                         ord.Customer.SmallCustomer.Person != null ?
                                         ord.Customer.SmallCustomer.Person.FirstName + " " +
                                         ord.Customer.SmallCustomer.Person.Name : ord.Customer.Name, 
                                      OrderLocation = ord.Location.Name,
-                                     OrderNumber = ord.OrderNumber,
                                      Status = ord.OrderStatus.Name,
                                      OrderType = ord.OrderType.Name,
                                      OrderError = ord.HasError == true ? "Ja" : "Nein"

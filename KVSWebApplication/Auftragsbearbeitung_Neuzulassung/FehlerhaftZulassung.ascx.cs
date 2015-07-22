@@ -74,10 +74,9 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          where ord.HasError.GetValueOrDefault(false) != false && ordtype.Name == "Zulassung"
                                          select new
                                          {
-                                             OrderId = ord.Id,
+                                             OrderNumber = ord.OrderNumber,
                                              CustomerId = cust.Id,
                                              locationId = "",
-                                             OrderNumber = ord.OrderNumber,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
                                              CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " + cust.SmallCustomer.Person.Name : cust.Name,
@@ -128,10 +127,9 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                          where ordtype.Name == "Zulassung" && ord.HasError.GetValueOrDefault(false) != false
                                          select new
                                          {
-                                             OrderId = ord.Id,
+                                             OrderNumber = ord.OrderNumber,
                                              CustomerId = cust.Id,
                                              locationId = loc.Id,
-                                             OrderNumber = ord.OrderNumber,
                                              CreateDate = ord.CreateDate,
                                              Status = ordst.Name,
                                              Inspection = reg.GeneralInspectionDate,
@@ -234,7 +232,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             var editButton = sender as Button;
             var item = editButton.NamingContainer as GridEditFormItem;
 
-            var orderId = Int32.Parse(item.SavedOldValues["OrderNumber"].ToString());
+            var orderNumber = Int32.Parse(item.SavedOldValues["OrderNumber"].ToString());
             if (RadComboBoxCustomer.SelectedValue == "2")
             {
                 locationId = Int32.Parse(item.SavedOldValues["locationId"].ToString());
@@ -263,7 +261,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             var BankCodeBox = item.FindControl("BankCodeBox") as RadTextBox;
             var FreiTextBox = item.FindControl("Freitext") as RadTextBox;
             string selectedDate = InspectionDatePicker.SelectedDate.ToString();
-            UpdateTheWorld(orderId, locationId, VINBox.Text, VariantBox.Text, LicenceBox.Text, PrevLicenceBox.Text, selectedDate,
+            UpdateTheWorld(orderNumber, locationId, VINBox.Text, VariantBox.Text, LicenceBox.Text, PrevLicenceBox.Text, selectedDate,
                  TSNBox.Text, HSNBox.Text, InsuranceBox.Text, OwnerNameBox.Text, OwnerStreetBox.Text, OwnerFirstNameBox.Text, OwnerStreetNumberBox.Text,
                  OwnerZipCodeBox.Text, OwnerCityBox.Text, OwnerCountryBox.Text, OwnerPhoneBox.Text, OwnerFaxBox.Text, OwnerMobilePhoneBox.Text, OwnerEmailBox.Text,
                  BankNameBox.Text, AccountNumberBox.Text, BankCodeBox.Text, FreiTextBox.Text);
@@ -302,7 +300,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         /// <param name="account"></param>
         /// <param name="bankcode"></param>
         /// <param name="freitext"></param>
-        protected void UpdateTheWorld(int orderId, int? locationId, string vin, string variant, string kennzeichen, string prevkennzeichen,
+        protected void UpdateTheWorld(int orderNumber, int? locationId, string vin, string variant, string kennzeichen, string prevkennzeichen,
             string inspection, string tsn, string hsn, string insurance, string name, string street, string firstname, string streetnum,
             string zip, string city, string country, string phone, string fax, string mobile, string email, string bankname, string account, string bankcode, string freitext)
         {
@@ -313,11 +311,11 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                 if (RadComboBoxCustomer.SelectedValue == "1")
                 {
-                    orderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId);
+                    orderToUpdate = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
                 }
                 else
                 {
-                    orderToUpdate = dbContext.Order.SingleOrDefault(q => q.Id == orderId && q.LocationId == locationId);
+                    orderToUpdate = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber && q.LocationId == locationId);
                 }
                 if (orderToUpdate != null)
                 {

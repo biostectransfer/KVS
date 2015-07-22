@@ -34,9 +34,8 @@ namespace KVSWebApplication.Statistic
                            where ord.Status == 900
                            select new
                            {
-                               OrderId = ord.Id,
-                               CustomerId = ord.CustomerId,
                                OrderNumber = ord.OrderNumber,
+                               CustomerId = ord.CustomerId,
                                CreateDate = ord.CreateDate,
                                Status = ord.OrderStatus.Name,
                                CustomerName = ord.Customer.Name,
@@ -98,7 +97,7 @@ namespace KVSWebApplication.Statistic
             //Amtliche Gebühr
             foreach (var newOrder in newQuery)
             {
-                var order = con.Order.SingleOrDefault(q => q.Id == newOrder.OrderId);
+                var order = con.Order.SingleOrDefault(q => q.OrderNumber == newOrder.OrderNumber);
                 if (order != null)
                 { 
                     foreach (OrderItem orderItem in order.OrderItem)

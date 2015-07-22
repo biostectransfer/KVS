@@ -100,14 +100,13 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                              where ord.PackingListNumber == listId && ord.Status == 600 && ord.HasError.GetValueOrDefault(false) != true
                              select new
                              {
-                                 OrderId = ord.Id,
+                                 OrderNumber = ord.OrderNumber,
                                  CustomerName = //ord.Customer.Name,
                                   ord.Customer.SmallCustomer != null &&
                                         ord.Customer.SmallCustomer.Person != null ?
                                         ord.Customer.SmallCustomer.Person.FirstName + " " +
                                         ord.Customer.SmallCustomer.Person.Name : ord.Customer.Name, 
                                  OrderLocation = ord.Location.Name,
-                                 OrderNumber = ord.OrderNumber,
                                  Status = ord.OrderStatus.Name,
                                  OrderType = ord.OrderType.Name,
                                  OrderError = ord.HasError == true ? "Ja" : "Nein"
@@ -132,14 +131,13 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                  where ord.PackingListNumber == listId && ord.Status == 600 && ord.HasError.GetValueOrDefault(false) != true
                                  select new
                                  {
-                                     OrderId = ord.Id,
+                                     OrderNumber = ord.OrderNumber,
                                      CustomerName = //ord.Customer.Name,
                                       ord.Customer.SmallCustomer != null &&
                                         ord.Customer.SmallCustomer.Person != null ?
                                         ord.Customer.SmallCustomer.Person.FirstName + " " +
                                         ord.Customer.SmallCustomer.Person.Name : ord.Customer.Name, 
                                      OrderLocation = ord.Location.Name,
-                                     OrderNumber = ord.OrderNumber,
                                      Status = ord.OrderStatus.Name,
                                      OrderType = ord.OrderType.Name,
                                      OrderError = ord.HasError == true ? "Ja" : "Nein"
