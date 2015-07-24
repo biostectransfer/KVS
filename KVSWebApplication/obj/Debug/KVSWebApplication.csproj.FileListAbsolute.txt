@@ -40,3 +40,43 @@ E:\CASE Komplett\KVSWebApplication\bin\System.Web.Optimization.xml
 E:\CASE Komplett\KVSWebApplication\obj\Debug\KVSWebApplication.csprojResolveAssemblyReference.cache
 E:\CASE Komplett\KVSWebApplication\obj\Debug\KVSWebApplication.dll
 E:\CASE Komplett\KVSWebApplication\obj\Debug\KVSWebApplication.pdb
+G:\Escoda\KVSWebApplication\bin\KVSWebApplication.dll.config
+G:\Escoda\KVSWebApplication\bin\KVSWebApplication.dll
+G:\Escoda\KVSWebApplication\bin\KVSWebApplication.pdb
+G:\Escoda\KVSWebApplication\bin\Antlr3.Runtime.dll
+G:\Escoda\KVSWebApplication\bin\KVSCommon.dll
+G:\Escoda\KVSWebApplication\bin\KVSConfiguration.dll
+G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.Configuration.dll
+G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.dll
+G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.RegistrationByConvention.dll
+G:\Escoda\KVSWebApplication\bin\Microsoft.Web.Infrastructure.dll
+G:\Escoda\KVSWebApplication\bin\MigraDoc.DocumentObjectModel-WPF.dll
+G:\Escoda\KVSWebApplication\bin\MigraDoc.Rendering-WPF.dll
+G:\Escoda\KVSWebApplication\bin\Newtonsoft.Json.dll
+G:\Escoda\KVSWebApplication\bin\PdfSharp-WPF.dll
+G:\Escoda\KVSWebApplication\bin\System.Net.Http.Formatting.dll
+G:\Escoda\KVSWebApplication\bin\System.Web.Http.dll
+G:\Escoda\KVSWebApplication\bin\System.Web.Http.WebHost.dll
+G:\Escoda\KVSWebApplication\bin\System.Web.Optimization.dll
+G:\Escoda\KVSWebApplication\bin\Unity.WebApi.dll
+G:\Escoda\KVSWebApplication\bin\WebGrease.dll
+G:\Escoda\KVSWebApplication\bin\WebActivatorEx.dll
+G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.Mvc.dll
+G:\Escoda\KVSWebApplication\bin\KVSDataAccess.dll
+G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.ServiceLocation.dll
+G:\Escoda\KVSWebApplication\bin\KVSCommon.pdb
+G:\Escoda\KVSWebApplication\bin\KVSConfiguration.pdb
+G:\Escoda\KVSWebApplication\bin\Antlr3.Runtime.pdb
+G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.xml
+G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.Configuration.xml
+G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.RegistrationByConvention.xml
+G:\Escoda\KVSWebApplication\bin\Newtonsoft.Json.xml
+G:\Escoda\KVSWebApplication\bin\System.Net.Http.Formatting.xml
+G:\Escoda\KVSWebApplication\bin\System.Web.Http.xml
+G:\Escoda\KVSWebApplication\bin\System.Web.Http.WebHost.xml
+G:\Escoda\KVSWebApplication\bin\System.Web.Optimization.xml
+G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.Mvc.xml
+G:\Escoda\KVSWebApplication\bin\KVSDataAccess.pdb
+G:\Escoda\KVSWebApplication\obj\Debug\KVSWebApplication.csprojResolveAssemblyReference.cache
+G:\Escoda\KVSWebApplication\obj\Debug\KVSWebApplication.dll
+G:\Escoda\KVSWebApplication\obj\Debug\KVSWebApplication.pdb
