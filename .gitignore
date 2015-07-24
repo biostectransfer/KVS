@@ -62,3 +62,5 @@ obj/
 _ReSharper*/
 [Tt]est[Rr]esult*
 Permission denied
+KVSCommon/obj/Debug/KVSCommon.csproj.FileListAbsolute.txt
+KVSWebApplication/obj/Debug/KVSWebApplication.csproj.FileListAbsolute.txt
