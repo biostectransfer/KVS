@@ -425,7 +425,10 @@ namespace KVSCommon.Database
         /// </summary>
         partial void OnPasswordChanging(string value)
         {
-            this.LogDBContext.WriteLogItem("Passwort wurde geändert.", LogTypes.UPDATE, this.Id, "User");
+            if (this.Id != 0)
+            {
+                this.LogDBContext.WriteLogItem("Passwort wurde geändert.", LogTypes.UPDATE, this.Id, "User");
+            }
         }
         /// <summary>
         /// Aenderungsevents für die Historie
