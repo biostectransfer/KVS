@@ -10,7 +10,7 @@
 namespace KVSWebApplication.Auftragseingang {
     
     
-    public partial class AbmeldungLaufkunde1 {
+    public partial class AbmeldungLaufkundeControl {
         
         /// <summary>
         /// KeineRechteLabel-Steuerelement

@@ -199,12 +199,12 @@
     <Compile Include="Auftragsbearbeitung_Neuzulassung\Zulassungsstelle.ascx.designer.cs">
       <DependentUpon>Zulassungsstelle.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Auftragseingang\AbmeldungGrosskunde.ascx.cs">
-      <DependentUpon>AbmeldungGrosskunde.ascx</DependentUpon>
+    <Compile Include="Auftragseingang\AbmeldungGrosskundeControl.ascx.cs">
+      <DependentUpon>AbmeldungGrosskundeControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Auftragseingang\AbmeldungGrosskunde.ascx.designer.cs">
-      <DependentUpon>AbmeldungGrosskunde.ascx</DependentUpon>
+    <Compile Include="Auftragseingang\AbmeldungGrosskundeControl.ascx.designer.cs">
+      <DependentUpon>AbmeldungGrosskundeControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="Auftragseingang\AbmeldungGrosskunde.aspx.cs">
       <DependentUpon>AbmeldungGrosskunde.aspx</DependentUpon>
@@ -213,12 +213,12 @@
     <Compile Include="Auftragseingang\AbmeldungGrosskunde.aspx.designer.cs">
       <DependentUpon>AbmeldungGrosskunde.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Auftragseingang\AbmeldungLaufkunde.ascx.cs">
-      <DependentUpon>AbmeldungLaufkunde.ascx</DependentUpon>
+    <Compile Include="Auftragseingang\AbmeldungLaufkundeControl.ascx.cs">
+      <DependentUpon>AbmeldungLaufkundeControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Auftragseingang\AbmeldungLaufkunde.ascx.designer.cs">
-      <DependentUpon>AbmeldungLaufkunde.ascx</DependentUpon>
+    <Compile Include="Auftragseingang\AbmeldungLaufkundeControl.ascx.designer.cs">
+      <DependentUpon>AbmeldungLaufkundeControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="Auftragseingang\AbmeldungLaufkunde.aspx.cs">
       <DependentUpon>AbmeldungLaufkunde.aspx</DependentUpon>
@@ -248,12 +248,15 @@
     <Compile Include="Auftragseingang\AuftragseingangZulassung.ascx.designer.cs">
       <DependentUpon>AuftragseingangZulassung.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Auftragseingang\NeuzulassungGrosskunde.ascx.cs">
-      <DependentUpon>NeuzulassungGrosskunde.ascx</DependentUpon>
+    <Compile Include="Auftragseingang\IncomingOrdersBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Auftragseingang\NeuzulassungGrosskunde.ascx.designer.cs">
-      <DependentUpon>NeuzulassungGrosskunde.ascx</DependentUpon>
+    <Compile Include="Auftragseingang\NeuzulassungGrosskundeControl.ascx.cs">
+      <DependentUpon>NeuzulassungGrosskundeControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Auftragseingang\NeuzulassungGrosskundeControl.ascx.designer.cs">
+      <DependentUpon>NeuzulassungGrosskundeControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="Auftragseingang\NeuzulassungGrosskunde.aspx.cs">
       <DependentUpon>NeuzulassungGrosskunde.aspx</DependentUpon>
@@ -262,12 +265,12 @@
     <Compile Include="Auftragseingang\NeuzulassungGrosskunde.aspx.designer.cs">
       <DependentUpon>NeuzulassungGrosskunde.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Auftragseingang\NeuzulassungLaufkunde.ascx.cs">
-      <DependentUpon>NeuzulassungLaufkunde.ascx</DependentUpon>
+    <Compile Include="Auftragseingang\ZulassungLaufkundeControl.ascx.cs">
+      <DependentUpon>ZulassungLaufkundeControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Auftragseingang\NeuzulassungLaufkunde.ascx.designer.cs">
-      <DependentUpon>NeuzulassungLaufkunde.ascx</DependentUpon>
+    <Compile Include="Auftragseingang\ZulassungLaufkundeControl.ascx.designer.cs">
+      <DependentUpon>ZulassungLaufkundeControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="Auftragseingang\ZulassungLaufkunde.aspx.cs">
       <DependentUpon>ZulassungLaufkunde.aspx</DependentUpon>
@@ -578,16 +581,16 @@
     <Content Include="Auftragsbearbeitung_Neuzulassung\OffenNeuzulassung.ascx" />
     <Content Include="Auftragsbearbeitung_Neuzulassung\VersandZulassung.ascx" />
     <Content Include="Auftragsbearbeitung_Neuzulassung\Zulassungsstelle.ascx" />
-    <Content Include="Auftragseingang\AbmeldungGrosskunde.ascx" />
+    <Content Include="Auftragseingang\AbmeldungGrosskundeControl.ascx" />
     <Content Include="Auftragseingang\AbmeldungGrosskunde.aspx" />
-    <Content Include="Auftragseingang\AbmeldungLaufkunde.ascx" />
+    <Content Include="Auftragseingang\AbmeldungLaufkundeControl.ascx" />
     <Content Include="Auftragseingang\AbmeldungLaufkunde.aspx" />
     <Content Include="Auftragseingang\Auftragseingang.aspx" />
     <Content Include="Auftragseingang\AuftragseingangAbmeldung.ascx" />
     <Content Include="Auftragseingang\AuftragseingangZulassung.ascx" />
-    <Content Include="Auftragseingang\NeuzulassungGrosskunde.ascx" />
+    <Content Include="Auftragseingang\NeuzulassungGrosskundeControl.ascx" />
     <Content Include="Auftragseingang\NeuzulassungGrosskunde.aspx" />
-    <Content Include="Auftragseingang\NeuzulassungLaufkunde.ascx" />
+    <Content Include="Auftragseingang\ZulassungLaufkundeControl.ascx" />
     <Content Include="Auftragseingang\ZulassungLaufkunde.aspx" />
     <Content Include="ChangeHistory\ChangeLog.aspx" />
     <Content Include="ChangeHistory\OrderHistory.aspx" />
@@ -722,7 +725,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties UseAjaxifiedTemplates="True" UseJQuerySupport="True" />
+      <UserProperties UseJQuerySupport="True" UseAjaxifiedTemplates="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

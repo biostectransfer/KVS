@@ -15,9 +15,25 @@ namespace KVSWebApplication.Auftragseingang
     /// <summary>
     /// Abmeldung Laufkunde
     /// </summary>
-    public partial class AbmeldungLaufkunde1 : System.Web.UI.UserControl
+    public partial class AbmeldungLaufkundeControl : IncomingOrdersBase
     {
-        List<Control> controls = new List<Control>();
+        #region Members
+
+        protected override string PagePermission { get { return "ABMELDEAUFTRAG_ANLEGEN"; } }
+
+        protected override Panel Panel { get { return this.EingangAbmeldungPanel; } }
+        protected override RadTextBox AccountNumberTextBox { get { return this.BankAccount_AccountnumberBox; } }
+        protected override RadTextBox BankCodeTextBox { get { return this.BankAccount_BankCodeBox; } }
+        protected override RadTextBox BankNameTextBox { get { return this.BankAccount_BankNameBox; } }
+        protected override RadTextBox IBANTextBox { get { return this.txbBancAccountIban; } }
+        protected override RadTextBox BICTextBox { get { return this.txbBankAccount_Bic; } }
+        protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
+        protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
+
+        #endregion
+
+        #region Methods
+
         protected void Page_Load(object sender, EventArgs e)
         {
             AbmeldungLaufkunde auftragsEingang = Page as AbmeldungLaufkunde;
@@ -46,84 +62,7 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
         }
-        protected void CheckUserPermissions()
-        {
-            List<string> userPermissions = new List<string>();
-            userPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
-            if (userPermissions.Count > 0)
-            {
-                if (userPermissions.Contains("ABMELDEAUFTRAG_ANLEGEN"))
-                {
-                    EingangAbmeldungPanel.Enabled = true;
-                }
-            }
-        }
-        protected void genIban_Click(object sender, EventArgs e)
-        {
-            if (BankAccount_AccountnumberBox.Text != string.Empty && BankAccount_BankCodeBox.Text != string.Empty
-                && EmptyStringIfNull.IsNumber(BankAccount_AccountnumberBox.Text) && !String.IsNullOrEmpty(BankAccount_BankNameBox.Text) && EmptyStringIfNull.IsNumber(BankAccount_BankCodeBox.Text))
-            {
-                txbBancAccountIban.Text = "DE" + (98 - ((62 * ((1 + long.Parse(BankAccount_BankCodeBox.Text) % 97)) +
-                    27 * (long.Parse(BankAccount_AccountnumberBox.Text) % 97)) % 97)).ToString("D2");
-                txbBancAccountIban.Text += long.Parse(BankAccount_BankCodeBox.Text).ToString("00000000").Substring(0, 4);
-                txbBancAccountIban.Text += long.Parse(BankAccount_BankCodeBox.Text).ToString("00000000").Substring(4, 4);
-                txbBancAccountIban.Text += long.Parse(BankAccount_AccountnumberBox.Text).ToString("0000000000").Substring(0, 4);
-                txbBancAccountIban.Text += long.Parse(BankAccount_AccountnumberBox.Text).ToString("0000000000").Substring(4, 4);
-                txbBancAccountIban.Text += long.Parse(BankAccount_AccountnumberBox.Text).ToString("0000000000").Substring(8, 2);
-                using (DataClasses1DataContext dataContext = new DataClasses1DataContext())
-                {
-                    var bicNr = dataContext.BIC_DE.FirstOrDefault(q => q.Bankleitzahl.Contains(BankAccount_BankCodeBox.Text) && (q.Bezeichnung.Contains(BankAccount_BankNameBox.Text) || q.Kurzbezeichnung.Contains(BankAccount_BankNameBox.Text)));
-                    if (bicNr != null)
-                    {
-                        if (!String.IsNullOrEmpty(bicNr.BIC.ToString()))
-                            txbBankAccount_Bic.Text = bicNr.BIC.ToString();
-                    }
-                }
-            }
-        }
-        protected void CheckUmsatzForSmallCustomer()
-        {
-            SmallCustomerHistorie.Visible = true;
-            DataClasses1DataContext con = new DataClasses1DataContext();
-            var newQuery = from ord in con.Order
-                           let registration = ord.DeregistrationOrder != null ? ord.DeregistrationOrder.Registration : ord.DeregistrationOrder.Registration
-                           where ord.Status == (int)OrderStatusTypes.Payed
-                           select new
-                           {
-                               CustomerId = ord.CustomerId,
-                               OrderNumber = ord.OrderNumber,
-                           };
-            if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
-            {
-                try
-                {
-                    newQuery = newQuery.Where(q => q.CustomerId == Int32.Parse(CustomerDropDownList.SelectedValue));
-                }
-                catch
-                {
-                }
-            }
-            // Allgemein
-            string countAuftrag = newQuery.Count().ToString();
-            decimal gebuehren = 0;
-            decimal umsatz = 0;
-            //Amtliche Gebühr
-            foreach (var newOrder in newQuery)
-            {
-                var order = con.Order.SingleOrDefault(q => q.OrderNumber == newOrder.OrderNumber);
-                if (order != null)
-                {
-                    foreach (OrderItem orderItem in order.OrderItem)
-                    {
-                        if (orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
-                            gebuehren = gebuehren + orderItem.Amount;
-                        else if (!orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
-                            umsatz = umsatz + orderItem.Amount;
-                    }
-                }
-            }
-            SmallCustomerHistorie.Text = "Historie: <br/> Gesamt: " + countAuftrag + " <br/> Umsatz: " + umsatz.ToString("C2") + "<br/> Gebühren: " + gebuehren.ToString("C2");
-        }
+
         protected string CheckIfAllProduktsHavingPrice(int? locationId)
         {
             string allesHatGutGelaufen = "";
@@ -1098,5 +1037,7 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
         }
+
+        #endregion
     }
 }

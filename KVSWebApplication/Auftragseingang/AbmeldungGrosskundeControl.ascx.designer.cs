@@ -10,16 +10,25 @@
 namespace KVSWebApplication.Auftragseingang {
     
     
-    public partial class NeuzulassungGrosskunde1 {
+    public partial class AbmeldungGrosskundeControl {
         
         /// <summary>
-        /// ZulassungPanel-Steuerelement
+        /// KeineRechteLabel-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel ZulassungPanel;
+        protected global::System.Web.UI.WebControls.Label KeineRechteLabel;
+        
+        /// <summary>
+        /// EingangAbmeldungPanel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel EingangAbmeldungPanel;
         
         /// <summary>
         /// RadCustomerTextBox-Steuerelement
@@ -94,40 +103,22 @@ namespace KVSWebApplication.Auftragseingang {
         protected global::Telerik.Web.UI.RadComboBox CostCenterDropDownList;
         
         /// <summary>
-        /// RegistrationTextBox-Steuerelement
+        /// ProductAbmTextBox-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadTextBox RegistrationTextBox;
+        protected global::Telerik.Web.UI.RadTextBox ProductAbmTextBox;
         
         /// <summary>
-        /// RegistrationOrderDropDownList-Steuerelement
+        /// ProductAbmDropDownList-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadComboBox RegistrationOrderDropDownList;
-        
-        /// <summary>
-        /// ProductTextBox-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
-        /// </remarks>
-        protected global::Telerik.Web.UI.RadTextBox ProductTextBox;
-        
-        /// <summary>
-        /// ProductDropDownList-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
-        /// </remarks>
-        protected global::Telerik.Web.UI.RadComboBox ProductDropDownList;
+        protected global::Telerik.Web.UI.RadComboBox ProductAbmDropDownList;
         
         /// <summary>
         /// NewPositionZulButton-Steuerelement
@@ -184,49 +175,13 @@ namespace KVSWebApplication.Auftragseingang {
         protected global::Telerik.Web.UI.RadTextBox RadTextBox5;
         
         /// <summary>
-        /// ZulassungsdatumPicker-Steuerelement
+        /// AbmeldedatumPicker-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadDatePicker ZulassungsdatumPicker;
-        
-        /// <summary>
-        /// LicenceNumberCacheField-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField LicenceNumberCacheField;
-        
-        /// <summary>
-        /// VehicleIdField-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField VehicleIdField;
-        
-        /// <summary>
-        /// RegistrationIdField-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField RegistrationIdField;
-        
-        /// <summary>
-        /// AuftragRadDecorator-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
-        /// </remarks>
-        protected global::Telerik.Web.UI.RadFormDecorator AuftragRadDecorator;
+        protected global::Telerik.Web.UI.RadDatePicker AbmeldedatumPicker;
         
         /// <summary>
         /// Halter-Steuerelement
@@ -499,13 +454,13 @@ namespace KVSWebApplication.Auftragseingang {
         protected global::Telerik.Web.UI.RadTextBox HSNLabel;
         
         /// <summary>
-        /// HSNBox-Steuerelement
+        /// HSNAbmBox-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadTextBox HSNBox;
+        protected global::Telerik.Web.UI.RadTextBox HSNAbmBox;
         
         /// <summary>
         /// HSNSearchLabel-Steuerelement
@@ -535,13 +490,13 @@ namespace KVSWebApplication.Auftragseingang {
         protected global::Telerik.Web.UI.RadTextBox TSNLabel;
         
         /// <summary>
-        /// TSNBox-Steuerelement
+        /// TSNAbmBox-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadTextBox TSNBox;
+        protected global::Telerik.Web.UI.RadTextBox TSNAbmBox;
         
         /// <summary>
         /// RegExVal-Steuerelement
@@ -740,15 +695,6 @@ namespace KVSWebApplication.Auftragseingang {
         /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
         /// </remarks>
         protected global::Telerik.Web.UI.RadTextBox LicenceBox3;
-        
-        /// <summary>
-        /// KennzeichenTauschButton-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button KennzeichenTauschButton;
         
         /// <summary>
         /// RegistrationOrder_PreviousLicencenumber-Steuerelement
@@ -1012,13 +958,13 @@ namespace KVSWebApplication.Auftragseingang {
         protected global::Telerik.Web.UI.RadTextBox txbBICInfo;
         
         /// <summary>
-        /// txbBancAccountBIC-Steuerelement
+        /// txbBankAccount_Bic-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadTextBox txbBancAccountBIC;
+        protected global::Telerik.Web.UI.RadTextBox txbBankAccount_Bic;
         
         /// <summary>
         /// btnGenerateIBAN-Steuerelement
@@ -1156,13 +1102,31 @@ namespace KVSWebApplication.Auftragseingang {
         protected global::Telerik.Web.UI.RadTextBox Contact_EmailBox;
         
         /// <summary>
-        /// AuftragZulassenButton-Steuerelement
+        /// vehicleIdField-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadButton AuftragZulassenButton;
+        protected global::System.Web.UI.WebControls.HiddenField vehicleIdField;
+        
+        /// <summary>
+        /// AuftragRadDecorator-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
+        /// </remarks>
+        protected global::Telerik.Web.UI.RadFormDecorator AuftragRadDecorator;
+        
+        /// <summary>
+        /// AbmeldenButton-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
+        /// </remarks>
+        protected global::Telerik.Web.UI.RadButton AbmeldenButton;
         
         /// <summary>
         /// rbtSameOrder-Steuerelement
@@ -1183,15 +1147,6 @@ namespace KVSWebApplication.Auftragseingang {
         protected global::Telerik.Web.UI.RadButton NaechtenAuftragButton;
         
         /// <summary>
-        /// ZulassungOkLabel-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label ZulassungOkLabel;
-        
-        /// <summary>
         /// SubmitChangesErrorLabel-Steuerelement
         /// </summary>
         /// <remarks>
@@ -1199,6 +1154,15 @@ namespace KVSWebApplication.Auftragseingang {
         /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label SubmitChangesErrorLabel;
+        
+        /// <summary>
+        /// AbmeldungOkLabel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label AbmeldungOkLabel;
         
         /// <summary>
         /// ErrorLeereTextBoxenLabel-Steuerelement
@@ -1228,6 +1192,15 @@ namespace KVSWebApplication.Auftragseingang {
         protected global::System.Web.UI.WebControls.LinqDataSource LocationDataSource;
         
         /// <summary>
+        /// ProductAbmDataSource-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinqDataSource ProductAbmDataSource;
+        
+        /// <summary>
         /// CostCenterDataSource-Steuerelement
         /// </summary>
         /// <remarks>
@@ -1235,24 +1208,6 @@ namespace KVSWebApplication.Auftragseingang {
         /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinqDataSource CostCenterDataSource;
-        
-        /// <summary>
-        /// RegistrationOrderDataSource-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinqDataSource RegistrationOrderDataSource;
-        
-        /// <summary>
-        /// ProductDataSource-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinqDataSource ProductDataSource;
         
         /// <summary>
         /// ZulassungsstelleDataSource-Steuerelement
@@ -1406,6 +1361,15 @@ namespace KVSWebApplication.Auftragseingang {
         /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox InvoiceRecipient;
+        
+        /// <summary>
+        /// InvoiceRecValidator-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator InvoiceRecValidator;
         
         /// <summary>
         /// Label6-Steuerelement

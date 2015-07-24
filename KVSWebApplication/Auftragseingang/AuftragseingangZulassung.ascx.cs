@@ -12,9 +12,25 @@ using KVSCommon.Enums;
 
 namespace KVSWebApplication.Auftragseingang
 {
-    public partial class AuftragseingangZulassung : System.Web.UI.UserControl
-    {       
-        List<Control> controls = new List<Control>();
+    public partial class AuftragseingangZulassung : IncomingOrdersBase
+    {
+        #region Members
+
+        protected override string PagePermission { get { return "ZULASSUNGSAUFTRAG_ANLEGEN"; } }
+
+        protected override Panel Panel { get { return this.ZulassungPanel; } }
+        protected override RadTextBox AccountNumberTextBox { get { return this.BankAccount_AccountnumberBox; } }
+        protected override RadTextBox BankCodeTextBox { get { return this.BankAccount_BankCodeBox; } }
+        protected override RadTextBox BankNameTextBox { get { return this.BankAccount_BankNameBox; } }
+        protected override RadTextBox IBANTextBox { get { return this.txbBancAccountIban; } }
+        protected override RadTextBox BICTextBox { get { return null; } }
+        protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
+        protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
+
+        #endregion
+
+        #region Methods
+
         protected void Page_Load(object sender, EventArgs e)
         {
             Auftragseingang auftragsEingang = Page as Auftragseingang;
@@ -33,66 +49,9 @@ namespace KVSWebApplication.Auftragseingang
                 {
                     CheckUserPermissions();
                 }
-            }       
-        }
-        protected void CheckUserPermissions()
-        {
-            List<string> userPermissions = new List<string>();
-            userPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));                 
-            if (userPermissions.Count > 0)
-            {
-                if (userPermissions.Contains("ZULASSUNGSAUFTRAG_ANLEGEN"))
-                {
-                    ZulassungPanel.Enabled = true;
-                }
-            }             
-        }
-        protected void CheckUmsatzForSmallCustomer()
-        {
-            SmallCustomerHistorie.Visible = true;
-            DataClasses1DataContext con = new DataClasses1DataContext();            
-            var newQuery = from ord in con.Order
-                           let registration = ord.RegistrationOrder != null ? ord.RegistrationOrder.Registration : ord.DeregistrationOrder.Registration
-                           where ord.Status == (int)OrderStatusTypes.Payed
-                           select new
-                           {
-                               CustomerId = ord.CustomerId,
-                               OrderNumber = ord.OrderNumber,
-                           };
-            if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
-            {
-                try
-                {
-                    newQuery = newQuery.Where(q => q.CustomerId == Int32.Parse(CustomerDropDownList.SelectedValue));
-                }
-                catch(Exception ex)
-                {
-                    SubmitChangesErrorLabel.Text = ex.Message;
-                    SubmitChangesErrorLabel.Visible = true;
-                }
             }
-            // Allgemein
-           string countAuftrag = newQuery.Count().ToString();
-            decimal gebuehren = 0;
-            decimal umsatz = 0;
-            //Amtliche Gebühr
-            foreach (var newOrder in newQuery)
-            {
-                var order = con.Order.SingleOrDefault(q => q.OrderNumber == newOrder.OrderNumber);
-                if (order != null)
-                {
-                    foreach (OrderItem orderItem in order.OrderItem)
-                    {
-                        if (orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
-                            gebuehren = gebuehren + orderItem.Amount;
-                        else if (!orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
-                            umsatz = umsatz + orderItem.Amount;
-                    }
-                }
-            }
-            SmallCustomerHistorie.Text = "Historie: <br/> Gesamt: " + countAuftrag + " <br/> Umsatz: " + umsatz.ToString("C2") + "<br/> Gebühren: " + gebuehren.ToString("C2");
-        }        
-        #region Methods
+        }
+
         // Suche nach Price. Falls keine gibt - stand.Price nehmen
         private Price findPrice(string productId)
         {
@@ -103,14 +62,14 @@ namespace KVSWebApplication.Auftragseingang
             {
                 locationId = Int32.Parse(LocationDropDownList.SelectedValue);
                 newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == Int32.Parse(productId) && q.LocationId == locationId);
-            }            
+            }
             if (String.IsNullOrEmpty(this.LocationDropDownList.SelectedValue) || newPrice == null)
             {
                 newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == Int32.Parse(productId) && q.LocationId == null);
             }
             return newPrice;
-        }        
-        #endregion
+        }
+
         #region Index Changed
         protected void SmallLargeCustomer_Changed(object sender, EventArgs e)
         {
@@ -139,7 +98,7 @@ namespace KVSWebApplication.Auftragseingang
             else if (RadComboBoxCustomer.SelectedValue == "2") //Large Customer
             {
                 SmallCustomerZulassung.ComeFromOrder = false;
-            }      
+            }
             //CheckIfButtonShouldBeEnabled();
             ProductDropDownList.DataSource = null;
             ProductDropDownList.DataBind();
@@ -149,8 +108,8 @@ namespace KVSWebApplication.Auftragseingang
             if (DienstleistungTreeView.SelectedNodes.Count > 0)
             {
                 DienstleistungTreeView.SelectedNode.Remove();
-            }         
-        }      
+            }
+        }
         protected void NewPosButton_Clicked(object sender, EventArgs e)
         {
             IRadTreeNodeContainer target = DienstleistungTreeView;
@@ -171,7 +130,7 @@ namespace KVSWebApplication.Auftragseingang
                 string value = ProductDropDownList.SelectedValue.ToString() + ";" + costCenter;
                 RadTreeNode addedNode = new RadTreeNode(ProductDropDownList.Text + "(" + CostCenterDropDownList.Text + ")", value);//+ ";" + CostCenterDropDownList.SelectedValue == "SmallCustomer" ? "" : CostCenterDropDownList.SelectedValue);
                 target.Nodes.Add(addedNode);
-            }            
+            }
         }
         protected void RegistrationTyp_Changed(object sender, EventArgs e)
         {
@@ -181,10 +140,10 @@ namespace KVSWebApplication.Auftragseingang
             ProductDropDownList.SelectedValue = "";
             ProductDropDownList.Items.Clear();
             ProductDropDownList.DataBind();
-            ProductDropDownList.Focus();        
+            ProductDropDownList.Focus();
         }
         protected void CustomerIndex_Changed(object sender, EventArgs e)
-        {           
+        {
             ProductDropDownList.Text = null;
             ProductDropDownList.ClearSelection();
             LocationDropDownList.Text = null;
@@ -193,11 +152,11 @@ namespace KVSWebApplication.Auftragseingang
             RegistrationOrderDropDownList.ClearSelection();
             CostCenterDropDownList.Text = null;
             CostCenterDropDownList.ClearSelection();
-                LocationDropDownList.DataBind();
-                ProductDropDownList.DataBind();
-                CostCenterDropDownList.DataBind();
-                LocationDropDownList.Focus();
-                ZulassungOkLabel.Visible = false;
+            LocationDropDownList.DataBind();
+            ProductDropDownList.DataBind();
+            CostCenterDropDownList.DataBind();
+            LocationDropDownList.Focus();
+            ZulassungOkLabel.Visible = false;
             if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue.ToString()))
             {
                 CheckFields(getAllControls());
@@ -207,10 +166,10 @@ namespace KVSWebApplication.Auftragseingang
                 }
                 else
                     SmallCustomerHistorie.Visible = false;
-            }          
+            }
         }
         #endregion
-        #region Linq Data Source     
+        #region Linq Data Source
         protected void ProductDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext con = new DataClasses1DataContext();
@@ -218,8 +177,8 @@ namespace KVSWebApplication.Auftragseingang
             var location = 0;
             if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
                 selectedCustomer = Int32.Parse(CustomerDropDownList.SelectedValue);
-              if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
-                  location = Int32.Parse(LocationDropDownList.SelectedValue);
+            if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
+                location = Int32.Parse(LocationDropDownList.SelectedValue);
             IQueryable productQuery = null;
             if (!String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue))
             {
@@ -263,7 +222,7 @@ namespace KVSWebApplication.Auftragseingang
                                    Category = p.Product.ProductCategory.Name
                                };
             }
-               e.Result = productQuery;       
+            e.Result = productQuery;
         }
         // Auswahl der KundenName
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
@@ -272,7 +231,7 @@ namespace KVSWebApplication.Auftragseingang
             if (RadComboBoxCustomer.SelectedValue == "1") //Small Customers
             {
                 var customerQuery = from cust in con.Customer
-                                    where cust.Id == cust.SmallCustomer.CustomerId   
+                                    where cust.Id == cust.SmallCustomer.CustomerId
                                     orderby cust.Name
                                     select new
                                     {
@@ -300,15 +259,15 @@ namespace KVSWebApplication.Auftragseingang
         }
         protected void ZulassungsstelleDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();       
+            DataClasses1DataContext con = new DataClasses1DataContext();
             var zulassungsstelleQuery = from zul in con.RegistrationLocation
                                         select new
                                         {
                                             Name = zul.RegistrationLocationName,
                                             Value = zul.ID
-                                         };
-            e.Result = zulassungsstelleQuery;            
-        }      
+                                        };
+            e.Result = zulassungsstelleQuery;
+        }
         protected void LocationLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             DataClasses1DataContext con = new DataClasses1DataContext();
@@ -378,7 +337,7 @@ namespace KVSWebApplication.Auftragseingang
         }
         #endregion
         protected void CheckIfButtonShouldBeEnabled()
-        {          
+        {
             if (AuftragZulassenButton.Enabled == true)
             {
                 //falls keine Pflichtfelder angezeigt sind - button schließen
@@ -393,7 +352,7 @@ namespace KVSWebApplication.Auftragseingang
                     else
                         AuftragZulassenButton.Enabled = false;
                 }
-            }            
+            }
         }
         //VIN ist eingegeben, versuch das Fahrzeug zu finden
         protected void VinBoxZulText_Changed(object sender, EventArgs e)
@@ -405,7 +364,7 @@ namespace KVSWebApplication.Auftragseingang
             {
                 finIsOkey = true;
                 PruefzifferBox.Text = VINBox.Text.Substring(17);
-                VINBox.Text = VINBox.Text.Substring(0,17);
+                VINBox.Text = VINBox.Text.Substring(0, 17);
                 PruefzifferBox.Focus();
             }
             else if (VINBox.Text.Length == 17 && !VINBox.Text.Contains('O') && !VINBox.Text.Contains('o'))
@@ -434,7 +393,7 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
             if (finIsOkey == true)
-            {                                                            
+            {
                 try
                 {
                     VINBox.Text = VINBox.Text.ToUpper();
@@ -446,7 +405,7 @@ namespace KVSWebApplication.Auftragseingang
                         if (autoQuery.CurrentRegistrationId.HasValue)
                         {
                             var registration = dbContext.Registration.Single(q => q.Id == autoQuery.CurrentRegistrationId.Value);
-                        
+
                             string kennzeichen = string.Empty;
                             LicenceNumberCacheField.Value = registration.Licencenumber;
                             RegistrationIdField.Value = registration.Id.ToString();
@@ -496,15 +455,15 @@ namespace KVSWebApplication.Auftragseingang
                         Vehicle_VariantBox.Text = autoQuery.Variant;
                         HSNBox.Text = autoQuery.HSN;
                         TSNBox.Text = autoQuery.TSN;
-                        Vehicle_ColorBox.Text = autoQuery.ColorCode.ToString();                   
-                    }                                  
+                        Vehicle_ColorBox.Text = autoQuery.ColorCode.ToString();
+                    }
                 }
                 // falls kein Fahrzeug gefunden
                 catch (Exception ex)
                 {
-                    VINBox.Focus(); 
-                }               
-            }            
+                    VINBox.Focus();
+                }
+            }
         }
         #region Button Clicked
         //Neue Auftragseingang
@@ -519,14 +478,14 @@ namespace KVSWebApplication.Auftragseingang
             if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
                 locationId = Int32.Parse(LocationDropDownList.SelectedValue);
             if (CheckIfBoxenNotEmpty()) //gibt es leer boxen, die angezeigt sind.
-            {                
+            {
                 if (RadComboBoxCustomer.SelectedIndex == 1)
                 {
                     if (DienstleistungTreeView.Nodes.Count == 0)
                     {
                         ErrorLeereTextBoxenLabel.Text = "Bitte Dienstleistung hinzufügen!";
                         ErrorLeereTextBoxenLabel.Visible = true;
-                    }                 
+                    }
                     else
                     {
                         ErrorLeereTextBoxenLabel.Text = "Bitte FIN eingeben!";
@@ -559,7 +518,7 @@ namespace KVSWebApplication.Auftragseingang
                     {
                         ErrorLeereTextBoxenLabel.Text = "Bitte Pflichtfelder überprüfen!";
                         ErrorLeereTextBoxenLabel.Visible = true;
-                    }                        
+                    }
                 }
             }
             else if (!String.IsNullOrEmpty(CheckIfAllProduktsHavingPrice(locationId)))
@@ -568,8 +527,8 @@ namespace KVSWebApplication.Auftragseingang
                 ErrorLeereTextBoxenLabel.Visible = true;
                 return;
             }
-            else if(DienstleistungTreeView.Nodes.Count > 0)
-            {                       
+            else if (DienstleistungTreeView.Nodes.Count > 0)
+            {
                 RadTreeNode node = DienstleistungTreeView.Nodes[0];
                 string[] splited = node.Value.Split(';');
                 ProduktId = splited[0];
@@ -628,7 +587,7 @@ namespace KVSWebApplication.Auftragseingang
                             // another logic after new/existing Vehicle
                             newAdress = Adress.CreateAdress(Adress_StreetBox.Text, Adress_StreetNumberBox.Text, Adress_ZipcodeBox.Text, Adress_CityBox.Text, Adress_CountryBox.Text, dbContext);
                             newContact = Contact.CreateContact(Contact_PhoneBox.Text, Contact_FaxBox.Text, Contact_MobilePhoneBox.Text, Contact_EmailBox.Text, dbContext);
-                            newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text, 
+                            newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text,
                                 BankAccount_BankCodeBox.Text, txbBancAccountIban.Text, "");
                             newCarOwner = CarOwner.CreateCarOwner(CarOwner_NameBox.Text, CarOwner_FirstnameBox.Text, newBankAccount, newContact, newAdress, dbContext);
                             DateTime newZulassungsDatum = DateTime.Now;
@@ -639,7 +598,7 @@ namespace KVSWebApplication.Auftragseingang
                                     newZulassungsDatum = (DateTime)ZulassungsdatumPicker.SelectedDate;
                                 }
                             }
-                            newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text, 
+                            newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text,
                                 Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
                             price = findPrice(ProduktId);
                             if (price == null)
@@ -649,7 +608,7 @@ namespace KVSWebApplication.Auftragseingang
                                 return;
                             }
                             newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(Int32.Parse(Session["CurrentUserId"].ToString()),
-                                Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration, 
+                                Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration,
                                 RegistrationOrderTypes.Renumbering, locationId, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
                             newKennzeichenRegOrder.Order.FreeText = FreiTextBox.Text;
 
@@ -694,7 +653,7 @@ namespace KVSWebApplication.Auftragseingang
                         // another logic after new/existing Vehicle
                         newAdress = Adress.CreateAdress(Adress_StreetBox.Text, Adress_StreetNumberBox.Text, Adress_ZipcodeBox.Text, Adress_CityBox.Text, Adress_CountryBox.Text, dbContext);
                         newContact = Contact.CreateContact(Contact_PhoneBox.Text, Contact_FaxBox.Text, Contact_MobilePhoneBox.Text, Contact_EmailBox.Text, dbContext);
-                        newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text, 
+                        newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text,
                             BankAccount_BankCodeBox.Text, txbBancAccountIban.Text, "");
                         newCarOwner = CarOwner.CreateCarOwner(CarOwner_NameBox.Text, CarOwner_FirstnameBox.Text, newBankAccount, newContact, newAdress, dbContext);
                         DateTime newZulassungsDatum = DateTime.Now;
@@ -705,7 +664,7 @@ namespace KVSWebApplication.Auftragseingang
                                 newZulassungsDatum = (DateTime)ZulassungsdatumPicker.SelectedDate;
                             }
                         }
-                        newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text, 
+                        newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text,
                             Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
                         price = findPrice(ProduktId);
                         if (price == null)
@@ -729,8 +688,8 @@ namespace KVSWebApplication.Auftragseingang
                         dbContext.SubmitChanges();
                         if (DienstleistungTreeView.Nodes.Count > 1)
                         {
-                            bool inOrdnung = AddAnotherProducts(newKennzeichenRegOrder, locationId);     
-                        }                        
+                            bool inOrdnung = AddAnotherProducts(newKennzeichenRegOrder, locationId);
+                        }
                         if (String.IsNullOrEmpty(VehicleIdField.Value)) //update CurrentRegistration Id
                         {
                             newVehicle.CurrentRegistrationId = newRegistration.Id;
@@ -756,7 +715,7 @@ namespace KVSWebApplication.Auftragseingang
                         //  newVehicle = Vehicle.CreateVehicle(VINBox.Text, HSNBox.Text, TSNBox.Text, Vehicle_VariantBox.Text, FirstRegistrationDate, dbContext);
                         newAdress = Adress.CreateAdress(Adress_StreetBox.Text, Adress_StreetNumberBox.Text, Adress_ZipcodeBox.Text, Adress_CityBox.Text, Adress_CountryBox.Text, dbContext);
                         newContact = Contact.CreateContact(Contact_PhoneBox.Text, Contact_FaxBox.Text, Contact_MobilePhoneBox.Text, Contact_EmailBox.Text, dbContext);
-                        newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text, BankAccount_BankCodeBox.Text,txbBancAccountIban.Text, "");
+                        newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text, BankAccount_BankCodeBox.Text, txbBancAccountIban.Text, "");
                         newCarOwner = CarOwner.CreateCarOwner(CarOwner_NameBox.Text, CarOwner_FirstnameBox.Text, newBankAccount, newContact, newAdress, dbContext);
                         DateTime newZulassungsDatum = DateTime.Now;
                         if (ZulassungsdatumPicker.SelectedDate != null)
@@ -766,7 +725,7 @@ namespace KVSWebApplication.Auftragseingang
                                 newZulassungsDatum = (DateTime)ZulassungsdatumPicker.SelectedDate;
                             }
                         }
-                        newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text, 
+                        newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text,
                             Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
                         price = findPrice(ProduktId);
                         if (price == null)
@@ -810,20 +769,7 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
         }
-        protected void genIban_Click(object sender, EventArgs e)
-        {
-            if (BankAccount_AccountnumberBox.Text != string.Empty && BankAccount_BankCodeBox.Text != string.Empty
-                && EmptyStringIfNull.IsNumber(BankAccount_AccountnumberBox.Text) && EmptyStringIfNull.IsNumber(BankAccount_BankCodeBox.Text))
-            {
-                txbBancAccountIban.Text = "DE" + (98 - ((62 * ((1 + long.Parse(BankAccount_BankCodeBox.Text) % 97)) +
-                    27 * (long.Parse(BankAccount_AccountnumberBox.Text) % 97)) % 97)).ToString("D2");
-                txbBancAccountIban.Text += long.Parse(BankAccount_BankCodeBox.Text).ToString("00000000").Substring(0, 4);
-                txbBancAccountIban.Text += long.Parse(BankAccount_BankCodeBox.Text).ToString("00000000").Substring(4, 4);
-                txbBancAccountIban.Text += long.Parse(BankAccount_AccountnumberBox.Text).ToString("0000000000").Substring(0, 4);
-                txbBancAccountIban.Text += long.Parse(BankAccount_AccountnumberBox.Text).ToString("0000000000").Substring(4, 4);
-                txbBancAccountIban.Text += long.Parse(BankAccount_AccountnumberBox.Text).ToString("0000000000").Substring(8, 2);
-            }            
-        }
+
         #endregion
         protected string CheckIfAllProduktsHavingPrice(int? locationId)
         {
@@ -856,7 +802,7 @@ namespace KVSWebApplication.Auftragseingang
                                         allesHatGutGelaufen += " " + node.Text + " ";
                                     }
                                     else
-                                    {                                        
+                                    {
                                     }
                                 }
                                 else //large
@@ -868,7 +814,7 @@ namespace KVSWebApplication.Auftragseingang
                                     {
                                         allesHatGutGelaufen += " " + node.Text + " ";
                                     }
-                                }        
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -925,7 +871,7 @@ namespace KVSWebApplication.Auftragseingang
                                     if (orderToUpdate != null)
                                     {
                                         if (RadComboBoxCustomer.SelectedIndex == 1)
-                                        {                                          
+                                        {
                                             newOrderItem1 = orderToUpdate.AddOrderItem(newProduct.Id, newPrice.Amount, 1, null, null, false, dbContext);
 
                                             if (newPrice.AuthorativeCharge.HasValue)
@@ -944,7 +890,7 @@ namespace KVSWebApplication.Auftragseingang
                                             newOrderItem1 = orderToUpdate.AddOrderItem(newProduct.Id, newPrice.Amount, 1, costCenter, null, false, dbContext);
                                             if (newPrice.AuthorativeCharge.HasValue)
                                             {
-                                                orderToUpdate.AddOrderItem(newProduct.Id, newPrice.AuthorativeCharge.Value, 1, costCenter, newOrderItem1.Id, 
+                                                orderToUpdate.AddOrderItem(newProduct.Id, newPrice.AuthorativeCharge.Value, 1, costCenter, newOrderItem1.Id,
                                                     newPrice.AuthorativeCharge.HasValue, dbContext);
                                             }
                                         }
@@ -971,7 +917,7 @@ namespace KVSWebApplication.Auftragseingang
         }
         protected void MakeInvoiceForSmallCustomer(int customerId, RegistrationOrder regOrder)
         {
-            try 
+            try
             {
                 DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
                 var newOrder = dbContext.Order.Single(q => q.CustomerId == customerId && q.OrderNumber == regOrder.OrderNumber);
@@ -999,7 +945,7 @@ namespace KVSWebApplication.Auftragseingang
                 ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
                 SetValuesForAdressWindow();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorLeereTextBoxenLabel.Text = "Error: " + ex.Message;
                 ErrorLeereTextBoxenLabel.Visible = true;
@@ -1027,14 +973,14 @@ namespace KVSWebApplication.Auftragseingang
                 {
                     ZusatzlicheInfoLabel.Visible = true;
                 }
-            }         
+            }
         }
-         // Create new Adress in der DatenBank
+        // Create new Adress in der DatenBank
         protected void OnAddAdressButton_Clicked(object sender, EventArgs e)
         {
             InvoiceRecValidator2.Enabled = false;
             //Adress Eigenschaften
-            string street = "", 
+            string street = "",
                 streetNumber = "",
                 zipcode = "",
                 city = "",
@@ -1065,13 +1011,13 @@ namespace KVSWebApplication.Auftragseingang
                     {
                         ProductName = ordItem.ProductName;
                         Amount = ordItem.Amount;
-                        
+
                         CostCenter costCenter = null;
                         if (ordItem.CostCenterId.HasValue)
                         {
                             costCenter = dbContext.CostCenter.FirstOrDefault(o => o.Id == ordItem.CostCenterId.Value);
                         }
-                        
+
                         itemCount = ordItem.Count;
                         InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(ProductName, Convert.ToDecimal(Amount), itemCount, ordItem, costCenter, dbContext);
                         ordItem.LogDBContext = dbContext;
@@ -1081,14 +1027,14 @@ namespace KVSWebApplication.Auftragseingang
                     // Submiting new InvoiceItems
                     dbContext.SubmitChanges();
                     Print(newInvoice, dbContext);
-                // Closing RadWindow
+                    // Closing RadWindow
                 }
             }
             catch (Exception ex)
             {
                 ErrorLeereTextBoxenLabel.Text = ex.Message;//"Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator " + ex.Message;
                 ErrorLeereTextBoxenLabel.Visible = true;
-            }   
+            }
         }
         protected string CheckIfFolderExistsAndReturnPathForPdf()
         {
@@ -1111,14 +1057,14 @@ namespace KVSWebApplication.Auftragseingang
             string path = url + "UserData/" + Session["CurrentUserId"].ToString() + "/" + myFile;
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Invoice", "<script>openFile('" + path + "');</script>", false);
         }
-        protected void Print(Invoice newInvoice,  DataClasses1DataContext dbContext)
-        {  
+        protected void Print(Invoice newInvoice, DataClasses1DataContext dbContext)
+        {
             using (MemoryStream memS = new MemoryStream())
             {
                 InvoiceHelper.CreateAccounts(dbContext, newInvoice);
                 newInvoice.Print(dbContext, memS, "");
                 dbContext.SubmitChanges();
-                string fileName = "Rechnung_" +newInvoice.InvoiceNumber.Number+ "_"+ newInvoice.CreateDate.Day + "_" + newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + ".pdf";
+                string fileName = "Rechnung_" + newInvoice.InvoiceNumber.Number + "_" + newInvoice.CreateDate.Day + "_" + newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + ".pdf";
                 string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
                 if (!Directory.Exists(serverPath)) Directory.CreateDirectory(serverPath);
                 if (!Directory.Exists(serverPath + "\\" + Session["CurrentUserId"].ToString())) Directory.CreateDirectory(serverPath + "\\" + Session["CurrentUserId"].ToString());
@@ -1148,7 +1094,7 @@ namespace KVSWebApplication.Auftragseingang
                 PreviousLicenceBox1.Text = "";
                 PreviousLicenceBox2.Text = "";
                 PreviousLicenceBox3.Text = "";
-            }         
+            }
         }
         // findet alle angezeigte textboxen und überprüft ob die nicht leer sind
         protected bool CheckIfBoxenNotEmpty()
@@ -1160,7 +1106,7 @@ namespace KVSWebApplication.Auftragseingang
                 PruefzifferBox.Enabled = false;
             if (RadComboBoxCustomer.SelectedIndex == 1)
             {
-                if (String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue)  || DienstleistungTreeView.Nodes.Count == 0)
+                if (String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue) || DienstleistungTreeView.Nodes.Count == 0)
                 {
                     return true;
                 }
@@ -1177,7 +1123,7 @@ namespace KVSWebApplication.Auftragseingang
                                 if (box.Enabled == true && String.IsNullOrEmpty(box.Text) && (box.ID == "VINBox"))
                                 {
                                     box.BorderColor = System.Drawing.Color.Red;
-                                    gibtsBoxenDieLeerSind = true;                                   
+                                    gibtsBoxenDieLeerSind = true;
                                 }
                                 else
                                 {
@@ -1190,7 +1136,7 @@ namespace KVSWebApplication.Auftragseingang
             }
             else
             {
-                if (String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue) ||  String.IsNullOrEmpty(CostCenterDropDownList.SelectedValue) || 
+                if (String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue) || String.IsNullOrEmpty(CostCenterDropDownList.SelectedValue) ||
                     String.IsNullOrEmpty(LocationDropDownList.SelectedValue) || DienstleistungTreeView.Nodes.Count == 0)
                 {
                     return true;
@@ -1244,10 +1190,10 @@ namespace KVSWebApplication.Auftragseingang
                         if (box.Enabled == true)
                         {
                             box.Text = "";
-                        }                   
+                        }
                     }
                 }
-            }           
+            }
         }
         protected void NaechtenAuftragButton_Clicked(object sender, EventArgs e)
         {
@@ -1256,7 +1202,7 @@ namespace KVSWebApplication.Auftragseingang
             SubmitChangesErrorLabel.Visible = false;
         }
         protected void CheckFields(List<Control> listOfControls)
-        {            
+        {
             if (RadComboBoxCustomer.SelectedIndex == 1) //small
             {
                 foreach (Control control in listOfControls)
@@ -1284,11 +1230,11 @@ namespace KVSWebApplication.Auftragseingang
                         if (control.ID == nameCon)
                         {
                             control.Visible = true;
-                            if (control.ID == "Vehicle_VIN" || control.ID == "Vehicle_Variant" || control.ID == "Vehicle_Color" || control.ID == "Registration_Licencenumber" || 
+                            if (control.ID == "Vehicle_VIN" || control.ID == "Vehicle_Variant" || control.ID == "Vehicle_Color" || control.ID == "Registration_Licencenumber" ||
                                 control.ID == "RegistrationOrder_PreviousLicencenumber" || control.ID == "Registration_GeneralInspectionDate" || control.ID == "Vehicle_FirstRegistrationDate" ||
                                 control.ID == "Vehicle_TSN" || control.ID == "Vehicle_HSN" || control.ID == "Registration_eVBNumber" || control.ID == "Registration_RegistrationDocumentNumber" || control.ID == "Registration_EmissionCode" || control.ID == "Order_Freitext")
                                 FahrzeugLabel.Visible = true;
-                            if (control.ID == "CarOwner_Name" || control.ID == "CarOwner_Firstname" || control.ID == "Adress_Street" || control.ID == "Adress_StreetNumber" || 
+                            if (control.ID == "CarOwner_Name" || control.ID == "CarOwner_Firstname" || control.ID == "Adress_Street" || control.ID == "Adress_StreetNumber" ||
                                 control.ID == "Adress_Zipcode" || control.ID == "Adress_City" || control.ID == "Adress_Country")
                                 HalterLabel.Visible = true;
                             if (control.ID == "BankAccount_BankName" || control.ID == "BankAccount_Accountnumber" || control.ID == "BankAccount_BankCode")
@@ -1297,8 +1243,8 @@ namespace KVSWebApplication.Auftragseingang
                                 KontaktdatenLabel.Visible = true;
                         }
                     }
-                }                               
-            }          
+                }
+            }
         }
         protected void HideAllControls()
         {
@@ -1323,7 +1269,7 @@ namespace KVSWebApplication.Auftragseingang
                         KontaktdatenLabel.Visible = false;
                     }
                 }
-            }             
+            }
         }
         //Gibt die Liste mit alle Controls aus der ASCX Seite zurück
         protected List<Control> getAllControls()
@@ -1363,6 +1309,8 @@ namespace KVSWebApplication.Auftragseingang
         protected void rbShowDialog_Click(object sender, EventArgs e)
         {
             rwdCreateCustomer.VisibleOnPageLoad = true;
-        }       
+        }
+
+        #endregion
     }
 }

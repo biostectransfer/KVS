@@ -1,9 +1,10 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" ViewStateMode="Enabled" CodeBehind="AuftragseingangZulassung.ascx.cs" Inherits="KVSWebApplication.Auftragseingang.AuftragseingangZulassung" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="NeuzulassungGrosskundeControl.ascx.cs" Inherits="KVSWebApplication.Auftragseingang.NeuzulassungGrosskundeControl" %>
 <%@ Register TagPrefix="smcs" TagName="SmallCustomer" Src="../Customer/AddCustomer.ascx" %>
 <script type="text/javascript">
     function MyValueChanging(sender, args) {
         args.set_newValue(args.get_newValue().toUpperCase());
     }
+
     function MyValueChanging23(sender, args) {
         args.set_newValue(args.get_newValue().toUpperCase());
         var textLength = args.get_newValue().length;
@@ -127,51 +128,7 @@
     <div id="main_info">
         <table border="0">
             <tr>
-                <td>
-                    <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Sofort- oder Großkunden: " ID="RadTextBox2" Width="240px"></telerik:RadTextBox>
-                </td>
-                <td>
-                    <telerik:RadComboBox ID="RadComboBoxCustomer" runat="server" Width="250px" OnSelectedIndexChanged="SmallLargeCustomer_Changed" AutoPostBack="true">
-                        <Items>
-                            <telerik:RadComboBoxItem runat="server" Value="2" Text="Großkunden" />
-                            <telerik:RadComboBoxItem runat="server" Value="1" Text="Sofortkunden" />
-                        </Items>
-                    </telerik:RadComboBox>
-                </td>
                 <td></td>
-                <td></td>
-                <td>
-                    <div style="float: right; z-index: 100; position: absolute; border: 1px solid;">
-                        <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Dienstleistungen: " ID="RadTextBox4"></telerik:RadTextBox>
-                        &nbsp;&nbsp;&nbsp;<telerik:RadTreeView Skin="Office2010Blue" CollapseAnimation-Type="InOutCubic" ID="DienstleistungTreeView"
-                            runat="server" Height="130px" Width="300px">
-                        </telerik:RadTreeView>
-                    </div>
-                </td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>
-                    <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Schnellkundenanlage: " ID="RadTextBox3" Width="240px"></telerik:RadTextBox>
-                </td>
-                <td>
-                    <telerik:RadButton ID="rbShowDialog" Width="246px" Text="Zur Anlage"
-                        runat="server"
-                        OnClick="rbShowDialog_Click" />
-                    <telerik:RadWindow ID="rwdCreateCustomer" Title="Schnellkundenanlage" OnClientClose="OnClientClose" VisibleOnPageLoad="false" runat="server" Width="1200px" Height="800px" Modal="true">
-                        <ContentTemplate>
-                            <smcs:SmallCustomer ID="SmallCustomerZulassung" runat="server" />
-                        </ContentTemplate>
-                    </telerik:RadWindow>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Rechnungserstellung: " ID="RadTextBox6" Width="240px"></telerik:RadTextBox>
-                </td>
-                <td></telerik:radcombobox>
-                    <asp:CheckBox ID="invoiceNow" runat="server" Text="Sofortrechnung" Enabled="false" />
-                </td>
             </tr>
             <tr>
                 <td>
@@ -202,7 +159,7 @@
                                         <%# DataBinder.Eval(Container, "DataItem.Kundennummer")%>
                                     </td>
                                     <td style="width: 175px;">
-                                        <%# DataBinder.Eval(Container, "DataItem.Matchcode") %>                            
+                                        <%# DataBinder.Eval(Container, "DataItem.Matchcode") %>
                                     </td>
                                     <td style="width: 250px;">
                                         <%# DataBinder.Eval(Container, "DataItem.Name")%>
@@ -211,7 +168,14 @@
                             </table>
                         </ItemTemplate>
                     </telerik:RadComboBox>
-                    <td></td>
+                </td>
+                <td>
+                    <div style="float: right; z-index: 100; position: absolute; border: 1px solid;">
+                        <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Dienstleistungen: " ID="RadTextBox4"></telerik:RadTextBox>
+                        &nbsp;&nbsp;&nbsp;<telerik:RadTreeView Skin="Office2010Blue" CollapseAnimation-Type="InOutCubic" ID="DienstleistungTreeView"
+                            runat="server" Height="130px" Width="300px">
+                        </telerik:RadTreeView>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -265,7 +229,7 @@
                                         <%# DataBinder.Eval(Container, "DataItem.ItemNumber")%>
                                     </td>
                                     <td style="width: 175px;">
-                                        <%# DataBinder.Eval(Container, "DataItem.Name")%>
+                                        <%# DataBinder.Eval(Container, "DataItem.Name")%>                                               
                                     </td>
                                     <td style="width: 250px;">
                                         <%# DataBinder.Eval(Container, "DataItem.Category")%>
@@ -298,7 +262,7 @@
                     <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Zulassungsdatum: " ID="RadTextBox5" Width="240px"></telerik:RadTextBox>
                 </td>
                 <td>
-                    <telerik:RadDatePicker runat="server" ID="ZulassungsdatumPicker" Width="250px">
+                    <telerik:RadDatePicker runat="server" ID="ZulassungsdatumPicker" Width="250px" MinDate="1/1/1900">
                         <Calendar ID="Calendar1" runat="server">
                             <FooterTemplate>
                                 <div style="width: 100%; text-align: center; background-color: Gray;">
@@ -321,13 +285,13 @@
         <asp:Label Text="Halter" ForeColor="Blue" ID="HalterLabel" runat="server" Visible="false" />
         <br />
         <asp:Panel runat="server" Visible="false" ID="CarOwner_Name">
-            <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Name: " ID="OwnerNameLabel" Width="240px"></telerik:RadTextBox>
+            <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Firma: " ID="OwnerNameLabel" Width="240px"></telerik:RadTextBox>
             <telerik:RadTextBox Width="250px" runat="server" ID="CarOwner_NameBox">
                 <ClientEvents OnValueChanging="MyFirstValueChanging" />
             </telerik:RadTextBox>
         </asp:Panel>
         <asp:Panel runat="server" Visible="false" ID="CarOwner_Firstname">
-            <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Vorname: " ID="OwnerFirstNameLabel" Width="240px"></telerik:RadTextBox>
+            <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Ansprechpartner (Vorname/Nachname): " ID="OwnerFirstNameLabel" Width="240px"></telerik:RadTextBox>
             <telerik:RadTextBox Width="250px" runat="server" ID="CarOwner_FirstnameBox">
                 <ClientEvents OnValueChanging="MyFirstValueChanging" />
             </telerik:RadTextBox>
@@ -361,7 +325,7 @@
     </asp:Panel>
     <br />
     <asp:Panel runat="server" ID="FahrzeugPanel">
-        <asp:Label Text="Fahrzeug" Visible="false" ForeColor="Blue" ID="FahrzeugLabel" runat="server" />
+        <asp:Label Text="Kfz-Daten" Visible="false" ForeColor="Blue" ID="FahrzeugLabel" runat="server" />
         <asp:Panel runat="server" Visible="false" ID="Registration_RegistrationDocumentNumber">
             <telerik:RadTextBox ID="RegDocNumbLabel" runat="server" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="Briefnummer: " Visible="True" Width="240px">
             </telerik:RadTextBox>
@@ -469,14 +433,14 @@
         <asp:Panel runat="server" Visible="false" ID="Registration_GeneralInspectionDate">
             <telerik:RadTextBox ID="InspectionLabel" runat="server" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="Inspektionsdatum: " Visible="True" Width="240px">
             </telerik:RadTextBox>
-            <telerik:RadMonthYearPicker Width="200px" Visible="true" ID="Registration_GeneralInspectionDateBox" runat="server">
+            <telerik:RadMonthYearPicker Width="200px" MinDate="1/1/1900" Visible="true" ID="Registration_GeneralInspectionDateBox" runat="server">
             </telerik:RadMonthYearPicker>
         </asp:Panel>
         <asp:Panel runat="server" Visible="false" ID="Vehicle_FirstRegistrationDate">
             <telerik:RadTextBox ID="FirstRegistrationDateLabel" runat="server" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="Erstzulassungsdatum: " Visible="True" Width="240px">
             </telerik:RadTextBox>
-            <telerik:RadDatePicker Width="200px" ID="FirstRegistrationDateBox" runat="server">
-                <Calendar runat="server">
+            <telerik:RadDatePicker Width="200px" ID="FirstRegistrationDateBox" MinDate="1/1/1900" runat="server">
+                <Calendar ID="Calendar1" runat="server">
                     <FooterTemplate>
                         <div style="width: 100%; text-align: center; background-color: Gray;">
                             <input id="Button1" type="button" value="Heute" onclick="GoToToday()" />
@@ -522,7 +486,13 @@
             </telerik:RadTextBox>
             <telerik:RadTextBox Width="250px" runat="server" ID="txbBancAccountIban">
             </telerik:RadTextBox>
-            <telerik:RadButton ID="btnGenerateIBAN" runat="server" Text="IBAN" ToolTip="IBAN Nummer generieren" OnClick="genIban_Click"></telerik:RadButton>
+            <br />
+            <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black"
+                BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="BIC: " ID="txbBICInfo" Width="240px">
+            </telerik:RadTextBox>
+            <telerik:RadTextBox Width="250px" runat="server" ID="txbBancAccountBIC">
+            </telerik:RadTextBox>
+            <telerik:RadButton ID="btnGenerateIBAN" runat="server" Text="IBAN/BIC" ToolTip="IBAN Nummer generieren" OnClick="genIban_Click"></telerik:RadButton>
         </asp:Panel>
     </asp:Panel>
     <br />
@@ -548,6 +518,7 @@
     </asp:Panel>
     <br />
     <telerik:RadButton runat="server" ID="AuftragZulassenButton" Enabled="True" Text="Zulassungsauftrag erstellen" OnClick="AuftragZulassenButton_Clicked"></telerik:RadButton>
+    <telerik:RadButton runat="server" ID="rbtSameOrder" Enabled="True" Text="Ähnlichen Zulassungsauftrag erstellen" OnClick="AuftragZulassenButton_Clicked"></telerik:RadButton>
     <telerik:RadButton runat="server" ID="NaechtenAuftragButton" OnClick="NaechtenAuftragButton_Clicked" OnClientClicking="EingabeFelderLeerenConfirm" Text="Eingabefelder leeren"></telerik:RadButton>
     <asp:Label runat="server" Visible="false" ForeColor="Green" ID="ZulassungOkLabel" Text="Neuer Auftrag wurde erfolgreich erstellt!"></asp:Label>
     <asp:Label runat="server" Visible="false" ForeColor="Red" ID="SubmitChangesErrorLabel" Text="Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator."></asp:Label>
@@ -589,11 +560,6 @@
             <asp:Label runat="server" ID="Label5" Text="Rechnungsempfänger*: " Width="140"></asp:Label>
             <asp:TextBox Width="220" ID="InvoiceRecipient" runat="server"></asp:TextBox>
             <br />
-            <asp:RequiredFieldValidator ID="InvoiceRecValidator2" Enabled="false" runat="server"
-                ControlToValidate="InvoiceRecipient"
-                ErrorMessage="Empfänger ist leer!"
-                ForeColor="Red">
-            </asp:RequiredFieldValidator>
             <br />
             <asp:Label runat="server" ID="Label6" Text="Rabatt in %: " Width="140"></asp:Label>
             <telerik:RadNumericTextBox Width="220" ID="txbDiscount" runat="server" NumberFormat-DecimalDigits="0" Value="0" MinValue="0" MaxValue="100"></telerik:RadNumericTextBox>
@@ -639,3 +605,4 @@
 <asp:HiddenField runat="server" ID="ProduktHiddenField" />
 <asp:HiddenField runat="server" ID="AnzahlVonDienstHiddenField" />
 <asp:HiddenField runat="server" ID="LabelProdCostHiddenField" />
+<link href="../Styles/auftragseingang.css" rel="stylesheet" type="text/css" />

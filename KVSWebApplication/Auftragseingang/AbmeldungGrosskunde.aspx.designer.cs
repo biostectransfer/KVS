@@ -73,6 +73,6 @@ namespace KVSWebApplication.Auftragseingang {
         /// Automatisch generiertes Feld
         /// Um dies zu ändern, verschieben Sie die Felddeklaration aus der Designerdatei in eine Code-Behind-Datei.
         /// </remarks>
-        protected global::KVSWebApplication.Auftragseingang.AbmeldungGrosskunde1 LargeCustomer;
+        protected global::System.Web.UI.UserControl LargeCustomer;
     }
 }

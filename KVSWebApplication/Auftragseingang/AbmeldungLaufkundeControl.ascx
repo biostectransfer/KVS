@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="AuftragseingangAbmeldung.ascx.cs" Inherits="KVSWebApplication.Auftragseingang.AuftragseingangAbmeldung" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="AbmeldungLaufkundeControl.ascx.cs" Inherits="KVSWebApplication.Auftragseingang.AbmeldungLaufkundeControl" %>
 <script type="text/javascript">
     function MyValueChanging(sender, args) {
         args.set_newValue(args.get_newValue().toUpperCase());
@@ -11,6 +11,12 @@
             alert("Bitte FIN 17 oder 8 stellig eingeben! Jetzt: " + textLength);
         }
     }
+    $(document).keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            return false;
+        }
+    });
     function MyFirstValueChanging(sender, args) {
         args.set_newValue(args.get_newValue().charAt(0).toUpperCase() + args.get_newValue().slice(1));
     }
@@ -26,23 +32,75 @@
         CostField.value = "";
         ProdField.value = "";
     }
+    function isnumber(val) {
+        var replaced = val.value.replace(',', '.');
+        if (!$.isNumeric(replaced)) {
+            val.value = '';
+        }
+    }
+    var itemIndex = 0;
+    function getMessage(message) {
+        alert(message);
+    }
+    function checkFields() {
+        var ZulassungsstelleComboBox = $find('<%=ZulassungsstelleComboBox.ClientID %>');
+        var CustomerDropDownList = $find('<%=CustomerDropDownList.ClientID %>');
+        var treeView = $find('<%= DienstleistungTreeView.ClientID %>');
+        var LicenceBox1 = $find('<%=LicenceBox1.ClientID %>');
+        var LicenceBox2 = $find('<%=LicenceBox2.ClientID %>');
+        var LicenceBox3 = $find('<%=LicenceBox3.ClientID %>');
+        var createButton = $find('<%=AbmeldenButton.ClientID %>');
+        var PreviousLicenceBox1 = $find('<%=PreviousLicenceBox1.ClientID %>');
+        var PreviousLicenceBox2 = $find('<%=PreviousLicenceBox2.ClientID %>');
+        var PreviousLicenceBox3 = $find('<%=PreviousLicenceBox3.ClientID %>');
+        var kennzeichen = LicenceBox1.get_value() + LicenceBox2.get_value() + LicenceBox3.get_value();
+        var firstname = $find('<%=txbSmallCustomerVorname.ClientID %>');
+        var lastName = $find('<%=txbSmallCustomerNachname.ClientID %>');
+        var VINBox = $find('<%=VINBox.ClientID %>');
+        var allNodes = treeView.get_allNodes();
+        if (allNodes.length < 1) {
+            alert("Sie haben keine Dienstleistungen hinzugefügt!");
+            return false;
+        }
+        if (VINBox.get_value() == '') {
+            getMessage('Bitte geben Sie die FIN ein');
+            return false;
+        }
+        if (CustomerDropDownList.get_selectedIndex() == null && (firstname.get_value() == '' && lastName.get_value() == '')) {
+            getMessage('Bitte wählen Sie den Kunden aus');
+            return false;
+        }
+        if (ZulassungsstelleComboBox.get_selectedIndex() == null) {
+            getMessage('Bitte wählen Sie die Zulassungsstelle aus');
+            return false;
+        }
+        __doPostBack('AbmeldenButton', "CreateOrder");
+    }
     function addNode() {
         var treeView = $find('<%= DienstleistungTreeView.ClientID %>');
         var prodDropDown = $find('<%=ProductAbmDropDownList.ClientID %>');
-        var costDropDown = $find('<%= CostCenterDropDownList.ClientID %>');
+        var selectedIndex = prodDropDown.get_selectedIndex();
+        var myItemPrice = $('#MainContentPlaceHolder_SmallCustomer_ProductAbmDropDownList_i' + selectedIndex + '_myPrice');
+        var myItemCharge = $('#MainContentPlaceHolder_SmallCustomer_ProductAbmDropDownList_i' + selectedIndex + '_myAuthCharge');
+        var acText = myItemCharge.text();
         var nodeProd = prodDropDown.get_value();
-        var nodeCost = costDropDown.get_value();
         var nodeProdText = prodDropDown.get_text();
         if (!nodeProd) {
             alert("Bitte wählen Sie eine Dienstleistung aus!");
             return false;
         }
         treeView.trackChanges();
-        //Instantiate a new client node
-        var node = new Telerik.Web.UI.RadTreeNode();
-        //Set its text
+        node = new Telerik.Web.UI.RadTreeNode();
         node.set_text(nodeProdText);
-        node.set_value(nodeProd + ";" + nodeCost);
+        node.set_value(nodeProd + ";");
+        var amtGebEnabled = (acText != '') ? 'visibility:visible;' : 'visibility:hidden;';
+        node.set_clientTemplate("<div style='width:240px'>#= Text #</div> Dienstleistungspreis: <input type='text' onkeyup='isnumber(this)' value='" + myItemPrice.text() + "'  style='width:60px;' id='txtItemPrice_" + nodeProd + "_" +
+        itemIndex + "' name='txtItemPrice_" + nodeProd + "_" + itemIndex + "'/> Amtl. Gebühr:<input type='text' onkeyup='isnumber(this)'  value='" +
+        acText + "' style='width:60px; " + amtGebEnabled + "'  id='txtAuthPrice_" +
+        nodeProd + "_" + itemIndex + "' name='txtAuthPrice_" + nodeProd + "_" + itemIndex + "'/>");
+        treeView.get_nodes().add(node);
+        node.bindTemplate();
+        itemIndex++;
         //Add the new node as the child of the selected node or the treeview if no node is selected
         var parent = treeView;
         parent.get_nodes().add(node);
@@ -86,17 +144,13 @@
         var ProdAndCostLabel = document.getElementById("<%=ProdAndCostLabel.ClientID%>");
         var CostField = document.getElementById("<%=CostCenterHiddenField.ClientID%>");
         var ProdField = document.getElementById("<%=ProduktHiddenField.ClientID%>");
-        var prodDD = document.getElementById("<%=NewProductDropDownList.ClientID%>");
+        var prodDD = document.getElementById("<%=NewProductAbmDropDownList.ClientID%>");
         var prodDDValue = prodDD.options[prodDD.selectedIndex].value;
         var prodDDText = prodDD.options[prodDD.selectedIndex].text;
-        var costDD = document.getElementById("<%=NewCostCenterDropDownList.ClientID%>");
-        var costDDValue = costDD.options[costDD.selectedIndex].value;
-        var costDDText = costDD.options[costDD.selectedIndex].text;
-        ProdAndCostLabel.innerHTML = ProdAndCostLabel.innerHTML + " Kostenstelle:" + costDDText + "  Produkt:" + prodDDText + " <br/>";
-        CostField.value = CostField.value + costDDValue + ";";
+        ProdAndCostLabel.innerHTML = ProdAndCostLabel.innerHTML + "Produkt:" + prodDDText + " <br/>";
         ProdField.value = ProdField.value + prodDDValue + ";";
         var NewPosButton = document.getElementById("<%=NewPositionZulButton.ClientID%>");
-        var anzahl = CostField.value.split(";");
+        var anzahl = ProdField.value.split(";");
         anzahl = anzahl.length - 1;
         NewPosButton.value = "Neue Dienstleistungen hinzufügen " + " (" + anzahl + ")";
     }
@@ -107,7 +161,10 @@
         window.location.reload();
     }
     function EingabeFelderLeerenAbmConfirm(sender, args) {
-        args.set_cancel(!window.confirm("Eingabefelder leeren?"));
+        if (window.confirm("Eingabefelder leeren?")) {
+            itemIndex = 0;
+            args.set_cancel(false);
+        }
     }
     function GoToTodayAbm() {
         var datepicker = $find("<%=FirstRegistrationDateBox.ClientID%>");
@@ -124,56 +181,53 @@
     function openFile(path) {
         window.open(path, "_blank", "left=0,top=0,scrollbars=yes,menubar=yes,toolbar=yes,resizable=yes");
     }
-</script>
+    function custVornameValueChanging(sender, eventArgs) {
+        document.getElementById('<%=CarOwner_FirstnameBox.ClientID%>').value = eventArgs.get_newValue();
+    }
+    function custNachnameValueChanging(sender, eventArgs) {
+        document.getElementById('<%=CarOwner_NameBox.ClientID%>').value = eventArgs.get_newValue();
+    }
+    function custStreetNrValueChanging(sender, eventArgs) {
+        document.getElementById('<%=Adress_StreetNumberBox.ClientID%>').value = eventArgs.get_newValue();
+    }
+    function custStreetValueChanging(sender, eventArgs) {
+        document.getElementById('<%=Adress_StreetBox.ClientID%>').value = eventArgs.get_newValue();
+    }
+    function custZipValueChanging(sender, eventArgs) {
+        document.getElementById('<%=Adress_ZipcodeBox.ClientID%>').value = eventArgs.get_newValue();
+    }
+    function custCityValueChanging(sender, eventArgs) {
+        document.getElementById('<%=Adress_CityBox.ClientID%>').value = eventArgs.get_newValue();
+    }
+    function custCountryValueChanging(sender, eventArgs) {
+        document.getElementById('<%=Adress_CountryBox.ClientID%>').value = eventArgs.get_newValue();
+    }
 </script>
 <asp:Label runat="server" ID="KeineRechteLabel" Text="Sie dürfen nicht den Auftrag erstellen!" ForeColor="Red" Visible="false"></asp:Label>
 <asp:Panel runat="server" ID="EingangAbmeldungPanel" Enabled="true" Width="1000px">
     <table border="0">
         <tr>
             <td>
-                <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Sofort- oder Großkunden: " ID="RadTextBox2" Width="240px"></telerik:RadTextBox>
+                <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Rechnungserstellung: " ID="RadTextBox6" Width="240px"></telerik:RadTextBox>
             </td>
             <td>
-                <telerik:RadComboBox ID="RadComboBoxCustomer" Width="250px" runat="server" OnSelectedIndexChanged="SmallLargeCustomerIndex_Changed"
-                    OnItemsRequested="SmallLargeCustomerIndex_Changed" AutoPostBack="true">
-                    <Items>
-                        <telerik:RadComboBoxItem runat="server" Value="2" Text="Großkunden" />
-                        <telerik:RadComboBoxItem runat="server" Value="1" Text="Sofortkunden" />
-                    </Items>
-                </telerik:RadComboBox>
+                <asp:CheckBox ID="invoiceNow" runat="server" Text="Sofortrechnung" />
             </td>
             <td></td>
             <td>
                 <div style="float: right; z-index: 100; position: absolute; border: 1px solid;">
                     <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Dienstleistungen: " ID="RadTextBox4"></telerik:RadTextBox>
-                    &nbsp;&nbsp;&nbsp;<telerik:RadTreeView Skin="Office2010Blue" CollapseAnimation-Type="InOutCubic" ID="DienstleistungTreeView"
-                        runat="server" Height="110px" Width="300px">
-                    </telerik:RadTreeView>
+                    &nbsp;&nbsp;&nbsp;
+   <telerik:RadTreeView Skin="Office2010Blue" CollapseAnimation-Type="InOutCubic" ID="DienstleistungTreeView"
+       runat="server" Height="250px" Width="400px">
+   </telerik:RadTreeView>
+                    <div style="float: right; z-index: 110; position: absolute; border: 1px solid;">
+                        <asp:Label runat="server" ID="SmallCustomerHistorie" Visible="false" Width="400px"></asp:Label>
+                    </div>
                 </div>
             </td>
         </tr>
         <tr>
-            <td>
-                <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Schnellkundenanlage: " ID="RadTextBox3" Width="240px"></telerik:RadTextBox>
-            </td>
-            <td style="text-align: center">
-                <telerik:RadButton Width="246px" ID="rbShowDialog" Text="Zur Anlage"
-                    runat="server"
-                    OnClick="rbShowDialog_Click" />
-                <telerik:RadWindow ID="rwdCreateCustomer" Title="Schnellkundenanlage" VisibleOnPageLoad="false" OnClientClose="OnClientClose" runat="server" Width="1200px" Height="800px" Modal="true">
-                    <ContentTemplate>
-                        <smc:smallcustomer id="SmallCustomerAbmeldung" runat="server" />
-                    </ContentTemplate>
-                </telerik:RadWindow>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Rechnungserstellung: " ID="RadTextBox6" Width="240px"></telerik:RadTextBox>
-            </td>
-            <td></telerik:radcombobox>
-                <asp:CheckBox ID="invoiceNow" runat="server" Text="Sofortrechnung" Enabled="false" />
-            </td>
         </tr>
         <tr>
             <td>
@@ -204,7 +258,7 @@
                                     <%# DataBinder.Eval(Container, "DataItem.Kundennummer")%>
                                 </td>
                                 <td style="width: 175px;">
-                                    <%# DataBinder.Eval(Container, "DataItem.Matchcode") %>                                               
+                                    <%# DataBinder.Eval(Container, "DataItem.Matchcode") %>
                                 </td>
                                 <td style="width: 250px;">
                                     <%# DataBinder.Eval(Container, "DataItem.Name")%>
@@ -213,24 +267,10 @@
                         </table>
                     </ItemTemplate>
                 </telerik:RadComboBox>
+                <asp:Button runat="server" ID="btnClearSelection" Text="Neu" OnClick="btnClearSelection_Click" />
+                <%--OnClick = "DeleteNewPosButton_Clicked"--%>
             </td>
             <td></td>
-        </tr>
-        <tr>
-            <td>
-                <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Standort: " ID="RadTextBox1" Width="240px"></telerik:RadTextBox>
-            </td>
-            <td>
-                <telerik:RadComboBox Width="250px" EmptyMessage="Standort..." Filter="Contains" Enabled="True" DataTextField="Name" DataValueField="Value" DataSourceID="LocationDataSource" AutoPostBack="true" OnSelectedIndexChanged="LocationDropDownIndex_Changed" runat="server" ID="LocationDropDownList"></telerik:RadComboBox>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Kostenstelle: " ID="CostCenterTextBox" Width="240px"></telerik:RadTextBox>
-            </td>
-            <td>
-                <telerik:RadComboBox Width="250px" EmptyMessage="Kostenstelle..." Filter="Contains" Enabled="True" DataTextField="Name" DataValueField="Value" DataSourceID="CostCenterDataSource" AutoPostBack="false" runat="server" ID="CostCenterDropDownList"></telerik:RadComboBox>
-            </td>
         </tr>
         <tr>
             <td>
@@ -264,72 +304,279 @@
                                 <td style="width: 250px;">
                                     <%# DataBinder.Eval(Container, "DataItem.Category")%>
                                 </td>
+                                <td style="visibility: hidden; width: 0px !important; height: 0px !important;">
+                                    <asp:Label ID="myPrice" runat="server" Text='<%# DataBinder.Eval(Container, "DataItem.Price")%>' Style="visibility: hidden;"></asp:Label>
+                                    <asp:Label ID="myAuthCharge" runat="server" Text='<%# DataBinder.Eval(Container, "DataItem.AuthCharge")%>' Style="visibility: hidden;"></asp:Label>
+                                </td>
                             </tr>
                         </table>
                     </ItemTemplate>
                 </telerik:RadComboBox>
-            </td>
-            <td>
-                <asp:Button runat="server" ID="NewPositionZulButton" Text="Hinzufügen" OnClientClick="return addNode()" />
+                <asp:Button runat="server" ID="NewPositionZulButton" Text="Hinzufügen" OnClientClick="return addNode()" /><%--OnClick = "NewPosButton_Clicked"--%>
                 <asp:Button runat="server" ID="DeleteNewPosButton" Text="Löschen" OnClientClick="return deleteNode()" />
+                <%--OnClick = "DeleteNewPosButton_Clicked"--%>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <telerik:RadTextBox runat="server" Enabled="false" Visible="True"
+                    DisabledStyle-ForeColor="Black" BorderColor="Transparent"
+                    DisabledStyle-BackColor="Transparent" Text="Zulassungsstelle: "
+                    ID="ZulassungsstelleTextBox" Width="240px">
+                </telerik:RadTextBox>
             </td>
             <td>
-                <div style="float: right; z-index: 110; position: absolute; border: 1px solid;">
-                    <asp:Label runat="server" ID="SmallCustomerHistorie" Visible="false" Width="300px"></asp:Label>
-                </div>
+                <telerik:RadComboBox ID="ZulassungsstelleComboBox" runat="server"
+                    AutoPostBack="false" DataSourceID="ZulassungsstelleDataSource"
+                    DataTextField="Name" DataValueField="Value" DropDownWidth="515px"
+                    EmptyMessage="Zulassungsstelle..." Filter="Contains"
+                    HighlightTemplatedItems="true" Width="250px">
+                </telerik:RadComboBox>
+            </td>
+            <tr>
+                <td>
+                    <telerik:RadTextBox ID="RadTextBox5" runat="server" BorderColor="Transparent"
+                        DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black"
+                        Enabled="false" Text="Abmeldedatum: " Visible="True" Width="240px">
+                    </telerik:RadTextBox>
+                </td>
+                <td>
+                    <telerik:RadDatePicker ID="AbmeldedatumPicker" runat="server" Width="250px" MinDate="1/1/1900">
+                        <Calendar ID="Calendar1" runat="server">
+                            <FooterTemplate>
+                                <div style="width: 100%; text-align: center; background-color: Gray;">
+                                    <input id="Button1" type="button" value="Heute" onclick="GoToTodayAbm2()" />
+                                </div>
+                            </FooterTemplate>
+                        </Calendar>
+                    </telerik:RadDatePicker>
+                </td>
+            </tr>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table border="0" cellspacing="0" frame="void" cellpadding="0">
+                    <tr>
+                        <td colspan="2">
+                            <asp:Label ID="lblSofortDaten" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Font-Bold="true" Text="Sofortkundendaten"></asp:Label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 245px;">
+                            <asp:Label ID="lblSmallCustomerVorname" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Text="Vorname:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadTextBox ID="txbSmallCustomerVorname" runat="server"
+                                Width="240px">
+                                <ClientEvents OnValueChanging="custVornameValueChanging" />
+                            </telerik:RadTextBox>
+                            <br />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblSmallCustomerNachname" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Text="Nachname:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadTextBox ID="txbSmallCustomerNachname" runat="server"
+                                Width="240px">
+                                <ClientEvents OnValueChanging="custNachnameValueChanging" />
+                            </telerik:RadTextBox>
+                            <br />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblSmallCustomerTitle" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Text="Titel:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadTextBox ID="txbSmallCustomerTitle" runat="server"
+                                Width="240px">
+                            </telerik:RadTextBox>
+                            <br />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblGender" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Text="Geschlecht:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadComboBox ID="cmbSmallCustomerGender" runat="server"
+                                AllowCustomText="True" Culture="de-DE" MarkFirstMatch="True"
+                                Width="60px">
+                                <Items>
+                                    <telerik:RadComboBoxItem runat="server" Owner="cmbSmallCustomerGender"
+                                        Selected="true" Text="M" Value="M" />
+                                    <telerik:RadComboBoxItem runat="server" Owner="cmbSmallCustomerGender" Text="W"
+                                        Value="W" />
+                                </Items>
+                            </telerik:RadComboBox>
+                            <br />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblSmallCustomerStreetNr" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Text="Strasse /Nr:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadTextBox ID="txbSmallCustomerStreet" runat="server"
+                                Width="200px">
+                                <ClientEvents OnValueChanging="custStreetValueChanging" />
+                            </telerik:RadTextBox>
+                            <telerik:RadTextBox ID="txbSmallCustomerNr" runat="server"
+                                Width="35px">
+                                <ClientEvents OnValueChanging="custStreetNrValueChanging" />
+                            </telerik:RadTextBox>
+                            <br />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblSmallCustomerZipCode" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Text="PLZ:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadTextBox ID="txbSmallCustomerZipCode" runat="server"
+                                Width="240px">
+                                <ClientEvents OnValueChanging="custZipValueChanging" />
+                            </telerik:RadTextBox>
+                            <br />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblSmallCustomerCity" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Text="Stadt:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadTextBox ID="cmbSmallCustomerCity" runat="server"
+                                Width="240px">
+                                <ClientEvents OnValueChanging="custCityValueChanging" />
+                            </telerik:RadTextBox>
+                            <br />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblSmallCustomerCountry" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Text="Land:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadTextBox ID="txbSmallCustomerCountry" runat="server" Text="Deutschland"
+                                Width="240px">
+                                <ClientEvents OnValueChanging="custCountryValueChanging" />
+                            </telerik:RadTextBox>
+                            <br />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblSmallCustomerNumber" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Text="Kundennummer:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadTextBox ID="txbSmallCustomerNumber" runat="server"
+                                Width="240px">
+                            </telerik:RadTextBox>
+                            <br />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblSmallCustomerPhone" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Text="Telefon:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadTextBox ID="txbSmallCustomerPhone" runat="server"
+                                Width="240px">
+                            </telerik:RadTextBox>
+                        </td>
+                    </tr>
+                    <tr class="FormContainer">
+                        <td>
+                            <asp:Label ID="lblSmallCustomerFax" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Text="Fax:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadTextBox ID="txbSmallCustomerFax" runat="server"
+                                Width="240px">
+                            </telerik:RadTextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblSmallCustomerMobil" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Text="Mobil:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadTextBox ID="txbSmallCustomerMobil" runat="server"
+                                Width="240px">
+                            </telerik:RadTextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblSmallCustomerEmail" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Text="Email:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadTextBox ID="txbSmallCustomerEmail" runat="server"
+                                Width="240px">
+                            </telerik:RadTextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblSmallCustomerZahlungsziel" runat="server"
+                                AssociatedControlID="txbSmallCustomerZahlungsziel" Text="Zahlungsziel:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadComboBox ID="txbSmallCustomerZahlungsziel" runat="server"
+                                Width="240px">
+                                <Items>
+                                    <telerik:RadComboBoxItem Text="Sofort" Value="0" />
+                                    <telerik:RadComboBoxItem Text="5" Value="5" />
+                                    <telerik:RadComboBoxItem Text="10" Value="10" />
+                                </Items>
+                            </telerik:RadComboBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblSmallCustomerVat" runat="server"
+                                AssociatedControlID="ProductAbmDropDownList" Text="MwSt:"></asp:Label>
+                        </td>
+                        <td>
+                            <telerik:RadTextBox ID="txbSmallCustomerVat" runat="server" Text="19"
+                                Width="240px">
+                            </telerik:RadTextBox>
+                            <br />
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
-        </tr>
-  <tr>
-      <td>
-          <telerik:RadTextBox runat="server" Enabled="false" Visible="True"
-              DisabledStyle-ForeColor="Black" BorderColor="Transparent"
-              DisabledStyle-BackColor="Transparent" Text="Zulassungsstelle: "
-              ID="ZulassungsstelleTextBox" Width="240px">
-          </telerik:RadTextBox>
-      </td>
-      <td>
-          <telerik:RadComboBox ID="ZulassungsstelleComboBox" runat="server"
-              AutoPostBack="false" DataSourceID="ZulassungsstelleDataSource"
-              DataTextField="Name" DataValueField="Value" DropDownWidth="515px"
-              EmptyMessage="Zulassungsstelle..." Filter="Contains"
-              HighlightTemplatedItems="true" Width="250px">
-          </telerik:RadComboBox>
-      </td>
-      <tr>
-          <td>
-              <telerik:RadTextBox ID="RadTextBox5" runat="server" BorderColor="Transparent"
-                  DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black"
-                  Enabled="false" Text="Abmeldedatum: " Visible="True" Width="240px">
-              </telerik:RadTextBox>
-          </td>
-          <td>
-              <telerik:RadDatePicker ID="AbmeldedatumPicker" runat="server" Width="250px">
-                  <Calendar ID="Calendar1" runat="server">
-                      <FooterTemplate>
-                          <div style="width: 100%; text-align: center; background-color: Gray;">
-                              <input id="Button1" type="button" value="Heute" onclick="GoToTodayAbm2()" />
-                          </div>
-                      </FooterTemplate>
-                  </Calendar>
-              </telerik:RadDatePicker>
-          </td>
-      </tr>
-  </tr>
     </table>
     <br />
     <asp:Panel runat="server" ID="Halter">
         <asp:Label Text="Halter" Visible="false" ForeColor="Blue" ID="HalterLabel" runat="server" />
         <br />
-        <asp:Panel runat="server" Visible="false" ID="CarOwner_Name">
-            <telerik:RadTextBox runat="server" Enabled="false" Visible="true" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Name: " ID="OwnerNameLabel" Width="240px"></telerik:RadTextBox>
-            <telerik:RadTextBox Width="250px" runat="server" ID="CarOwner_NameBox">
-                <ClientEvents OnValueChanging="MyFirstValueChanging" />
-            </telerik:RadTextBox>
-        </asp:Panel>
         <asp:Panel runat="server" Visible="false" ID="CarOwner_Firstname">
             <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Vorname: " ID="OwnerFirstNameLabel" Width="240px"></telerik:RadTextBox>
             <telerik:RadTextBox Width="250px" runat="server" ID="CarOwner_FirstnameBox">
+                <ClientEvents OnValueChanging="MyFirstValueChanging" />
+            </telerik:RadTextBox>
+        </asp:Panel>
+        <asp:Panel runat="server" Visible="false" ID="CarOwner_Name">
+            <telerik:RadTextBox runat="server" Enabled="false" Visible="true" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Name: " ID="OwnerNameLabel" Width="240px"></telerik:RadTextBox>
+            <telerik:RadTextBox Width="250px" runat="server" ID="CarOwner_NameBox">
                 <ClientEvents OnValueChanging="MyFirstValueChanging" />
             </telerik:RadTextBox>
         </asp:Panel>
@@ -355,14 +602,17 @@
             </telerik:RadTextBox>
         </asp:Panel>
         <asp:Panel runat="server" Visible="false" ID="Adress_Country">
-            <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Land: " ID="OwnerCountryLabel" Width="240px"></telerik:RadTextBox>
-            <telerik:RadTextBox Width="250px" runat="server" ID="Adress_CountryBox"></telerik:RadTextBox>
+            <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Land: "
+                ID="OwnerCountryLabel" Width="240px">
+            </telerik:RadTextBox>
+            <telerik:RadTextBox Width="250px" runat="server" ID="Adress_CountryBox" Text="Deutschland"></telerik:RadTextBox>
         </asp:Panel>
     </asp:Panel>
     <br />
     <asp:Panel runat="server" ID="FahrzeugPanel">
-        <asp:Label Text="Fahrzeug" Visible="false" ForeColor="Blue" ID="FahrzeugLabel" runat="server" />
+        <asp:Label Text="Kfz-Daten" ForeColor="Blue" ID="lblInfoFahrzeug" runat="server" />
         <br />
+        <asp:Label Text="Fahrzeug" Visible="false" ForeColor="Blue" ID="FahrzeugLabel" runat="server" />
         <asp:Panel runat="server" Visible="false" ID="Registration_RegistrationDocumentNumber">
             <telerik:RadTextBox ID="RegDocNumbLabel" runat="server" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="Briefnummer: " Visible="True" Width="240px">
             </telerik:RadTextBox>
@@ -398,7 +648,7 @@
         </asp:Panel>
         <asp:Panel runat="server" Visible="false" ID="Vehicle_VIN">
             <telerik:RadTextBox ID="VINLabel" runat="server" BorderColor="Transparent"
-                DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="FIN: "
+                DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="FIN:*"
                 Width="240px" Visible="True">
             </telerik:RadTextBox>
             <telerik:RadTextBox MaxLength="17" AutoPostBack="false"
@@ -469,13 +719,13 @@
         <asp:Panel runat="server" Visible="false" ID="Registration_GeneralInspectionDate">
             <telerik:RadTextBox ID="InspectionLabel" runat="server" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="Inspektionsdatum: " Visible="True" Width="240px">
             </telerik:RadTextBox>
-            <telerik:RadMonthYearPicker Width="250px" Visible="true" ID="Registration_GeneralInspectionDateBox" runat="server"></telerik:RadMonthYearPicker>
+            <telerik:RadMonthYearPicker Width="250px" MinDate="1/1/1900" Visible="true" ID="Registration_GeneralInspectionDateBox" runat="server"></telerik:RadMonthYearPicker>
         </asp:Panel>
         <asp:Panel runat="server" Visible="false" ID="Vehicle_FirstRegistrationDate">
             <telerik:RadTextBox ID="FirstRegistrationDateLabel" runat="server" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="Erstzulassungsdatum: " Visible="True" Width="240px">
             </telerik:RadTextBox>
-            <telerik:RadDatePicker Width="250px" ID="FirstRegistrationDateBox" runat="server">
-                <Calendar runat="server">
+            <telerik:RadDatePicker Width="250px" ID="FirstRegistrationDateBox" MinDate="1/1/1900" runat="server">
+                <Calendar ID="Calendar1" runat="server">
                     <FooterTemplate>
                         <div style="width: 100%; text-align: center; background-color: Gray;">
                             <input id="Button12" type="button" value="Heute" onclick="GoToTodayAbm()" />
@@ -494,30 +744,38 @@
     </asp:Panel>
     <br />
     <asp:Panel runat="server" ID="Halterdaten">
-        <asp:Label Text="Halterdaten" Visible="false" ForeColor="Blue" ID="HalterdatenLabel" runat="server" />
+        <asp:Label Text="Bankdaten" Visible="false" ForeColor="Blue" ID="HalterdatenLabel" runat="server" />
         <br />
-        <asp:Panel runat="server" Visible="false" ID="BankAccount_BankName">
-            <telerik:RadTextBox runat="server" Enabled="false" Visible="true" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Bankname: " ID="BankNameLabel" Width="240px"></telerik:RadTextBox>
-            <telerik:RadTextBox Width="250px" runat="server" ID="BankAccount_BankNameBox">
-                <ClientEvents OnValueChanging="MyFirstValueChanging" />
-            </telerik:RadTextBox>
-        </asp:Panel>
-        <asp:Panel runat="server" Visible="false" ID="BankAccount_Accountnumber">
-            <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Kontonummer: " ID="AccountNumberLabel" Width="240px"></telerik:RadTextBox>
-            <telerik:RadTextBox Width="250px" runat="server" ID="BankAccount_AccountnumberBox"></telerik:RadTextBox>
-        </asp:Panel>
-        <asp:Panel runat="server" Visible="false" ID="BankAccount_BankCode">
-            <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="BLZ: " ID="BankCodeLabel" Width="240px"></telerik:RadTextBox>
-            <telerik:RadTextBox Width="250px" runat="server" ID="BankAccount_BankCodeBox"></telerik:RadTextBox>
-        </asp:Panel>
-        <asp:Panel runat="server" Visible="false" ID="IBANPanel">
-            <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black"
-                BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="IBAN: " ID="txbIBANInfo" Width="240px">
-            </telerik:RadTextBox>
-            <telerik:RadTextBox Width="250px" runat="server" ID="txbBancAccountIban">
-            </telerik:RadTextBox>
-            <telerik:RadButton ID="btnGenerateIBAN" runat="server" Text="IBAN" ToolTip="IBAN Nummer generieren" OnClick="genIban_Click"></telerik:RadButton>
-        </asp:Panel>
+        <telerik:RadAjaxPanel runat="server" ID="loadIban">
+            <asp:Panel runat="server" Visible="false" ID="BankAccount_BankName">
+                <telerik:RadTextBox runat="server" Enabled="false" Visible="true" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Bankname: " ID="BankNameLabel" Width="240px"></telerik:RadTextBox>
+                <telerik:RadTextBox Width="250px" runat="server" ID="BankAccount_BankNameBox">
+                    <ClientEvents OnValueChanging="MyFirstValueChanging" />
+                </telerik:RadTextBox>
+            </asp:Panel>
+            <asp:Panel runat="server" Visible="false" ID="BankAccount_Accountnumber">
+                <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Kontonummer: " ID="AccountNumberLabel" Width="240px"></telerik:RadTextBox>
+                <telerik:RadTextBox Width="250px" runat="server" ID="BankAccount_AccountnumberBox"></telerik:RadTextBox>
+            </asp:Panel>
+            <asp:Panel runat="server" Visible="false" ID="BankAccount_BankCode">
+                <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="BLZ: " ID="BankCodeLabel" Width="240px"></telerik:RadTextBox>
+                <telerik:RadTextBox Width="250px" runat="server" ID="BankAccount_BankCodeBox"></telerik:RadTextBox>
+            </asp:Panel>
+            <asp:Panel runat="server" Visible="false" ID="IBANPanel">
+                <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black"
+                    BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="IBAN: " ID="txbIBANInfo" Width="240px">
+                </telerik:RadTextBox>
+                <telerik:RadTextBox Width="250px" runat="server" ID="txbBancAccountIban">
+                </telerik:RadTextBox>
+                <br />
+                <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black"
+                    BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="BIC: " ID="txbBICInfo" Width="240px">
+                </telerik:RadTextBox>
+                <telerik:RadTextBox Width="250px" runat="server" ID="txbBankAccount_Bic">
+                </telerik:RadTextBox>
+                <telerik:RadButton ID="btnGenerateIBAN" runat="server" Text="IBAN/BIC" ToolTip="IBAN Nummer generieren" OnClick="genIban_Click"></telerik:RadButton>
+            </asp:Panel>
+        </telerik:RadAjaxPanel>
     </asp:Panel>
     <br />
     <asp:Panel Visible="false" runat="server" ID="Kontaktdaten">
@@ -543,18 +801,14 @@
     <br />
     <asp:HiddenField runat="server" ID="vehicleIdField" />
     <telerik:RadFormDecorator runat="server" ID="AuftragRadDecorator" />
-    <telerik:RadButton runat="server" ID="AbmeldenButton" Enabled="true" Text="Ausserbetriebsetzen" OnClick="AbmeldenButton_Clicked"></telerik:RadButton>
+    <asp:Button ID="AbmeldenButton" runat="server" Text="Ausserbetriebsetzen" OnClientClick="return checkFields();" OnClick="AbmeldenButton_Clicked" />
     <telerik:RadButton runat="server" ID="NaechtenAuftragButton" OnClick="NaechtenAuftragButton_Clicked" OnClientClicking="EingabeFelderLeerenAbmConfirm" Text="Eingabefelder leeren"></telerik:RadButton>
     <asp:Label runat="server" Visible="false" ForeColor="Red" ID="SubmitChangesErrorLabel" Text="Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator."></asp:Label>
     <asp:Label runat="server" Visible="false" ForeColor="Green" ID="AbmeldungOkLabel" Text="Neuer Auftrag wurde erstellt!"></asp:Label>
     <asp:Label runat="server" Visible="false" ForeColor="Red" ID="ErrorLeereTextBoxenLabel" Text="Bitte füllen Sie alle angezeigte Felder aus!"></asp:Label>
     <asp:LinqDataSource ID="CustomerDataSource" runat="server" OnSelecting="CustomerLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext">
     </asp:LinqDataSource>
-    <asp:LinqDataSource ID="LocationDataSource" runat="server" OnSelecting="LocationLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext">
-    </asp:LinqDataSource>
     <asp:LinqDataSource ID="ProductAbmDataSource" runat="server" OnSelecting="ProductAbmDataSourceLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext">
-    </asp:LinqDataSource>
-    <asp:LinqDataSource ID="CostCenterDataSource" runat="server" OnSelecting="CostCenterLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext">
     </asp:LinqDataSource>
     <asp:LinqDataSource ID="ZulassungsstelleDataSource" runat="server" OnSelecting="ZulassungsstelleDataSourceLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext">
     </asp:LinqDataSource>
@@ -578,16 +832,10 @@
             <asp:TextBox Width="220" ID="CityTextBox" runat="server"></asp:TextBox>
             <br />
             <asp:Label runat="server" ID="Label4" Text="Land*: " Width="140"></asp:Label>
-            <asp:TextBox Width="220" ID="CountryTextBox" runat="server"></asp:TextBox>
+            <asp:TextBox Width="220" ID="CountryTextBox" Text="Deutschland" runat="server"></asp:TextBox>
             <br />
-            <asp:Label runat="server" ID="Label5" Text="Rechnungsempfänger*: " Width="140"></asp:Label>
+            <asp:Label runat="server" ID="Label5" Text="Rechnungsempfänger: " Width="140"></asp:Label>
             <asp:TextBox Width="220" ID="InvoiceRecipient" runat="server"></asp:TextBox>
-            <br />
-            <asp:RequiredFieldValidator ID="InvoiceRecValidator" Enabled="false" runat="server"
-                ControlToValidate="InvoiceRecipient"
-                ErrorMessage="Empfänger ist leer!"
-                ForeColor="Red">
-            </asp:RequiredFieldValidator>
             <br />
             <asp:Label runat="server" ID="Label6" Text="Rabatt in %: " Width="140"></asp:Label>
             <telerik:RadNumericTextBox Width="220" ID="txbDiscount" runat="server" NumberFormat-DecimalDigits="0" Value="0" MinValue="0" MaxValue="100"></telerik:RadNumericTextBox>
@@ -615,11 +863,7 @@
         <p class="contText">
             Wählen Sie bitte neues Produkt aus
         </p>
-        <asp:DropDownList DataTextField="Name" DataValueField="Value" DataSourceID="ProductAbmDataSource" runat="server" ID="NewProductDropDownList"></asp:DropDownList>
-        <p class="contText">
-            Wählen Sie bitte die Kostenstelle aus
-        </p>
-        <asp:DropDownList DataTextField="Name" DataValueField="Value" DataSourceID="CostCenterDataSource" runat="server" ID="NewCostCenterDropDownList"></asp:DropDownList>
+        <asp:DropDownList DataTextField="Name" DataValueField="Value" DataSourceID="ProductAbmDataSource" runat="server" ID="NewProductAbmDropDownList"></asp:DropDownList>
         <p class="contText">
             Und bestätigen:
         </p>
@@ -633,3 +877,4 @@
 <asp:HiddenField runat="server" ID="ProduktHiddenField" />
 <asp:HiddenField runat="server" ID="AnzahlVonDienstHiddenField" />
 <asp:HiddenField runat="server" ID="LabelProdCostHiddenField" />
+<link href="../Styles/auftragseingang.css" rel="stylesheet" type="text/css" />
