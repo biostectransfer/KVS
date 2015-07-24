@@ -1,14 +1,17 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KVSWebApplication", "KVSWebApplication\KVSWebApplication.csproj", "{1F7E3351-66A8-44F8-AC4D-56C477DA4E20}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KVSCommon", "KVSCommon\KVSCommon.csproj", "{2726EAD6-1228-43CC-8E24-41E2AB65DC89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KVSDataAccess", "KVSDataAccess\KVSDataAccess.csproj", "{562694C2-6DC8-44C0-88EE-FFCC1E0F6942}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KVSConfiguration", "KVSConfiguration\KVSConfiguration.csproj", "{DCAF74F7-2C84-4021-9D0F-69B51CC5124E}"
+EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = KVS.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -38,8 +41,34 @@ Global
 		{2726EAD6-1228-43CC-8E24-41E2AB65DC89}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{2726EAD6-1228-43CC-8E24-41E2AB65DC89}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2726EAD6-1228-43CC-8E24-41E2AB65DC89}.Release|x86.ActiveCfg = Release|Any CPU
+		{562694C2-6DC8-44C0-88EE-FFCC1E0F6942}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{562694C2-6DC8-44C0-88EE-FFCC1E0F6942}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{562694C2-6DC8-44C0-88EE-FFCC1E0F6942}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{562694C2-6DC8-44C0-88EE-FFCC1E0F6942}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{562694C2-6DC8-44C0-88EE-FFCC1E0F6942}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{562694C2-6DC8-44C0-88EE-FFCC1E0F6942}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{562694C2-6DC8-44C0-88EE-FFCC1E0F6942}.Release|Any CPU.Build.0 = Release|Any CPU
+		{562694C2-6DC8-44C0-88EE-FFCC1E0F6942}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{562694C2-6DC8-44C0-88EE-FFCC1E0F6942}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{562694C2-6DC8-44C0-88EE-FFCC1E0F6942}.Release|x86.ActiveCfg = Release|Any CPU
+		{DCAF74F7-2C84-4021-9D0F-69B51CC5124E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCAF74F7-2C84-4021-9D0F-69B51CC5124E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCAF74F7-2C84-4021-9D0F-69B51CC5124E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DCAF74F7-2C84-4021-9D0F-69B51CC5124E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DCAF74F7-2C84-4021-9D0F-69B51CC5124E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DCAF74F7-2C84-4021-9D0F-69B51CC5124E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCAF74F7-2C84-4021-9D0F-69B51CC5124E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCAF74F7-2C84-4021-9D0F-69B51CC5124E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DCAF74F7-2C84-4021-9D0F-69B51CC5124E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DCAF74F7-2C84-4021-9D0F-69B51CC5124E}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = KVS.vsmdi
 	EndGlobalSection
 EndGlobal

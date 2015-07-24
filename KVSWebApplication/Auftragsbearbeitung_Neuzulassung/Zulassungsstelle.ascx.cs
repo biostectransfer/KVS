@@ -12,6 +12,7 @@ using System.IO;
 using System.Configuration;
 using System.Transactions;
 using KVSCommon.Enums;
+using KVSWebApplication.Auftragseingang;
 namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 {
     public partial class Zulassungsstelle : System.Web.UI.UserControl
@@ -44,7 +45,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         {
             if (comeFromOrder == true)
             {
-                KVSWebApplication.Auftragseingang.ZulassungLaufkunde auftrag = Page as KVSWebApplication.Auftragseingang.ZulassungLaufkunde;
+                var auftrag = Page as ZulassungLaufkunde;
                 RadScriptManager script = auftrag.getScriptManager() as RadScriptManager;
                 script.RegisterPostBackControl(AddAdressButton);
             }

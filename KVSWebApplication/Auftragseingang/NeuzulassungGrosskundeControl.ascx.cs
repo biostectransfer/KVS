@@ -9,6 +9,7 @@ using System.IO;
 using System.Configuration;
 using Telerik.Web.UI;
 using KVSCommon.Enums;
+using KVSCommon.Managers;
 namespace KVSWebApplication.Auftragseingang
 {
     /// <summary>
@@ -25,7 +26,7 @@ namespace KVSWebApplication.Auftragseingang
         protected override RadTextBox BankCodeTextBox { get { return this.BankAccount_BankCodeBox; } }
         protected override RadTextBox BankNameTextBox { get { return this.BankAccount_BankNameBox; } }
         protected override RadTextBox IBANTextBox { get { return this.txbBancAccountIban; } }
-        protected override RadTextBox BICTextBox { get { return null; } }
+        protected override RadTextBox BICTextBox { get { return txbBancAccountBIC; } }
         protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
         protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
 

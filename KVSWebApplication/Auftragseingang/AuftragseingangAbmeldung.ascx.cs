@@ -9,10 +9,11 @@ using Telerik.Web.UI;
 using System.IO;
 using System.Configuration;
 using KVSCommon.Enums;
+using KVSCommon.Managers;
 namespace KVSWebApplication.Auftragseingang
 {
     public partial class AuftragseingangAbmeldung : IncomingOrdersBase
-    {        
+    {
         #region Members
 
         protected override string PagePermission { get { return "ABMELDEAUFTRAG_ANLEGEN"; } }

@@ -1,0 +1,10 @@
+G:\Escoda\KVSDataAccess\obj\Debug\KVSDataAccess.csprojResolveAssemblyReference.cache
+G:\Escoda\KVSDataAccess\bin\Debug\KVSDataAccess.dll
+G:\Escoda\KVSDataAccess\bin\Debug\KVSDataAccess.pdb
+G:\Escoda\KVSDataAccess\bin\Debug\KVSCommon.dll
+G:\Escoda\KVSDataAccess\bin\Debug\MigraDoc.DocumentObjectModel-WPF.dll
+G:\Escoda\KVSDataAccess\bin\Debug\PdfSharp-WPF.dll
+G:\Escoda\KVSDataAccess\bin\Debug\MigraDoc.Rendering-WPF.dll
+G:\Escoda\KVSDataAccess\bin\Debug\KVSCommon.pdb
+G:\Escoda\KVSDataAccess\obj\Debug\KVSDataAccess.dll
+G:\Escoda\KVSDataAccess\obj\Debug\KVSDataAccess.pdb

@@ -1,9 +1,12 @@
 ﻿using KVSCommon.Database;
 using KVSCommon.Enums;
+using KVSCommon.Managers;
+using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Http;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
@@ -17,6 +20,11 @@ namespace KVSWebApplication.Auftragseingang
     {
         #region Members
 
+        public IncomingOrdersBase()
+        {
+            BicManager = (IBicManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IBicManager));
+        }
+
         protected abstract string PagePermission { get; }
 
         protected List<Control> controls = new List<Control>();
@@ -28,7 +36,10 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract RadTextBox BICTextBox { get; }
         protected abstract Label CustomerHistoryLabel { get; }
         protected abstract RadComboBox CustomerDropDown { get; }
-        
+
+        [DependencyAttribute]
+        public IBicManager BicManager { get; set; }
+
         #endregion
 
         #region Methods
@@ -44,9 +55,7 @@ namespace KVSWebApplication.Auftragseingang
 
         protected void genIban_Click(object sender, EventArgs e)
         {
-            if (!String.IsNullOrEmpty(AccountNumberTextBox.Text) &&
-                !String.IsNullOrEmpty(BankCodeTextBox.Text) &&
-                EmptyStringIfNull.IsNumber(AccountNumberTextBox.Text) &&
+            if (EmptyStringIfNull.IsNumber(AccountNumberTextBox.Text) &&
                 !String.IsNullOrEmpty(BankNameTextBox.Text) &&
                 EmptyStringIfNull.IsNumber(BankCodeTextBox.Text))
             {

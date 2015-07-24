@@ -110,6 +110,7 @@
     <Compile Include="Enums\DocumentTypes.cs" />
     <Compile Include="Enums\OrderTypes.cs" />
     <Compile Include="Enums\RegistrationOrderTypes.cs" />
+    <Compile Include="Managers\IBicManager.cs" />
     <Compile Include="PDF\AbstractPDFCreator.cs" />
     <Compile Include="PDF\GroupedAppendix.cs" />
     <Compile Include="PDF\InvoicePDF.cs" />
