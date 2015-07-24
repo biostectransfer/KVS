@@ -16,7 +16,7 @@ namespace KVSConfiguration
             //container.RegisterType<IContainerStarEntities, ContainerStarEntities>(new PerRequestLifetimeManager(),
             //    new InjectionConstructor(new ResolvedParameter<IContainerStarSaveActorManager>(), ConfigurationManager.ConnectionStrings["ContainerStarEntities"].ConnectionString));
 
-            container.RegisterType<IBicManager, BicManager>();//new PerRequestLifetimeManager());
+            container.RegisterType<IBicManager, BicManager>(new PerRequestLifetimeManager());
         }
     }
 }
