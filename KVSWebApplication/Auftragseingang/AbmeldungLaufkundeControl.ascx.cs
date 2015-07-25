@@ -30,6 +30,7 @@ namespace KVSWebApplication.Auftragseingang
         protected override RadTextBox BICTextBox { get { return this.txbBankAccount_Bic; } }
         protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
         protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
+        protected override RadComboBox LocationDropDown { get { return null; } }
 
         #endregion
 

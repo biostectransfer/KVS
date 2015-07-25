@@ -27,6 +27,7 @@ namespace KVSWebApplication.Auftragseingang
         protected override RadTextBox BICTextBox { get { return null; } }
         protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
         protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
+        protected override RadComboBox LocationDropDown { get { return this.LocationDropDownList; } }
 
         #endregion
 
@@ -52,25 +53,7 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
         }
-
-        // Suche nach Price. Falls keine gibt - stand.Price nehmen
-        private Price findPrice(string productId)
-        {
-            KVSEntities dbContext = new KVSEntities();
-            int? locationId = null;
-            Price newPrice = null;
-            if (!String.IsNullOrEmpty(this.LocationDropDownList.SelectedValue))
-            {
-                locationId = Int32.Parse(LocationDropDownList.SelectedValue);
-                newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == Int32.Parse(productId) && q.LocationId == locationId);
-            }
-            if (String.IsNullOrEmpty(this.LocationDropDownList.SelectedValue) || newPrice == null)
-            {
-                newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == Int32.Parse(productId) && q.LocationId == null);
-            }
-            return newPrice;
-        }
-
+        
         #region Index Changed
         protected void SmallLargeCustomer_Changed(object sender, EventArgs e)
         {

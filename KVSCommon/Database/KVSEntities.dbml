@@ -529,6 +529,9 @@
       <Column Name="LocationId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="Amount" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
       <Column Name="AuthorativeCharge" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="Price_PriceAccount" Member="PriceAccount" ThisKey="Id" OtherKey="PriceId" Type="PriceAccount" />
       <Association Name="Location_Price" Member="Location" ThisKey="LocationId" OtherKey="Id" Type="Location" IsForeignKey="true" />
       <Association Name="Product_Price" Member="Product" ThisKey="ProductId" OtherKey="Id" Type="Product" IsForeignKey="true" />

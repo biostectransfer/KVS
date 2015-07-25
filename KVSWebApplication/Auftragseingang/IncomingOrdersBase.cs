@@ -4,8 +4,10 @@ using KVSCommon.Managers;
 using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Caching;
 using System.Web.Http;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -25,6 +27,7 @@ namespace KVSWebApplication.Auftragseingang
             BicManager = (IBicManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IBicManager));
             UserManager = (IUserManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IUserManager));
             OrderManager = (IOrderManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IOrderManager));
+            PriceManager = (IPriceManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IPriceManager));
         }
 
         protected abstract PermissionTypes PagePermission { get; }
@@ -38,23 +41,19 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract RadTextBox BICTextBox { get; }
         protected abstract Label CustomerHistoryLabel { get; }
         protected abstract RadComboBox CustomerDropDown { get; }
+        protected abstract RadComboBox LocationDropDown { get; }
+        //TODO protected abstract HiddenField SessionId { get; }
+        //protected abstract RadPersistenceManager RadPersistenceManager { get; }
 
         public IBicManager BicManager { get; set; }
         public IUserManager UserManager { get; set; }
         public IOrderManager OrderManager { get; set; }
+        public IPriceManager PriceManager { get; set; }
 
         #endregion
 
-        #region Methods
-
-        protected void CheckUserPermissions()
-        {
-            if (UserManager.CheckPermissionsForUser(Session["UserPermissions"], PagePermission))
-            {
-                Panel.Enabled = true;
-            }
-        }
-
+        #region Event Handlers
+        
         protected void genIban_Click(object sender, EventArgs e)
         {
             if (EmptyStringIfNull.IsNumber(AccountNumberTextBox.Text) &&
@@ -110,6 +109,42 @@ namespace KVSWebApplication.Auftragseingang
             CustomerHistoryLabel.Text = String.Format("Historie: <br/> Gesamt: {0} <br/> Umsatz: {1}<br/> Gebühren: {2}",
                 orders.Count(), umsatz.ToString("C2"), gebuehren.ToString("C2"));
         }
+
+        // Suche nach Price. Falls keine gibt - stand.Price nehmen
+        protected Price findPrice(string productId)
+        {
+            int? locationId = null;
+            Price newPrice = null;
+
+            if (LocationDropDown != null && !String.IsNullOrEmpty(LocationDropDown.SelectedValue))
+            {
+                locationId = Int32.Parse(LocationDropDown.SelectedValue);
+                newPrice = PriceManager.GetEntities(q => q.ProductId == Int32.Parse(productId) && q.LocationId == locationId).FirstOrDefault();
+            }
+
+            if (String.IsNullOrEmpty(this.LocationDropDown.SelectedValue) || newPrice == null)
+            {
+                newPrice = PriceManager.GetEntities(q => q.ProductId == Int32.Parse(productId) && q.LocationId == null).FirstOrDefault();
+            }
+            return newPrice;
+        }
+
+        #endregion
+
+        #region Methods
+        
+        protected void CheckUserPermissions()
+        {
+            if (UserManager.CheckPermissionsForUser(Session["UserPermissions"], PagePermission))
+            {
+                Panel.Enabled = true;
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
+
 
         #endregion
     }

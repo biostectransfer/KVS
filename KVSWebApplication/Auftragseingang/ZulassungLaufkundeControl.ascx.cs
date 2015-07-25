@@ -29,6 +29,7 @@ namespace KVSWebApplication.Auftragseingang
         protected override RadTextBox BICTextBox { get { return txbBankAccount_Bic; } }
         protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
         protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
+        protected override RadComboBox LocationDropDown { get { return null; } }
 
         #endregion
 
@@ -1214,11 +1215,18 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
         }
+
+        #endregion
+
+        #region Private Methods
+
         private void AddCacheDependency(HttpContext context, string tempFileName, TimeSpan timeToLive, string fullPath)
         {
             if (context.Cache.Get(tempFileName) == null)
-                context.Cache.Insert(tempFileName, fullPath, null, DateTime.Now.Add(timeToLive), TimeSpan.Zero, CacheItemPriority.NotRemovable, RemovedCallback);
+                context.Cache.Insert(tempFileName, fullPath, null, DateTime.Now.Add(timeToLive), TimeSpan.Zero,
+                    CacheItemPriority.NotRemovable, RemovedCallback);
         }
+
         private void RemovedCallback(String key, Object value, CacheItemRemovedReason reason)
         {
             var path = (string)value;
@@ -1227,6 +1235,7 @@ namespace KVSWebApplication.Auftragseingang
                 File.Delete(path);
             }
         }
+
         private void SaveState()
         {
             SessionID.Value = Guid.NewGuid().ToString();
@@ -1235,6 +1244,7 @@ namespace KVSWebApplication.Auftragseingang
             // The following method is called for the purpose of the demo
             AddCacheDependency(System.Web.HttpContext.Current, SessionID.Value, new TimeSpan(2, 0, 0), Server.MapPath("~/App_Data") + "\\" + SessionID.Value);
         }
+
         private void LoadState()
         {
             if (File.Exists(Server.MapPath("~/App_Data") + "\\" + SessionID.Value))

@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\PriceManager.cs" />
     <Compile Include="Managers\OrderManager.cs" />
     <Compile Include="Managers\UserManager.cs" />
     <Compile Include="Managers\BicManager.cs" />

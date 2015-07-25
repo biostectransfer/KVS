@@ -66,16 +66,16 @@
     <Compile Include="Database\Contact.cs" />
     <Compile Include="Database\CostCenter.cs" />
     <Compile Include="Database\Customer.cs" />
-    <Compile Include="Database\KVSEntities.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>KVSEntities.dbml</DependentUpon>
-    </Compile>
     <Compile Include="Database\DocketList.cs" />
     <Compile Include="Database\EmptyStringIfNull.cs" />
     <Compile Include="Database\InvoiceHelper.cs" />
     <Compile Include="Database\InvoiceItemAccountItem.cs" />
     <Compile Include="Database\InvoiceRunReport.cs" />
+    <Compile Include="Database\KVSEntities1.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>KVSEntities.dbml</DependentUpon>
+    </Compile>
     <Compile Include="Database\LocationOrderJoins.cs" />
     <Compile Include="Database\Mailinglist.cs" />
     <Compile Include="Database\KVSEntities.cs">
@@ -125,6 +125,7 @@
     <Compile Include="Managers\Base\IManagerBase.cs" />
     <Compile Include="Managers\Base\IReadOnlyEntityManager.cs" />
     <Compile Include="Managers\Base\IReadOnlyManagerBase.cs" />
+    <Compile Include="Managers\IPriceManager.cs" />
     <Compile Include="Managers\IOrderManager.cs" />
     <Compile Include="Managers\IUserManager.cs" />
     <Compile Include="Managers\IBicManager.cs" />
@@ -156,7 +157,7 @@
     <None Include="Database\KVSEntities.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <SubType>Designer</SubType>
-      <LastGenOutput>KVSEntities.designer.cs</LastGenOutput>
+      <LastGenOutput>KVSEntities1.designer.cs</LastGenOutput>
     </None>
     <None Include="KlassenDiagrammCommon_Utility.cd" />
     <None Include="KlassenDiagrammDatabase.cd" />
