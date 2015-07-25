@@ -63,7 +63,6 @@ G:\Escoda\KVSWebApplication\bin\WebGrease.dll
 G:\Escoda\KVSWebApplication\bin\WebActivatorEx.dll
 G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.Mvc.dll
 G:\Escoda\KVSWebApplication\bin\KVSDataAccess.dll
-G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.ServiceLocation.dll
 G:\Escoda\KVSWebApplication\bin\KVSCommon.pdb
 G:\Escoda\KVSWebApplication\bin\KVSConfiguration.pdb
 G:\Escoda\KVSWebApplication\bin\Antlr3.Runtime.pdb

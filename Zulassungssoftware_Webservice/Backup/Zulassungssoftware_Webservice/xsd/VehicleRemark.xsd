@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+						xmlns:xs="http://www.w3.org/2001/XMLSchema"
+						xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://microsoft.com/webservices/"	attributeFormDefault="unqualified"
+						elementFormDefault="qualified">
+  <xs:element name="Remark">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Umkennzeichnung" minOccurs ="0" maxOccurs ="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Header">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element  name="CustomerId">
+                      <xsd:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="255" />
+                        </xs:restriction>
+                      </xsd:simpleType>
+                    </xs:element>
+                    <xs:element name="LocationId" >
+                      <xsd:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="255" />
+                        </xs:restriction>
+                      </xsd:simpleType>
+                    </xs:element>
+                    <xs:element name="ProductCostCenterList">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element maxOccurs="unbounded" name="item">
+                            <xs:complexType>
+                              <xs:attribute name="ProductId" type="xs:string" use="required" />
+                              <xs:attribute name="CostCenterId" type="xs:string" use="required" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="ZulassungsstelleId" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="255" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Vehicle">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="VIN" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1" />
+                          <xs:maxLength value="17" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="HSN" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1" />
+                          <xs:maxLength value="4" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="TSN" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1" />
+                          <xs:maxLength value="4" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="VehicleVariant" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="50" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="eVBNumber" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="7" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="LicenceNumber" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1" />
+                          <xs:maxLength value="15" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="PreviousLicenceNumber" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1" />
+                          <xs:maxLength value="15" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="GeneralInspectionDate" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:date">
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="RegistrationDocumentNumber" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="20" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="EmissionCode" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="5" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="RegistrationDate" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:date">
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="ColorCode" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="5" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="CarOwnerAdress">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Street" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1" />
+                          <xs:maxLength value="100" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Streetnumber" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="10" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Zipcode" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1" />
+                          <xs:maxLength value="10" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="City" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1" />
+                          <xs:maxLength value="50" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Country" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1" />
+                          <xs:maxLength value="50" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="CarOwnerContact">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Phone" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="50" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Fax" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="50" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="MobilePhone" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="50" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Email" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="50" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Bank">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="CarOwnerBankName" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1" />
+                          <xs:maxLength value="100" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="AccountNumber" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1" />
+                          <xs:maxLength value="50" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="BankCode" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="1" />
+                          <xs:maxLength value="50" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Iban" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="50" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Bic" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="50" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="CarOwnerPersonal">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Name" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="50" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Firstname" >
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:minLength value="0" />
+                          <xs:maxLength value="50" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="FreetextField" >
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:minLength value="0" />
+                    <xs:maxLength value="200" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xsd:schema>

@@ -23,7 +23,7 @@ namespace KVSCommon.Database
 	
 	
 	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="test_fullservice")]
-	public partial class DataClasses1DataContext : System.Data.Linq.DataContext
+	public partial class DataClasses1DataContext : KVSCommon.Entities.move_to_DataAccess.EntitiesBase
 	{
 		
 		private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource();

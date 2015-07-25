@@ -1,0 +1,1 @@
+﻿<%@ WebService Language="C#" CodeBehind="Zulassungswebservice.asmx.cs" Class="Zulassungssoftware_Webservice.Zulassungswebservice" %>

@@ -11,7 +11,9 @@ namespace KVSCommon.Database
     public enum EntityState
     {
         New = 0,
-        Loaded = 1
+        Loaded = 1,
+        //TODO remove after switching to EntityFramework
+        Deleted = 2
     }
     /// <summary>
     /// Stellt die Schnitstelle zwischen der Datenbank und dem Code dar

@@ -43,8 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ManagerBase.cs" />
-    <Compile Include="BicManager.cs" />
+    <Compile Include="Managers\ManagerBase.cs" />
+    <Compile Include="Managers\BicManager.cs" />
+    <Compile Include="Managers\Base\EntityManager.cs" />
+    <Compile Include="Managers\Base\Manager.cs" />
+    <Compile Include="Managers\Base\ManagerBase.cs" />
+    <Compile Include="Managers\Base\ReadOnlyEntityManager.cs" />
+    <Compile Include="Managers\Base\ReadOnlyManagerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +58,7 @@
       <Name>KVSCommon</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

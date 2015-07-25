@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="test_fullservice" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="test_fullservice" Class="DataClasses1DataContext" BaseType="KVSCommon.Entities.move_to_DataAccess.EntitiesBase" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Table Name="dbo.BankAccount" Member="BankAccount">
     <Type Name="BankAccount">
       <Column Name="Id" AutoSync="Never" Type="System.Int32" DbType="int  NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />

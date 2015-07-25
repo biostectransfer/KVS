@@ -1,18 +1,26 @@
 ﻿using System;
 using System.Web;
 using System.Configuration;
+using KVSCommon.Entities;
+using System.Linq;
+using KVSCommon.SaveActors;
 
 namespace KVSCommon.Database
 {
-    public partial class DataClasses1DataContext
+    public partial class DataClasses1DataContext : IKVSEntities
     {
+        public DataClasses1DataContext(ISaveActorManagerBase saveActorManager)
+            : base(saveActorManager, ConfigurationManager.ConnectionStrings["KVSConnectionString"].ConnectionString)
+        {
+        }
+
         public DataClasses1DataContext()
             : base(ConfigurationManager.ConnectionStrings["KVSConnectionString"].ConnectionString)
         {
         }
 
         public DataClasses1DataContext(int logUserId)
-            : this()
+            : base(ConfigurationManager.ConnectionStrings["KVSConnectionString"].ConnectionString)
         {
             this.LogUserId = logUserId;
         }
@@ -193,5 +201,10 @@ namespace KVSCommon.Database
                 ChildReferenceId = childReferenceId
             };
         }
+
+        #region IKVSEntities
+
+
+        #endregion
     }
 }

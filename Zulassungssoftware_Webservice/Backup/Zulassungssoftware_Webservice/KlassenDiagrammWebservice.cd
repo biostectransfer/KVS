@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="Zulassungssoftware_Webservice.CheckLogin">
+    <Position X="0.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAIAAAAAAAAgAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>helper\CheckLogin.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Zulassungssoftware_Webservice.helper.XMLHelper">
+    <Position X="3" Y="2.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AABAAQAAAAAAAAIAAQABAAAAAAAaAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>helper\XMLHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Zulassungssoftware_Webservice.helper.RegTypes">
+    <Position X="3.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAAAgAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>helper\OrderTypes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Zulassungssoftware_Webservice.helper.ResultMessages">
+    <Position X="5.5" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AgABAAIAAAAAAQAAAAEAAAAAAAAAAAAAAAQABgAEAQY=</HashCode>
+      <FileName>helper\ResultMessages.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Zulassungssoftware_Webservice.helper.ValidateOrderType">
+    <Position X="9.25" Y="0.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAQAAwAAAIQAAAAgQAEAIEYAAAAChAE=</HashCode>
+      <FileName>helper\ValidateOrderType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Zulassungssoftware_Webservice.helper.OrderTypes">
+    <Position X="0.75" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAEIAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>helper\OrderTypes.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

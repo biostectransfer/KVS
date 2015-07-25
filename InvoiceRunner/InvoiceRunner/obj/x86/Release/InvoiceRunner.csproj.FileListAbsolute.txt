@@ -1,1 +1,2 @@
 B:\Zulassungssoftware\KVSZulassungsSoftware\CASE Komplett\InvoiceRunner\InvoiceRunner\bin\Release\InvoiceRunner.exe.config
+G:\Escoda\InvoiceRunner\InvoiceRunner\bin\Release\InvoiceRunner.exe.config

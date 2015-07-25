@@ -1,8 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
-MinimumVisualStudioVersion = 10.0.40219.1
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zulassungssoftware_Webservice", "Zulassungssoftware_Webservice\Zulassungssoftware_Webservice.csproj", "{94CB051E-C8E8-4587-99DE-B103CA7C5E31}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KVSCommon", "..\KVSCommon\KVSCommon.csproj", "{2726EAD6-1228-43CC-8E24-41E2AB65DC89}"
