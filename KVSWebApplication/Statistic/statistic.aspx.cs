@@ -29,7 +29,7 @@ namespace KVSWebApplication.Statistic
         }
         protected object GetSourceForRadGrid()
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var newQuery = from ord in con.Order
                            let registration = ord.RegistrationOrder != null ? ord.RegistrationOrder.Registration : ord.DeregistrationOrder.Registration
                            where ord.Status == (int)OrderStatusTypes.Payed
@@ -120,7 +120,7 @@ namespace KVSWebApplication.Statistic
             if (!String.IsNullOrEmpty(CustomerNameBox.SelectedValue))
             {
                 //making pie
-                DataClasses1DataContext con = new DataClasses1DataContext();
+                KVSEntities con = new KVSEntities();
                 var customerQuery = con.Customer.SingleOrDefault(q => q.Id == Int32.Parse(CustomerNameBox.SelectedValue));
                 if (customerQuery != null)
                 {
@@ -142,7 +142,7 @@ namespace KVSWebApplication.Statistic
             }
             else
             {
-                DataClasses1DataContext con = new DataClasses1DataContext();
+                KVSEntities con = new KVSEntities();
                 List<Order> orderList = con.Order.Where(q => q.Status == (int)OrderStatusTypes.Payed).ToList();
                 foreach (Order order in orderList)
                 {
@@ -163,7 +163,7 @@ namespace KVSWebApplication.Statistic
         protected void MakeChartAnzahl()
         {
             //making pie
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var Customer1 = from cust in con.Customer
                             select cust.Id; 
             foreach (var custId in Customer1)
@@ -180,7 +180,7 @@ namespace KVSWebApplication.Statistic
         }
         protected void MakeChartUmsatz()
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var Customer1 = from cust in con.Customer
                             select cust.Id;
             foreach (var custId in Customer1)
@@ -210,7 +210,7 @@ namespace KVSWebApplication.Statistic
         }
         protected void CustomerName_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var CustomerName = from cust in con.Customer
                                select new
                                {
@@ -224,7 +224,7 @@ namespace KVSWebApplication.Statistic
         }
         protected void LinqDataSourceAuftragstyp_Linq(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var auftragsTyp = from typ in con.OrderType
                                select new
                                {

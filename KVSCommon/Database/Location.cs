@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class Location : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -29,8 +29,8 @@ namespace KVSCommon.Database
             get;
             set;
         }
-        private DataClasses1DataContext myDbContext;
-        public DataClasses1DataContext _dbContext
+        private KVSEntities myDbContext;
+        public KVSEntities _dbContext
         {
             get { return myDbContext; }
             set {  myDbContext = value; }
@@ -42,7 +42,7 @@ namespace KVSCommon.Database
         /// <param name="typeId">Id des Verteilertyps.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Verteilereintrag.</returns>
-        public Mailinglist AddNewMailinglistItem(string email, int typeId, DataClasses1DataContext dbContext)
+        public Mailinglist AddNewMailinglistItem(string email, int typeId, KVSEntities dbContext)
         {
             MailinglistType type = dbContext.MailinglistType.Single(q => q.Id == typeId);
             if (this.Mailinglist.Any(q => q.Email == email && q.MailinglistTypeId == typeId))
@@ -60,7 +60,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="mailinglistId">Id des Eintrags.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void RemoveMailinglistItem(int mailinglistId, DataClasses1DataContext dbContext)
+        public void RemoveMailinglistItem(int mailinglistId, KVSEntities dbContext)
         {
             Mailinglist ml = this.Mailinglist.SingleOrDefault(q => q.Id == mailinglistId);
             if (ml == null)
@@ -76,7 +76,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="adressId">Id des Standorts.</param>
         /// <param name="dbContext">Datenbankkontext</param>
-        public static void RemoveLocation(int locationId, DataClasses1DataContext dbContext)
+        public static void RemoveLocation(int locationId, KVSEntities dbContext)
         {
             Location lc = dbContext.Location.SingleOrDefault(q => q.Id ==locationId);
             if (lc != null)
@@ -113,7 +113,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="dbContext">DB Kontext</param>
         /// <param name="lc">Standtort Objekt</param>
-        public static void ChangeLocations(DataClasses1DataContext dbContext, Location lc)
+        public static void ChangeLocations(KVSEntities dbContext, Location lc)
         {
 
             var changeAddress = dbContext.Adress.FirstOrDefault(q => q.Id != lc.AdressId);
@@ -180,7 +180,7 @@ namespace KVSCommon.Database
             {
                 if (this.myDbContext == null)
                 {
-                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+                    using (KVSEntities dbContext = new KVSEntities())
                     {
                         if (dbContext.Location.Any(q => q.CustomerId == this.CustomerId && q.Name == this.Name))
                         {
@@ -238,7 +238,7 @@ namespace KVSCommon.Database
                 }
                 else
                 {
-                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+                    using (KVSEntities dbContext = new KVSEntities())
                     {
                         var superLocation = dbContext.Location.SingleOrDefault(q => q.Id == value.Value);
                         this.LogDBContext.WriteLogItem("Standort " + this.Name + " wurde dem Standort " + superLocation.Name + " untergeordnet.", LogTypes.UPDATE, superLocation.Id, "Location", this.Id);

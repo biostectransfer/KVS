@@ -28,7 +28,7 @@ namespace KVSWebApplication.Customer
         {
             if (!Page.IsPostBack)
             {
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+                using (KVSEntities dbContext = new KVSEntities())
                 {
                     txbLargeCustomerNumber.Text = EmptyStringIfNull.generateIndividualNumber(dbContext.Customer.Max(q => q.CustomerNumber));
                     txbLargeCustomerCostCenterNumber.Text = EmptyStringIfNull.generateIndividualNumber(dbContext.CostCenter.Max(q => q.CostcenterNumber));
@@ -39,7 +39,7 @@ namespace KVSWebApplication.Customer
         }
         protected void ZipCodes_ItemsRequested(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             RadComboBox cmbZipCode = ((RadComboBox)sender);
             cmbZipCode.Items.Clear();
             var myzipCodes = from zipCodes in dbContext.Adress
@@ -52,7 +52,7 @@ namespace KVSWebApplication.Customer
         }
         protected void Countrys_ItemsRequested(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             RadComboBox cmbCountry = ((RadComboBox)sender);
             cmbCountry.Items.Clear();
             var myCountrys = from countrys in dbContext.Adress
@@ -65,7 +65,7 @@ namespace KVSWebApplication.Customer
         }
         protected void Citys_ItemsRequested(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             RadComboBox cmbCity = ((RadComboBox)sender);
             cmbCity.Items.Clear();
             var myCitys = from citys in dbContext.Adress
@@ -78,7 +78,7 @@ namespace KVSWebApplication.Customer
         }
         protected void rcbInvoiceType_ItemsRequested(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             RadComboBox rcbInvoiceType = ((RadComboBox)sender);
             rcbInvoiceType.Items.Clear();
             var types = from tp in dbContext.InvoiceTypes
@@ -382,7 +382,7 @@ namespace KVSWebApplication.Customer
         {
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                 try
                 {
                     BankAccount bankAccount = null;
@@ -623,7 +623,7 @@ namespace KVSWebApplication.Customer
                 txbSmallCustomerIBANinfo.Text += long.Parse(txbSmallCustomerAccountNumber.Text).ToString("0000000000").Substring(0, 4);
                 txbSmallCustomerIBANinfo.Text += long.Parse(txbSmallCustomerAccountNumber.Text).ToString("0000000000").Substring(4, 4);
                 txbSmallCustomerIBANinfo.Text += long.Parse(txbSmallCustomerAccountNumber.Text).ToString("0000000000").Substring(8, 2);
-                using (DataClasses1DataContext dataContext = new DataClasses1DataContext())
+                using (KVSEntities dataContext = new KVSEntities())
                 {
                     var bicNr = dataContext.BIC_DE.FirstOrDefault(q => q.Bankleitzahl.Contains(txbSmallCustomerBankCode.Text) && (q.Bezeichnung.Contains(txbSmallCustomerKreditinstitut.Text) || q.Kurzbezeichnung.Contains(txbSmallCustomerKreditinstitut.Text)));
                     if (bicNr != null)
@@ -646,7 +646,7 @@ namespace KVSWebApplication.Customer
                 txbLargeCustomerIBAN.Text += long.Parse(txbAccount.Text).ToString("0000000000").Substring(0, 4);
                 txbLargeCustomerIBAN.Text += long.Parse(txbAccount.Text).ToString("0000000000").Substring(4, 4);
                 txbLargeCustomerIBAN.Text += long.Parse(txbAccount.Text).ToString("0000000000").Substring(8, 2);
-                using (DataClasses1DataContext dataContext = new DataClasses1DataContext())
+                using (KVSEntities dataContext = new KVSEntities())
                 {
                     var bicNr = dataContext.BIC_DE.FirstOrDefault(q => q.Bankleitzahl.Contains(txbBankCode.Text) && (q.Bezeichnung.Contains(txbBankName.Text) || q.Kurzbezeichnung.Contains(txbBankName.Text)));
                     if (bicNr != null)

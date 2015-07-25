@@ -33,7 +33,7 @@ namespace KVSWebApplication.RequiredField
         }
         protected void getAllCustomerRequiredDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from cust in dbContext.Customer
                         join cost in dbContext.LargeCustomer on cust.Id equals cost.CustomerId
                         orderby cust.Name
@@ -56,7 +56,7 @@ namespace KVSWebApplication.RequiredField
         }
         protected void RequiredListBox_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from reqField in dbContext.RequiredField
                         join orType in dbContext.OrderType on reqField.OrderTypeId equals orType.Id
                         where !(from l in dbContext.LargeCustomerRequiredField where
@@ -74,7 +74,7 @@ namespace KVSWebApplication.RequiredField
         }
         protected void CustomerRequiredListbox_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from reqField in dbContext.RequiredField
                         join orType in dbContext.OrderType on reqField.OrderTypeId equals orType.Id
                         where (from l in dbContext.LargeCustomerRequiredField
@@ -93,7 +93,7 @@ namespace KVSWebApplication.RequiredField
         }
         protected void btnSaveRequired_Click(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
             try
             {
                 RadListBoxItemCollection AddedRequired = ((RadListBox)((RadButton)sender).Parent.FindControl("CustomerRequired")).Items;

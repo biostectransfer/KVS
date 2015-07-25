@@ -7,7 +7,7 @@ namespace KVSCommon.Database
 {
     public partial class Product : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -26,8 +26,8 @@ namespace KVSCommon.Database
             get;
             set;
         }
-        private DataClasses1DataContext myDbContext;
-        public DataClasses1DataContext _dbContext
+        private KVSEntities myDbContext;
+        public KVSEntities _dbContext
         {
             get { return myDbContext; }
             set { myDbContext = value; }
@@ -46,7 +46,7 @@ namespace KVSCommon.Database
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Das neue Produkt.</returns>
         public static Product CreateProduct(string name, int? productCategoryId, decimal priceAmount, decimal? authorativeCharge, string itemNumber, 
-            int orderTypeId, int? registrationOrderTypeId, bool needsVAT, DataClasses1DataContext dbContext)
+            int orderTypeId, int? registrationOrderTypeId, bool needsVAT, KVSEntities dbContext)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -99,7 +99,7 @@ namespace KVSCommon.Database
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Preis.</returns>
         public static Price CreateProduct(string name, int? productCategoryId, decimal priceAmount, decimal? authorativeCharge, string itemNumber,
-            int orderTypeId, int? registrationOrderTypeId, bool needsVAT, bool accountId,  DataClasses1DataContext dbContext)
+            int orderTypeId, int? registrationOrderTypeId, bool needsVAT, bool accountId,  KVSEntities dbContext)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -141,7 +141,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="productId">Id des Products.</param>
         /// <param name="dbContext"></param>
-        public static void RemoveProduct(int productId, DataClasses1DataContext dbContext)
+        public static void RemoveProduct(int productId, KVSEntities dbContext)
         {
             Price[] pr = dbContext.Price.Where(q => q.ProductId == productId).ToArray();
             Product prod = dbContext.Product.SingleOrDefault(q => q.Id == productId);
@@ -173,14 +173,14 @@ namespace KVSCommon.Database
         {
             if (action == System.Data.Linq.ChangeAction.Insert)
             {
-                DataClasses1DataContext dbContext;
+                KVSEntities dbContext;
                 if (_dbContext != null)
                 {
                     dbContext = _dbContext;
                 }
                 else
                 {
-                    dbContext = new DataClasses1DataContext();
+                    dbContext = new KVSEntities();
                 }
              
                     if (dbContext.Product.Any(q => q.Name == this.Name && q.ItemNumber == this.ItemNumber))

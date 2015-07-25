@@ -37,7 +37,6 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract Label CustomerHistoryLabel { get; }
         protected abstract RadComboBox CustomerDropDown { get; }
 
-        [DependencyAttribute]
         public IBicManager BicManager { get; set; }
 
         #endregion
@@ -69,15 +68,10 @@ namespace KVSWebApplication.Auftragseingang
 
                 if (BICTextBox != null)
                 {
-                    using (DataClasses1DataContext dataContext = new DataClasses1DataContext())
+                    var bicNr = BicManager.GetBicByCodeAndName(BankCodeTextBox.Text, BankNameTextBox.Text);
+                    if (bicNr != null && !String.IsNullOrEmpty(bicNr.BIC))
                     {
-                        var bicNr = dataContext.BIC_DE.FirstOrDefault(q =>
-                            q.Bankleitzahl.Contains(BankCodeTextBox.Text) &&
-                            (q.Bezeichnung.Contains(BankNameTextBox.Text) || q.Kurzbezeichnung.Contains(BankNameTextBox.Text)));
-                        if (bicNr != null && !String.IsNullOrEmpty(bicNr.BIC))
-                        {
-                            BICTextBox.Text = bicNr.BIC.ToString();
-                        }
+                        BICTextBox.Text = bicNr.BIC.ToString();
                     }
                 }
             }
@@ -86,7 +80,7 @@ namespace KVSWebApplication.Auftragseingang
         protected void CheckUmsatzForSmallCustomer()
         {
             CustomerHistoryLabel.Visible = true;
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var newQuery = from ord in con.Order
                            let registration = ord.DeregistrationOrder != null ? ord.DeregistrationOrder.Registration : ord.DeregistrationOrder.Registration
                            where ord.Status == (int)OrderStatusTypes.Payed

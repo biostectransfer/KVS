@@ -101,7 +101,7 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             if (RadComboBoxCustomer.SelectedValue == "1") //Small Customers
             {
                 var customerQuery = from cust in con.Customer
@@ -135,7 +135,7 @@ namespace KVSWebApplication.Abrechnung
                 StandortDropDown.DataBind();
             }
 
-            var con = new DataClasses1DataContext();
+            var con = new KVSEntities();
 
             //select all values for small customers
             if (CustomerDropDownList.SelectedValue != null && RadComboBoxCustomer.SelectedValue == "1" && CustomerDropDownList.SelectedValue != "")
@@ -383,7 +383,7 @@ namespace KVSWebApplication.Abrechnung
         #region Button Clicked
         protected bool SetValuesForAdressWindow()
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             Adress newAdress = null;
             AbrechnungSaveErrorLabel.Visible = false;
             if (String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
@@ -488,13 +488,13 @@ namespace KVSWebApplication.Abrechnung
         // Create new Adress in der DatenBank
         protected void OnAddAdressButton_Clicked(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
             GenerateInvoice(dbContext, false);
 
         }
         protected void btnPreviewInvoice_Clicked(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
             GenerateInvoice(dbContext, true);
 
         }
@@ -513,7 +513,7 @@ namespace KVSWebApplication.Abrechnung
                 }
             }
         }
-        private void GenerateInvoice(DataClasses1DataContext dbContext, bool preview)
+        private void GenerateInvoice(KVSEntities dbContext, bool preview)
         {
             //Adress Eigenschaften
             string street = string.Empty,
@@ -681,7 +681,7 @@ namespace KVSWebApplication.Abrechnung
         /// </summary>
         /// <param name="con"></param>
         /// <param name="OrderNumber"></param>
-        protected void UpdateOrderStatus(DataClasses1DataContext con, int orderNumber)
+        protected void UpdateOrderStatus(KVSEntities con, int orderNumber)
         {
             bool shouldBeUpdated = false;
             bool hasAbgerechnetItem = false;
@@ -716,7 +716,7 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void StandortLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var myId = 0;
             if (CustomerDropDownList.SelectedValue == "")
             {

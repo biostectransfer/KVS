@@ -47,7 +47,7 @@ namespace KVSWebApplication
         }
         protected void ProductLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var productQuery = from prod in con.Product
                                select new
                                {
@@ -60,7 +60,7 @@ namespace KVSWebApplication
         }
         protected void CostCenterDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var costCenterQuery = from cost in con.CostCenter
                                   orderby cost.Name
                                   select new
@@ -72,7 +72,7 @@ namespace KVSWebApplication
         }
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             if (RadComboBoxCustomerOffenNeuzulassung.SelectedValue == "1") //Small Customers
             {
                 var customerQuery = from cust in con.Customer
@@ -96,7 +96,7 @@ namespace KVSWebApplication
         }
         protected void RadGridAllOrders_DetailTableDataBind(object source, GridDetailTableDataBindEventArgs e)
         {
-            var dbContext = new DataClasses1DataContext();
+            var dbContext = new KVSEntities();
             var item = (GridDataItem)e.DetailTableView.ParentItem;
             var orderNumber = Int32.Parse(item["OrderNumber"].Text);
             var positionQuery = from ord in dbContext.Order
@@ -119,7 +119,7 @@ namespace KVSWebApplication
             //select all values for small customers
             if (RadComboBoxCustomerOffenNeuzulassung.SelectedValue == "1")
             {
-                DataClasses1DataContext con = new DataClasses1DataContext();
+                KVSEntities con = new KVSEntities();
                 var smallCustomerQuery = from ord in con.Order
                                          join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                          join cust in con.Customer on ord.CustomerId equals cust.Id
@@ -158,7 +158,7 @@ namespace KVSWebApplication
             //select all values for large customers
             else if (RadComboBoxCustomerOffenNeuzulassung.SelectedValue == "2")
             {
-                DataClasses1DataContext con = new DataClasses1DataContext();
+                KVSEntities con = new KVSEntities();
                 var zulassungQuery = from ord in con.Order
                                      join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                      join cust in con.Customer on ord.CustomerId equals cust.Id

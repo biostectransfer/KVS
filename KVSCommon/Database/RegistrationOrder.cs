@@ -11,7 +11,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class RegistrationOrder : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -47,7 +47,7 @@ namespace KVSCommon.Database
         /// <returns>Den neuen Zulassungsauftrag.</returns>
         /// <remarks>Erstellt auch gleichzeitig den Order-Datensatz.</remarks>
         public static RegistrationOrder CreateRegistrationOrder(int userId, int customerId, string licencenumber, string previousLicencenumber, string evbNumber, 
-            Vehicle vehicle, Registration registration, RegistrationOrderTypes registrationOrderType, int? locationId, int zulassungsstelleId, DataClasses1DataContext dbContext)
+            Vehicle vehicle, Registration registration, RegistrationOrderTypes registrationOrderType, int? locationId, int zulassungsstelleId, KVSEntities dbContext)
         {
             var orderTypeId = dbContext.OrderType.Single(q => q.Id == (int)OrderTypes.Admission).Id;
             Order order = Order.CreateOrder(userId, customerId, orderTypeId, zulassungsstelleId, dbContext);

@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class Make : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -37,7 +37,7 @@ namespace KVSCommon.Database
         /// <param name="hsn">HSN des Herstellers.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Hersteller.</returns>
-        public static Make CreateMake(string name, string hsn, DataClasses1DataContext dbContext)
+        public static Make CreateMake(string name, string hsn, KVSEntities dbContext)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -67,7 +67,7 @@ namespace KVSCommon.Database
             string hsnResult = string.Empty;
             bool atLeastOneHSNFound = false;
 
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var hsnQuery = from make in dbContext.Make
                            where make.HSN == hsn
                            select make.Name;
@@ -111,7 +111,7 @@ namespace KVSCommon.Database
         {
             if (action == System.Data.Linq.ChangeAction.Insert || action == System.Data.Linq.ChangeAction.Update)
             {
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+                using (KVSEntities dbContext = new KVSEntities())
                 {
                     if (dbContext.Make.Any(q => q.HSN == this.HSN))
                     {

@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class Permission : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;

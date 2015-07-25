@@ -62,7 +62,7 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
 
             var customerQuery = from cust in con.Customer
                                 where cust.Id == cust.LargeCustomer.CustomerId
@@ -81,7 +81,7 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void InvoiceRunLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var progressQUery = from run in con.InvoiceRunReport
                                 orderby run.CreateDate descending
                                 select new
@@ -107,7 +107,7 @@ namespace KVSWebApplication.Abrechnung
             IQueryable<InvoiceTypes> tp = null;
             if (combo != null)
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext();
+                KVSEntities dbContext = new KVSEntities();
                 tp = dbContext.InvoiceTypes;
                 combo.Items.Clear();
                 combo.Items.Add(new RadComboBoxItem("Alle", ""));
@@ -135,7 +135,7 @@ namespace KVSWebApplication.Abrechnung
         protected void GenerateInvoiceRunButton_Click(object sender, EventArgs e)
         {
             InvoiceRunError.Text = "";
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+            using (KVSEntities dbContext = new KVSEntities())
             {
                 try
                 {

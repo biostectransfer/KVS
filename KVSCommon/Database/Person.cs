@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class Person : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -51,7 +51,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="adressId">Id der Person.</param>
         /// <param name="dbContext">DB Kontext</param>
-        public static void DeletePerson(int personId, DataClasses1DataContext dbContext)
+        public static void DeletePerson(int personId, KVSEntities dbContext)
         {
             Person person = dbContext.Person.SingleOrDefault(q => q.Id == personId);
             if (person != null)
@@ -69,7 +69,7 @@ namespace KVSCommon.Database
         /// <param name="title">Titel</param>
         /// <param name="extension">Zusatz</param>
         /// <returns>Person</returns>
-       public static Person CreatePerson(DataClasses1DataContext dbContext, string firstname, string name, string title, string extension)
+       public static Person CreatePerson(KVSEntities dbContext, string firstname, string name, string title, string extension)
         {
             var person = new Person()
             {

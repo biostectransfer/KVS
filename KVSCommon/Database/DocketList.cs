@@ -15,7 +15,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class DocketList : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -42,7 +42,7 @@ namespace KVSCommon.Database
         /// <param name="recipientAdressId">Id der Adresse für den Laufzettel.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Lieferscheindatensatz.</returns>
-        public static DocketList CreateDocketList(string recipient, Adress recipientAdress, DataClasses1DataContext dbContext)
+        public static DocketList CreateDocketList(string recipient, Adress recipientAdress, KVSEntities dbContext)
         {
             if (recipient == null)
             {
@@ -66,7 +66,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="OrderNumber">Id des Auftrags.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void AddOrderById(int orderNumber, DataClasses1DataContext dbContext)
+        public void AddOrderById(int orderNumber, KVSEntities dbContext)
         {
             if (this.IsPrinted.GetValueOrDefault(false))
             {
@@ -110,7 +110,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="OrderNumber">Id des Auftrags, der entfernt werden soll.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void RemoveOrderById(int orderNumber, DataClasses1DataContext dbContext)
+        public void RemoveOrderById(int orderNumber, KVSEntities dbContext)
         {
             if (this.IsPrinted.GetValueOrDefault(false))
             {
@@ -130,7 +130,7 @@ namespace KVSCommon.Database
         /// <param name="headerLogoPath">Der Pfad zum Logo für den Header.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <remarks>Setzt im Erfolgsfall im Lieferscheindatensatz das Merkmal "IsPrinted" auf "true".</remarks>
-        public void Print(MemoryStream ms, string headerLogoPath, DataClasses1DataContext dbContext, string fileName, bool isZulassungsStelle)
+        public void Print(MemoryStream ms, string headerLogoPath, KVSEntities dbContext, string fileName, bool isZulassungsStelle)
         {
             if (headerLogoPath == string.Empty)
             {

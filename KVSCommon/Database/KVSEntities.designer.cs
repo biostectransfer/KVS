@@ -23,7 +23,7 @@ namespace KVSCommon.Database
 	
 	
 	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="test_fullservice")]
-	public partial class DataClasses1DataContext : KVSCommon.Entities.move_to_DataAccess.EntitiesBase
+	public partial class KVSEntities : KVSCommon.Entities.move_to_DataAccess.EntitiesBase
 	{
 		
 		private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource();
@@ -189,6 +189,9 @@ namespace KVSCommon.Database
     partial void InsertInvoiceRunReport(InvoiceRunReport instance);
     partial void UpdateInvoiceRunReport(InvoiceRunReport instance);
     partial void DeleteInvoiceRunReport(InvoiceRunReport instance);
+    partial void InsertBIC_DE(BIC_DE instance);
+    partial void UpdateBIC_DE(BIC_DE instance);
+    partial void DeleteBIC_DE(BIC_DE instance);
     partial void InsertChangeLogColumNames(ChangeLogColumNames instance);
     partial void UpdateChangeLogColumNames(ChangeLogColumNames instance);
     partial void DeleteChangeLogColumNames(ChangeLogColumNames instance);
@@ -200,25 +203,25 @@ namespace KVSCommon.Database
     partial void DeleteDocketList(DocketList instance);
     #endregion
 		
-		public DataClasses1DataContext(string connection) : 
+		public KVSEntities(string connection) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 		
-		public DataClasses1DataContext(System.Data.IDbConnection connection) : 
+		public KVSEntities(System.Data.IDbConnection connection) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 		
-		public DataClasses1DataContext(string connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
+		public KVSEntities(string connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
 		}
 		
-		public DataClasses1DataContext(System.Data.IDbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
+		public KVSEntities(System.Data.IDbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
 				base(connection, mappingSource)
 		{
 			OnCreated();
@@ -15565,8 +15568,10 @@ namespace KVSCommon.Database
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.BIC_DE")]
-	public partial class BIC_DE
+	public partial class BIC_DE : INotifyPropertyChanging, INotifyPropertyChanged
 	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		private string _Bankleitzahl;
 		
@@ -15594,8 +15599,57 @@ namespace KVSCommon.Database
 		
 		private string _Nachfolgebankleitzahl;
 		
+		private int _Id;
+		
+		private System.DateTime _CreateDate;
+		
+		private System.DateTime _ChangeDate;
+		
+		private System.Nullable<System.DateTime> _DeleteDate;
+		
+    #region Definitionen der Erweiterungsmethoden
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnBankleitzahlChanging(string value);
+    partial void OnBankleitzahlChanged();
+    partial void OnMerkmalChanging(string value);
+    partial void OnMerkmalChanged();
+    partial void OnBezeichnungChanging(string value);
+    partial void OnBezeichnungChanged();
+    partial void OnPLZChanging(string value);
+    partial void OnPLZChanged();
+    partial void OnOrtChanging(string value);
+    partial void OnOrtChanged();
+    partial void OnKurzbezeichnungChanging(string value);
+    partial void OnKurzbezeichnungChanged();
+    partial void OnPANChanging(string value);
+    partial void OnPANChanged();
+    partial void OnBICChanging(string value);
+    partial void OnBICChanged();
+    partial void OnPruefzifferChanging(string value);
+    partial void OnPruefzifferChanged();
+    partial void OnDatensatznummerChanging(string value);
+    partial void OnDatensatznummerChanged();
+    partial void OnAenderungskennzeichenChanging(string value);
+    partial void OnAenderungskennzeichenChanged();
+    partial void OnBankleitzahlloeschungChanging(string value);
+    partial void OnBankleitzahlloeschungChanged();
+    partial void OnNachfolgebankleitzahlChanging(string value);
+    partial void OnNachfolgebankleitzahlChanged();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnChangeDateChanging(System.DateTime value);
+    partial void OnChangeDateChanged();
+    partial void OnDeleteDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnDeleteDateChanged();
+    #endregion
+		
 		public BIC_DE()
 		{
+			OnCreated();
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Bankleitzahl", DbType="NVarChar(50)")]
@@ -15609,7 +15663,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._Bankleitzahl != value))
 				{
+					this.OnBankleitzahlChanging(value);
+					this.SendPropertyChanging();
 					this._Bankleitzahl = value;
+					this.SendPropertyChanged("Bankleitzahl");
+					this.OnBankleitzahlChanged();
 				}
 			}
 		}
@@ -15625,7 +15683,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._Merkmal != value))
 				{
+					this.OnMerkmalChanging(value);
+					this.SendPropertyChanging();
 					this._Merkmal = value;
+					this.SendPropertyChanged("Merkmal");
+					this.OnMerkmalChanged();
 				}
 			}
 		}
@@ -15641,7 +15703,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._Bezeichnung != value))
 				{
+					this.OnBezeichnungChanging(value);
+					this.SendPropertyChanging();
 					this._Bezeichnung = value;
+					this.SendPropertyChanged("Bezeichnung");
+					this.OnBezeichnungChanged();
 				}
 			}
 		}
@@ -15657,7 +15723,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._PLZ != value))
 				{
+					this.OnPLZChanging(value);
+					this.SendPropertyChanging();
 					this._PLZ = value;
+					this.SendPropertyChanged("PLZ");
+					this.OnPLZChanged();
 				}
 			}
 		}
@@ -15673,7 +15743,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._Ort != value))
 				{
+					this.OnOrtChanging(value);
+					this.SendPropertyChanging();
 					this._Ort = value;
+					this.SendPropertyChanged("Ort");
+					this.OnOrtChanged();
 				}
 			}
 		}
@@ -15689,7 +15763,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._Kurzbezeichnung != value))
 				{
+					this.OnKurzbezeichnungChanging(value);
+					this.SendPropertyChanging();
 					this._Kurzbezeichnung = value;
+					this.SendPropertyChanged("Kurzbezeichnung");
+					this.OnKurzbezeichnungChanged();
 				}
 			}
 		}
@@ -15705,7 +15783,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._PAN != value))
 				{
+					this.OnPANChanging(value);
+					this.SendPropertyChanging();
 					this._PAN = value;
+					this.SendPropertyChanged("PAN");
+					this.OnPANChanged();
 				}
 			}
 		}
@@ -15721,7 +15803,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._BIC != value))
 				{
+					this.OnBICChanging(value);
+					this.SendPropertyChanging();
 					this._BIC = value;
+					this.SendPropertyChanged("BIC");
+					this.OnBICChanged();
 				}
 			}
 		}
@@ -15737,7 +15823,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._Pruefziffer != value))
 				{
+					this.OnPruefzifferChanging(value);
+					this.SendPropertyChanging();
 					this._Pruefziffer = value;
+					this.SendPropertyChanged("Pruefziffer");
+					this.OnPruefzifferChanged();
 				}
 			}
 		}
@@ -15753,7 +15843,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._Datensatznummer != value))
 				{
+					this.OnDatensatznummerChanging(value);
+					this.SendPropertyChanging();
 					this._Datensatznummer = value;
+					this.SendPropertyChanged("Datensatznummer");
+					this.OnDatensatznummerChanged();
 				}
 			}
 		}
@@ -15769,7 +15863,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._Aenderungskennzeichen != value))
 				{
+					this.OnAenderungskennzeichenChanging(value);
+					this.SendPropertyChanging();
 					this._Aenderungskennzeichen = value;
+					this.SendPropertyChanged("Aenderungskennzeichen");
+					this.OnAenderungskennzeichenChanged();
 				}
 			}
 		}
@@ -15785,7 +15883,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._Bankleitzahlloeschung != value))
 				{
+					this.OnBankleitzahlloeschungChanging(value);
+					this.SendPropertyChanging();
 					this._Bankleitzahlloeschung = value;
+					this.SendPropertyChanged("Bankleitzahlloeschung");
+					this.OnBankleitzahlloeschungChanged();
 				}
 			}
 		}
@@ -15801,8 +15903,112 @@ namespace KVSCommon.Database
 			{
 				if ((this._Nachfolgebankleitzahl != value))
 				{
+					this.OnNachfolgebankleitzahlChanging(value);
+					this.SendPropertyChanging();
 					this._Nachfolgebankleitzahl = value;
+					this.SendPropertyChanged("Nachfolgebankleitzahl");
+					this.OnNachfolgebankleitzahlChanged();
 				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="int", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="datetime2(2)")]
+		public System.DateTime CreateDate
+		{
+			get
+			{
+				return this._CreateDate;
+			}
+			set
+			{
+				if ((this._CreateDate != value))
+				{
+					this.OnCreateDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ChangeDate", DbType="datetime2(2)")]
+		public System.DateTime ChangeDate
+		{
+			get
+			{
+				return this._ChangeDate;
+			}
+			set
+			{
+				if ((this._ChangeDate != value))
+				{
+					this.OnChangeDateChanging(value);
+					this.SendPropertyChanging();
+					this._ChangeDate = value;
+					this.SendPropertyChanged("ChangeDate");
+					this.OnChangeDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeleteDate", DbType="datetime2(2)")]
+		public System.Nullable<System.DateTime> DeleteDate
+		{
+			get
+			{
+				return this._DeleteDate;
+			}
+			set
+			{
+				if ((this._DeleteDate != value))
+				{
+					this.OnDeleteDateChanging(value);
+					this.SendPropertyChanging();
+					this._DeleteDate = value;
+					this.SendPropertyChanged("DeleteDate");
+					this.OnDeleteDateChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
 	}

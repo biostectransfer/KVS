@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class OrderInvoice : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -37,7 +37,7 @@ namespace KVSCommon.Database
         /// <param name="invoiceId">Id der Rechnung.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Die neue Verknüpfung.</returns>
-        public static OrderInvoice CreateOrderInvoice(Order order, Invoice invoice, DataClasses1DataContext dbContext)
+        public static OrderInvoice CreateOrderInvoice(Order order, Invoice invoice, KVSEntities dbContext)
         {
             OrderInvoice item = new OrderInvoice()
             {
@@ -57,7 +57,7 @@ namespace KVSCommon.Database
         /// <param name="OrderNumber">AuftragsID</param>
         /// <param name="invoiceId">RechnungsID</param>
         /// <param name="dbContext">DB Kontext</param>
-        public static void DeleteOrderInvoice(int orderNumber, int invoiceId, DataClasses1DataContext dbContext)
+        public static void DeleteOrderInvoice(int orderNumber, int invoiceId, KVSEntities dbContext)
         {
             var item = dbContext.OrderInvoice.SingleOrDefault(q => q.OrderNumber == orderNumber && q.InvoiceId == invoiceId);
             if (item == null)

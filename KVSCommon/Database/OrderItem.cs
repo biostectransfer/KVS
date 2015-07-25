@@ -11,7 +11,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class OrderItem : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -155,7 +155,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="dbContext">DB Kontext</param>
         /// <param name="orderItemId">AuftragspositionID</param>
-        public static void RemoveOrderItem(DataClasses1DataContext dbContext, int orderItemId)
+        public static void RemoveOrderItem(KVSEntities dbContext, int orderItemId)
         {
             var orderItemToDelete = dbContext.OrderItem.FirstOrDefault(q => q.Id == orderItemId);
             if (orderItemToDelete != null)

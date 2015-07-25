@@ -12,7 +12,7 @@ namespace KVSWebApplication.Product
    /// </summary>
    public class PriceAccountHelper
     {
-        public static void CreateAccount(int? AccountNumber, Price _object, DataClasses1DataContext dbContext, bool withLocation = false)
+        public static void CreateAccount(int? AccountNumber, Price _object, KVSEntities dbContext, bool withLocation = false)
        {
            if (AccountNumber != null)
            {

@@ -20,7 +20,7 @@ namespace KVSCommon.Database
                 SendOrderStatusPerEmail(false); // falls keine - stundlich
         }
 
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -45,7 +45,7 @@ namespace KVSCommon.Database
         /// </summary>
         public static void SendOrderStatusPerEmail(bool daily)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var userId = Int32.Parse(ConfigurationManager.AppSettings["UserIdForEmailJob"]);
             string fromEmail = ConfigurationManager.AppSettings["FromEmail"];
 
@@ -76,7 +76,7 @@ namespace KVSCommon.Database
         /// <param name="orderTypeId">Id der Auftragsart.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Auftrag.</returns>
-        public static Order CreateOrder(int userId, int customerId, int orderTypeId, int zulassungsstelleId, DataClasses1DataContext dbContext)
+        public static Order CreateOrder(int userId, int customerId, int orderTypeId, int zulassungsstelleId, KVSEntities dbContext)
         {
             if (userId == 0)
             {
@@ -104,7 +104,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="orderNumbers">List mit OrderIds</param>
         /// <param name="dbContext">DB Kontext</param>
-        public static void UpdateOrderStates(List<int> orderNumbers, DataClasses1DataContext dbContext)
+        public static void UpdateOrderStates(List<int> orderNumbers, KVSEntities dbContext)
         {
             IQueryable<Order> orders = dbContext.Order.Where(q => orderNumbers.Contains(q.OrderNumber));
             foreach (var order in orders.Where(q => q.OrderItem.Any(p => p.Status == (int)OrderItemStatusTypes.Payed) &&
@@ -130,7 +130,7 @@ namespace KVSCommon.Database
         /// <param name="smtpServer">SMTP-Server für den Emailversand.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <remarks>Die Methode ruft dbContext.SubmitChanges() auf, um den Status der Versendung zu speichern.</remarks>
-        public static void SendOrderFinishedNote(Order order, string fromEmailAddress, string smtpServer, DataClasses1DataContext dbContext)
+        public static void SendOrderFinishedNote(Order order, string fromEmailAddress, string smtpServer, KVSEntities dbContext)
         {
             List<string> emails = new List<string>();
             var customer = order.Customer.LargeCustomer;
@@ -217,7 +217,7 @@ namespace KVSCommon.Database
         /// <param name="smtpServer">SMTP-Server für den Emailversand.</param>
         public static void SendOrderFinishedNotes(bool sendDailyMails, int userId, string fromEmailAddress, string smtpServer)
         {
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(userId))
+            using (KVSEntities dbContext = new KVSEntities(userId))
             {
                 var customers = dbContext.LargeCustomer.Select(q => q);
                 // Definition OrderFinishedNoteSendType: 0=nicht senden, 1=sofort senden, 2=stündlich senden, 3=täglich senden
@@ -284,7 +284,7 @@ namespace KVSCommon.Database
         /// <param name="dbContext"></param>
         /// <param name="OrdertypeName">z. B Zulassung</param>
         /// <returns>Int</returns>
-        public static int getUnfineshedOrdersCount(DataClasses1DataContext dbContext, OrderTypes orderType, OrderStatusTypes orderStatus)
+        public static int getUnfineshedOrdersCount(KVSEntities dbContext, OrderTypes orderType, OrderStatusTypes orderStatus)
         {
             return dbContext.Order.Count(q => q.Status == (int)orderStatus && 
                 q.OrderType.Id == (int)orderType && q.HasError.GetValueOrDefault(false) != true);
@@ -300,7 +300,7 @@ namespace KVSCommon.Database
         /// <param name="isAuthorativeCharge">Gibt an, ob es sich um eine behoerdliche Gebühr handelt oder nicht.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Die neue Auftragsposition.</returns>
-        public OrderItem AddOrderItem(int productId, decimal priceAmount, int count, CostCenter costCenter, int? superOrderItemId, bool isAuthorativeCharge, DataClasses1DataContext dbContext)
+        public OrderItem AddOrderItem(int productId, decimal priceAmount, int count, CostCenter costCenter, int? superOrderItemId, bool isAuthorativeCharge, KVSEntities dbContext)
         {
             var product = dbContext.Product.Where(q => q.Id == productId).Single();
             OrderItem item = new OrderItem()
@@ -329,7 +329,7 @@ namespace KVSCommon.Database
         /// <param name="itemId">Auftragspositionen Id</param>
         /// <param name="amount">Betrag</param>
         /// <returns>bool</returns>
-        public static bool GenerateAuthCharge(DataClasses1DataContext dbContext, int? authId, string itemId, string amount)
+        public static bool GenerateAuthCharge(KVSEntities dbContext, int? authId, string itemId, string amount)
         {
             if (amount == string.Empty)
                 amount = "0";
@@ -383,7 +383,7 @@ namespace KVSCommon.Database
         ///</summary>
         ///<param name="dbContext">DB Kontext</param>
         ///<param name="packingListNumber">Lieferschein ID</param>
-        public static void TryToRemovePackingListIdAndSetStateToRegistration(DataClasses1DataContext dbContext, int packingListNumber)
+        public static void TryToRemovePackingListIdAndSetStateToRegistration(KVSEntities dbContext, int packingListNumber)
         {
             var orders = dbContext.Order.Where(q => q.PackingListNumber == packingListNumber);
             foreach(var order in orders)

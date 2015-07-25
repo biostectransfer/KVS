@@ -61,14 +61,15 @@
     <Compile Include="Database\Accounts.cs" />
     <Compile Include="Database\Adress.cs" />
     <Compile Include="Database\BankAccount.cs" />
+    <Compile Include="Database\BIC_DE.cs" />
     <Compile Include="Database\CarOwner.cs" />
     <Compile Include="Database\Contact.cs" />
     <Compile Include="Database\CostCenter.cs" />
     <Compile Include="Database\Customer.cs" />
-    <Compile Include="Database\DataClasses11.designer.cs">
+    <Compile Include="Database\KVSEntities.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>DataClasses1.dbml</DependentUpon>
+      <DependentUpon>KVSEntities.dbml</DependentUpon>
     </Compile>
     <Compile Include="Database\DocketList.cs" />
     <Compile Include="Database\EmptyStringIfNull.cs" />
@@ -77,8 +78,8 @@
     <Compile Include="Database\InvoiceRunReport.cs" />
     <Compile Include="Database\LocationOrderJoins.cs" />
     <Compile Include="Database\Mailinglist.cs" />
-    <Compile Include="Database\DataClasses1.cs">
-      <DependentUpon>DataClasses1.dbml</DependentUpon>
+    <Compile Include="Database\KVSEntities.cs">
+      <DependentUpon>KVSEntities.dbml</DependentUpon>
     </Compile>
     <Compile Include="Database\DeregistrationOrder.cs" />
     <Compile Include="Database\ILogging.cs" />
@@ -149,10 +150,10 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Database\DataClasses1.dbml">
+    <None Include="Database\KVSEntities.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <SubType>Designer</SubType>
-      <LastGenOutput>DataClasses11.designer.cs</LastGenOutput>
+      <LastGenOutput>KVSEntities.designer.cs</LastGenOutput>
     </None>
     <None Include="KlassenDiagrammCommon_Utility.cd" />
     <None Include="KlassenDiagrammDatabase.cd" />
@@ -163,8 +164,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Database\DataClasses1.dbml.layout">
-      <DependentUpon>DataClasses1.dbml</DependentUpon>
+    <None Include="Database\KVSEntities.dbml.layout">
+      <DependentUpon>KVSEntities.dbml</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup />

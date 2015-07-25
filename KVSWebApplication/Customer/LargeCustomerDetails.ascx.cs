@@ -32,7 +32,7 @@ namespace KVSWebApplication.Customer
         }
         protected void ZipCodes_ItemsRequested(object sender, RadComboBoxItemsRequestedEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             RadComboBox cmbZipCode = ((RadComboBox)sender);
             cmbZipCode.Items.Clear();
             var myzipCodes = from zipCodes in dbContext.Adress
@@ -45,7 +45,7 @@ namespace KVSWebApplication.Customer
         }
         protected void City_ItemsRequested(object sender, RadComboBoxItemsRequestedEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             RadComboBox cmbCity = ((RadComboBox)sender);
             cmbCity.Items.Clear();
             var myCitys = from citys in dbContext.Adress
@@ -58,7 +58,7 @@ namespace KVSWebApplication.Customer
         }
         protected void Country_ItemsRequested(object sender, RadComboBoxItemsRequestedEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             RadComboBox cmbCountry = ((RadComboBox)sender);
             cmbCountry.Items.Clear();
             var myCountrys = from countrys in dbContext.Adress
@@ -72,7 +72,7 @@ namespace KVSWebApplication.Customer
         }
         protected void GetAllInvoiceTypes_Selecting(object sender, RadComboBoxItemsRequestedEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             RadComboBox rcbInvoiceType = ((RadComboBox)sender);
             rcbInvoiceType.Items.Clear();
             var types = from tp in dbContext.InvoiceTypes
@@ -87,7 +87,7 @@ namespace KVSWebApplication.Customer
         /// <param name="e"></param>
         protected void GetAllCustomerDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from cust in dbContext.Customer
                         join cost in dbContext.LargeCustomer on cust.Id equals cost.CustomerId
                         orderby cust.Name
@@ -140,7 +140,7 @@ namespace KVSWebApplication.Customer
         }
         protected void cmbErloeskonten_ItemsRequested(object sender, RadComboBoxItemsRequestedEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             RadComboBox cmbErloeskonten = ((RadComboBox)sender);
             Label lbl = cmbErloeskonten.Parent.FindControl("lblId") as Label;
             cmbErloeskonten.Items.Clear();
@@ -161,7 +161,7 @@ namespace KVSWebApplication.Customer
             RadComboBox rbt = rbtSender.Parent.FindControl("cmbErloeskonten") as RadComboBox;
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
 
                 try
                 {
@@ -177,7 +177,7 @@ namespace KVSWebApplication.Customer
                     RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("RemoveKonto_Click Error " + ex.Message, LogTypes.ERROR, "Customer");
                         dbContext.SubmitChanges();
                     }
@@ -193,7 +193,7 @@ namespace KVSWebApplication.Customer
             bool insertUpdateOk = true;
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext();
+                KVSEntities dbContext = new KVSEntities();
 
                 try
                 {
@@ -222,7 +222,7 @@ namespace KVSWebApplication.Customer
                     RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("AddInvoiceType_Click Error " + ex.Message, LogTypes.ERROR, "Customer");
                         dbContext.SubmitChanges();
                     }
@@ -244,7 +244,7 @@ namespace KVSWebApplication.Customer
             RadComboBox rbt = rbtSender.Parent.FindControl("cmbErloeskonten") as RadComboBox;
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
 
                 try
                 {
@@ -264,7 +264,7 @@ namespace KVSWebApplication.Customer
                     RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("LargeCustomerDetails Error " + ex.Message, LogTypes.ERROR, "Customer");
                         dbContext.SubmitChanges();
                     }
@@ -283,7 +283,7 @@ namespace KVSWebApplication.Customer
         /// <param name="e"></param>
         protected void GetAllCustomerContactData_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             int? myPersonId = null;
             if (e.WhereParameters["PersonId"] != null)
             {
@@ -319,7 +319,7 @@ namespace KVSWebApplication.Customer
             bool insertUpdateOk = true;
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
                 try
                 {
                     RadButton myButton = ((RadButton)sender);
@@ -395,7 +395,7 @@ namespace KVSWebApplication.Customer
                     RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("Add/Edit LargeCustomer InvoiceAdress Error:  " + ex.Message, LogTypes.ERROR, "Customer");
                         dbContext.SubmitChanges();
                     }
@@ -477,7 +477,7 @@ namespace KVSWebApplication.Customer
             bool insertUpdateOk = true;
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                 Hashtable newValues = new Hashtable();
                 ((GridEditableItem)e.Item).ExtractValues(newValues);
 
@@ -554,7 +554,7 @@ namespace KVSWebApplication.Customer
                         ts.Dispose();
                     try
                     {
-                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("LargeCustomerDetails Error " + ex.Message, LogTypes.ERROR, "Customer");
                         dbContext.SubmitChanges();
                     }
@@ -584,7 +584,7 @@ namespace KVSWebApplication.Customer
                 RadioButton LCustomerAuftragNoInfo = saveButton.Parent.FindControl("LCustomerAuftragNoInfo") as RadioButton;
                 CheckBox chbLieferscheinKunde = saveButton.Parent.FindControl("chbLieferscheinKunde") as CheckBox;
                 CheckBox chbLieferscheinStandort = saveButton.Parent.FindControl("chbLieferscheinStandort") as CheckBox;
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
                 {
                     var customer = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == Int32.Parse(lblIdkonfig.Text));
                     if (customer != null)
@@ -618,7 +618,7 @@ namespace KVSWebApplication.Customer
             catch (Exception ex)
             {
                 RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
                 {
 
                     dbContext.WriteLogItem("LargeCustomerDetails Error " + ex.Message, LogTypes.ERROR, "Customer");
@@ -647,7 +647,7 @@ namespace KVSWebApplication.Customer
         {
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
 
 
                 try
@@ -671,7 +671,7 @@ namespace KVSWebApplication.Customer
                     RadWindowManagerLargeCustomer.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("RemoveLargeCustomer_Click Error " + ex.Message, LogTypes.ERROR, "Customer");
                         dbContext.SubmitChanges();
                     }

@@ -20,7 +20,7 @@ namespace KVSCommon.Database
     /// </summary>
     public interface ILogging
     {
-        DataClasses1DataContext LogDBContext
+        KVSEntities LogDBContext
         {
             get;
             set;

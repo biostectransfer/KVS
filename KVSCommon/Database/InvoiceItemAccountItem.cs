@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     partial class InvoiceItemAccountItem : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -36,7 +36,7 @@ namespace KVSCommon.Database
         /// <param name="dbContext">DB Kontext</param>
         /// <param name="inv">Rechnungsobjekt</param>
         /// <param name="newAccountNumber">neues Erloeskonto</param>
-        public static void UpdateAuthorativeAccounts(DataClasses1DataContext dbContext, Invoice inv, string newAccountNumber)
+        public static void UpdateAuthorativeAccounts(KVSEntities dbContext, Invoice inv, string newAccountNumber)
         {
             if (newAccountNumber == string.Empty)
                 throw new Exception("Es wurde kein Standard Erlös-Konto in der Konfiguration gefunden");

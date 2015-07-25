@@ -80,7 +80,7 @@ namespace KVSWebApplication.Abrechnung
                         var invoiceID = Int32.Parse(item["invoiceId"].Text);
                         if (invoiceID != null)
                         {
-                            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+                            KVSEntities dbContext = new KVSEntities();
                             Invoice newInvoice = dbContext.Invoice.SingleOrDefault(q => q.Id == invoiceID);
                             if (newInvoice.InvoiceItem == null || newInvoice.InvoiceItem.Count == 0)
                                 throw new Exception("Diese Rechnung enthält keine Positionen");
@@ -143,7 +143,7 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void DetailTable_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var invoiceId = Int32.Parse(e.WhereParameters["InvoiceId"].ToString());
 
             var invoiceAccounts = Accounts.generateAccountNumber(dbContext, invoiceId).ToList();
@@ -184,7 +184,7 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var customerQuery = from cust in con.Customer
                                 select new
                                 {   Name = cust.SmallCustomer != null && cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name, 
@@ -198,7 +198,7 @@ namespace KVSWebApplication.Abrechnung
        /// <param name="e"></param>
         protected void AbrechnungLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var customerId = 0;
             if (CustomerDropDownList.SelectedValue != string.Empty)
                 customerId = Int32.Parse(CustomerDropDownList.SelectedValue);

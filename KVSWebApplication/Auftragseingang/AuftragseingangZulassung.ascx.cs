@@ -56,7 +56,7 @@ namespace KVSWebApplication.Auftragseingang
         // Suche nach Price. Falls keine gibt - stand.Price nehmen
         private Price findPrice(string productId)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             int? locationId = null;
             Price newPrice = null;
             if (!String.IsNullOrEmpty(this.LocationDropDownList.SelectedValue))
@@ -173,7 +173,7 @@ namespace KVSWebApplication.Auftragseingang
         #region Linq Data Source
         protected void ProductDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var selectedCustomer = 0;
             var location = 0;
             if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
@@ -228,7 +228,7 @@ namespace KVSWebApplication.Auftragseingang
         // Auswahl der KundenName
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             if (RadComboBoxCustomer.SelectedValue == "1") //Small Customers
             {
                 var customerQuery = from cust in con.Customer
@@ -260,7 +260,7 @@ namespace KVSWebApplication.Auftragseingang
         }
         protected void ZulassungsstelleDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var zulassungsstelleQuery = from zul in con.RegistrationLocation
                                         select new
                                         {
@@ -271,7 +271,7 @@ namespace KVSWebApplication.Auftragseingang
         }
         protected void LocationLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue.ToString()))
             {
                 var locationQuery = from loc in con.Location
@@ -299,7 +299,7 @@ namespace KVSWebApplication.Auftragseingang
         }
         protected void CostCenterLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue.ToString()))
             {
                 var costCenterQuery = from cost in con.CostCenter
@@ -327,7 +327,7 @@ namespace KVSWebApplication.Auftragseingang
         }
         protected void RegistrationOrderDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var regOrdQuery = from regord in con.RegistrationOrderType
                               select new
                               {
@@ -398,7 +398,7 @@ namespace KVSWebApplication.Auftragseingang
                 try
                 {
                     VINBox.Text = VINBox.Text.ToUpper();
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext();
+                    KVSEntities dbContext = new KVSEntities();
                     var autoQuery = dbContext.Vehicle.SingleOrDefault(q => q.VIN == VINBox.Text);
                     if (autoQuery != null)
                     {
@@ -541,7 +541,7 @@ namespace KVSWebApplication.Auftragseingang
                     SubmitChangesErrorLabel.Visible = false;
                     string kennzeichen = string.Empty,
                        oldKennzeichen = string.Empty;
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                    KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                     Adress newAdress = null;
                     Contact newContact = null;
                     BankAccount newBankAccount = null;
@@ -786,7 +786,7 @@ namespace KVSWebApplication.Auftragseingang
                     {
                         try
                         {
-                            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                             Price newPrice;
                             ProduktId = splited[0];
                             CostCenterId = splited[1];
@@ -844,7 +844,7 @@ namespace KVSWebApplication.Auftragseingang
                         {
                             try
                             {
-                                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                                 var orderNumber = regOrd.OrderNumber;
                                 Price newPrice;
                                 OrderItem newOrderItem1 = null;
@@ -920,7 +920,7 @@ namespace KVSWebApplication.Auftragseingang
         {
             try
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                 var newOrder = dbContext.Order.Single(q => q.CustomerId == customerId && q.OrderNumber == regOrder.OrderNumber);
                 smallCustomerOrderHiddenField.Value = regOrder.OrderNumber.ToString();
                 //updating order status
@@ -955,7 +955,7 @@ namespace KVSWebApplication.Auftragseingang
         // getting adress from small customer
         protected void SetValuesForAdressWindow()
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var locationQuery = (from adr in dbContext.Adress
                                  join cust in dbContext.Customer on adr.Id equals cust.InvoiceAdressId
                                  where cust.Id == Int32.Parse(CustomerDropDownList.SelectedValue)
@@ -1000,7 +1000,7 @@ namespace KVSWebApplication.Auftragseingang
             int itemCount = 0;
             try
             {
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
                 {
                     var newAdress = Adress.CreateAdress(street, streetNumber, zipcode, city, country, dbContext);
                     var newInvoice = Invoice.CreateInvoice(dbContext, Int32.Parse(Session["CurrentUserId"].ToString()), invoiceRecipient, newAdress,
@@ -1058,7 +1058,7 @@ namespace KVSWebApplication.Auftragseingang
             string path = url + "UserData/" + Session["CurrentUserId"].ToString() + "/" + myFile;
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Invoice", "<script>openFile('" + path + "');</script>", false);
         }
-        protected void Print(Invoice newInvoice, DataClasses1DataContext dbContext)
+        protected void Print(Invoice newInvoice, KVSEntities dbContext)
         {
             using (MemoryStream memS = new MemoryStream())
             {
@@ -1218,7 +1218,7 @@ namespace KVSWebApplication.Auftragseingang
             else //large
             {
                 HideAllControls();
-                DataClasses1DataContext con = new DataClasses1DataContext();
+                KVSEntities con = new KVSEntities();
                 var cont = from largCust in con.LargeCustomerRequiredField
                            join reqFiled in con.RequiredField on largCust.RequiredFieldId equals reqFiled.Id
                            join ordTyp in con.OrderType on reqFiled.OrderTypeId equals ordTyp.Id
@@ -1251,7 +1251,7 @@ namespace KVSWebApplication.Auftragseingang
         {
             List<Control> controlsToHide = new List<Control>();
             controlsToHide = getAllControls();
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var cont = from largCust in con.LargeCustomerRequiredField
                        join reqFiled in con.RequiredField on largCust.RequiredFieldId equals reqFiled.Id
                        join ordTyp in con.OrderType on reqFiled.OrderTypeId equals ordTyp.Id

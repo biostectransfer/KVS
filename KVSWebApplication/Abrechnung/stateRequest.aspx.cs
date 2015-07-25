@@ -20,7 +20,7 @@ namespace KVSWebApplication.Abrechnung
             int? write = 0;
             if (!String.IsNullOrEmpty(id))
             {
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+                using (KVSEntities dbContext = new KVSEntities())
                 {
                     write = dbContext.InvoiceRunReport.FirstOrDefault(q => q.Id == Int32.Parse(id)).InvoiceRunProgress;
                     if (write == null)

@@ -26,7 +26,7 @@ namespace KVSCommon.PDF
         /// <param name="dbContext">DB JIbtext</param>
         /// <param name="packingList">Lieferschein Objekt</param>
         /// <param name="logoFilePath">Pfad zum Logo</param>
-        public PackingListPDF(DataClasses1DataContext dbContext, PackingList packingList, string logoFilePath)
+        public PackingListPDF(KVSEntities dbContext, PackingList packingList, string logoFilePath)
             : base(dbContext,logoFilePath)
         {
             this.PackingList = packingList;

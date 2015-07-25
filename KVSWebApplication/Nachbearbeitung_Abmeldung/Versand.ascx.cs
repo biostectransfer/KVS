@@ -47,7 +47,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         protected void VersandLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var versandQuery = from packList in con.PackingList
                                let CustomerNameLet = con.Order.Where(q => q.PackingListNumber == packList.PackingListNumber).FirstOrDefault()
                                orderby packList.PackingListNumber descending
@@ -74,7 +74,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         protected void OrdersDetailedTabel_DetailTable(object source, GridDetailTableDataBindEventArgs e)
         {
-            var dbContext = new DataClasses1DataContext();
+            var dbContext = new KVSEntities();
             var _item = (GridDataItem)e.DetailTableView.ParentItem;
             var listId = Int32.Parse(_item["listId"].Text);
             var orderQuery = from ord in dbContext.Order
@@ -101,7 +101,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         protected void OrdersDetailedTabel_DetailTableDataBind(object source, GridNeedDataSourceEventArgs e)
         {
-            var dbContext = new DataClasses1DataContext();
+            var dbContext = new KVSEntities();
             var sender = source as RadGrid;
             var item = sender.Parent as Panel;
             var mylistId = item.FindControl("listIdBox") as TextBox;
@@ -134,7 +134,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 item.Selected = true;
                 itemIndexHiddenField.Value = item.ItemIndex.ToString();
                 var myListId = Int32.Parse(item["listId"].Text);
-                var dbContext = new DataClasses1DataContext();
+                var dbContext = new KVSEntities();
                 var myVerbringung = dbContext.PackingList.SingleOrDefault(q => q.PackingListNumber == myListId);
                 if (myVerbringung.IsSelfDispatch == true)
                 {
@@ -150,7 +150,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         {
             using (var ts = new TransactionScope())
             {
-                var dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                var dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                 try
                 {
                     var btnsender = sender as Button;
@@ -178,7 +178,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     ErrorVersandLabel.Visible = true;
                         try
                         {
-                            dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                            dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                             dbContext.WriteLogItem("btnRemovePackingList_Click Error " + ex.Message, LogTypes.ERROR, "Order");
                             dbContext.SubmitChanges();
                         }
@@ -200,7 +200,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 var ErrorVersandGedrucktLabel = item.FindControl("ErrorVersandGedrucktLabel") as Label;
                 var _listId = item.FindControl("listIdBox") as TextBox;
                 var listId = Int32.Parse(_listId.Text);
-                var dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                var dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                 var packList = dbContext.PackingList.SingleOrDefault(q => q.PackingListNumber == listId);
                 if (packList.IsPrinted == true)
                 {

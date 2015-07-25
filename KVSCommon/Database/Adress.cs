@@ -11,7 +11,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class Adress : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -41,7 +41,7 @@ namespace KVSCommon.Database
         /// <param name="country">Land.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Die neue Adresse.</returns>
-        public static Adress CreateAdress(string street, string streetNumber, string zipcode, string city, string country, DataClasses1DataContext dbContext)
+        public static Adress CreateAdress(string street, string streetNumber, string zipcode, string city, string country, KVSEntities dbContext)
         {
             Adress adress = new Adress()
             {
@@ -63,7 +63,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="adressId">Id der Adresse.</param>
         /// <param name="dbContext"></param>
-        public static void DeleteAdress(int adressId, DataClasses1DataContext dbContext)
+        public static void DeleteAdress(int adressId, KVSEntities dbContext)
         {
             Adress adress = dbContext.Adress.SingleOrDefault(q => q.Id == adressId);
             if (adress != null)
@@ -78,7 +78,7 @@ namespace KVSCommon.Database
         /// <param name="adress">Zu kopierende Adress</param>
         /// <param name="dbContext">Datenbank Kontext</param>
         /// <returns>Adress</returns>
-        public static Adress CreateCopy(Adress adress, DataClasses1DataContext dbContext)
+        public static Adress CreateCopy(Adress adress, KVSEntities dbContext)
         {
             Adress copy = new Adress()
             {

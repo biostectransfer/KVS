@@ -41,7 +41,7 @@ namespace KVSWebApplication.Search
         {
             SearchErrorLabel.Visible = false;
 
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
 
             var newQuery = from ord in con.Order
                            let dockList = con.Document.FirstOrDefault(q => q.Id == ord.DocketList.DocumentId) 
@@ -158,7 +158,7 @@ namespace KVSWebApplication.Search
 
         protected void CustomerName_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var CustomerName = from cust in con.Customer
                                select new {
                                    Name = cust.SmallCustomer != null && cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name, 

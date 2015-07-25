@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class Contact : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -38,7 +38,7 @@ namespace KVSCommon.Database
         /// <param name="email">Mail</param>
         /// <param name="dbContext">Datenbankkontext</param>
         /// <returns>Den neue erstellten Kontakt</returns>
-        public static Contact CreateContact(string phone, string fax, string mobilePhone, string email, DataClasses1DataContext dbContext)
+        public static Contact CreateContact(string phone, string fax, string mobilePhone, string email, KVSEntities dbContext)
         {
             Contact contact = new Contact()
             {
@@ -58,7 +58,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="adressId">Id des Kontakts.</param>
         /// <param name="dbContext"></param>
-        public static void DeleteContact(int contactId, DataClasses1DataContext dbContext)
+        public static void DeleteContact(int contactId, KVSEntities dbContext)
         {
             Contact contact = dbContext.Contact.SingleOrDefault(q => q.Id == contactId);
             if (contact != null)

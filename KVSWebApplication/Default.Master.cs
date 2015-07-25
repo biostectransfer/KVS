@@ -33,7 +33,7 @@ namespace KVSWebApplication
             set
             {
                 if (ViewState["PosName"] == null || ViewState["PosName"] == string.Empty)
-                    ViewState["PosName"] = KVSCommon.Database.PathPosition.GetPathPostions(new KVSCommon.Database.DataClasses1DataContext());
+                    ViewState["PosName"] = KVSCommon.Database.PathPosition.GetPathPostions(new KVSCommon.Database.KVSEntities());
             }
 
         }

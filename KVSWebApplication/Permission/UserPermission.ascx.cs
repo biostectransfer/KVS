@@ -18,7 +18,7 @@ namespace KVSWebApplication.Permission
         }
         protected void getAllUserPermissionDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from user in dbContext.User
                         orderby user.Person.Name
                         select new
@@ -33,7 +33,7 @@ namespace KVSWebApplication.Permission
         }
         protected void GetAllPermissionDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from permissions in dbContext.Permission
                         where permissions.UserPermission.Any(q => q.UserId == Int32.Parse(e.WhereParameters["Id"].ToString())) == false
                         orderby permissions.Name
@@ -42,7 +42,7 @@ namespace KVSWebApplication.Permission
         }
         protected void UserPermissionDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from userPermissions in dbContext.UserPermission
                         join per in dbContext.Permission on userPermissions.PermissionId equals per.Id
                         where userPermissions.UserId == Int32.Parse(e.WhereParameters["Id"].ToString())
@@ -52,7 +52,7 @@ namespace KVSWebApplication.Permission
         }
         protected void GetAllPermissionProfileDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from permissions in dbContext.PermissionProfile
                         where permissions.UserPermissionProfile.Any(q => q.UserId == Int32.Parse(e.WhereParameters["Id"].ToString())) == false
                         orderby permissions.Name
@@ -61,7 +61,7 @@ namespace KVSWebApplication.Permission
         }
         protected void UserPermissionProfileDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from userPermissions in dbContext.UserPermissionProfile
                         join per in dbContext.PermissionProfile on userPermissions.PermissionProfileId equals per.Id
                         where userPermissions.UserId == Int32.Parse(e.WhereParameters["Id"].ToString())
@@ -87,7 +87,7 @@ namespace KVSWebApplication.Permission
         }
         protected void rbtSavePermissions_Click(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
             try
             {
                 RadListBoxItemCollection AddedPermission = ((RadListBox)((RadButton)sender).Parent.FindControl("AddedUserPermission")).Items;
@@ -126,7 +126,7 @@ namespace KVSWebApplication.Permission
         }
         protected void rbtSavePermissionProfile_Click(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
             try
             {
                 RadListBoxItemCollection AddedPermission = ((RadListBox)((RadButton)sender).Parent.FindControl("lsbPermissionProfilePermission")).Items;

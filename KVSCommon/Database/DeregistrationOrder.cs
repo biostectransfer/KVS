@@ -11,7 +11,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class DeregistrationOrder : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -43,7 +43,7 @@ namespace KVSCommon.Database
         /// <returns>Den neuen Abmeldeauftrag.</returns>
         /// <remarks>Erstellt auch gleichzeitig den Order-Datensatz.</remarks>
         public static DeregistrationOrder CreateDeregistrationOrder(int userId, int customerId, Vehicle vehicle, Registration registration, int? locationId, 
-            int zulassungsstelleId, DataClasses1DataContext dbContext)
+            int zulassungsstelleId, KVSEntities dbContext)
         {
             var orderTypeId = dbContext.OrderType.Single(q => q.Id == (int)OrderTypes.Cancellation).Id;
             Order order = Order.CreateOrder(userId, customerId, orderTypeId, zulassungsstelleId, dbContext); 

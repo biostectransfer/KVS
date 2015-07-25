@@ -82,7 +82,7 @@ namespace KVSWebApplication.Customer
         }
         protected void ZipCodes_ItemsRequested(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             RadComboBox cmbZipCode = ((RadComboBox)sender);
             cmbZipCode.Items.Clear();
             var myzipCodes = from zipCodes in dbContext.Adress
@@ -95,7 +95,7 @@ namespace KVSWebApplication.Customer
         }
         protected void Citys_ItemsRequested(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             RadComboBox cmbCity = ((RadComboBox)sender);
             cmbCity.Items.Clear();
             var myCitys = from citys in dbContext.Adress
@@ -108,7 +108,7 @@ namespace KVSWebApplication.Customer
         }
         protected void Countrys_ItemsRequested(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             RadComboBox cmbCountry = ((RadComboBox)sender);
             cmbCountry.Items.Clear();
             var myCountrys = from countrys in dbContext.Adress
@@ -123,7 +123,7 @@ namespace KVSWebApplication.Customer
         {
             RadComboBox cmbSuperLocation = ((RadComboBox)sender);
             TextBox txbCustomerId = ((RadComboBox)sender).Parent.FindControl("txbCustomerId") as TextBox;
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var mySuperLocations = from _locations in dbContext.Location
                                    where _locations.CustomerId == Int32.Parse(txbCustomerId.Text)
                                    select new { _locations.Name, _locations.Id };
@@ -242,7 +242,7 @@ namespace KVSWebApplication.Customer
 
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
                 try
                 {
                     RadButton myButton = ((RadButton)sender);
@@ -356,7 +356,7 @@ namespace KVSWebApplication.Customer
                     RadWindowManagerLocationDetails.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("Add/Edit Location InvoiceAdress Error:  " + ex.Message, LogTypes.ERROR, "Customer");
                         dbContext.SubmitChanges();
                     }
@@ -369,7 +369,7 @@ namespace KVSWebApplication.Customer
         }
         protected void getAllCustomerLocationsDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from cust in dbContext.Customer
                         join cost in dbContext.LargeCustomer on cust.Id equals cost.CustomerId
                         orderby cust.Name
@@ -391,7 +391,7 @@ namespace KVSWebApplication.Customer
         }
         protected void GetCustomerLocations_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             try
             {
                 if (e.WhereParameters["Id"].ToString() != string.Empty)
@@ -463,7 +463,7 @@ namespace KVSWebApplication.Customer
         }
         protected void CustomerCombobox_OnLoad(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from customer in dbContext.Customer
                         join lCustomer in dbContext.LargeCustomer on customer.Id equals lCustomer.CustomerId
                         select new
@@ -483,7 +483,7 @@ namespace KVSWebApplication.Customer
             {
                 using (TransactionScope ts = new TransactionScope())
                 {
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                    KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                     try
                     {
                         if (txbLocationName.Text != string.Empty && CustomerLocation.SelectedIndex != -1)
@@ -528,7 +528,7 @@ namespace KVSWebApplication.Customer
                     {
                         if (ts != null)
                             ts.Dispose();
-                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("SaveLocation_Click Error:  " + ex.Message, LogTypes.ERROR, "Location");
                         resultMessage.Text = "Fehler: " + ex.Message;
                         resultMessage.BackColor = System.Drawing.Color.Red;
@@ -540,7 +540,7 @@ namespace KVSWebApplication.Customer
         }
         protected void DeclareInvoiceSendAdress(Location createdLocation)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
             if (chbLocationRechnungsaderesse.Checked == false)
             {
                 var newInvoiceAdress = Adress.CreateAdress(txbLocationInvoiceAdressStreet.Text,
@@ -575,7 +575,7 @@ namespace KVSWebApplication.Customer
         }
         protected void CustomerCombobox_SelectedIndexChanged(object o, Telerik.Web.UI.RadComboBoxSelectedIndexChangedEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             if (CustomerLocation.SelectedIndex != -1)
             {
                 var query = from customer in dbContext.Customer
@@ -602,7 +602,7 @@ namespace KVSWebApplication.Customer
             bool insertUpdateOk = true;
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
                 try
                 {
                     Button myButton = ((Button)sender);
@@ -699,7 +699,7 @@ namespace KVSWebApplication.Customer
                     RadWindowManagerLocationDetails.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("Location Error " + ex.Message, LogTypes.ERROR, "Location");
                         dbContext.SubmitChanges();
                     }
@@ -723,7 +723,7 @@ namespace KVSWebApplication.Customer
         {
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
 
 
                 try
@@ -766,7 +766,7 @@ namespace KVSWebApplication.Customer
                     RadWindowManagerLocationDetails.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("RemoveLocation_Click Error " + ex.Message, LogTypes.ERROR, "Location");
                         dbContext.SubmitChanges();
                     }

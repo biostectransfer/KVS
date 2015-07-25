@@ -12,7 +12,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="dbContext">DB Kontext</param>
         /// <param name="inv">Rechnungsobjekt</param>
-        public static void CreateAccounts(DataClasses1DataContext dbContext, Invoice inv)
+        public static void CreateAccounts(KVSEntities dbContext, Invoice inv)
         {
             List<_Accounts> acc = null;
              acc = Accounts.generateAccountNumber(dbContext,inv.Id).ToList();

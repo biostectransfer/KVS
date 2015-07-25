@@ -36,7 +36,7 @@ namespace KVSWebApplication.Permission
 
                 if (myId != null)
                 {
-                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                    using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
                     {
                         try
                         {
@@ -90,7 +90,7 @@ namespace KVSWebApplication.Permission
 
         protected void getAllPermissionProfileDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from permission in dbContext.PermissionProfile
                         orderby permission.Name
                         select new
@@ -119,7 +119,7 @@ namespace KVSWebApplication.Permission
         }
         protected void getAllPermissionProfile_EditCommand(object source, Telerik.Web.UI.GridCommandEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
             Hashtable newValues = new Hashtable();
             ((GridEditableItem)e.Item).ExtractValues(newValues);
             try
@@ -164,7 +164,7 @@ namespace KVSWebApplication.Permission
         /// <param name="e"></param>
         protected void AddedPermissionListboxDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from permission in dbContext.PermissionProfile
                         join pprofile in dbContext.PermissionProfilePermission on permission.Id equals pprofile.PermissionProfileId
                         where permission.Id == Int32.Parse(e.WhereParameters["Id"].ToString())
@@ -184,7 +184,7 @@ namespace KVSWebApplication.Permission
         /// <param name="e"></param>
         protected void PermissionsListBoxDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from permission in dbContext.Permission
                         where permission.PermissionProfilePermission.Any(q => q.PermissionProfileId == Int32.Parse(e.WhereParameters["Id"].ToString())) == false
                         orderby permission.Name
@@ -206,7 +206,7 @@ namespace KVSWebApplication.Permission
         }
         protected void savePermissionPackageClick(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
             try
             {
                 RadListBoxItemCollection AddedPermission = ((RadListBox)((RadButton)sender).Parent.FindControl("AddedPermission")).Items;
@@ -245,7 +245,7 @@ namespace KVSWebApplication.Permission
         }
         protected void Grid_InsertCommand(object source, GridCommandEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
             try
             {
                 Hashtable newValues = new Hashtable();

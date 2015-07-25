@@ -15,7 +15,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="dbContext">Datenbank Kontext</param>
         /// <returns>Dictionary<string, string></returns>
-        public static Dictionary<string, string> GetPathPostions(DataClasses1DataContext dbContext)
+        public static Dictionary<string, string> GetPathPostions(KVSEntities dbContext)
         {
             Dictionary<string, string> positions = new Dictionary<string, string>();
             var pos = from pp in dbContext.PathPosition select pp;

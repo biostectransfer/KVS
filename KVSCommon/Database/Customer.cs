@@ -11,7 +11,7 @@ namespace KVSCommon.Database
     public partial class Customer : ILogging
     {
  
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -30,8 +30,8 @@ namespace KVSCommon.Database
             get;
             set;
         }
-        private DataClasses1DataContext myDbContext = null;
-        public DataClasses1DataContext _dbContext
+        private KVSEntities myDbContext = null;
+        public KVSEntities _dbContext
         {
             get { return myDbContext; }
             set { myDbContext = value; }
@@ -135,7 +135,7 @@ namespace KVSCommon.Database
             {
                 if (this.myDbContext == null)
                 {
-                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+                    using (KVSEntities dbContext = new KVSEntities())
                     {
 
                         if (dbContext.Customer.Count(q => q.Name == this.Name && q.Id != this.Id && q.CustomerNumber == this.CustomerNumber) > 0)

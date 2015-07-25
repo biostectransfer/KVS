@@ -12,7 +12,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class InvoiceItem : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;

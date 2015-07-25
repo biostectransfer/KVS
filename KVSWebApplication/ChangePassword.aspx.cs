@@ -17,7 +17,7 @@ namespace KVSWebApplication
         }
         protected void ChangeSaveBtn_Click(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
             try
             {
                 if (txbNewPassword.Text == txbRepeatPWD.Text)

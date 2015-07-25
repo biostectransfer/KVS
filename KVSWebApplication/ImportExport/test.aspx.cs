@@ -19,7 +19,7 @@ namespace KVSWebApplication.ImportExport
         /// <param name="e"></param>
         protected void getAllInvoiceDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from cust in dbContext.Customer
                         join inv in dbContext.Invoice on cust.Id equals inv.CustomerId
                         join inn in dbContext.InvoiceNumber on inv.Id equals inn.InvoiceId

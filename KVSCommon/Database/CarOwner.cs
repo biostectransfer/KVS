@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class CarOwner : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -54,7 +54,7 @@ namespace KVSCommon.Database
         /// <param name="adressId">ID der Adresse</param>
         /// <param name="dbContext">DB Kontext</param>
         /// <returns>CarOwner</returns>
-        public static CarOwner CreateCarOwner(string name, string firstName, BankAccount bankAccount, Contact contact, Adress adress, DataClasses1DataContext dbContext)
+        public static CarOwner CreateCarOwner(string name, string firstName, BankAccount bankAccount, Contact contact, Adress adress, KVSEntities dbContext)
         {
             if (string.IsNullOrEmpty(name))
             {

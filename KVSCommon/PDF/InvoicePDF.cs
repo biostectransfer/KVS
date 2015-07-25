@@ -33,7 +33,7 @@ namespace KVSCommon.PDF
         /// <summary>
         /// Datenbankkontext
         /// </summary>
-        public DataClasses1DataContext _dbContext
+        public KVSEntities _dbContext
         {
             get;
             set;
@@ -44,7 +44,7 @@ namespace KVSCommon.PDF
         /// <param name="dbContext">DB Kontext</param>
         /// <param name="invoice">Rechnungsobjekt</param>
         /// <param name="logoFilePath">Pfad zum Logo</param>
-        public InvoicePDF(DataClasses1DataContext dbContext, Invoice invoice, string logoFilePath)
+        public InvoicePDF(KVSEntities dbContext, Invoice invoice, string logoFilePath)
             : base(dbContext, logoFilePath, true)
         {
             _dbContext = dbContext;

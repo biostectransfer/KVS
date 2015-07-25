@@ -70,7 +70,7 @@ namespace KVSWebApplication.User
         }
         protected void ChangeSaveBtn_Click(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
             try
             {
                 if (txbNewPassword.Text == txbRepeatPWD.Text && ViewState["userToChange"] != null)
@@ -112,7 +112,7 @@ namespace KVSWebApplication.User
             ResetErrorLabels();
             if (checkFields() == true)
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                 try
                 {                   
                     var createUser = KVSCommon.Database.User.CreateUser(txbUserLogin.Text, txbUserPassword1.Text, txbUserNachname.Text, txbUserVorname.Text, txbUserTitle.Text, dbContext);
@@ -156,7 +156,7 @@ namespace KVSWebApplication.User
         /// <param name="e"></param>
         protected void getAllUserDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from user in dbContext.User
                         select new
                         {
@@ -179,7 +179,7 @@ namespace KVSWebApplication.User
         {
             Hashtable newValues = new Hashtable();
             ((GridEditableItem)e.Item).ExtractValues(newValues);
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
             try
             {
                 var userDataUpdate = dbContext.User.SingleOrDefault(q => q.Id == Int32.Parse(newValues["Id"].ToString()));              

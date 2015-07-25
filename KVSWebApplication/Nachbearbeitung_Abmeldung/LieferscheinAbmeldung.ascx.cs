@@ -48,7 +48,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         protected void LieferscheineLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var largeCustomerQuery = from ord in con.Order
                                      join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                      join cust in con.Customer on ord.CustomerId equals cust.Id
@@ -117,7 +117,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             bool statusFromCheck = false;
             if (!String.IsNullOrEmpty(location))
             {
-                DataClasses1DataContext con = new DataClasses1DataContext();
+                KVSEntities con = new KVSEntities();
                 var values = (from ord in con.Order
                               join loc in con.Location on ord.LocationId equals loc.Id
                               join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
@@ -143,7 +143,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             {
                 try
                 {
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                    KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
 
                     List<LocationOrderJoins> locationIdList = new List<LocationOrderJoins>();
                     foreach (GridDataItem item in RadGridLieferscheine.SelectedItems)
@@ -188,7 +188,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             {
                 GridDataItem item = RadGridLieferscheine.SelectedItems[0] as GridDataItem;
                 var locationId = Int32.Parse(item["locationId"].Text);
-                DataClasses1DataContext con = new DataClasses1DataContext();
+                KVSEntities con = new KVSEntities();
                 var largeCustomerQuery = from ord in con.Order
                                          join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                          join cust in con.Customer on ord.CustomerId equals cust.Id
@@ -218,7 +218,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             }
             else if (!String.IsNullOrEmpty(LocationIdHiddenField.Value))
             {
-                DataClasses1DataContext con = new DataClasses1DataContext();
+                KVSEntities con = new KVSEntities();
                 var largeCustomerQuery = from ord in con.Order
                                          join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                          join cust in con.Customer on ord.CustomerId equals cust.Id
@@ -275,7 +275,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 {
                     try
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.OrderNumber == orderNumber);
                         if (newOrder != null)
                         {
@@ -311,7 +311,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         {
             bool DienstVorhanden = false;
             bool AmtGebuhVorhanden = false;
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+            using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
             {
                 var searchOrderQuery = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
                 if (searchOrderQuery != null)

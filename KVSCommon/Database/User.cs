@@ -12,7 +12,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class User : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -44,7 +44,7 @@ namespace KVSCommon.Database
         /// <returns>Den neu erstellten Benutzer.</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public static User CreateUser(string login, string password, string name, string firstname, string title, DataClasses1DataContext dbContext)
+        public static User CreateUser(string login, string password, string name, string firstname, string title, KVSEntities dbContext)
         {
             if (string.IsNullOrEmpty(login))
             {
@@ -98,7 +98,7 @@ namespace KVSCommon.Database
         /// <returns>Datenbank-Id des Benutzers, falls Logon erfolgreich.</returns>
         public static int Logon(string login, string password)
         {         
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+            using (KVSEntities dbContext = new KVSEntities())
             {              
         
                 var user = dbContext.User.SingleOrDefault(q => q.Login == login);
@@ -135,7 +135,7 @@ namespace KVSCommon.Database
         /// <param name="newPassword">Neues Passwort.</param>
         /// <param name="oldPassword">Altes Passwort.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void ChangePassword(string newPassword, string oldPassword, DataClasses1DataContext dbContext)
+        public void ChangePassword(string newPassword, string oldPassword, KVSEntities dbContext)
         {
             CheckPassword(newPassword);
 
@@ -164,7 +164,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="newPassword">Das neue Passwort.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void ChangePassword(string newPassword, DataClasses1DataContext dbContext)
+        public void ChangePassword(string newPassword, KVSEntities dbContext)
         {
             CheckPassword(Password);
 
@@ -239,7 +239,7 @@ namespace KVSCommon.Database
         {
             List<string> userPermissions = new List<string>();
 
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+            using (KVSEntities dbContext = new KVSEntities())
             {
                 var Permissions = from perm in dbContext.Permission
                                   join userper in dbContext.UserPermission on perm.Id equals userper.PermissionId
@@ -283,7 +283,7 @@ namespace KVSCommon.Database
         /// <returns></returns>
         public static string GetUserNamebyId(int userid)
         {
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+            using (KVSEntities dbContext = new KVSEntities())
             {
                 var login = dbContext.User.Where(q => q.Id == userid).Select(q => q.Login).SingleOrDefault();
                 if (login != null)
@@ -300,7 +300,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="permissionId">Id des Rechts, das zugewiesen werden soll.</param>
         /// <param name="dbContext">Datenbank-Context, mit dem das Recht zugewiesen wird.</param>
-        public void AddPermission(int permissionId, DataClasses1DataContext dbContext)
+        public void AddPermission(int permissionId, KVSEntities dbContext)
         {
             var permission = dbContext.Permission.Single(q => q.Id == permissionId);
             if (this.UserPermission.Any(q => q.PermissionId == permission.Id))
@@ -320,7 +320,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="permissionId">Id des Rechts, das entzogen werden soll.</param>
         /// <param name="dbContext">Datenbank-Context, mit dem das Recht entzogen wird.</param>
-        public void RemovePermission(int permissionId, DataClasses1DataContext dbContext)
+        public void RemovePermission(int permissionId, KVSEntities dbContext)
         {
             var permission = dbContext.Permission.Single(q => q.Id == permissionId);
             UserPermission userPermission = this.UserPermission.SingleOrDefault(q => q.PermissionId == permission.Id);
@@ -338,7 +338,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="profileId">Id des Rechteprofils, das zugewiesen werden soll.</param>
         /// <param name="dbContext">Datenbank-Context, mit dem das Rechteprofil zugewiesen wird.</param>
-        public void AddPermissionProfile(int profileId, DataClasses1DataContext dbContext)
+        public void AddPermissionProfile(int profileId, KVSEntities dbContext)
         {
             var profile = dbContext.PermissionProfile.Single(q => q.Id == profileId);
             if (this.UserPermissionProfile.Any(q => q.PermissionProfileId == profile.Id))
@@ -358,7 +358,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="profileId">Id des Rechteprofils, das entzogen werden soll.</param>
         /// <param name="dbContext">Datenbank-Context, mit dem das Rechteprofil entzogen wird.</param>
-        public void RemovePermissionProfile(int profileId, DataClasses1DataContext dbContext)
+        public void RemovePermissionProfile(int profileId, KVSEntities dbContext)
         {
             var profile = dbContext.PermissionProfile.Single(q => q.Id == profileId);
             UserPermissionProfile userProfile = this.UserPermissionProfile.SingleOrDefault(q => q.PermissionProfileId == profile.Id);
@@ -376,7 +376,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="contact">Kontakt, der dem Benutzer zugewiesen werden soll.</param>
         /// <param name="dbContext">Datenbankkontext.</param>
-        public void AddContact(Contact contact, DataClasses1DataContext dbContext)
+        public void AddContact(Contact contact, KVSEntities dbContext)
         {
             if (this.Contact != null)
             {
@@ -407,7 +407,7 @@ namespace KVSCommon.Database
         {
             if (action == System.Data.Linq.ChangeAction.Insert)
             {
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+                using (KVSEntities dbContext = new KVSEntities())
                 {
                     if (dbContext.User.Any(q => q.Login == this.Login))
                     {

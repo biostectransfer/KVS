@@ -29,7 +29,7 @@ namespace KVSCommon.PDF
             set;
         }
      
-        public LetterHead(Database.DataClasses1DataContext dbContext)
+        public LetterHead(Database.KVSEntities dbContext)
         {
             string topline = dbContext.DocumentConfiguration.Where(q => q.Id == "ADDRESS_TOPLINE").Select(q => q.Text).SingleOrDefault();
             
@@ -231,7 +231,7 @@ namespace KVSCommon.PDF
         /// <param name="dbContext"></param>
         /// <param name="logoFilePath"></param>
         /// <param name="_isInvoice"></param>
-        protected AbstractPDFCreator(KVSCommon.Database.DataClasses1DataContext dbContext, string logoFilePath, bool _isInvoice = false)
+        protected AbstractPDFCreator(KVSCommon.Database.KVSEntities dbContext, string logoFilePath, bool _isInvoice = false)
         {
             this.IsInvoice = _isInvoice;  
             this.Document = new Document();

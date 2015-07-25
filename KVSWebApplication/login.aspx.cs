@@ -78,7 +78,7 @@ namespace KVSWebApplication
             bool Authenticated = false;
             try
             {
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+                using (KVSEntities dbContext = new KVSEntities())
                 {
                     var myId = KVSCommon.Database.User.Logon((Login2.FindControl("UserName") as TextBox).Text, (Login2.FindControl("Password") as TextBox).Text);
                     Session["CurrentUserId"] = myId;

@@ -11,9 +11,9 @@ namespace KVSDataAccess
     {
         public ManagerBase()
         {
-            DataContext = new DataClasses1DataContext();
+            DataContext = new KVSEntities();
         }
 
-        public DataClasses1DataContext DataContext { get; set; }
+        public KVSEntities DataContext { get; set; }
     }
 }

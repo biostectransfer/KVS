@@ -7,19 +7,19 @@ using KVSCommon.SaveActors;
 
 namespace KVSCommon.Database
 {
-    public partial class DataClasses1DataContext : IKVSEntities
+    public partial class KVSEntities : IKVSEntities
     {
-        public DataClasses1DataContext(ISaveActorManagerBase saveActorManager)
+        public KVSEntities(ISaveActorManagerBase saveActorManager)
             : base(saveActorManager, ConfigurationManager.ConnectionStrings["KVSConnectionString"].ConnectionString)
         {
         }
 
-        public DataClasses1DataContext()
+        public KVSEntities()
             : base(ConfigurationManager.ConnectionStrings["KVSConnectionString"].ConnectionString)
         {
         }
 
-        public DataClasses1DataContext(int logUserId)
+        public KVSEntities(int logUserId)
             : base(ConfigurationManager.ConnectionStrings["KVSConnectionString"].ConnectionString)
         {
             this.LogUserId = logUserId;

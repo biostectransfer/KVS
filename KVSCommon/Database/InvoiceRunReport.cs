@@ -7,7 +7,7 @@ namespace KVSCommon.Database
 {
     partial class InvoiceRunReport : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;

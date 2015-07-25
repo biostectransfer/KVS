@@ -77,7 +77,7 @@ namespace KVSWebApplication.Abrechnung
                     var invoiceID = Int32.Parse(item["invoiceId"].Text);
                     if (invoiceID != null)
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         Invoice newInvoice = dbContext.Invoice.SingleOrDefault(q => q.Id == invoiceID);
                         if (newInvoice.IsPrinted == false)
                         {
@@ -121,7 +121,7 @@ namespace KVSWebApplication.Abrechnung
         {
             try
             {
-                using (DataClasses1DataContext dbCotenxt = new DataClasses1DataContext())
+                using (KVSEntities dbCotenxt = new KVSEntities())
                 {
                     EmailOkeyLabel.Visible = false;
                     var item = RadGridAbrechnungErstellen.SelectedItems[0] as GridDataItem;
@@ -157,7 +157,7 @@ namespace KVSWebApplication.Abrechnung
                     foreach (GridDataItem item in RadGridAbrechnungErstellen.SelectedItems)
                     {
                         var invoiceId = Int32.Parse(item["invoiceId"].Text);
-                        var dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        var dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         var invoiceToAdd = dbContext.Invoice.SingleOrDefault(q => q.Id == invoiceId);
                         if (invoiceToAdd != null)
                         {
@@ -220,7 +220,7 @@ namespace KVSWebApplication.Abrechnung
                 PrintCopyErrorLabel.Visible = false;
                 try
                 {
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext();
+                    KVSEntities dbContext = new KVSEntities();
                     var invoiceId = Int32.Parse(item["invoiceId"].Text);
                     Invoice newInvoice = dbContext.Invoice.SingleOrDefault(q => q.Id == invoiceId);
                     string fileName = "RechnungsCopy_" + newInvoice.CreateDate.Day + "_" + newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + "_" + DateTime.Now.Ticks + ".pdf";
@@ -260,7 +260,7 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void DetailTable_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
 
             bool isPrinted = false;
             var invoiceId = Int32.Parse(e.WhereParameters["InvoiceId"].ToString());
@@ -308,7 +308,7 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var customerQuery = from cust in con.Customer
                                 select new
                                 {
@@ -326,7 +326,7 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void AbrechnungLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var customerId = 0;
             if (CustomerDropDownList.SelectedValue != string.Empty)
                 customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
@@ -387,7 +387,7 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void RechnungErstellen_Click(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
             try
             {
                 if (RadGridAbrechnungErstellen.SelectedItems.Count > 0)
@@ -527,7 +527,7 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void ShowInvoiceButton_Clicked(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
             try
             {
                 if (RadGridAbrechnungErstellen.SelectedItems.Count > 0)
@@ -606,7 +606,7 @@ namespace KVSWebApplication.Abrechnung
             }
             cmbErloeskonten.Items.Clear();
             cmbErloeskonten.Text = string.Empty;
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             cmbErloeskonten.DataSource = Accounts.generateAccountNumber(dbContext, Int32.Parse(itemId.Text), printed);
             cmbErloeskonten.Text = "";
             cmbErloeskonten.DataBind();

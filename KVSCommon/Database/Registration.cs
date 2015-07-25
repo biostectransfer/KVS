@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class Registration : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -43,7 +43,7 @@ namespace KVSCommon.Database
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Die neue Zulassung.</returns>
         public static Registration CreateRegistration(CarOwner carOwner, Vehicle vehicle, string licencenumber, string evbNumber, DateTime? generalInspectionDate, 
-            DateTime? registrationDate, string registrationDocumentNumber, string emissionCode, DataClasses1DataContext dbContext)
+            DateTime? registrationDate, string registrationDocumentNumber, string emissionCode, KVSEntities dbContext)
         {
             Registration registration = new Registration()
             {

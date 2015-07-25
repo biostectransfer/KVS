@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class PermissionProfile : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -37,7 +37,7 @@ namespace KVSCommon.Database
         /// <param name="description">Beschreibung des Rechteprofils.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Das neue Rechteprofil.</returns>
-        public static PermissionProfile CreatePermissionProfile(string name, string description, DataClasses1DataContext dbContext)
+        public static PermissionProfile CreatePermissionProfile(string name, string description, KVSEntities dbContext)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -66,7 +66,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="id">Id des Rechteprofils.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public static void DeletePermissionProfileById(int id, DataClasses1DataContext dbContext)
+        public static void DeletePermissionProfileById(int id, KVSEntities dbContext)
         {
             var item = dbContext.PermissionProfile.SingleOrDefault(q => q.Id == id);
             if (item == null)
@@ -89,7 +89,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="permissionId">Id des Rechts.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void AddPermission(int permissionId, DataClasses1DataContext dbContext)
+        public void AddPermission(int permissionId, KVSEntities dbContext)
         {
             Permission permission = dbContext.Permission.SingleOrDefault(q => q.Id == permissionId);
             if (permission == null)
@@ -114,7 +114,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="permissionId">Id des Rechts.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void RemovePermission(int permissionId, DataClasses1DataContext dbContext)
+        public void RemovePermission(int permissionId, KVSEntities dbContext)
         {
             Permission permission = dbContext.Permission.SingleOrDefault(q => q.Id == permissionId);
             if (permission == null)

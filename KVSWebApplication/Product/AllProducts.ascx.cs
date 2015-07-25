@@ -106,7 +106,7 @@ namespace KVSWebApplication.Product
             Dictionary<int, string> myProductCategorys = ((Dictionary<int, string>)Session["myProductCategorys"]);
             Dictionary<int, string> myOrderTypeNames = ((Dictionary<int, string>)Session["myOrderTypeNames"]);
             Dictionary<int, string> myRegistrationOrderTypeNames = ((Dictionary<int, string>)Session["myRegistrationOrderTypeNames"]);
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from products in dbContext.Product
                         let PriceId = products.Price.FirstOrDefault(p => p.ProductId == products.Id && p.LocationId == null)
                         let price = (PriceId == null) ? (int?)null : PriceId.Id
@@ -203,7 +203,7 @@ namespace KVSWebApplication.Product
 
         public void cmbCustomerProducts_OnLoad(RadComboBox Box)// public void cmbCustomerProducts_OnLoad(object sender, EventArgs e)
         {
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+            using (KVSEntities dbContext = new KVSEntities())
             {
                 try
                 {
@@ -308,7 +308,7 @@ namespace KVSWebApplication.Product
 
         protected void cmbErloeskonten_OnInit(object sender, EventArgs e)
         {
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+            using (KVSEntities dbContext = new KVSEntities())
             {
                 try
                 {
@@ -363,7 +363,7 @@ namespace KVSWebApplication.Product
             using (TransactionScope ts = new TransactionScope())
             {
 
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
                 Button myButton = ((Button)sender);
                 Label errorMessage = ((Label)myButton.FindControl("SchowErrorMessages"));
                 try
@@ -491,7 +491,7 @@ namespace KVSWebApplication.Product
                         ts.Dispose();
                     errorMessage.Text = "Fehler:" + ex.Message;
                     //RadWindowManagerAllProducts.RadAlert(ex.Message, 380, 180, "Fehler", "");
-                    dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                    dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                     dbContext.WriteLogItem("Product Error " + ex.Message, LogTypes.ERROR, "Product");
                     dbContext.SubmitChanges();
                 }
@@ -508,7 +508,7 @@ namespace KVSWebApplication.Product
 
         protected void UpdateCustomerProductsTabel(RadComboBox cmbCustomerProduct, string productId)
         {
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+            using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
             {
                 foreach (RadComboBoxItem Item in cmbCustomerProduct.Items)
                 {
@@ -623,7 +623,7 @@ namespace KVSWebApplication.Product
         {
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
 
 
                 try
@@ -645,7 +645,7 @@ namespace KVSWebApplication.Product
                     RadWindowManagerAllProducts.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("Product Error " + ex.Message, LogTypes.ERROR, "Product");
                         dbContext.SubmitChanges();
                     }

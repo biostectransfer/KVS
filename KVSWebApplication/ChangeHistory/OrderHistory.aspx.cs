@@ -37,7 +37,7 @@ namespace KVSWebApplication.ChangeHistory
         }
         protected void AllChangesLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var changes = from chang in con.ChangeLog
                           let tableName = chang.TableName
                           let status = chang.TableProperty

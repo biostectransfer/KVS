@@ -13,7 +13,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class Mailinglist : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -41,7 +41,7 @@ namespace KVSCommon.Database
         /// <param name="locationId">StandortiD</param>
         /// <param name="dbContext">DB Kontext</param>
         /// <returns>Mailinglist Objekt</returns>
-        internal static Mailinglist CreateMailinglistItem(string email, int typeId, int? customerId, int? locationId, DataClasses1DataContext dbContext)
+        internal static Mailinglist CreateMailinglistItem(string email, int typeId, int? customerId, int? locationId, KVSEntities dbContext)
         {
             if (string.IsNullOrEmpty(email))
             {

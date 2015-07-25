@@ -86,7 +86,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         }
         protected void CheckOpenedOrders()
         {
-            ordersCount.Text = Order.getUnfineshedOrdersCount(new DataClasses1DataContext(), OrderTypes.Admission,
+            ordersCount.Text = Order.getUnfineshedOrdersCount(new KVSEntities(), OrderTypes.Admission,
                 OrderStatusTypes.AdmissionPoint).ToString();
             if (ordersCount.Text == "" || ordersCount.Text == "0")
             {
@@ -102,7 +102,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             //select all values for small customers
             if (RadComboBoxCustomerZulassungsstelle.SelectedValue == "1") // Small
             {
-                DataClasses1DataContext con = new DataClasses1DataContext();
+                KVSEntities con = new KVSEntities();
                 RadGridNeuzulassung.Columns.FindByUniqueName("CustomerLocation").Visible = false;
 
                 var smallCustomerQuery = from ord in con.Order
@@ -141,7 +141,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             //select all values for large customers
             else if (RadComboBoxCustomerZulassungsstelle.SelectedValue == "2") // Large
             {
-                DataClasses1DataContext con = new DataClasses1DataContext();
+                KVSEntities con = new KVSEntities();
                 var largeCustomerQuery1 = from ord in con.Order
                                           join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                           join cust in con.Customer on ord.CustomerId equals cust.Id
@@ -198,7 +198,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         // Small oder Large -> Auswahl der KundenName
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             if (RadComboBoxCustomerZulassungsstelle.SelectedValue == "1") //Small Customers
             {
                 var customerQuery = from cust in con.Customer
@@ -254,7 +254,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         protected void AmtGebuhrCheckBoxZulDataBinding(object sender, EventArgs e)
         {
             CheckBox amtGebCheckBox = sender as CheckBox;
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+            using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
             {
                 TextBox orderIdBox = amtGebCheckBox.FindControl("orderIdBox") as TextBox;
                 Label dienstleistungLabel = amtGebCheckBox.FindControl("DienstleisungZulLabel") as Label;
@@ -309,7 +309,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         authChargeId = Int32.Parse(editedItem["AuthChargeId"].Text);
                     }
 
-                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                    using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
                     {
                         if (Order.GenerateAuthCharge(dbContext, authChargeId, itemId, tbAuthPrice.Text))
                         {
@@ -351,7 +351,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 var orderItemId = Int32.Parse(itemId);
                 try
                 {
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                    KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                     var positionUpdateQuery = dbContext.OrderItem.SingleOrDefault(q => q.Id == orderItemId);
                     positionUpdateQuery.LogDBContext = dbContext;
                     positionUpdateQuery.Amount = Convert.ToDecimal(amoutToSave);
@@ -365,7 +365,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         }
         protected void RadGridNeuzulassung_DetailTableDataBind(object source, GridDetailTableDataBindEventArgs e)
         {
-            var dbContext = new DataClasses1DataContext();
+            var dbContext = new KVSEntities();
             var item = (GridDataItem)e.DetailTableView.ParentItem;
             var orderNumber = Int32.Parse(item["OrderNumber"].Text);
             var positionQuery = from ord in dbContext.Order
@@ -423,7 +423,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 string errorReason = errorReasonTextBox.Text;
                 try
                 {
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                    KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                     var OrderToUpdate = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber && q.CustomerId == customerId);
                     OrderToUpdate.LogDBContext = dbContext;
                     OrderToUpdate.HasError = true;
@@ -443,7 +443,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             {
                 bool amtlGebVor = false;
                 bool kennzeichenVorh = false;
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                 var myOrder = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber && q.CustomerId == customerId);
                 foreach (var orderItem in myOrder.OrderItem)
                 {
@@ -486,7 +486,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         //falls benötigt, wird der Status per Email gesendet
         protected void SendStatusByEmail(int customerId, Order orderToSend)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
             var customerAuswahl = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == customerId);
             string fromEmail = ConfigurationManager.AppSettings["FromEmail"];
             string smtp = ConfigurationManager.AppSettings["smtpHost"];
@@ -524,7 +524,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     CustomerIdHiddenField.Value = customerID.ToString();
                     try
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.OrderNumber == orderNumber);
                         if (newOrder != null)
                         {
@@ -583,7 +583,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         // getting adress from small customer
         protected void SetValuesForAdressWindow(int customerId)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
 
             var locationQuery = (from adr in dbContext.Adress
                                  join cust in dbContext.Customer on adr.Id equals cust.InvoiceAdressId
@@ -635,7 +635,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             ZulassungErrLabel.Visible = false;
             try
             {
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
                 {
                     using (scope = new TransactionScope())
                     {
@@ -685,7 +685,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 ZulassungErrLabel.Visible = true;
             }
         }
-        protected void Print(Invoice newInvoice, DataClasses1DataContext dbContext)
+        protected void Print(Invoice newInvoice, KVSEntities dbContext)
         {
             using (MemoryStream memS = new MemoryStream())
             {
@@ -745,7 +745,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 try
                 {
                     ZulassungErrLabel.Visible = false;
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                    KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                     Button button = sender as Button;
 
                     Price newPrice = null;
@@ -803,7 +803,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         }
         protected void ProductLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var productQuery = from prod in con.Product
                                select new
                                {
@@ -816,7 +816,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         }
         protected void CostCenterDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var costCenterQuery = from cost in con.CostCenter
                                   orderby cost.Name
                                   select new
@@ -837,7 +837,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         // Updating Order und setzen Status 600 - Fertig
         protected void updateDataBase(string kennzeichen, string vin, string tsn, string hsn, int orderNumber, int customerId)
         {
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+            using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
             {
                 var orderUpdateQuery = dbContext.Order.Single(q => q.OrderNumber == orderNumber && q.CustomerId == customerId);
                 orderUpdateQuery.LogDBContext = dbContext;
@@ -872,7 +872,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     var orderNumber = Int32.Parse(item["OrderNumber"].Text);
                     try
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         var newOrder = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
                         //updating order status
                         newOrder.LogDBContext = dbContext;

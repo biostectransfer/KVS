@@ -28,7 +28,7 @@ namespace KVSWebApplication.Permission
         }     
         protected void getAllPermissionDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from permission in dbContext.Permission
                         orderby permission.Name
                         select new
@@ -57,7 +57,7 @@ namespace KVSWebApplication.Permission
         }
         protected void getAllPermission_EditCommand(object source, Telerik.Web.UI.GridCommandEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
             Hashtable newValues = new Hashtable();
             ((GridEditableItem)e.Item).ExtractValues(newValues);
             try

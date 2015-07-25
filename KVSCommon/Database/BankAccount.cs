@@ -10,7 +10,7 @@ namespace KVSCommon.Database
         /// <summary>
         /// Erweiterungsklasse zur DB BankAccount
         /// </summary>
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -34,7 +34,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="adressId">Id der Bank.</param>
         /// <param name="dbContext"></param>
-        public static void DeleteBank(int bankId, DataClasses1DataContext dbContext)
+        public static void DeleteBank(int bankId, KVSEntities dbContext)
         {
             BankAccount bank = dbContext.BankAccount.SingleOrDefault(q => q.Id == bankId);
             if (bank != null)
@@ -52,7 +52,7 @@ namespace KVSCommon.Database
         /// <param name="bankcode">Bankleitzahl der Bank.</param>
         /// <param name="IBANNumber">Aktuelle IBAN Nummer</param>
         /// <returns>Die neue Bankverbindung.</returns>
-        public static BankAccount CreateBankAccount(DataClasses1DataContext dbContext, string name, string accountnumber, string bankcode, string IBANNumber, string BICNumber)
+        public static BankAccount CreateBankAccount(KVSEntities dbContext, string name, string accountnumber, string bankcode, string IBANNumber, string BICNumber)
         {
             if (string.IsNullOrEmpty(name))
             {

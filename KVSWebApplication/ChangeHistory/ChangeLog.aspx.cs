@@ -39,14 +39,14 @@ namespace KVSWebApplication
         }
         protected void AllChangesLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var changes = from chang in con.ChangeLog orderby chang.Expr1 descending
                           select chang;
             e.Result = changes;
         }
         protected void RadGridAllChanges_DetailTableDataBind(object source, GridNeedDataSourceEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             try
             {
                 RadGrid sender = source as RadGrid;
@@ -106,7 +106,7 @@ namespace KVSWebApplication
         }
         protected void RadGridAllChanges_DetailTableDataBind(object source, GridDetailTableDataBindEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             try
             {
                 GridDataItem item = (GridDataItem)e.DetailTableView.ParentItem;
@@ -169,7 +169,7 @@ namespace KVSWebApplication
         }
         protected void setEmptyDataSet(RadGrid grid, bool isNotNeedEvent=false)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             DataTable t = new DataTable();
             string  myQuery = "select  'Keine Datensätze vorhanden' as Info";
             using (SqlConnection c = new SqlConnection(dbContext.Connection.ConnectionString))

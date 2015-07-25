@@ -28,7 +28,7 @@ namespace KVSCommon.PDF
         /// <param name="docketList">Laufzettel Objekt</param>
         /// <param name="logoFilePath">Pfad zum Logo</param>
         /// <param name="dbContext">DB Kontext</param>
-        public PackingListPDF_Zulassungsstelle(DocketList docketList, string logoFilePath, DataClasses1DataContext dbContext)
+        public PackingListPDF_Zulassungsstelle(DocketList docketList, string logoFilePath, KVSEntities dbContext)
             : base(dbContext,logoFilePath)
         {
             this.DocketList = docketList;

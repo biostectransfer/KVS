@@ -46,7 +46,7 @@ namespace KVSWebApplication.Product
         }
         protected void GetCustomerProductsDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
 
             int? customerId = null;
             if (!String.IsNullOrEmpty(AllCustomer.SelectedValue))
@@ -143,7 +143,7 @@ namespace KVSWebApplication.Product
         }
         protected void CustomerCombobox_Init(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from customer in dbContext.Customer
                         select new
                         {
@@ -158,7 +158,7 @@ namespace KVSWebApplication.Product
         }
         protected void cmdProductNames_OnInit(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             RadComboBox myCustomerProducts = ((RadComboBox)sender);
             var query = from product in dbContext.Product.Where(q => !q.Price.Any(p => p.LocationId == Int32.Parse(cmbLocations.SelectedValue.ToString())))
                         select new
@@ -174,7 +174,7 @@ namespace KVSWebApplication.Product
         }
         protected void CustomerCombobox_SelectedIndexChanged(object o, Telerik.Web.UI.RadComboBoxSelectedIndexChangedEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             if (AllCustomer.SelectedValue != string.Empty)
             {
                 var query = from customer in dbContext.Customer
@@ -225,7 +225,7 @@ namespace KVSWebApplication.Product
 
         protected void cmbErloeskonten_OnInit(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             RadComboBox cmbErloeskonten = ((RadComboBox)sender);
             if (Session["selectedProductId"] != null && !String.IsNullOrEmpty(Session["selectedProductId"].ToString()))
             {
@@ -278,7 +278,7 @@ namespace KVSWebApplication.Product
             bool insertUpdateOk = true;
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
                 Button myButton = ((Button)sender);
                 Label errorMessage = ((Label)myButton.FindControl("SchowErrorMessages"));
                 errorMessage.Text = "";
@@ -362,7 +362,7 @@ namespace KVSWebApplication.Product
                     if (ts != null)
                         ts.Dispose();
                     errorMessage.Text = "Fehler:" + ex.Message;
-                    dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                    dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                     dbContext.WriteLogItem("btnSaveProduct_Click Error " + ex.Message, LogTypes.ERROR, "Product");
                     dbContext.SubmitChanges();
                 }
@@ -425,7 +425,7 @@ namespace KVSWebApplication.Product
         {
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
 
 
                 try
@@ -455,7 +455,7 @@ namespace KVSWebApplication.Product
                     RadWindowManagerCustomerPrice.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("RemovePrice_Click Error " + ex.Message, LogTypes.ERROR, "Price");
                         dbContext.SubmitChanges();
                     }

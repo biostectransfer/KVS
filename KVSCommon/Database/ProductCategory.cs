@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class ProductCategory : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -36,7 +36,7 @@ namespace KVSCommon.Database
         /// <param name="name">Name der Kategorie.</param>
         /// <param name="dbContext">Datenbankkontext, mit dem die Kategorie erstellt wird.</param>
         /// <returns>Die neu erstellte Produktkategorie.</returns>
-        public static ProductCategory CreateProductCategory(string name, DataClasses1DataContext dbContext)
+        public static ProductCategory CreateProductCategory(string name, KVSEntities dbContext)
         {
             var item = new ProductCategory()
             {
@@ -81,7 +81,7 @@ namespace KVSCommon.Database
         {
             if (action == System.Data.Linq.ChangeAction.Insert)
             {
-                if ((new DataClasses1DataContext()).ProductCategory.Any(q => q.Name == this.Name && q.Id != this.Id))
+                if ((new KVSEntities()).ProductCategory.Any(q => q.Name == this.Name && q.Id != this.Id))
                 {
                     throw new Exception("Es existiert bereits eine Produktkategorie mit Namen " + this.Name + ".");
                 }

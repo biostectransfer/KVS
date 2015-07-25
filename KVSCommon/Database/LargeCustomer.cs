@@ -11,7 +11,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class LargeCustomer : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -35,7 +35,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="dbContext">DB Kontext</param>
         /// <param name="smallCustomerId">Laufkundenid</param>
-        public static void RemoveLargeCutomer(DataClasses1DataContext dbContext, int smallCustomerId)
+        public static void RemoveLargeCutomer(KVSEntities dbContext, int smallCustomerId)
         {
             var lmCustomer = dbContext.LargeCustomer.FirstOrDefault(q => q.CustomerId == smallCustomerId);
             if (lmCustomer == null)
@@ -118,7 +118,7 @@ namespace KVSCommon.Database
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Großkunden.</returns>
         /// <remarks>Innerhalb des Aufrufs wird bereits dbContext.SubmitChanges() aufgerufen!</remarks>
-        public static LargeCustomer CreateLargeCustomer( DataClasses1DataContext dbContext ,string name, string street, string streetnumber, string zipcode, string city, string country, 
+        public static LargeCustomer CreateLargeCustomer( KVSEntities dbContext ,string name, string street, string streetnumber, string zipcode, string city, string country, 
             string phone, string fax, string mobilephone, string email, decimal vat, bool sendInvoiceToMainLocation, bool sendInvoiceByEmail, int? termOfCredit, 
             string customerNumber,string matchcode, string Debitornumber, int? PersonId, int? InvoiceType, string evbNumber)
         {
@@ -175,7 +175,7 @@ namespace KVSCommon.Database
         /// <param name="vat">Mehrwertsteuersatz für den Standort.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Standort.</returns>
-        public Location AddNewLocation(string name, string street, string streetnumber, string zipcode, string city, string country, string phone, string fax, string mobilephone, string email, decimal? vat, DataClasses1DataContext dbContext)
+        public Location AddNewLocation(string name, string street, string streetnumber, string zipcode, string city, string country, string phone, string fax, string mobilephone, string email, decimal? vat, KVSEntities dbContext)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -222,7 +222,7 @@ namespace KVSCommon.Database
         /// <param name="costcenterNumber">Kostenstellennummer.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Die neue Kostenstelle.</returns>
-        public CostCenter AddNewCostCenter(string name, string costcenterNumber, DataClasses1DataContext dbContext)
+        public CostCenter AddNewCostCenter(string name, string costcenterNumber, KVSEntities dbContext)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -258,7 +258,7 @@ namespace KVSCommon.Database
         /// <param name="typeId">Id des Typs des Verteilers.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Eintrag.</returns>
-        public Mailinglist AddNewMailinglistItem(string email, int typeId, DataClasses1DataContext dbContext)
+        public Mailinglist AddNewMailinglistItem(string email, int typeId, KVSEntities dbContext)
         {
             var type = dbContext.MailinglistType.Single(q => q.Id == typeId);
             if (this.Mailinglist.Any(q => q.Email == email && q.LocationId.HasValue == false && q.MailinglistTypeId == typeId))
@@ -277,7 +277,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="mailinglistId">Id des Eintrags.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void RemoveMailinglistItem(int mailinglistId, DataClasses1DataContext dbContext)
+        public void RemoveMailinglistItem(int mailinglistId, KVSEntities dbContext)
         {
             Mailinglist ml = this.Mailinglist.SingleOrDefault(q => q.Id == mailinglistId);
             if (ml == null)
@@ -294,7 +294,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="requiredFieldId">Id des Felds.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void AddRequiredField(int requiredFieldId, DataClasses1DataContext dbContext)
+        public void AddRequiredField(int requiredFieldId, KVSEntities dbContext)
         {
             var requiredField = dbContext.RequiredField.Single(q => q.Id == requiredFieldId);
             if (!this.LargeCustomerRequiredField.Any(q => q.RequiredFieldId == requiredFieldId))
@@ -312,7 +312,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="requiredFieldId">Id des Felds.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void RemoveRequiredField(int requiredFieldId, DataClasses1DataContext dbContext)
+        public void RemoveRequiredField(int requiredFieldId, KVSEntities dbContext)
         {
             var requiredField = dbContext.RequiredField.Single(q => q.Id == requiredFieldId);
             LargeCustomerRequiredField largeCustomerRequiredField = this.LargeCustomerRequiredField.SingleOrDefault(q => q.RequiredFieldId == requiredFieldId);
@@ -346,7 +346,7 @@ namespace KVSCommon.Database
         /// <param name="type">Art des Verteilers.</param>
         /// <returns>Liste mit Emailadressen.</returns>
         /// <remarks>Wenn der Verteiler eines Standorts abgefragt wird, und dieser leer ist, werden die Adressen aus dem Verteiler des Kunden zurückgegeben.</remarks>
-        public List<string> GetMailinglistAdresses(DataClasses1DataContext dbContext, int? locationId, MailingListTypes type)
+        public List<string> GetMailinglistAdresses(KVSEntities dbContext, int? locationId, MailingListTypes type)
         {
             if (locationId.HasValue)
             {

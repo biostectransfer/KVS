@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class SmallCustomer : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -34,7 +34,7 @@ namespace KVSCommon.Database
       /// </summary>
       /// <param name="dbContext">DB Kontext</param>
       /// <param name="smallCustomerId">Laufkunden ID</param>
-        public static void RemoveSmallCutomer(DataClasses1DataContext dbContext, int smallCustomerId)
+        public static void RemoveSmallCutomer(KVSEntities dbContext, int smallCustomerId)
         {
             var smCustomer = dbContext.SmallCustomer.FirstOrDefault(q => q.CustomerId == smallCustomerId);
             if (smCustomer == null)
@@ -86,7 +86,7 @@ namespace KVSCommon.Database
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Laufkunden.</returns>
         public static SmallCustomer CreateSmallCustomer(string name, string firstName, string title, string gender, string street, string streetnumber, string zipcode, string city, 
-            string country, string phone, string fax, string mobilephone, string email, decimal vat, int? termOfCredit, string customerNumber, DataClasses1DataContext dbContext)
+            string country, string phone, string fax, string mobilephone, string email, decimal vat, int? termOfCredit, string customerNumber, KVSEntities dbContext)
         {
             if (string.IsNullOrEmpty(name))
             {

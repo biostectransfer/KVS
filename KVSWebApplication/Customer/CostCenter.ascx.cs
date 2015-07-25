@@ -38,7 +38,7 @@ namespace KVSWebApplication.Customer
             }
             if (!Page.IsPostBack)
             {
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+                using (KVSEntities dbContext = new KVSEntities())
                 {                   
                     txbCostCenterNumber.Text = EmptyStringIfNull.generateIndividualNumber(dbContext.CostCenter.Max(q => q.CostcenterNumber));
                 }
@@ -51,7 +51,7 @@ namespace KVSWebApplication.Customer
         /// <param name="e"></param>
         protected void getAllCostCenterDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from cust in dbContext.Customer
                         join cost in dbContext.CostCenter on cust.Id equals cost.CustomerId 
                         orderby cost.Name
@@ -81,7 +81,7 @@ namespace KVSWebApplication.Customer
         /// <param name="e"></param>
         protected void GetCustomerCostCenter_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {         
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from cust in dbContext.CostCenter
                         where cust.CustomerId == Int32.Parse(e.WhereParameters["CustomerId"].ToString()) && cust.Id == Int32.Parse(e.WhereParameters["CostCenterId"].ToString())
                         orderby cust.BankAccount.BankName
@@ -107,7 +107,7 @@ namespace KVSWebApplication.Customer
             {
                 Hashtable newValues = new Hashtable();
                 ((GridEditableItem)e.Item).ExtractValues(newValues);
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
                 try
                 {
                     if (newValues["TableId"].ToString() == "Inner")
@@ -157,7 +157,7 @@ namespace KVSWebApplication.Customer
                     RadWindowManagerCostCenter.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                     try
                     {
-                        dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         dbContext.WriteLogItem("CostCenter Edit Error " + ex.Message, LogTypes.ERROR, "CostCenter");
                         dbContext.SubmitChanges();
                     }
@@ -199,7 +199,7 @@ namespace KVSWebApplication.Customer
         }
         protected void CustomerCombobox_ItemsRequested(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from customer in dbContext.Customer
                         join lCustomer in dbContext.LargeCustomer on customer.Id equals lCustomer.CustomerId
                         select new
@@ -245,7 +245,7 @@ namespace KVSWebApplication.Customer
                 txbLargeCustomerIBAN.Text += long.Parse(cmbCostCenterAccountNumber.Text).ToString("0000000000").Substring(0, 4);
                 txbLargeCustomerIBAN.Text += long.Parse(cmbCostCenterAccountNumber.Text).ToString("0000000000").Substring(4, 4);
                 txbLargeCustomerIBAN.Text += long.Parse(cmbCostCenterAccountNumber.Text).ToString("0000000000").Substring(8, 2);
-                using (DataClasses1DataContext dataContext = new DataClasses1DataContext())
+                using (KVSEntities dataContext = new KVSEntities())
                 {
                     var bicNr = dataContext.BIC_DE.FirstOrDefault(q => q.Bankleitzahl.Contains(rcbCostCenterBankCode.Text) && (q.Bezeichnung.Contains(cmbBankNameCostCenter.Text) || q.Kurzbezeichnung.Contains(cmbBankNameCostCenter.Text)));
                     if (bicNr != null)
@@ -260,7 +260,7 @@ namespace KVSWebApplication.Customer
         {
             using (TransactionScope ts = new TransactionScope())
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                 
 
                     try
@@ -285,7 +285,7 @@ namespace KVSWebApplication.Customer
                         RadWindowManagerCostCenter.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                         try
                         {
-                            dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                            dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                             dbContext.WriteLogItem("CostCenter Remove Error " + ex.Message, LogTypes.ERROR, "CostCenter");
                             dbContext.SubmitChanges();
                         }
@@ -304,7 +304,7 @@ namespace KVSWebApplication.Customer
             {
                 using (TransactionScope ts = new TransactionScope())
                 {
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+                    KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
                     try
                     {
                         var contactUpdate = dbContext.Customer.SingleOrDefault(q => q.Id == Int32.Parse(CustomerCostCenter.SelectedValue));
@@ -331,7 +331,7 @@ namespace KVSWebApplication.Customer
                         RadWindowManagerCostCenter.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                         try
                         {
-                            dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                            dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                             dbContext.WriteLogItem("rbtSaveCostCenter_Click Error " + ex.Message, LogTypes.ERROR, "CostCenter");
                             dbContext.SubmitChanges();
                         }

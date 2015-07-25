@@ -33,7 +33,7 @@ namespace KVSWebApplication.ImportExport
         /// <param name="e"></param>
         protected void getAllInvoiceDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var query = from cust in dbContext.Customer 
                         join inv in dbContext.Invoice on cust.Id equals  inv.CustomerId
                         join inn in dbContext.InvoiceNumber on inv.Id equals inn.InvoiceId
@@ -106,7 +106,7 @@ namespace KVSWebApplication.ImportExport
         }
         protected void CustomerName_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var CustomerName = from cust in con.Customer
                                select new
                                {
@@ -127,7 +127,7 @@ namespace KVSWebApplication.ImportExport
                 TableCell cell = item["InvoiceNumber_"];
                 if (cell != null && cell.Text != "")
                 {
-                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+                    using (KVSEntities dbContext = new KVSEntities())
                     {
                         var myInvoice = dbContext.Invoice.FirstOrDefault(q => q.InvoiceNumber.Number == int.Parse(cell.Text));
                         //cell = item["NettoSum"];
@@ -175,7 +175,7 @@ namespace KVSWebApplication.ImportExport
         {
             if (Session["SelectedInvoices"] != null)
             {              
-                using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
                 {
                     try
                     {

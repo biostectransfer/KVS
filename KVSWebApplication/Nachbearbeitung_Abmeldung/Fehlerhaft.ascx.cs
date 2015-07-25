@@ -56,7 +56,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             //select all values for small customers
             if (RadComboBoxCustomer.SelectedValue == "1")
             {
-                DataClasses1DataContext con = new DataClasses1DataContext();
+                KVSEntities con = new KVSEntities();
                 var smallCustomerQuery = from ord in con.Order
                                          join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                          join cust in con.Customer on ord.CustomerId equals cust.Id
@@ -109,7 +109,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             //select all values for large customers
             else if (RadComboBoxCustomer.SelectedValue == "2")
             {
-                DataClasses1DataContext con = new DataClasses1DataContext();
+                KVSEntities con = new KVSEntities();
                 var largeCustomerQuery = from ord in con.Order
                                          join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                          join cust in con.Customer on ord.CustomerId equals cust.Id
@@ -175,7 +175,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         // Small oder Large -> Auswahl der KundenName
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             if (RadComboBoxCustomer.SelectedValue == "1") //Small Customers
             {
                 var customerQuery = from cust in con.Customer
@@ -261,7 +261,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             try
             {
                 FehlerhaftErrorMessage.Text = "";
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                 Order orderToUpdate = null;
                 if (RadComboBoxCustomer.SelectedValue == "1")
                 {

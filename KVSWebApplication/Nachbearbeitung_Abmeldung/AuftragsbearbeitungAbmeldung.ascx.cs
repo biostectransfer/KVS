@@ -89,7 +89,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         protected void CheckOpenedOrders()
         {
-            ordersCount.Text = Order.getUnfineshedOrdersCount(new DataClasses1DataContext(), OrderTypes.Cancellation,
+            ordersCount.Text = Order.getUnfineshedOrdersCount(new KVSEntities(), OrderTypes.Cancellation,
                 OrderStatusTypes.Open).ToString();
             if (ordersCount.Text == "" || ordersCount.Text == "0")
             {
@@ -105,7 +105,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             //select all values for small customers
             if (RadComboBoxCustomerAbmeldungOffen.SelectedValue == "1")
             {
-                DataClasses1DataContext con = new DataClasses1DataContext();
+                KVSEntities con = new KVSEntities();
                 var abmeldungQuery = from ord in con.Order
                                      join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                      join cust in con.Customer on ord.CustomerId equals cust.Id
@@ -144,7 +144,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             //select all values for large customers
             else if (RadComboBoxCustomerAbmeldungOffen.SelectedValue == "2")
             {
-                DataClasses1DataContext con = new DataClasses1DataContext();
+                KVSEntities con = new KVSEntities();
                 var abmeldungQuery = from ord in con.Order
                                      join ordst in con.OrderStatus on ord.Status equals ordst.Id
                                      join cust in con.Customer on ord.CustomerId equals cust.Id
@@ -209,7 +209,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         // Small oder Large -> Auswahl der KundenName
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             if (RadComboBoxCustomerAbmeldungOffen.SelectedValue == "1") //Small Customers
             {
                 var customerQuery = from cust in con.Customer
@@ -249,7 +249,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         protected void ProductLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var productQuery = from prod in con.Product
                                select new
                                {
@@ -262,7 +262,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         protected void CostCenterDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            DataClasses1DataContext con = new DataClasses1DataContext();
+            KVSEntities con = new KVSEntities();
             var costCenterQuery = from cost in con.CostCenter
                                   select new
                                   {
@@ -304,7 +304,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         authChargeId = Int32.Parse(editedItem["AuthChargeId"].Text);
                     }
 
-                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                    using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
                     {
                         if (Order.GenerateAuthCharge(dbContext, authChargeId, itemId, tbAuthPrice.Text))
                         {
@@ -319,7 +319,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 {
                     using (TransactionScope ts = new TransactionScope())
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
 
                         try
                         {
@@ -339,7 +339,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 
                             AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
                             AbmeldungErrLabel.Visible = true;
-                            dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                            dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                             dbContext.WriteLogItem("Delete OrderItem Error " + ex.Message, LogTypes.ERROR, "OrderItem");
                             dbContext.SubmitChanges();
                         }
@@ -382,7 +382,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 var orderItemId = Int32.Parse(itemId);
                 try
                 {
-                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                    KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                     var positionUpdateQuery = dbContext.OrderItem.SingleOrDefault(q => q.Id == orderItemId);
                     positionUpdateQuery.LogDBContext = dbContext;
                     positionUpdateQuery.Amount = Convert.ToDecimal(amoutToSave);
@@ -402,7 +402,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 try
                 {
                     AbmeldungErrLabel.Visible = false;
-                    var dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                    var dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                     Button button = sender as Button;
                     OrderItem newOrderItem1 = null;
 
@@ -465,7 +465,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         protected void RadGridOffen_DetailTableDataBind(object source, GridDetailTableDataBindEventArgs e)
         {
-            var dbContext = new DataClasses1DataContext();
+            var dbContext = new KVSEntities();
             var item = (GridDataItem)e.DetailTableView.ParentItem;
             var orderNumber = Int32.Parse(item["OrderNumber"].Text.ToString());
             var positionQuery = from ord in dbContext.Order
@@ -506,7 +506,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 else
                 {
                     List<string> laufzettel = new List<string>();
-                    using (DataClasses1DataContext con = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                    using (KVSEntities con = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
                     {
                         using (ts = new TransactionScope())
                         {
@@ -623,7 +623,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             var orderNumber = orderIdToUpdate;
             try
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                 var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.OrderNumber == orderNumber);
                 if (newOrder != null)
                 {
@@ -685,7 +685,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     string errorReason = errorReasonTextBox.Text;
                     try
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         var OrderToUpdate = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber && q.CustomerId == customerId);
                         OrderToUpdate.LogDBContext = dbContext;
                         OrderToUpdate.HasError = true;
@@ -741,7 +741,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     var orderNumber = Int32.Parse(item["OrderNumber"].Text);
                     try
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         var newOrder = dbContext.Order.Single(q => q.CustomerId == customerID && q.OrderNumber == orderNumber);
                         if (newOrder != null)
                         {
@@ -780,7 +780,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         // Updating Order before Zulassungstelle
         protected void updateDataBase(string vin, string tsn, string hsn, int orderNumber, int customerId, string kennzeichen)
         {
-            using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+            using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
             {
                 var updateQuery = dbContext.DeregistrationOrder.Single(q => q.OrderNumber == orderNumber);
                 updateQuery.LogDBContext = dbContext;
@@ -849,7 +849,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     var orderNumber = Int32.Parse(item["OrderNumber"].Text);
                     try
                     {
-                        DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
+                        KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
                         var newOrder = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
                         //updating order status
                         newOrder.LogDBContext = dbContext;

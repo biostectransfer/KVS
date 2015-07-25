@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class Vehicle : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -41,7 +41,7 @@ namespace KVSCommon.Database
         /// <param name="colorCode">Farbcode.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Das neue Fahrzeug.</returns>
-        public static Vehicle CreateVehicle(string vin, string hsn, string tsn, string variant, DateTime? firstRegistrationDate, int? colorCode, DataClasses1DataContext dbContext)
+        public static Vehicle CreateVehicle(string vin, string hsn, string tsn, string variant, DateTime? firstRegistrationDate, int? colorCode, KVSEntities dbContext)
         {
             if (string.IsNullOrEmpty(vin))
             {

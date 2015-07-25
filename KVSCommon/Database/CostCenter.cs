@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class CostCenter : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -29,8 +29,8 @@ namespace KVSCommon.Database
             get;
             set;
         }
-        private DataClasses1DataContext myDbContext;
-        public DataClasses1DataContext _dbContext
+        private KVSEntities myDbContext;
+        public KVSEntities _dbContext
         {
             get { return myDbContext; }
             set { myDbContext = value; }
@@ -40,7 +40,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="adressId">Id der Kostenstelle.</param>
         /// <param name="dbContext"></param>
-        public static void RemoveCostCenter(int costCenterId, DataClasses1DataContext dbContext)
+        public static void RemoveCostCenter(int costCenterId, KVSEntities dbContext)
         {
             CostCenter cc = dbContext.CostCenter.SingleOrDefault(q => q.Id == costCenterId);
             if (cc != null)
@@ -68,7 +68,7 @@ namespace KVSCommon.Database
             {
                 if (this.myDbContext == null)
                 {
-                    using (DataClasses1DataContext dbContext = new DataClasses1DataContext())
+                    using (KVSEntities dbContext = new KVSEntities())
                     {
                         if (dbContext.CostCenter.Any(q => q.CustomerId == this.CustomerId && q.Name == this.Name))
                         {

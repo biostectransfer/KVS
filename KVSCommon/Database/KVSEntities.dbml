@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="test_fullservice" Class="DataClasses1DataContext" BaseType="KVSCommon.Entities.move_to_DataAccess.EntitiesBase" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="test_fullservice" Class="KVSEntities" BaseType="KVSCommon.Entities.move_to_DataAccess.EntitiesBase" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Table Name="dbo.BankAccount" Member="BankAccount">
     <Type Name="BankAccount">
       <Column Name="Id" AutoSync="Never" Type="System.Int32" DbType="int  NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -707,6 +707,10 @@
       <Column Name="Aenderungskennzeichen" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="Bankleitzahlloeschung" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="Nachfolgebankleitzahl" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Id" AutoSync="Never" Type="System.Int32" DbType="int" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.PathPosition" Member="PathPosition">

@@ -10,7 +10,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class Price : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -39,7 +39,7 @@ namespace KVSCommon.Database
         /// <param name="locationId">Id des Standorts, falls benoetigt. </param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Preis.</returns>
-        public static Price CreatePrice(decimal amount, decimal? authorativeCharge, int productId, int? locationId, int? accountId, DataClasses1DataContext dbContext)
+        public static Price CreatePrice(decimal amount, decimal? authorativeCharge, int productId, int? locationId, int? accountId, KVSEntities dbContext)
         {
             if (dbContext.Price.Any(q => q.ProductId == productId && q.LocationId == locationId))
             {
@@ -88,7 +88,7 @@ namespace KVSCommon.Database
         /// <param name="Price[]">Preisliste</param>
         ///  <param name="callFromProduct"></param>
         /// <param name="dbContext"></param>
-        public static void RemovePrice(Price[] pr, DataClasses1DataContext dbContext, bool callFromProduct = true)
+        public static void RemovePrice(Price[] pr, KVSEntities dbContext, bool callFromProduct = true)
         {
 
             foreach (var price in pr)

@@ -81,7 +81,7 @@ namespace KVSWebApplication.Mailing
             if (AllCustomer.SelectedValue != string.Empty &&rbtLocationMail.Checked == true)
             {
                 cmbLocations.Enabled = true;
-                DataClasses1DataContext dbContext = new DataClasses1DataContext();
+                KVSEntities dbContext = new KVSEntities();
                 if (AllCustomer.SelectedValue != string.Empty)
                 {
                     var query = from customer in dbContext.Customer
@@ -107,7 +107,7 @@ namespace KVSWebApplication.Mailing
         }
         protected void GetMailAdresses_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {            
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
 
             if (rbtCustomerMail.Checked == true && !String.IsNullOrEmpty(AllCustomer.SelectedValue))
             {
@@ -200,7 +200,7 @@ namespace KVSWebApplication.Mailing
         }
         protected void btnSaveMail_Click(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
+            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
             Button myButton = ((Button)sender);
             Label errorMessage = ((Label)myButton.FindControl("SchowErrorMessages"));
             TextBox email = ((TextBox)myButton.FindControl("EmailAdress"));
@@ -291,7 +291,7 @@ namespace KVSWebApplication.Mailing
                     if (e.Item is GridDataItem)
                     {
                         GridDataItem deletedItem = e.Item as GridDataItem;
-                        using (DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                        using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
                         {
                             try
                             {
@@ -335,7 +335,7 @@ namespace KVSWebApplication.Mailing
         }
         protected void CustomerCombobox_Init(object sender, EventArgs e)
         {
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var largeCustomer = from cust in dbContext.LargeCustomer
                                 select new
                                 {
@@ -351,7 +351,7 @@ namespace KVSWebApplication.Mailing
         protected void MailType_ItemsRequested(object sender, RadComboBoxItemsRequestedEventArgs e)
         {
             RadComboBox types = ((RadComboBox)sender);
-            DataClasses1DataContext dbContext = new DataClasses1DataContext();
+            KVSEntities dbContext = new KVSEntities();
             var mailType = from mailT in dbContext.MailinglistType
                            select new { id = mailT.Id, typeName = mailT.Name };
             AllCustomer.Items.Clear();
@@ -364,7 +364,7 @@ namespace KVSWebApplication.Mailing
         {
             if (AllCustomer.SelectedValue != string.Empty && rbtLocationMail.Checked == true)
             {
-                DataClasses1DataContext dbContext = new DataClasses1DataContext();
+                KVSEntities dbContext = new KVSEntities();
                 if (AllCustomer.SelectedValue != string.Empty)
                 {
                     var query = from customer in dbContext.Customer

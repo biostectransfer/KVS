@@ -17,7 +17,7 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class Invoice : ILogging
     {
-        public DataClasses1DataContext LogDBContext
+        public KVSEntities LogDBContext
         {
             get;
             set;
@@ -46,7 +46,7 @@ namespace KVSCommon.Database
         /// <param name="invoiceRecipientAdressId">Adresse des Rechnungsempfängers.</param>
         /// <param name="customerId">Id des Kunden.</param>
         /// <returns>Die neue Rechnung.</returns>
-        public static Invoice CreateInvoice(DataClasses1DataContext dbContext, int userId, string invoiceRecipient, Adress invoiceRecipientAdress, int customerId, double? discount, string invTypeId)
+        public static Invoice CreateInvoice(KVSEntities dbContext, int userId, string invoiceRecipient, Adress invoiceRecipientAdress, int customerId, double? discount, string invTypeId)
         {
             //if (string.IsNullOrEmpty(invoiceRecipient))
             //{
@@ -77,7 +77,7 @@ namespace KVSCommon.Database
         /// <param name="dbContext">Datenbank Kontext</param>
         /// <param name="myWhere">Rechnungstyp</param>
         /// <returns>Rechnungstyp ID</returns>
-        public static int? GetInvoiceTypeId(DataClasses1DataContext dbContext, string myWhere)
+        public static int? GetInvoiceTypeId(KVSEntities dbContext, string myWhere)
         {
             int? type = null;
 
@@ -97,7 +97,7 @@ namespace KVSCommon.Database
         /// <param name="locationId">Id des Standorts, falls vorhanden.</param>
         /// <param name="dbContext">Datenbankkontext für die Abfrage.</param>
         /// <returns>Die Rechnungsadresse.</returns>
-        public static Adress GetInitialInvoiceAdress(int customerId, int? locationId, DataClasses1DataContext dbContext)
+        public static Adress GetInitialInvoiceAdress(int customerId, int? locationId, KVSEntities dbContext)
         {
             var customer = dbContext.Customer.Single(q => q.Id == customerId);
             LargeCustomer largeCustomer = customer.LargeCustomer;
@@ -129,7 +129,7 @@ namespace KVSCommon.Database
         /// Gibt die Rechnungsversandadresse anhand der Kundendaten und des Standorts der Aufträge in der Rechnung zurück.
         /// </summary>
         /// <returns>Die Rechnungsversandadresse.</returns>
-        public static Adress GetInvoiceDispatchAdress(int customerId, int? locationId, DataClasses1DataContext dbContext)
+        public static Adress GetInvoiceDispatchAdress(int customerId, int? locationId, KVSEntities dbContext)
         {
             var customer = dbContext.Customer.Single(q => q.Id == customerId);
             LargeCustomer largeCustomer = customer.LargeCustomer;
@@ -164,7 +164,7 @@ namespace KVSCommon.Database
         /// <param name="smtpServer">SMTP</param>
         /// <param name="fromAddress">Absender</param>
         /// <param name="toAdresses">Empfaenger</param>
-        public static void SendByMail(DataClasses1DataContext dbContext, int invoiceId, string smtpServer, string fromAddress, List<string> toAdresses = null)
+        public static void SendByMail(KVSEntities dbContext, int invoiceId, string smtpServer, string fromAddress, List<string> toAdresses = null)
         {
 
             var invoice = dbContext.Invoice.Single(q => q.Id == invoiceId);
@@ -205,7 +205,7 @@ namespace KVSCommon.Database
         /// <param name="costCenterId">Id der Kostenstelle, falls benötigt.</param>
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Die neue Rechnungsposition.</returns>
-        public InvoiceItem AddInvoiceItem(string name, decimal amount, int count, OrderItem orderItem, CostCenter costCenter, DataClasses1DataContext dbContext)
+        public InvoiceItem AddInvoiceItem(string name, decimal amount, int count, OrderItem orderItem, CostCenter costCenter, KVSEntities dbContext)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -280,7 +280,7 @@ namespace KVSCommon.Database
         /// </summary>
         /// <param name="ms">MemoryStream, in den die PDF-Daten geschrieben werden.</param>
         /// <param name="logoFilePath">Dateipfad zum Logo für das PDF.</param>
-        public void PrintPreview(DataClasses1DataContext dbContext, MemoryStream ms, string logoFilePath)
+        public void PrintPreview(KVSEntities dbContext, MemoryStream ms, string logoFilePath)
         {
             InvoicePDF pdf = new InvoicePDF(dbContext, this, logoFilePath);
             using (MemoryStream tempStream = new MemoryStream())
@@ -325,7 +325,7 @@ namespace KVSCommon.Database
         /// <param name="ms">MemoryStream, in den das PDF geschrieben wird.</param>
         /// <param name="logoFilePath">Dateipfad zum Logo für das PDF.</param>
         ///  <param name="defaultAccountNumber">Das Standard definierte Konto</param>
-        public void Print(DataClasses1DataContext dbContext, MemoryStream ms, string logoFilePath, bool defaultAccountNumber = true)
+        public void Print(KVSEntities dbContext, MemoryStream ms, string logoFilePath, bool defaultAccountNumber = true)
         {
             if (this.IsPrinted)
             {
@@ -374,7 +374,7 @@ namespace KVSCommon.Database
         /// Storniert eine Rechnung.
         /// </summary>
         /// <param name="dbContext"></param>
-        public void Cancel(DataClasses1DataContext dbContext)
+        public void Cancel(KVSEntities dbContext)
         {
             if (this.IsPrinted)
             {
@@ -510,7 +510,7 @@ namespace KVSCommon.Database
         /// <param name="customerId">Kundenid</param>
         /// <param name="userId">Benutzerid</param>
         /// <returns>Rechnungstext</returns>
-        public static string GetDefaultInvoiceText(DataClasses1DataContext dbContext, int customerId, int userId)
+        public static string GetDefaultInvoiceText(KVSEntities dbContext, int customerId, int userId)
         {
 
             Customer customer = dbContext.Customer.Single(q => q.Id == customerId);
