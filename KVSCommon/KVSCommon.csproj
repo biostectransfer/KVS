@@ -125,6 +125,7 @@
     <Compile Include="Managers\Base\IManagerBase.cs" />
     <Compile Include="Managers\Base\IReadOnlyEntityManager.cs" />
     <Compile Include="Managers\Base\IReadOnlyManagerBase.cs" />
+    <Compile Include="Managers\IOrderManager.cs" />
     <Compile Include="Managers\IUserManager.cs" />
     <Compile Include="Managers\IBicManager.cs" />
     <Compile Include="PDF\AbstractPDFCreator.cs" />

@@ -24,6 +24,7 @@ namespace KVSWebApplication.Auftragseingang
         {
             BicManager = (IBicManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IBicManager));
             UserManager = (IUserManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IUserManager));
+            OrderManager = (IOrderManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IOrderManager));
         }
 
         protected abstract PermissionTypes PagePermission { get; }
@@ -40,6 +41,7 @@ namespace KVSWebApplication.Auftragseingang
 
         public IBicManager BicManager { get; set; }
         public IUserManager UserManager { get; set; }
+        public IOrderManager OrderManager { get; set; }
 
         #endregion
 
@@ -81,40 +83,32 @@ namespace KVSWebApplication.Auftragseingang
         protected void CheckUmsatzForSmallCustomer()
         {
             CustomerHistoryLabel.Visible = true;
-            KVSEntities con = new KVSEntities();
-            var newQuery = from ord in con.Order
-                           let registration = ord.DeregistrationOrder != null ? ord.DeregistrationOrder.Registration : ord.DeregistrationOrder.Registration
-                           where ord.Status == (int)OrderStatusTypes.Payed
-                           select new
-                           {
-                               CustomerId = ord.CustomerId,
-                               OrderNumber = ord.OrderNumber,
-                           };
+
+            var orders = OrderManager.GetEntities(o => o.Status == (int)OrderStatusTypes.Payed);
+            
             if (!String.IsNullOrEmpty(CustomerDropDown.SelectedValue))
             {
-                newQuery = newQuery.Where(q => q.CustomerId == Int32.Parse(CustomerDropDown.SelectedValue));
+                orders = orders.Where(q => q.CustomerId == Int32.Parse(CustomerDropDown.SelectedValue));
             }
 
-            // Allgemein
-            string countAuftrag = newQuery.Count().ToString();
+            orders = orders.ToList();
+            
             decimal gebuehren = 0;
             decimal umsatz = 0;
             //Amtliche Gebühr
-            foreach (var newOrder in newQuery)
+            foreach (var order in orders)
             {
-                var order = con.Order.SingleOrDefault(q => q.OrderNumber == newOrder.OrderNumber);
-                if (order != null)
+                foreach (OrderItem orderItem in order.OrderItem)
                 {
-                    foreach (OrderItem orderItem in order.OrderItem)
-                    {
-                        if (orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
-                            gebuehren = gebuehren + orderItem.Amount;
-                        else if (!orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
-                            umsatz = umsatz + orderItem.Amount;
-                    }
+                    if (orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
+                        gebuehren = gebuehren + orderItem.Amount;
+                    else if (!orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
+                        umsatz = umsatz + orderItem.Amount;
                 }
             }
-            CustomerHistoryLabel.Text = "Historie: <br/> Gesamt: " + countAuftrag + " <br/> Umsatz: " + umsatz.ToString("C2") + "<br/> Gebühren: " + gebuehren.ToString("C2");
+
+            CustomerHistoryLabel.Text = String.Format("Historie: <br/> Gesamt: {0} <br/> Umsatz: {1}<br/> Gebühren: {2}",
+                orders.Count(), umsatz.ToString("C2"), gebuehren.ToString("C2"));
         }
 
         #endregion

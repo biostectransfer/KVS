@@ -7,8 +7,7 @@ using System.Text;
 
 namespace KVSCommon.Managers
 {
-    public interface IBicManager: IEntityManager<BIC_DE, int>
+    public interface IOrderManager : IEntityManager<Order, int>
     {
-        BIC_DE GetBicByCodeAndName(string code, string name);
     }
 }

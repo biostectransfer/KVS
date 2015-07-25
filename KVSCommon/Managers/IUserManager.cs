@@ -1,5 +1,6 @@
 ﻿using KVSCommon.Database;
 using KVSCommon.Enums;
+using KVSCommon.Managers.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace KVSCommon.Managers
 {
-    public interface IUserManager
+    public interface IUserManager: IEntityManager<User, int>
     {
         User Logon(string login, string password);
         

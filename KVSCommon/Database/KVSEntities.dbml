@@ -459,6 +459,8 @@
       <Column Name="Geprueft" Type="System.Boolean" CanBeNull="true" />
       <Column Name="ReadyToSend" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="DocketListNumber" Storage="_DocketListId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="Order_DeregistrationOrder" Member="DeregistrationOrder" ThisKey="OrderNumber" OtherKey="OrderNumber" Type="DeregistrationOrder" Cardinality="One" />
       <Association Name="Order_OrderInvoice" Member="OrderInvoice" ThisKey="OrderNumber" OtherKey="OrderNumber" Type="OrderInvoice" />
       <Association Name="Order_OrderItem" Member="OrderItem" ThisKey="OrderNumber" OtherKey="OrderNumber" Type="OrderItem" />

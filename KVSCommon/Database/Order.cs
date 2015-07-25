@@ -4,14 +4,27 @@ using System.Linq;
 using System.Text;
 using System.Configuration;
 using KVSCommon.Enums;
+using KVSCommon.Entities;
 
 namespace KVSCommon.Database
 {
     /// <summary>
     /// Erweiterungsklasse für die DB Tabelle Order
     /// </summary>
-    public partial class Order : ILogging
+    public partial class Order : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
+        public int Id
+        {
+            get
+            {
+                return OrderNumber;
+            }
+            set 
+            {
+                OrderNumber = value;
+            }
+        }
+
         static void Main(string[] args)
         {
             if (args.Count() > 0)
