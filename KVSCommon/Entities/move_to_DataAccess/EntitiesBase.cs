@@ -141,23 +141,26 @@ namespace KVSCommon.Entities.move_to_DataAccess
         {
             try
             {
-                var changeSet = GetChangeSet();
-
-                foreach (var dbEntityEntry in changeSet.Inserts)
+                if (saveActorManager != null)
                 {
-                    saveActorManager.DoBeforeSaveAction(dbEntityEntry, EntityState.New);
-                }
+                    var changeSet = GetChangeSet();
+
+                    foreach (var dbEntityEntry in changeSet.Inserts)
+                    {
+                        saveActorManager.DoBeforeSaveAction(dbEntityEntry, EntityState.New);
+                    }
 
 
-                foreach (var dbEntityEntry in changeSet.Updates)
-                {
-                    saveActorManager.DoBeforeSaveAction(dbEntityEntry, EntityState.Loaded);
-                }
+                    foreach (var dbEntityEntry in changeSet.Updates)
+                    {
+                        saveActorManager.DoBeforeSaveAction(dbEntityEntry, EntityState.Loaded);
+                    }
 
 
-                foreach (var dbEntityEntry in changeSet.Deletes)
-                {
-                    saveActorManager.DoBeforeSaveAction(dbEntityEntry, EntityState.Deleted);
+                    foreach (var dbEntityEntry in changeSet.Deletes)
+                    {
+                        saveActorManager.DoBeforeSaveAction(dbEntityEntry, EntityState.Deleted);
+                    }
                 }
 
                 SubmitChanges();

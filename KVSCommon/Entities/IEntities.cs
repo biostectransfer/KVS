@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KVSCommon.Database;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,17 @@ namespace KVSCommon.Entities
     /// </summary>
     public interface IEntities
     {
+        void SetLogUserId(int id);
+
+        /// <summary>
+        /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
+        /// </summary>
+        /// <param name="logText">Text fьr den Logeintrag.</param>
+        /// <param name="type">Typ des Logeintrages.</param>
+        /// <param name="referenceId">Id des betroffenen Datensatzes.</param>
+        /// <param name="tableName">Tabellenname des betroffenen Datensatzes.</param>
+        void WriteLogItem(string logText, LogTypes type, int referenceId, string tableName);
+
         /// <summary>
         ///     Gets set of entities
         /// </summary>

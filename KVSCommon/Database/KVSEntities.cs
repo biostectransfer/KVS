@@ -30,9 +30,14 @@ namespace KVSCommon.Database
             get;
             set;
         }
+
+        public void SetLogUserId(int id)
+        {
+            LogUserId = id;
+        }
                 
         /// <summary>
-        /// Fьgt dem Datenbankkontext einen Logeintrag hinzu.
+        /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
         /// </summary>
         /// <param name="logText">Text fьr den Logeintrag.</param>
         /// <param name="type">Typ des Logeintrages.</param>
@@ -46,27 +51,21 @@ namespace KVSCommon.Database
 
             this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, null, tableName, null, null));
         }
-        
+
         partial void OnCreated()
         {
-            if (!this.LogUserId.HasValue)
+            int logUserId;
+            if (!this.LogUserId.HasValue &&
+                HttpContext.Current != null && HttpContext.Current.Session != null &&
+                HttpContext.Current.Session["UserId"] != null &&
+                Int32.TryParse(HttpContext.Current.Session["UserId"].ToString(), out logUserId))
             {
-                if (HttpContext.Current != null)
-                {
-                    if (HttpContext.Current.Session["UserId"] != null)
-                    {
-                        int logUserId;
-                        if (Int32.TryParse(HttpContext.Current.Session["UserId"].ToString(), out logUserId))
-                        {
-                            this.LogUserId = logUserId;
-                        }
-                    }
-                }
+                this.LogUserId = logUserId;
             }
         }
 
         /// <summary>
-        /// Fьgt dem Datenbankkontext einen Logeintrag hinzu.
+        /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
         /// </summary>
         /// <param name="logText">Text fьr den Logeintrag.</param>
         /// <param name="type">Typ des Logeintrages.</param>
@@ -90,7 +89,7 @@ namespace KVSCommon.Database
         }
         
         /// <summary>
-        /// Fьgt dem Datenbankkontext einen Logeintrag hinzu.
+        /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
         /// </summary>
         /// <param name="logText">Text fьr den Logeintrag.</param>
         /// <param name="type">Typ des Logeintrages.</param>
@@ -112,7 +111,7 @@ namespace KVSCommon.Database
         }
 
         /// <summary>
-        /// Fьgt dem Datenbankkontext einen Logeintrag hinzu.
+        /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
         /// </summary>
         /// <param name="logText">Text fьr den Logeintrag.</param>
         /// <param name="type">Typ des Logeintrages.</param>
@@ -140,7 +139,7 @@ namespace KVSCommon.Database
         }
 
         /// <summary>
-        /// Fьgt dem Datenbankkontext einen Logeintrag hinzu.
+        /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
         /// </summary>
         /// <param name="logText">Text fьr den Logeintrag.</param>
         /// <param name="type">Typ des Logeintrages.</param>

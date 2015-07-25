@@ -16,5 +16,6 @@ namespace KVSCommon.Entities
         /// BICs
         /// </summary>
         System.Data.Linq.Table<BIC_DE> BIC_DE { get; }
+
     }
 }

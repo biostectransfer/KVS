@@ -113,6 +113,7 @@
     <Compile Include="Entities\IRemovable.cs" />
     <Compile Include="Entities\ISystemFields.cs" />
     <Compile Include="Entities\move_to_DataAccess\EntitiesBase.cs" />
+    <Compile Include="Enums\PermissionTypes.cs" />
     <Compile Include="Enums\MailingListTypes.cs" />
     <Compile Include="Enums\OrderItemStatusTypes.cs" />
     <Compile Include="Enums\OrderStatusTypes.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Managers\Base\IManagerBase.cs" />
     <Compile Include="Managers\Base\IReadOnlyEntityManager.cs" />
     <Compile Include="Managers\Base\IReadOnlyManagerBase.cs" />
+    <Compile Include="Managers\IUserManager.cs" />
     <Compile Include="Managers\IBicManager.cs" />
     <Compile Include="PDF\AbstractPDFCreator.cs" />
     <Compile Include="PDF\GroupedAppendix.cs" />

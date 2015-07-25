@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using KVSCommon.Utility;
 using System.IO;
+using KVSCommon.Entities;
 
 namespace KVSCommon.Database
 {
     /// <summary>
     /// Erweiterungsklasse fuer die DB Tabelle User
     /// </summary>
-    public partial class User : ILogging
+    public partial class User : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
         public KVSEntities LogDBContext
         {
@@ -89,46 +90,7 @@ namespace KVSCommon.Database
             dbContext.WriteLogItem("Benutzer " + login + " wurde angelegt.", LogTypes.INSERT, user.Id, "User", user.PersonId);
             return user;
         }
-
-        /// <summary>
-        /// Versucht, sich mit den gegebenen Login-Daten im System einuzloggen.
-        /// </summary>
-        /// <param name="login">Benutzername des Benutzers.</param>
-        /// <param name="password">Passwort des Benutzers.</param>
-        /// <returns>Datenbank-Id des Benutzers, falls Logon erfolgreich.</returns>
-        public static int Logon(string login, string password)
-        {         
-            using (KVSEntities dbContext = new KVSEntities())
-            {              
         
-                var user = dbContext.User.SingleOrDefault(q => q.Login == login);
-                if (user == null)
-                {
-
-                    throw new Exception("Benutzer / Passwort konnte nicht verifiziert werden.");
-                }
-
-                if (user.IsLocked)
-                {
-                    throw new Exception("Der Benutzerzugang ist gesperrt.");
-                }
-
-                SaltedHash sh = new SaltedHash();
-                if (sh.VerifyHashString(password, user.Password, user.Salt))
-                {
-                    dbContext.LogUserId = user.Id;
-                    user.LastLogin = DateTime.Now;
-                    dbContext.WriteLogItem("Benutzer " + login + " eingeloggt.", LogTypes.INFO, user.Id, "User");
-                    dbContext.SubmitChanges();
-                    return user.Id;
-                }
-                else
-                {
-                    throw new Exception("Benutzer / Passwort konnte nicht verifiziert werden.");
-                }
-            }
-        }
-
         /// <summary>
         /// Aendert das Passwort des Benutzers.
         /// </summary>
@@ -275,26 +237,7 @@ namespace KVSCommon.Database
 
             return userPermissions;
         }
-
-        /// <summary>
-        /// Gibt den Benutzernamen zurueck, anhand der gesetzten Id.
-        /// </summary>
-        /// <param name="userid">Id des Benutzers.</param>
-        /// <returns></returns>
-        public static string GetUserNamebyId(int userid)
-        {
-            using (KVSEntities dbContext = new KVSEntities())
-            {
-                var login = dbContext.User.Where(q => q.Id == userid).Select(q => q.Login).SingleOrDefault();
-                if (login != null)
-                {
-                    return login;
-                }
-            }
-
-            return string.Empty;
-        }
-
+        
         /// <summary>
         /// Weist dem Benutzer das uebergebene Recht zu.
         /// </summary>

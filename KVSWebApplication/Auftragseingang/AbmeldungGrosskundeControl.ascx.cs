@@ -19,7 +19,7 @@ namespace KVSWebApplication.Auftragseingang
     {
         #region Members
 
-        protected override string PagePermission { get { return "ABMELDEAUFTRAG_ANLEGEN"; } }
+        protected override PermissionTypes PagePermission { get { return PermissionTypes.ABMELDEAUFTRAG_ANLEGEN; } }
 
         protected override Panel Panel { get { return this.EingangAbmeldungPanel; } }
         protected override RadTextBox AccountNumberTextBox { get { return this.BankAccount_AccountnumberBox; } }

@@ -79,3 +79,4 @@ G:\Escoda\KVSWebApplication\bin\KVSDataAccess.pdb
 G:\Escoda\KVSWebApplication\obj\Debug\KVSWebApplication.csprojResolveAssemblyReference.cache
 G:\Escoda\KVSWebApplication\obj\Debug\KVSWebApplication.dll
 G:\Escoda\KVSWebApplication\obj\Debug\KVSWebApplication.pdb
+G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.ServiceLocation.dll

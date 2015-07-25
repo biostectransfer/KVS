@@ -23,9 +23,10 @@ namespace KVSWebApplication.Auftragseingang
         public IncomingOrdersBase()
         {
             BicManager = (IBicManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IBicManager));
+            UserManager = (IUserManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IUserManager));
         }
 
-        protected abstract string PagePermission { get; }
+        protected abstract PermissionTypes PagePermission { get; }
 
         protected List<Control> controls = new List<Control>();
         protected abstract Panel Panel { get; }
@@ -38,6 +39,7 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract RadComboBox CustomerDropDown { get; }
 
         public IBicManager BicManager { get; set; }
+        public IUserManager UserManager { get; set; }
 
         #endregion
 
@@ -45,8 +47,7 @@ namespace KVSWebApplication.Auftragseingang
 
         protected void CheckUserPermissions()
         {
-            var userPermissions = KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString()));
-            if (userPermissions.Contains(PagePermission))
+            if (UserManager.CheckPermissionsForUser(Session["UserPermissions"], PagePermission))
             {
                 Panel.Enabled = true;
             }

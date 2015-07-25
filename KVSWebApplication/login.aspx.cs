@@ -9,15 +9,24 @@ using KVSCommon.Database;
 using System.Web.UI.HtmlControls;
 using System.IO;
 using System.Configuration;
-using KVSCommon.Database;
 using System.Web.Security;
+using KVSCommon.Managers;
+using System.Web.Http;
+
 namespace KVSWebApplication
 {
     /// <summary>
     /// Codebehind fuer die Login/Logout Maske
     /// </summary>
-    public partial class login : System.Web.UI.Page
+    public partial class login : Page
     {
+        public login()
+        {
+            UserManager = (IUserManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IUserManager));
+        }
+
+        public IUserManager UserManager { get; set; }
+
         private void KillSession()
         {
             Session.Abandon();
@@ -34,18 +43,17 @@ namespace KVSWebApplication
 
             FormsAuthentication.SignOut();
         }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Request["logout"] != null)
             {
-                Session["CurrentUserId"] = "";
-                Session["CurrentUserName"] = "";
+                ClearSession();
                 KillSession();
             }
             if (Session["CurrentUserId"] == null || String.IsNullOrEmpty(Session["CurrentUserId"].ToString()))
             {
-                Session["CurrentUserId"] = "";
-                Session["CurrentUserName"] = "";
+                ClearSession();
                 SetMenuItems(false);
             }
             else
@@ -57,6 +65,14 @@ namespace KVSWebApplication
                 SetMenuItems(true);
                 RadAjaxPanel1.Redirect("Search/search.aspx");
             }
+        }
+
+        private void ClearSession()
+        {
+            Session["CurrentUserId"] = "";
+            Session["CurrentUserName"] = "";
+            Session["CurrentUser"] = null;
+            Session["UserPermissions"] = null;
         }
 
         protected void OnLoggedIn(object sender, EventArgs e)
@@ -78,13 +94,15 @@ namespace KVSWebApplication
             bool Authenticated = false;
             try
             {
-                using (KVSEntities dbContext = new KVSEntities())
-                {
-                    var myId = KVSCommon.Database.User.Logon((Login2.FindControl("UserName") as TextBox).Text, (Login2.FindControl("Password") as TextBox).Text);
-                    Session["CurrentUserId"] = myId;
-                    Session["CurrentUserName"] = KVSCommon.Database.User.GetUserNamebyId(myId);
+                var user = UserManager.Logon(
+                    (Login2.FindControl("UserName") as TextBox).Text,
+                    (Login2.FindControl("Password") as TextBox).Text);
 
-                }
+                Session["CurrentUserId"] = user.Id;
+                Session["CurrentUserName"] = user.Login;
+                Session["CurrentUser"] = user;
+                Session["UserPermissions"] = UserManager.GetAllPermissionsByID(user);
+
                 Authenticated = true;
             }
             catch (Exception ex)
@@ -96,13 +114,14 @@ namespace KVSWebApplication
             }
             e.Authenticated = Authenticated;
         }
+
         private void SetMenuItems(bool value)
         {
-            RadMenu myMene = (RadMenu)Master.FindControl("RadMenu1");
+            RadMenu menu = (RadMenu)Master.FindControl("RadMenu1");
             HtmlGenericControl myLeftDiv = (HtmlGenericControl)Master.FindControl("leftcolumn");
             myLeftDiv.Visible = value;
-            myMene.Enabled = value;
-            myMene.Visible = value;
+            menu.Enabled = value;
+            menu.Visible = value;
         }
     }
 }

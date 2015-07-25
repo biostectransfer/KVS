@@ -43,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Managers\ManagerBase.cs" />
+    <Compile Include="Managers\UserManager.cs" />
     <Compile Include="Managers\BicManager.cs" />
     <Compile Include="Managers\Base\EntityManager.cs" />
     <Compile Include="Managers\Base\Manager.cs" />

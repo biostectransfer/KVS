@@ -25,6 +25,7 @@ namespace KVSConfiguration
                 new InjectionConstructor(ConfigurationManager.ConnectionStrings["KVSConnectionString"].ConnectionString));
 
             container.RegisterType<IBicManager, BicManager>(new PerRequestLifetimeManager());
+            container.RegisterType<IUserManager, UserManager>(new PerRequestLifetimeManager());
         }
     }
 }

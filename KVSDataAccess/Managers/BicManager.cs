@@ -10,10 +10,8 @@ using System.Threading.Tasks;
 
 namespace KVSDataAccess.Managers
 {
-    public partial class BicManager : EntityManager<BIC_DE, int>
-        , IBicManager
+    public partial class BicManager : EntityManager<BIC_DE, int>, IBicManager
     {
-
         public BicManager(IKVSEntities context) : base(context) { }
 
         public BIC_DE GetBicByCodeAndName(string code, string name)

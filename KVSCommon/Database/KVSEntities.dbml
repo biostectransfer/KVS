@@ -248,6 +248,9 @@
       <Column Name="Salt" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="LastLogin" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Column Name="IsLocked" Type="System.Boolean" DbType="bit not null" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime(2)" CanBeNull="true" />
       <Association Name="User_UserPermission" Member="UserPermission" ThisKey="Id" OtherKey="UserId" Type="UserPermission" />
       <Association Name="User_UserPermissionProfile" Member="UserPermissionProfile" ThisKey="Id" OtherKey="UserId" Type="UserPermissionProfile" />
       <Association Name="User_Systemlog" Member="Systemlog" Storage="_Log" ThisKey="Id" OtherKey="LogUserId" Type="Systemlog" />
