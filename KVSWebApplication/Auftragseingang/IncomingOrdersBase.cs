@@ -245,7 +245,7 @@ namespace KVSWebApplication.Auftragseingang
             return result;
         }
 
-        protected List<Control> getAllControls()
+        protected List<Control> GetAllControls()
         {
             if (controls.Count == 0)
             {
@@ -280,9 +280,9 @@ namespace KVSWebApplication.Auftragseingang
             return controls;
         }
 
-        protected void HideAllControls()
+        protected List<string> HideAllControls()
         {
-            var controlsToHide = getAllControls();
+            var controlsToHide = GetAllControls();
 
             var fields = LargeCustomerRequiredFieldManager.GetEntities(o => o.RequiredField.OrderTypeId == (int)OrderType).
                 Select(o => o.RequiredField.Name).ToList();
@@ -302,7 +302,58 @@ namespace KVSWebApplication.Auftragseingang
                     }
                 }
             }
+
+            return fields;
         }
+        
+        protected void ShowControls()
+        {
+            foreach (Control control in GetAllControls())
+            {
+                control.Visible = true;
+            }
+
+            FahrzeugCaption.Visible = true;
+            HalterCaption.Visible = true;
+            HalterdatenCaption.Visible = true;
+            KontaktdatenCaption.Visible = true;
+            IBANPanel_Panel.Visible = true;
+        }
+
+        protected void CheckFields()
+        {
+            var fields = HideAllControls();
+
+            foreach (var field in fields)
+            {
+                foreach (var control in GetAllControls())
+                {
+                    if (control.ID == field)
+                    {
+                        control.Visible = true;
+                        if (control.ID == "Vehicle_VIN" || control.ID == "Vehicle_Variant" || control.ID == "Vehicle_Color" || control.ID == "Registration_Licencenumber" ||
+                            control.ID == "RegistrationOrder_PreviousLicencenumber" || control.ID == "Registration_GeneralInspectionDate" || control.ID == "Vehicle_FirstRegistrationDate" ||
+                            control.ID == "Vehicle_TSN" || control.ID == "Vehicle_HSN" || control.ID == "Registration_eVBNumber" ||
+                            control.ID == "Registration_RegistrationDocumentNumber" || control.ID == "Registration_EmissionCode" || control.ID == "Order_Freitext")
+                            FahrzeugCaption.Visible = true;
+
+                        if (control.ID == "CarOwner_Name" || control.ID == "CarOwner_Firstname" || control.ID == "Adress_Street" || control.ID == "Adress_StreetNumber" ||
+                            control.ID == "Adress_Zipcode" || control.ID == "Adress_City" || control.ID == "Adress_Country")
+                            HalterCaption.Visible = true;
+
+                        if (control.ID == "BankAccount_BankName" || control.ID == "BankAccount_Accountnumber" || control.ID == "BankAccount_BankCode")
+                        {
+                            HalterdatenCaption.Visible = true;
+                            IBANPanel_Panel.Visible = true;
+                        }
+
+                        if (control.ID == "Contact_Phone" || control.ID == "Contact_Fax" || control.ID == "Contact_MobilePhone" || control.ID == "Contact_Email")
+                            KontaktdatenCaption.Visible = true;
+                    }
+                }
+            }
+        }
+
 
         // find all showed checkboxes and check are they empty or not
         //protected bool CheckIfBoxenNotEmpty()
@@ -310,7 +361,7 @@ namespace KVSWebApplication.Auftragseingang
         //    bool result = false;
         //    bool hasVisibleControl = false;
         //    var allControls = getAllControls();
-            
+
         //    //if empty - shouldnt be checked
         //    if (String.IsNullOrEmpty(PruefzifferBox.Text))
         //        PruefzifferBox.Enabled = false;

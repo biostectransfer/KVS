@@ -164,7 +164,7 @@ namespace KVSWebApplication.Auftragseingang
             Registration_eVBNumberBox.Text = string.Empty;
             if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue.ToString()))
             {
-                CheckFields(getAllControls());
+                CheckFields();
                 SmallCustomerHistorie.Visible = false;
             }
         }
@@ -980,7 +980,7 @@ namespace KVSWebApplication.Auftragseingang
             bool iFound1VisibleBox = false;
             bool carOwnerMin = false;
             int count = 0;
-            List<Control> allControls = getAllControls();
+            List<Control> allControls = GetAllControls();
             //fallse leer - soll aus der Logik rausgenommen
             if (String.IsNullOrEmpty(PruefzifferBox.Text))
                 PruefzifferBox.Enabled = false;
@@ -1046,7 +1046,7 @@ namespace KVSWebApplication.Auftragseingang
         // findet alle textboxen und macht die leer ohne die ganze Seite neu zu laden
         protected void MakeAllControlsEmpty()
         {
-            List<Control> allControls = getAllControls();
+            List<Control> allControls = GetAllControls();
             DateTime? nullDate = null;
             Registration_GeneralInspectionDateBox.SelectedDate = nullDate;
             FirstRegistrationDateBox.SelectedDate = DateTime.Now;
@@ -1078,41 +1078,7 @@ namespace KVSWebApplication.Auftragseingang
             ZulassungOkLabel.Visible = false;
             SubmitChangesErrorLabel.Visible = false;
         }
-        protected void CheckFields(List<Control> listOfControls)
-        {
-            HideAllControls();
-            KVSEntities con = new KVSEntities();
-            var cont = from largCust in con.LargeCustomerRequiredField
-                       join reqFiled in con.RequiredField on largCust.RequiredFieldId equals reqFiled.Id
-                       join ordTyp in con.OrderType on reqFiled.OrderTypeId equals ordTyp.Id
-                       where largCust.LargeCustomerId == Int32.Parse(CustomerDropDownList.SelectedValue) && ordTyp.Id == (int)OrderTypes.Admission
-                       select reqFiled.Name;
-            foreach (var nameCon in cont)
-            {
-                foreach (Control control in listOfControls)
-                {
-                    if (control.ID == nameCon)
-                    {
-                        control.Visible = true;
-                        if (control.ID == "Vehicle_VIN" || control.ID == "Vehicle_Variant" || control.ID == "Vehicle_Color" || control.ID == "Registration_Licencenumber" ||
-                            control.ID == "RegistrationOrder_PreviousLicencenumber" || control.ID == "Registration_GeneralInspectionDate" ||
-                            control.ID == "Vehicle_FirstRegistrationDate" || control.ID == "Vehicle_TSN" || control.ID == "Vehicle_HSN" || control.ID == "Registration_eVBNumber" ||
-                            control.ID == "Registration_RegistrationDocumentNumber" || control.ID == "Registration_EmissionCode" || control.ID == "Order_Freitext")
-                            FahrzeugLabel.Visible = true;
-                        if (control.ID == "CarOwner_Name" || control.ID == "CarOwner_Firstname" || control.ID == "Adress_Street" || control.ID == "Adress_StreetNumber" ||
-                            control.ID == "Adress_Zipcode" || control.ID == "Adress_City" || control.ID == "Adress_Country")
-                            HalterLabel.Visible = true;
-                        if (control.ID == "BankAccount_BankName" || control.ID == "BankAccount_Accountnumber" || control.ID == "BankAccount_BankCode")
-                        {
-                            HalterdatenLabel.Visible = true;
-                            IBANPanel.Visible = true;
-                        }
-                        if (control.ID == "Contact_Phone" || control.ID == "Contact_Fax" || control.ID == "Contact_MobilePhone" || control.ID == "Contact_Email")
-                            KontaktdatenLabel.Visible = true;
-                    }
-                }
-            }
-        }
+
         protected void setCarOwnerData()
         {
             using (KVSEntities con = new KVSEntities())

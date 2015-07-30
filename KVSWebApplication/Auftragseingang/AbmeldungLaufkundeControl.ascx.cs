@@ -99,7 +99,7 @@ namespace KVSWebApplication.Auftragseingang
 
                 if (!Page.IsPostBack)
                 {
-                    CheckFields(getAllControls());
+                    ShowControls();
                     btnClearSelection_Click(this, null);
                 }
             }
@@ -245,7 +245,7 @@ namespace KVSWebApplication.Auftragseingang
         // findet alle textboxen und macht die leer ohne die ganze Seite neu zu laden
         protected void MakeAllControlsEmpty()
         {
-            List<Control> allControls = getAllControls();
+            List<Control> allControls = GetAllControls();
             DateTime? nullDate = null;
             Registration_GeneralInspectionDateBox.SelectedDate = nullDate;
             FirstRegistrationDateBox.SelectedDate = DateTime.Now;
@@ -287,7 +287,7 @@ namespace KVSWebApplication.Auftragseingang
         protected bool CheckIfBoxenNotEmpty()
         {
             bool gibtsBoxenDieLeerSind = false;
-            List<Control> allControls = getAllControls();
+            List<Control> allControls = GetAllControls();
 
             //fallse leer - soll aus der Logik rausgenommen
             if (String.IsNullOrEmpty(PruefzifferBox.Text))
@@ -475,7 +475,7 @@ namespace KVSWebApplication.Auftragseingang
             GetCustomerInfo();
             if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue.ToString()))
             {
-                CheckFields(getAllControls());
+                CheckFields();
                 CheckUmsatzForSmallCustomer();
             }
         }
@@ -611,16 +611,7 @@ namespace KVSWebApplication.Auftragseingang
             e.Result = customerQuery;
         }
         #endregion
-        protected void CheckFields(List<Control> listOfControls)
-        {
-            foreach (Control control in listOfControls)
-            {
-                control.Visible = true;
-            }
-            HalterLabel.Visible = true;
-            HalterdatenLabel.Visible = true;
-            KontaktdatenLabel.Visible = true;
-        }
+
         protected void DeleteNewPosButton_Clicked(object sender, EventArgs e)
         {
             if (DienstleistungTreeView.SelectedNodes.Count > 0)
