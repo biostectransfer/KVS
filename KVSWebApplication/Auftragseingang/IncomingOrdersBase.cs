@@ -40,7 +40,8 @@ namespace KVSWebApplication.Auftragseingang
             CostCenterManager = (ICostCenterManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICostCenterManager));
             CustomerManager = (ICustomerManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICustomerManager));
             VehicleManager = (IVehicleManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IVehicleManager));
-            RegistrationLocationManager = (IRegistrationLocationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationLocationManager)); 
+            RegistrationLocationManager = (IRegistrationLocationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationLocationManager));
+            RegistrationManager = (IRegistrationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationManager));
         }
 
         #region Common
@@ -152,6 +153,7 @@ namespace KVSWebApplication.Auftragseingang
         public ICustomerManager CustomerManager { get; set; }
         public IVehicleManager VehicleManager { get; set; }
         public IRegistrationLocationManager RegistrationLocationManager { get; set; }
+        public IRegistrationManager RegistrationManager { get; set; }
 
         #endregion
 

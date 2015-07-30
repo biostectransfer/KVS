@@ -110,7 +110,7 @@ namespace KVSWebApplication.Auftragseingang
 
         #endregion
 
-        #region Methods
+        #region Event handlers
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -122,8 +122,6 @@ namespace KVSWebApplication.Auftragseingang
                 CheckUserPermissions();
             }
         }
-
-        #region Index Changed
 
         protected void SmallLargeCustomer_Changed(object sender, EventArgs e)
         {
@@ -151,6 +149,7 @@ namespace KVSWebApplication.Auftragseingang
                 DienstleistungTreeView.SelectedNode.Expanded = true;
                 target = DienstleistungTreeView.SelectedNode;
             }
+
             if (!String.IsNullOrEmpty(ProductDropDownList.Text) && !String.IsNullOrEmpty(ProductDropDownList.SelectedValue))
             {
                 string costCenter = "";
@@ -161,7 +160,7 @@ namespace KVSWebApplication.Auftragseingang
                 else
                     costCenter = "";
                 string value = ProductDropDownList.SelectedValue.ToString() + ";" + costCenter;
-                RadTreeNode addedNode = new RadTreeNode(ProductDropDownList.Text + "(" + CostCenterDropDownList.Text + ")", value);
+                var addedNode = new RadTreeNode(ProductDropDownList.Text + "(" + CostCenterDropDownList.Text + ")", value);
                 target.Nodes.Add(addedNode);
             }
         }
@@ -205,6 +204,142 @@ namespace KVSWebApplication.Auftragseingang
                 CheckFields();
                 SmallCustomerHistorie.Visible = false;
             }
+        }
+
+        //VIN ist eingegeben, versuch das Fahrzeug zu finden
+        protected void VinBoxZulText_Changed(object sender, EventArgs e)
+        {
+            bool finIsOkey = false;
+            FahrzeugLabel.Text = "Fahrzeug";
+            FahrzeugLabel.ForeColor = System.Drawing.Color.Blue;
+            if (VINBox.Text.Length == 18 && !VINBox.Text.Contains('O') && !VINBox.Text.Contains('o'))
+            {
+                finIsOkey = true;
+                PruefzifferBox.Text = VINBox.Text.Substring(17);
+                VINBox.Text = VINBox.Text.Substring(0, 17);
+                PruefzifferBox.Focus();
+            }
+            else if (VINBox.Text.Length == 17 && !VINBox.Text.Contains('O') && !VINBox.Text.Contains('o'))
+            {
+                finIsOkey = true;
+                PruefzifferBox.Focus();
+            }
+            else if (VINBox.Text.Length == 8)
+            {
+                finIsOkey = true;
+                PruefzifferBox.Focus();
+            }
+            else // fin ist nicht korrekt
+            {
+                if (VINBox.Text.Contains('O') || VINBox.Text.Contains('o'))
+                {
+                    FahrzeugLabel.Text = "FIN darf nicht 'O' oder 'o' beinhalten!";
+                    FahrzeugLabel.ForeColor = System.Drawing.Color.Red;
+                    VINBox.Focus();
+                }
+                if (VINBox.Text.Length > 18 || VINBox.Text.Length < 17)
+                {
+                    FahrzeugLabel.Text = "FIN kann nur entweder 17 oder 8-stellig sein!";
+                    FahrzeugLabel.ForeColor = System.Drawing.Color.Red;
+                    VINBox.Focus();
+                }
+            }
+            if (finIsOkey == true)
+            {
+                VINBox.Text = VINBox.Text.ToUpper();
+
+                var vehicle = VehicleManager.GetEntities(q => q.VIN == VINBox.Text).FirstOrDefault();
+                if (vehicle != null)
+                {
+                    //wird als cache field für die Kennzeichnung bei der Umkennzeichnung benutzt
+                    if (vehicle.CurrentRegistrationId.HasValue)
+                    {
+                        var registration = RegistrationManager.GetById(vehicle.CurrentRegistrationId.Value);
+
+                        LicenceNumberCacheField.Value = registration.Licencenumber;
+                        RegistrationIdField.Value = registration.Id.ToString();
+                        var kennzeichen = registration.Licencenumber;
+                        string[] newKennzeichen = kennzeichen.Split('-');
+
+                        if (newKennzeichen.Length == 3)
+                        {
+                            LicenceBox1.Text = newKennzeichen[0];
+                            LicenceBox2.Text = newKennzeichen[1];
+                            LicenceBox3.Text = newKennzeichen[2];
+                        }
+
+                        Registration_GeneralInspectionDateBox.SelectedDate = registration.GeneralInspectionDate;
+                        RegDocNumBox.Text = registration.RegistrationDocumentNumber;
+                        EmissionsCodeBox.Text = registration.EmissionCode;
+
+                        var owner = registration.CarOwner;
+                        if (owner != null)
+                        {
+                            CarOwner_NameBox.Text = owner.Name;
+                            if (owner.Adress != null)
+                            {
+                                Adress_StreetBox.Text = owner.Adress.Street;
+                                CarOwner_FirstnameBox.Text = owner.FirstName;
+                                Adress_StreetNumberBox.Text = owner.Adress.StreetNumber;
+                                Adress_ZipcodeBox.Text = owner.Adress.Zipcode;
+                                Adress_CityBox.Text = owner.Adress.City;
+                                Adress_CountryBox.Text = owner.Adress.Country;
+                            }
+                            if (owner.Contact != null)
+                            {
+                                Contact_PhoneBox.Text = owner.Contact.Phone;
+                                Contact_FaxBox.Text = owner.Contact.Fax;
+                                Contact_MobilePhoneBox.Text = owner.Contact.MobilePhone;
+                                Contact_EmailBox.Text = owner.Contact.Email;
+                            }
+                            if (owner.BankAccount != null)
+                            {
+                                BankAccount_BankNameBox.Text = owner.BankAccount.BankName;
+                                BankAccount_AccountnumberBox.Text = owner.BankAccount.Accountnumber;
+                                BankAccount_BankCodeBox.Text = owner.BankAccount.BankCode;
+                            }
+                            PruefzifferBox.Focus();
+                        }
+                    }
+
+                    VehicleIdField.Value = vehicle.Id.ToString();
+                    Vehicle_VariantBox.Text = vehicle.Variant;
+                    HSNBox.Text = vehicle.HSN;
+                    TSNBox.Text = vehicle.TSN;
+                    Vehicle_ColorBox.Text = vehicle.ColorCode.ToString();
+                }
+            }
+        }
+
+        //Tausch die Information aus neues zu altes Kennzeichen Boxen
+        protected void KennzeichenTauschButton_Clicked(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(PreviousLicenceBox1.Text))
+            {
+                PreviousLicenceBox1.Text = LicenceBox1.Text;
+                PreviousLicenceBox2.Text = LicenceBox2.Text;
+                PreviousLicenceBox3.Text = LicenceBox3.Text;
+                LicenceBox1.Text = "";
+                LicenceBox2.Text = "";
+                LicenceBox3.Text = "";
+            }
+            else if (String.IsNullOrEmpty(LicenceBox1.Text))
+            {
+                LicenceBox1.Text = PreviousLicenceBox1.Text;
+                LicenceBox2.Text = PreviousLicenceBox2.Text;
+                LicenceBox3.Text = PreviousLicenceBox3.Text;
+                PreviousLicenceBox1.Text = "";
+                PreviousLicenceBox2.Text = "";
+                PreviousLicenceBox3.Text = "";
+            }
+        }
+
+        // findet alle textboxen und macht die leer ohne die ganze Seite neu zu laden
+        protected void NaechtenAuftragButton_Clicked(object sender, EventArgs e)
+        {
+            MakeAllControlsEmpty();
+            ZulassungOkLabel.Visible = false;
+            SubmitChangesErrorLabel.Visible = false;
         }
 
         #endregion
@@ -312,119 +447,9 @@ namespace KVSWebApplication.Auftragseingang
                               };
             e.Result = regOrdQuery;
         }
+
         #endregion
 
-        //VIN ist eingegeben, versuch das Fahrzeug zu finden
-        protected void VinBoxZulText_Changed(object sender, EventArgs e)
-        {
-            bool finIsOkey = false;
-            FahrzeugLabel.Text = "Fahrzeug";
-            FahrzeugLabel.ForeColor = System.Drawing.Color.Blue;
-            if (VINBox.Text.Length == 18 && !VINBox.Text.Contains('O') && !VINBox.Text.Contains('o'))
-            {
-                finIsOkey = true;
-                PruefzifferBox.Text = VINBox.Text.Substring(17);
-                VINBox.Text = VINBox.Text.Substring(0, 17);
-                PruefzifferBox.Focus();
-            }
-            else if (VINBox.Text.Length == 17 && !VINBox.Text.Contains('O') && !VINBox.Text.Contains('o'))
-            {
-                finIsOkey = true;
-                PruefzifferBox.Focus();
-            }
-            else if (VINBox.Text.Length == 8)
-            {
-                finIsOkey = true;
-                PruefzifferBox.Focus();
-            }
-            else // fin ist nicht korrekt
-            {
-                if (VINBox.Text.Contains('O') || VINBox.Text.Contains('o'))
-                {
-                    FahrzeugLabel.Text = "FIN darf nicht 'O' oder 'o' beinhalten!";
-                    FahrzeugLabel.ForeColor = System.Drawing.Color.Red;
-                    VINBox.Focus();
-                }
-                if (VINBox.Text.Length > 18 || VINBox.Text.Length < 17)
-                {
-                    FahrzeugLabel.Text = "FIN kann nur entweder 17 oder 8-stellig sein!";
-                    FahrzeugLabel.ForeColor = System.Drawing.Color.Red;
-                    VINBox.Focus();
-                }
-            }
-            if (finIsOkey == true)
-            {
-                try
-                {
-                    VINBox.Text = VINBox.Text.ToUpper();
-                    KVSEntities dbContext = new KVSEntities();
-                    var autoQuery = dbContext.Vehicle.SingleOrDefault(q => q.VIN == VINBox.Text);
-                    if (autoQuery != null)
-                    {
-                        //wird als cache field für die Kennzeichnung bei der Umkennzeichnung benutzt
-                        if (autoQuery.CurrentRegistrationId.HasValue)
-                        {
-                            var registration = dbContext.Registration.Single(q => q.Id == autoQuery.CurrentRegistrationId.Value);
-                        
-                            string kennzeichen = string.Empty;
-                            LicenceNumberCacheField.Value = registration.Licencenumber;
-                            RegistrationIdField.Value = registration.Id.ToString();
-                            kennzeichen = registration.Licencenumber;
-                            string[] newKennzeichen = kennzeichen.Split('-');
-                            if (newKennzeichen.Length == 3)
-                            {
-                                LicenceBox1.Text = newKennzeichen[0];
-                                LicenceBox2.Text = newKennzeichen[1];
-                                LicenceBox3.Text = newKennzeichen[2];
-                            }
-                            Registration_GeneralInspectionDateBox.SelectedDate = registration.GeneralInspectionDate;
-                            RegDocNumBox.Text = registration.RegistrationDocumentNumber;
-                            EmissionsCodeBox.Text = registration.EmissionCode;
-
-                            CarOwner owner = registration.CarOwner;
-                            if (owner != null)
-                            {
-                                CarOwner_NameBox.Text = owner.Name;
-                                if (owner.Adress != null)
-                                {
-                                    Adress_StreetBox.Text = owner.Adress.Street;
-                                    CarOwner_FirstnameBox.Text = owner.FirstName;
-                                    Adress_StreetNumberBox.Text = owner.Adress.StreetNumber;
-                                    Adress_ZipcodeBox.Text = owner.Adress.Zipcode;
-                                    Adress_CityBox.Text = owner.Adress.City;
-                                    Adress_CountryBox.Text = owner.Adress.Country;
-                                }
-                                if (owner.Contact != null)
-                                {
-                                    Contact_PhoneBox.Text = owner.Contact.Phone;
-                                    Contact_FaxBox.Text = owner.Contact.Fax;
-                                    Contact_MobilePhoneBox.Text = owner.Contact.MobilePhone;
-                                    Contact_EmailBox.Text = owner.Contact.Email;
-                                }
-                                if (owner.BankAccount != null)
-                                {
-                                    BankAccount_BankNameBox.Text = owner.BankAccount.BankName;
-                                    BankAccount_AccountnumberBox.Text = owner.BankAccount.Accountnumber;
-                                    BankAccount_BankCodeBox.Text = owner.BankAccount.BankCode;
-                                }
-                                PruefzifferBox.Focus();
-                            }
-                        }
-
-                        VehicleIdField.Value = autoQuery.Id.ToString();
-                        Vehicle_VariantBox.Text = autoQuery.Variant;
-                        HSNBox.Text = autoQuery.HSN;
-                        TSNBox.Text = autoQuery.TSN;
-                        Vehicle_ColorBox.Text = autoQuery.ColorCode.ToString();
-                    }
-                }
-                // falls kein Fahrzeug gefunden
-                catch (Exception ex)
-                {
-                    VINBox.Focus();
-                }
-            }
-        }
         #region Button Clicked
         //Neue Auftragseingang
         protected void AuftragZulassenButton_Clicked(object sender, EventArgs e)
@@ -723,6 +748,8 @@ namespace KVSWebApplication.Auftragseingang
 
         #endregion
 
+        #region Methods
+
         protected bool AddAnotherProducts(RegistrationOrder regOrd, int? locationId)
         {
             bool allesHatGutGelaufen = false;
@@ -800,29 +827,7 @@ namespace KVSWebApplication.Auftragseingang
             }
             return allesHatGutGelaufen;
         }
-
-        //Tausch die Information aus neues zu altes Kennzeichen Boxen
-        protected void KennzeichenTauschButton_Clicked(object sender, EventArgs e)
-        {
-            if (String.IsNullOrEmpty(PreviousLicenceBox1.Text))
-            {
-                PreviousLicenceBox1.Text = LicenceBox1.Text;
-                PreviousLicenceBox2.Text = LicenceBox2.Text;
-                PreviousLicenceBox3.Text = LicenceBox3.Text;
-                LicenceBox1.Text = "";
-                LicenceBox2.Text = "";
-                LicenceBox3.Text = "";
-            }
-            else if (String.IsNullOrEmpty(LicenceBox1.Text))
-            {
-                LicenceBox1.Text = PreviousLicenceBox1.Text;
-                LicenceBox2.Text = PreviousLicenceBox2.Text;
-                LicenceBox3.Text = PreviousLicenceBox3.Text;
-                PreviousLicenceBox1.Text = "";
-                PreviousLicenceBox2.Text = "";
-                PreviousLicenceBox3.Text = "";
-            }
-        }
+        
         // findet alle angezeigte textboxen und überprüft ob die nicht leer sind
         protected bool CheckIfBoxenNotEmpty()
         {
@@ -893,15 +898,7 @@ namespace KVSWebApplication.Auftragseingang
                 gibtsBoxenDieLeerSind = true;
             return gibtsBoxenDieLeerSind;
         }
-        // findet alle textboxen und macht die leer ohne die ganze Seite neu zu laden
-
-        protected void NaechtenAuftragButton_Clicked(object sender, EventArgs e)
-        {
-            MakeAllControlsEmpty();
-            ZulassungOkLabel.Visible = false;
-            SubmitChangesErrorLabel.Visible = false;
-        }
-
+        
         #endregion
     }
 }

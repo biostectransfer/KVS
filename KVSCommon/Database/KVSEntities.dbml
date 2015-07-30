@@ -342,6 +342,9 @@
       <Column Name="eVBNumber" Type="System.String" DbType="VarChar(7)" CanBeNull="true" />
       <Column Name="EmissionCode" Type="System.String" DbType="varchar(5)" CanBeNull="true" />
       <Column Name="RegistrationDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
       <Association Name="Registration_DeregistrationOrder" Member="DeregistrationOrder" ThisKey="Id" OtherKey="RegistrationId" Type="DeregistrationOrder" />
       <Association Name="Registration_RegistrationOrder" Member="RegistrationOrder" ThisKey="Id" OtherKey="RegistrationId" Type="RegistrationOrder" />
       <Association Name="CarOwner_Registration" Member="CarOwner" ThisKey="CarOwnerId" OtherKey="Id" Type="CarOwner" IsForeignKey="true" />

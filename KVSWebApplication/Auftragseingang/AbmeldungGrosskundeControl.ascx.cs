@@ -131,39 +131,6 @@ namespace KVSWebApplication.Auftragseingang
             }
         }
 
-        private void LoadCustomerProductsInTreeView(int selectedCustomer, int location)
-        {
-            var products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 &&
-                o.Product.CustomerProduct.Any() &&
-                o.Location != null && o.LocationId == location && o.Location.CustomerId == selectedCustomer &&
-                    (o.Product.OrderType.Id == (int)OrderTypes.Cancellation ||
-                     o.Product.OrderType.Id == (int)OrderTypes.Common)).
-                    Select(o => new
-                    {
-                        ItemNumber = o.Product.ItemNumber,
-                        Name = o.Product.Name,
-                        Value = o.Product.Id,
-                        Category = o.Product.ProductCategory.Name,
-                        //CustomerProduct = o.Product.CustomerProduct.FirstOrDefault().Product.Name
-                    }).OrderBy(o => o.Name).ToList();
-
-
-            foreach (var product in products)
-            {
-                IRadTreeNodeContainer target = DienstleistungTreeView;
-
-                string costCenter = "";
-                if (!String.IsNullOrEmpty(CostCenterDropDownList.SelectedValue.ToString()))
-                {
-                    costCenter = (CostCenterDropDownList.SelectedValue.ToString());
-                }
-
-                string value = product.Value + ";" + costCenter;
-
-                RadTreeNode addedNode = new RadTreeNode(product.Name, value);
-                target.Nodes.Add(addedNode);
-            }
-        }
 
         #region Button Clicked
         //Fahrzeug abmelden
@@ -685,5 +652,40 @@ namespace KVSWebApplication.Auftragseingang
 
 
         #endregion
+
+
+        private void LoadCustomerProductsInTreeView(int selectedCustomer, int location)
+        {
+            var products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 &&
+                o.Product.CustomerProduct.Any() &&
+                o.Location != null && o.LocationId == location && o.Location.CustomerId == selectedCustomer &&
+                    (o.Product.OrderType.Id == (int)OrderTypes.Cancellation ||
+                     o.Product.OrderType.Id == (int)OrderTypes.Common)).
+                    Select(o => new
+                    {
+                        ItemNumber = o.Product.ItemNumber,
+                        Name = o.Product.Name,
+                        Value = o.Product.Id,
+                        Category = o.Product.ProductCategory.Name,
+                        //CustomerProduct = o.Product.CustomerProduct.FirstOrDefault().Product.Name
+                    }).OrderBy(o => o.Name).ToList();
+
+
+            foreach (var product in products)
+            {
+                IRadTreeNodeContainer target = DienstleistungTreeView;
+
+                string costCenter = "";
+                if (!String.IsNullOrEmpty(CostCenterDropDownList.SelectedValue.ToString()))
+                {
+                    costCenter = (CostCenterDropDownList.SelectedValue.ToString());
+                }
+
+                string value = product.Value + ";" + costCenter;
+
+                RadTreeNode addedNode = new RadTreeNode(product.Name, value);
+                target.Nodes.Add(addedNode);
+            }
+        }
     }
 }

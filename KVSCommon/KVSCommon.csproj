@@ -129,6 +129,7 @@
     <Compile Include="Managers\Base\IReadOnlyEntityManager.cs" />
     <Compile Include="Managers\Base\IReadOnlyManagerBase.cs" />
     <Compile Include="Managers\IAdressManager.cs" />
+    <Compile Include="Managers\IRegistrationManager.cs" />
     <Compile Include="Managers\IRegistrationLocationManager.cs" />
     <Compile Include="Managers\IVehicleManager.cs" />
     <Compile Include="Managers\IProductManager.cs" />

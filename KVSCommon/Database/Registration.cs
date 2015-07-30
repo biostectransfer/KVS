@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KVSCommon.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace KVSCommon.Database
     /// <summary>
     /// Erweiterungsklasse fuer die DB Tabelle Registration
     /// </summary>
-    public partial class Registration : ILogging
+    public partial class Registration : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
         public KVSEntities LogDBContext
         {
