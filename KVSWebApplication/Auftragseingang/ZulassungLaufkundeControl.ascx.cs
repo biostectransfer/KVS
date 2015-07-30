@@ -606,51 +606,7 @@ namespace KVSWebApplication.Auftragseingang
         }
 
         #endregion
-        //protected string CheckIfAllProduktsHavingPrice(int? locationId)
-        //{
-        //    string allesHatGutGelaufen = "";
-        //    string ProduktId = "";
-        //    string CostCenterId = "";
-        //    foreach (RadTreeNode node in DienstleistungTreeView.Nodes)
-        //    {
-        //        if (!String.IsNullOrEmpty(node.Value))
-        //        {
-        //            string[] splited = node.Value.Split(';');
-        //            if (splited.Length == 2)
-        //            {
-        //                try
-        //                {
-        //                    DataClasses1DataContext dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString()));
-        //                    Price newPrice;
-        //                    ProduktId = splited[0];
-        //                    CostCenterId = splited[1];
-        //                    if (!String.IsNullOrEmpty(ProduktId))
-        //                    {
-        //                        var productId = Int32.Parse(ProduktId);
 
-        //                        KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == productId);
-        //                        if (locationId == null) //small
-        //                        {
-        //                            newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == null);
-        //                            if (newPrice == null)
-        //                            {
-        //                                allesHatGutGelaufen += " " + node.Text + " ";
-        //                            }
-        //                            else
-        //                            {
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //                catch
-        //                {
-        //                    return "";
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return allesHatGutGelaufen;
-        //}
         protected void AddAnotherProducts(RegistrationOrder regOrd, int? locationId)
         {
             string ProduktId = "";
