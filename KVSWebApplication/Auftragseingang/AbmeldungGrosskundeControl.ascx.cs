@@ -37,7 +37,7 @@ namespace KVSWebApplication.Auftragseingang
 
         protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
         protected override RadComboBox LocationDropDown { get { return this.LocationDropDownList; } }
-        protected override RadComboBox CostCenterDropDown{ get { return this.CostCenterDropDownList; } }
+        protected override RadComboBox CostCenterDropDown { get { return this.CostCenterDropDownList; } }
         protected override RadComboBox AdmissionPointDropDown { get { return this.ZulassungsstelleComboBox; } }
         protected override RadComboBox ProductDropDown { get { return this.ProductAbmDropDownList; } }
         protected override RadComboBox RegistrationOrderDropDown { get { return null; } }
@@ -130,52 +130,39 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
         }
-        
+
         private void LoadCustomerProductsInTreeView(int selectedCustomer, int location)
         {
-            using (KVSEntities con = new KVSEntities())
-            {
-                var productQuery = from p in con.Price
-                                   join prA in con.PriceAccount on p.Id equals prA.PriceId
-                                   where (p.Product.OrderType.Id == (int)OrderTypes.Cancellation || p.Product.OrderType.Id == (int)OrderTypes.Common)
-                                   && p.Location.CustomerId == selectedCustomer
-                                   && p.LocationId == location
-                                   select new
-                                   {
-                                       ItemNumber = p.Product.ItemNumber,
-                                       Name = p.Product.Name,
-                                       Value = p.Product.Id,
-                                       Category = p.Product.ProductCategory.Name
-                                   };
-
-
-                var custProds = con.CustomerProduct.Where(q => q.CustomerId == selectedCustomer);
-                if (custProds != null)
-                {
-                    foreach (var product in productQuery)
+            var products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 &&
+                o.Product.CustomerProduct.Any() &&
+                o.Location != null && o.LocationId == location && o.Location.CustomerId == selectedCustomer &&
+                    (o.Product.OrderType.Id == (int)OrderTypes.Cancellation ||
+                     o.Product.OrderType.Id == (int)OrderTypes.Common)).
+                    Select(o => new
                     {
-                        var myProd = custProds.SingleOrDefault(q => q.ProductId == product.Value);
-                        if (myProd != null)
-                        {
-                            IRadTreeNodeContainer target = DienstleistungTreeView;
+                        ItemNumber = o.Product.ItemNumber,
+                        Name = o.Product.Name,
+                        Value = o.Product.Id,
+                        Category = o.Product.ProductCategory.Name,
+                        //CustomerProduct = o.Product.CustomerProduct.FirstOrDefault().Product.Name
+                    }).OrderBy(o => o.Name).ToList();
 
-                            string costCenter = "";
-                            if (!String.IsNullOrEmpty(CostCenterDropDownList.SelectedValue.ToString()))
-                            {
-                                costCenter = (CostCenterDropDownList.SelectedValue.ToString());
-                            }
-                            else
-                                costCenter = "";
 
-                            string value = product.Value + ";" + costCenter;
+            foreach (var product in products)
+            {
+                IRadTreeNodeContainer target = DienstleistungTreeView;
 
-                            RadTreeNode addedNode = new RadTreeNode(product.Name, value);
-                            target.Nodes.Add(addedNode);
-                        }
-                    }
+                string costCenter = "";
+                if (!String.IsNullOrEmpty(CostCenterDropDownList.SelectedValue.ToString()))
+                {
+                    costCenter = (CostCenterDropDownList.SelectedValue.ToString());
                 }
-            }
 
+                string value = product.Value + ";" + costCenter;
+
+                RadTreeNode addedNode = new RadTreeNode(product.Name, value);
+                target.Nodes.Add(addedNode);
+            }
         }
 
         #region Button Clicked
