@@ -196,6 +196,7 @@ namespace KVSWebApplication.Auftragseingang
             if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
                 selectedCustomer = Int32.Parse(CustomerDropDownList.SelectedValue);
             IQueryable productQuery = null;
+
             if (!String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue))
             {
                 productQuery = from prd in con.Product
@@ -234,19 +235,9 @@ namespace KVSWebApplication.Auftragseingang
         // Auswahl der KundenName
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
-            var customerQuery = from cust in con.Customer
-                                where cust.Id == cust.SmallCustomer.CustomerId
-                                orderby cust.Name
-                                select new
-                                {
-                                    Name = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
-                                    Value = cust.Id,
-                                    Matchcode = cust.MatchCode,
-                                    Kundennummer = cust.CustomerNumber
-                                };
-            e.Result = customerQuery;
+            e.Result = GetAllSmallCustomers();
         }
+
         protected void ZulassungsstelleDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             KVSEntities con = new KVSEntities();
@@ -761,7 +752,8 @@ namespace KVSWebApplication.Auftragseingang
         protected void SetValuesForAdressWindow()
         {
             KVSEntities dbContext = new KVSEntities();
-            var locationQuery = (from adr in dbContext.Adress
+            var locationQuery = 
+                (from adr in dbContext.Adress
                                  join cust in dbContext.Customer on adr.Id equals cust.InvoiceAdressId
                                  where cust.Id == Int32.Parse(CustomerDropDownList.SelectedValue)
                                  select adr).SingleOrDefault();

@@ -610,11 +610,34 @@ namespace KVSWebApplication.Auftragseingang
                 OpenPrintfile(fileName);
             }
         }
+        protected object GetAllSmallCustomers()
+        {
+            return CustomerManager.GetEntities(o => o.SmallCustomer != null).
+                Select(cust => new
+                {
+                    Name = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
+                    Value = cust.Id,
+                    Matchcode = cust.MatchCode,
+                    Kundennummer = cust.CustomerNumber
+                }).ToList();
+        }
+
+        protected object GetAllLargeCustomers()
+        {
+            return CustomerManager.GetEntities(o => o.LargeCustomer != null).
+                Select(cust => new
+                {
+                    Name = cust.Name,
+                    Value = cust.Id,
+                    Matchcode = cust.MatchCode,
+                    Kundennummer = cust.CustomerNumber
+                }).OrderBy(o => o.Name).ToList();
+        }
 
         #endregion
 
         #region Private Methods
-        
+
         private void OpenPrintfile(string myFile)
         {
             string url = ConfigurationManager.AppSettings["BaseUrl"];

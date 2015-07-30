@@ -609,19 +609,9 @@ namespace KVSWebApplication.Auftragseingang
         }
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
-            var customerQuery = from cust in con.Customer
-                                where cust.Id == cust.SmallCustomer.CustomerId
-                                orderby cust.Name
-                                select new
-                                {
-                                    Name = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
-                                    Value = cust.Id,
-                                    Matchcode = cust.MatchCode,
-                                    Kundennummer = cust.CustomerNumber
-                                };
-            e.Result = customerQuery;
+            e.Result = GetAllSmallCustomers();
         }
+
         #endregion
 
         protected void DeleteNewPosButton_Clicked(object sender, EventArgs e)

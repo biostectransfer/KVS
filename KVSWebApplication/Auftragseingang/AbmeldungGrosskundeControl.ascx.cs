@@ -728,18 +728,7 @@ namespace KVSWebApplication.Auftragseingang
         }
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
-            var customerQuery = from cust in con.Customer
-                                where cust.Id == cust.LargeCustomer.CustomerId
-                                orderby cust.Name
-                                select new
-                                {
-                                    Name = cust.Name,
-                                    Value = cust.Id,
-                                    Matchcode = cust.MatchCode,
-                                    Kundennummer = cust.CustomerNumber
-                                };
-            e.Result = customerQuery;
+            e.Result = GetAllSmallCustomers();
         }
         #endregion
 
