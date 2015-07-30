@@ -54,6 +54,7 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract RadScriptManager RadScriptManager { get; }
         protected abstract RadNumericTextBox Discount { get; }
         protected abstract HiddenField SmallCustomerOrder { get; }
+        protected virtual RequiredFieldValidator InvoiceValidator { get { return null; } }
         #endregion
 
         #region Dates
@@ -189,6 +190,9 @@ namespace KVSWebApplication.Auftragseingang
         // Create new Adress in der DatenBank
         protected void OnAddAdressButton_Clicked(object sender, EventArgs e)
         {
+            if(InvoiceValidator != null)
+                InvoiceValidator.Enabled = false;
+
             var street = Street_TextBox.Text;
             var streetNumber = StreetNumber_TextBox.Text;
             var zipcode = Zipcode_TextBox.Text;

@@ -884,68 +884,6 @@ namespace KVSWebApplication.Auftragseingang
             return allesHatGutGelaufen;
         }
 
-        // Create new Adress in der DatenBank
-        protected void OnAddAdressButton_Clicked(object sender, EventArgs e)
-        {
-            //InvoiceRecValidator2.Enabled = false;
-            //Adress Eigenschaften
-            string street = "",
-                streetNumber = "",
-                zipcode = "",
-                city = "",
-                country = "",
-                invoiceRecipient = "";
-            // OrderItem Eigenschaften
-            string ProductName = "";
-            decimal Amount = 0;
-
-            street = StreetTextBox.Text;
-            streetNumber = StreetNumberTextBox.Text;
-            zipcode = ZipcodeTextBox.Text;
-            city = CityTextBox.Text;
-            country = CountryTextBox.Text;
-            invoiceRecipient = InvoiceRecipient.Text;
-            int itemCount = 0;
-            try
-            {
-                using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
-                {
-                    var newAdress = Adress.CreateAdress(street, streetNumber, zipcode, city, country, dbContext);
-                    var newInvoice = Invoice.CreateInvoice(dbContext, Int32.Parse(Session["CurrentUserId"].ToString()), invoiceRecipient, newAdress,
-                        Int32.Parse(CustomerDropDownList.SelectedValue), txbDiscount.Value, "Einzelrechnung");
-                    //Submiting new Invoice and Adress
-                    dbContext.SubmitChanges();
-                    var orderQuery = dbContext.Order.SingleOrDefault(q => q.OrderNumber == Int32.Parse(smallCustomerOrderHiddenField.Value));
-                    foreach (OrderItem ordItem in orderQuery.OrderItem)
-                    {
-                        ProductName = ordItem.ProductName;
-                        Amount = ordItem.Amount;
-                                               
-                        CostCenter costCenter = null;
-                        if (ordItem.CostCenterId.HasValue)
-                        {
-                            costCenter = dbContext.CostCenter.FirstOrDefault(o => o.Id == ordItem.CostCenterId.Value);
-                        }
-
-                        itemCount = ordItem.Count;
-                        InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(ProductName, Convert.ToDecimal(Amount), itemCount, ordItem, costCenter, dbContext);
-                        ordItem.LogDBContext = dbContext;
-                        ordItem.Status = (int)OrderItemStatusTypes.Payed;
-                        dbContext.SubmitChanges();
-                    }
-                    // Submiting new InvoiceItems
-                    dbContext.SubmitChanges();
-                    Print(newInvoice);
-                    // Closing RadWindow
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorLeereTextBoxenLabel.Text = ex.Message;
-                ErrorLeereTextBoxenLabel.Visible = true;
-            }
-        }
-
         //Tausch die Information aus neues zu altes Kennzeichen Boxen
         protected void KennzeichenTauschButton_Clicked(object sender, EventArgs e)
         {
