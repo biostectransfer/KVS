@@ -15,19 +15,31 @@ using KVSCommon.Managers;
 namespace KVSWebApplication.Auftragseingang
 {
     //Neuzulassung Laufkunde
-    public partial class ZulassungLaufkundeControl : IncomingOrdersBase
+    public partial class ZulassungLaufkundeControl : AdmissionOrderBase
     {
         #region Members
-
-        protected override PermissionTypes PagePermission { get { return PermissionTypes.ZULASSUNGSAUFTRAG_ANLEGEN; } }
-        protected override OrderTypes OrderType { get { return OrderTypes.Admission; } }
         
         protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
-        protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
-        protected override RadComboBox LocationDropDown { get { return null; } }
         protected override RadTreeView ProductTree { get { return DienstleistungTreeView; } }
         protected override RadScriptManager RadScriptManager { get { return ((ZulassungLaufkunde)Page).getScriptManager(); } }
 
+        #region Dates
+
+        protected override RadMonthYearPicker Registration_GeneralInspectionDatePicker { get { return this.Registration_GeneralInspectionDateBox; } }
+        protected override RadDatePicker FirstRegistrationDatePicker { get { return this.FirstRegistrationDateBox; } }
+
+        #endregion
+
+        #region DropDowns
+
+        protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
+        protected override RadComboBox LocationDropDown { get { return null; } }
+        protected override RadComboBox CostCenterDropDown { get { return null; } }
+        protected override RadComboBox AdmissionPointDropDown { get { return this.ZulassungsstelleComboBox; } }
+        protected override RadComboBox ProductDropDown { get { return this.ProductDropDownList; } }
+        protected override RadComboBox RegistrationOrderDropDown { get { return this.RegistrationOrderDropDownList; } }
+
+        #endregion
         #region TextBoxes
 
         protected override RadTextBox AccountNumberTextBox { get { return this.BankAccount_AccountnumberBox; } }
@@ -85,7 +97,7 @@ namespace KVSWebApplication.Auftragseingang
         protected override Label HalterCaption { get { return this.HalterLabel; } }
         protected override Label HalterdatenCaption { get { return this.HalterdatenLabel; } }
         protected override Label KontaktdatenCaption { get { return this.KontaktdatenLabel; } }
-
+        protected override Label HSNSearchCaption { get { return this.HSNSearchLabel; } }
         #endregion
 
         #endregion
@@ -927,19 +939,9 @@ namespace KVSWebApplication.Auftragseingang
                 gibtsBoxenDieLeerSind = true;
             return gibtsBoxenDieLeerSind;
         }
-        // findet alle textboxen und macht die leer ohne die ganze Seite neu zu laden
-        protected void MakeAllControlsEmpty()
-        {
-            List<Control> allControls = GetAllControls();
-            DateTime? nullDate = null;
-            Registration_GeneralInspectionDateBox.SelectedDate = nullDate;
-            FirstRegistrationDateBox.SelectedDate = DateTime.Now;
-            HSNSearchLabel.Visible = false;
-            DienstleistungTreeView.Nodes.Clear();
-            CustomerDropDownList.ClearSelection();
-            ProductDropDownList.ClearSelection();
-            RegistrationOrderDropDownList.ClearSelection();
-            ZulassungsstelleComboBox.ClearSelection();
+
+        protected override void MakeSpecialControlsEmpty()
+        {            
             txbSmallCustomerZahlungsziel.Text = "";
             txbSmallCustomerVorname.Text = "";
             txbSmallCustomerNachname.Text = "";
@@ -954,21 +956,8 @@ namespace KVSWebApplication.Auftragseingang
             txbSmallCustomerEmail.Text = "";
             txbSmallCustomerNumber.Text = "";
             txbSmallCustomerMobil.Text = "";
-            foreach (Control control in allControls)
-            {
-                foreach (Control subControl in control.Controls)
-                {
-                    if (subControl is RadTextBox)
-                    {
-                        RadTextBox box = subControl as RadTextBox;
-                        if (box.Enabled == true && (box != Adress_CountryBox))
-                        {
-                            box.Text = "";
-                        }
-                    }
-                }
-            }
         }
+
         protected void NaechtenAuftragButton_Clicked(object sender, EventArgs e)
         {
             MakeAllControlsEmpty();

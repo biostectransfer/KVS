@@ -15,19 +15,30 @@ namespace KVSWebApplication.Auftragseingang
     /// <summary>
     /// Neuzulassung Grosskunde
     /// </summary>
-    public partial class NeuzulassungGrosskundeControl : IncomingOrdersBase
+    public partial class NeuzulassungGrosskundeControl : AdmissionOrderBase
     {
         #region Members
-
-        protected override PermissionTypes PagePermission { get { return PermissionTypes.ZULASSUNGSAUFTRAG_ANLEGEN; } }
-        protected override OrderTypes OrderType { get { return OrderTypes.Admission; } }
-
        
         protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
-        protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
-        protected override RadComboBox LocationDropDown { get { return this.LocationDropDownList; } }
         protected override RadTreeView ProductTree { get { return DienstleistungTreeView; } }
         protected override RadScriptManager RadScriptManager { get { return ((NeuzulassungGrosskunde)Page).getScriptManager(); } }
+
+        #region Dates
+
+        protected override RadMonthYearPicker Registration_GeneralInspectionDatePicker { get { return this.Registration_GeneralInspectionDateBox; } }
+        protected override RadDatePicker FirstRegistrationDatePicker { get { return this.FirstRegistrationDateBox; } }
+
+        #endregion
+
+        #region DropDowns
+
+        protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
+        protected override RadComboBox LocationDropDown { get { return this.LocationDropDownList; } }
+        protected override RadComboBox CostCenterDropDown { get { return this.CostCenterDropDownList; } }
+        protected override RadComboBox AdmissionPointDropDown { get { return this.ZulassungsstelleComboBox; } }
+        protected override RadComboBox ProductDropDown { get { return this.ProductDropDownList; } }
+        protected override RadComboBox RegistrationOrderDropDown { get { return this.RegistrationOrderDropDownList; } }
+        #endregion
 
         #region TextBoxes
 
@@ -86,7 +97,7 @@ namespace KVSWebApplication.Auftragseingang
         protected override Label HalterCaption { get { return this.HalterLabel; } }
         protected override Label HalterdatenCaption { get { return this.HalterdatenLabel; } }
         protected override Label KontaktdatenCaption { get { return this.KontaktdatenLabel; } }
-
+        protected override Label HSNSearchCaption { get { return this.HSNSearchLabel; } }
         #endregion
 
         #endregion
@@ -1058,34 +1069,7 @@ namespace KVSWebApplication.Auftragseingang
             return gibtsBoxenDieLeerSind;
         }
         // findet alle textboxen und macht die leer ohne die ganze Seite neu zu laden
-        protected void MakeAllControlsEmpty()
-        {
-            List<Control> allControls = GetAllControls();
-            DateTime? nullDate = null;
-            Registration_GeneralInspectionDateBox.SelectedDate = nullDate;
-            FirstRegistrationDateBox.SelectedDate = DateTime.Now;
-            DienstleistungTreeView.Nodes.Clear();
-            CustomerDropDownList.ClearSelection();
-            ProductDropDownList.ClearSelection();
-            LocationDropDownList.ClearSelection();
-            CostCenterDropDownList.ClearSelection();
-            RegistrationOrderDropDownList.ClearSelection();
-            ZulassungsstelleComboBox.ClearSelection();
-            foreach (Control control in allControls)
-            {
-                foreach (Control subControl in control.Controls)
-                {
-                    if (subControl is RadTextBox)
-                    {
-                        RadTextBox box = subControl as RadTextBox;
-                        if (box.Enabled == true)
-                        {
-                            box.Text = "";
-                        }
-                    }
-                }
-            }
-        }
+
         protected void NaechtenAuftragButton_Clicked(object sender, EventArgs e)
         {
             MakeAllControlsEmpty();

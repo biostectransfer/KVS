@@ -26,6 +26,9 @@ namespace KVSWebApplication.Auftragseingang
         {
         }
 
+        protected override PermissionTypes PagePermission { get { return PermissionTypes.ZULASSUNGSAUFTRAG_ANLEGEN; } }
+        protected override OrderTypes OrderType { get { return OrderTypes.Admission; } }
+
         #endregion
 
         #region Event Handlers
@@ -34,7 +37,7 @@ namespace KVSWebApplication.Auftragseingang
         #endregion
 
         #region Methods
-        
+
 
         #endregion
     }

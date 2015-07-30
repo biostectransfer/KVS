@@ -42,17 +42,37 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract OrderTypes OrderType { get; }
 
         protected List<Control> controls = new List<Control>();
-        protected abstract Panel Panel { get; }
+        protected abstract Label CustomerHistoryLabel { get; }
+        protected abstract RadTreeView ProductTree { get; }
+        protected abstract RadScriptManager RadScriptManager { get; }
+
+        #endregion
+
+        #region Dates
+
+        protected abstract RadMonthYearPicker Registration_GeneralInspectionDatePicker { get; }
+        protected abstract RadDatePicker FirstRegistrationDatePicker { get; }
+
+        #endregion
+
+        #region DropDowns
+
+        protected abstract RadComboBox CustomerDropDown { get; }
+        protected abstract RadComboBox LocationDropDown { get; }
+        protected abstract RadComboBox CostCenterDropDown { get; }
+        protected abstract RadComboBox AdmissionPointDropDown { get; }
+        protected abstract RadComboBox ProductDropDown { get; }
+        protected abstract RadComboBox RegistrationOrderDropDown { get; }
+
+        #endregion
+
+        #region TextBoxes
+
         protected abstract RadTextBox AccountNumberTextBox { get; }
         protected abstract RadTextBox BankCodeTextBox { get; }
         protected abstract RadTextBox BankNameTextBox { get;  }
         protected abstract RadTextBox IBANTextBox { get; }
         protected abstract RadTextBox BICTextBox { get; }
-        protected abstract Label CustomerHistoryLabel { get; }
-        protected abstract RadComboBox CustomerDropDown { get; }
-        protected abstract RadComboBox LocationDropDown { get; }
-        protected abstract RadTreeView ProductTree { get; }
-        protected abstract RadScriptManager RadScriptManager { get; }
         protected abstract RadTextBox Adress_Street_TextBox { get; }
         protected abstract RadTextBox Adress_StreetNumber_TextBox { get; }
         protected abstract RadTextBox Adress_Zipcode_TextBox { get; }
@@ -66,6 +86,7 @@ namespace KVSWebApplication.Auftragseingang
 
         #region Panels
 
+        protected abstract Panel Panel { get; }
         protected abstract Panel Vehicle_Variant_Panel { get; }
         protected abstract Panel Registration_GeneralInspectionDate_Panel { get; }
         protected abstract Panel CarOwner_Name_Panel { get; }
@@ -114,7 +135,7 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract Label HalterCaption { get; }
         protected abstract Label HalterdatenCaption { get; }
         protected abstract Label KontaktdatenCaption { get; }
-
+        protected abstract Label HSNSearchCaption { get; }
         #endregion
 
         #endregion
@@ -399,6 +420,52 @@ namespace KVSWebApplication.Auftragseingang
                     }
                 }
             }
+        }
+        protected void MakeAllControlsEmpty()
+        {
+            var allControls = GetAllControls();
+
+            Registration_GeneralInspectionDatePicker.SelectedDate = (DateTime?)null;
+            FirstRegistrationDatePicker.SelectedDate = DateTime.Now;
+
+            ProductTree.Nodes.Clear();
+            CustomerDropDown.ClearSelection();
+            ProductDropDown.ClearSelection();
+
+            if(LocationDropDown != null)
+                LocationDropDown.ClearSelection();
+
+            if(CostCenterDropDown != null)
+                CostCenterDropDown.ClearSelection();
+            
+            if(RegistrationOrderDropDown != null)
+                RegistrationOrderDropDown.ClearSelection();
+
+            AdmissionPointDropDown.ClearSelection();
+
+            HSNSearchCaption.Visible = false;
+
+            foreach (Control control in allControls)
+            {
+                foreach (Control subControl in control.Controls)
+                {
+                    if (subControl is RadTextBox)
+                    {
+                        RadTextBox box = subControl as RadTextBox;
+                        if (box.Enabled == true && box != Adress_Country_TextBox)
+                        {
+                            box.Text = "";
+                        }
+                    }
+                }
+            }
+
+            MakeSpecialControlsEmpty();
+        }
+
+        protected virtual void MakeSpecialControlsEmpty()
+        {
+
         }
 
 
