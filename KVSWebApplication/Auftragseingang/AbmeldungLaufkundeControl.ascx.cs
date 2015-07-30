@@ -378,59 +378,52 @@ namespace KVSWebApplication.Auftragseingang
                     VINBox.Focus();
                 }
             }
+
             if (finIsOkey == true)
             {
-                try
+                VINBox.Text = VINBox.Text.ToUpper();
+                FahrzeugLabel.Visible = false;
+
+                var vehicle = VehicleManager.GetEntities(q => q.VIN == VINBox.Text).FirstOrDefault();
+                vehicleIdField.Value = vehicle.Id.ToString();
+                if (vehicle.CurrentRegistrationId.HasValue)
                 {
-                    VINBox.Text = VINBox.Text.ToUpper();
-                    FahrzeugLabel.Visible = false;
-                    KVSEntities dbContext = new KVSEntities();
-                    var autoQuery = dbContext.Vehicle.Single(q => q.VIN == VINBox.Text);
-                    vehicleIdField.Value = autoQuery.Id.ToString();
-                    if (autoQuery.CurrentRegistrationId.HasValue)
+                    var registration = RegistrationManager.GetById(vehicle.CurrentRegistrationId.Value);
+                    
+                    VINBox.Text = VINBox.Text;
+                    Vehicle_VariantBox.Text = vehicle.Variant;
+                    var kennzeichen = registration.Licencenumber;
+                    string[] newKennzeichen = kennzeichen.Split('-');
+
+                    if (newKennzeichen.Length == 3)
                     {
-                        var registration = dbContext.Registration.Single(q => q.Id == autoQuery.CurrentRegistrationId.Value);
-                        
-                        string kennzeichen = string.Empty;
-                        VINBox.Text = VINBox.Text;
-                        Vehicle_VariantBox.Text = autoQuery.Variant;
-                        kennzeichen = registration.Licencenumber;
-                        string[] newKennzeichen = kennzeichen.Split('-');
-                        if (newKennzeichen.Length == 3)
-                        {
-                            LicenceBox1.Text = newKennzeichen[0];
-                            LicenceBox2.Text = newKennzeichen[1];
-                            LicenceBox3.Text = newKennzeichen[2];
-                        }
-                        Registration_GeneralInspectionDateBox.SelectedDate = registration.GeneralInspectionDate;
-                        Vehicle_VariantBox.Text = autoQuery.Variant;
-                        HSNAbmBox.Text = autoQuery.HSN;
-                        TSNAbmBox.Text = autoQuery.TSN;
-                        Vehicle_ColorBox.Text = autoQuery.ColorCode.ToString();
-                        RegDocNumBox.Text = registration.RegistrationDocumentNumber;
-                        EmissionsCodeBox.Text = registration.EmissionCode;
-                        CarOwner_NameBox.Text = registration.CarOwner.Name;
-                        Adress_StreetBox.Text = registration.CarOwner.Adress.Street;
-                        CarOwner_FirstnameBox.Text = registration.CarOwner.FirstName;
-                        Adress_StreetNumberBox.Text = registration.CarOwner.Adress.StreetNumber;
-                        Adress_ZipcodeBox.Text = registration.CarOwner.Adress.Zipcode;
-                        Adress_CityBox.Text = registration.CarOwner.Adress.City;
-                        Adress_CountryBox.Text = registration.CarOwner.Adress.Country;
-                        Contact_PhoneBox.Text = registration.CarOwner.Contact.Phone;
-                        Contact_FaxBox.Text = registration.CarOwner.Contact.Fax;
-                        Contact_MobilePhoneBox.Text = registration.CarOwner.Contact.MobilePhone;
-                        Contact_EmailBox.Text = registration.CarOwner.Contact.Email;
-                        BankAccount_BankNameBox.Text = registration.CarOwner.BankAccount.BankName;
-                        BankAccount_AccountnumberBox.Text = registration.CarOwner.BankAccount.Accountnumber;
-                        BankAccount_BankCodeBox.Text = registration.CarOwner.BankAccount.BankCode;
-                        PruefzifferBox.Focus();
+                        LicenceBox1.Text = newKennzeichen[0];
+                        LicenceBox2.Text = newKennzeichen[1];
+                        LicenceBox3.Text = newKennzeichen[2];
                     }
-                }
-                // falls kein Fahrzeug gefunden
-                catch (Exception ex)
-                {
-                    FahrzeugLabel.Text = "Fahrzeug mit dem FIN " + VINBox.Text + " wurde nicht gefunden.";
-                    VINBox.Focus();
+
+                    Registration_GeneralInspectionDateBox.SelectedDate = registration.GeneralInspectionDate;
+                    Vehicle_VariantBox.Text = vehicle.Variant;
+                    HSNAbmBox.Text = vehicle.HSN;
+                    TSNAbmBox.Text = vehicle.TSN;
+                    Vehicle_ColorBox.Text = vehicle.ColorCode.ToString();
+                    RegDocNumBox.Text = registration.RegistrationDocumentNumber;
+                    EmissionsCodeBox.Text = registration.EmissionCode;
+                    CarOwner_NameBox.Text = registration.CarOwner.Name;
+                    Adress_StreetBox.Text = registration.CarOwner.Adress.Street;
+                    CarOwner_FirstnameBox.Text = registration.CarOwner.FirstName;
+                    Adress_StreetNumberBox.Text = registration.CarOwner.Adress.StreetNumber;
+                    Adress_ZipcodeBox.Text = registration.CarOwner.Adress.Zipcode;
+                    Adress_CityBox.Text = registration.CarOwner.Adress.City;
+                    Adress_CountryBox.Text = registration.CarOwner.Adress.Country;
+                    Contact_PhoneBox.Text = registration.CarOwner.Contact.Phone;
+                    Contact_FaxBox.Text = registration.CarOwner.Contact.Fax;
+                    Contact_MobilePhoneBox.Text = registration.CarOwner.Contact.MobilePhone;
+                    Contact_EmailBox.Text = registration.CarOwner.Contact.Email;
+                    BankAccount_BankNameBox.Text = registration.CarOwner.BankAccount.BankName;
+                    BankAccount_AccountnumberBox.Text = registration.CarOwner.BankAccount.Accountnumber;
+                    BankAccount_BankCodeBox.Text = registration.CarOwner.BankAccount.BankCode;
+                    PruefzifferBox.Focus();
                 }
             }
         }

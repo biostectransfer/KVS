@@ -285,81 +285,75 @@ namespace KVSWebApplication.Auftragseingang
                     VINBox.Focus();
                 }
             }
+
             if (finIsOkey == true)
             {
-                try
+                VINBox.Text = VINBox.Text.ToUpper();
+
+                var vehicle = VehicleManager.GetEntities(q => q.VIN == VINBox.Text).FirstOrDefault();
+                if (vehicle != null)
                 {
-                    VINBox.Text = VINBox.Text.ToUpper();
-                    KVSEntities dbContext = new KVSEntities();
-                    var autoQuery = dbContext.Vehicle.SingleOrDefault(q => q.VIN == VINBox.Text);
-                    if (autoQuery != null)
+                    //wird als cache field für die Kennzeichnung bei der Umkennzeichnung benutzt
+                    if (vehicle.CurrentRegistrationId.HasValue)
                     {
-                        //wird als cache field für die Kennzeichnung bei der Umkennzeichnung benutzt
-                        if (autoQuery.CurrentRegistrationId.HasValue)
+                        var registration = RegistrationManager.GetById(vehicle.CurrentRegistrationId.Value);
+
+                        LicenceNumberCacheField.Value = registration.Licencenumber;
+                        RegistrationIdField.Value = registration.Id.ToString();
+                        var kennzeichen = registration.Licencenumber;
+                        string[] newKennzeichen = kennzeichen.Split('-');
+
+                        if (newKennzeichen.Length == 3)
                         {
-                            var registration = dbContext.Registration.Single(q => q.Id == autoQuery.CurrentRegistrationId.Value);
-
-                            string kennzeichen = string.Empty;
-                            LicenceNumberCacheField.Value = registration.Licencenumber;
-                            RegistrationIdField.Value = registration.Id.ToString();
-                            kennzeichen = registration.Licencenumber;
-                            string[] newKennzeichen = kennzeichen.Split('-');
-                            if (newKennzeichen.Length == 3)
-                            {
-                                LicenceBox1.Text = newKennzeichen[0];
-                                LicenceBox2.Text = newKennzeichen[1];
-                                LicenceBox3.Text = newKennzeichen[2];
-                            }
-
-                            Registration_GeneralInspectionDateBox.SelectedDate = registration.GeneralInspectionDate;
-                            RegDocNumBox.Text = registration.RegistrationDocumentNumber;
-                            EmissionsCodeBox.Text = registration.EmissionCode;
-
-
-                            CarOwner owner = registration.CarOwner;
-                            if (owner != null)
-                            {
-                                CarOwner_NameBox.Text = owner.Name;
-                                if (owner.Adress != null)
-                                {
-                                    Adress_StreetBox.Text = owner.Adress.Street;
-                                    CarOwner_FirstnameBox.Text = owner.FirstName;
-                                    Adress_StreetNumberBox.Text = owner.Adress.StreetNumber;
-                                    Adress_ZipcodeBox.Text = owner.Adress.Zipcode;
-                                    Adress_CityBox.Text = owner.Adress.City;
-                                    Adress_CountryBox.Text = owner.Adress.Country;
-                                }
-                                if (owner.Contact != null)
-                                {
-                                    Contact_PhoneBox.Text = owner.Contact.Phone;
-                                    Contact_FaxBox.Text = owner.Contact.Fax;
-                                    Contact_MobilePhoneBox.Text = owner.Contact.MobilePhone;
-                                    Contact_EmailBox.Text = owner.Contact.Email;
-                                }
-                                if (owner.BankAccount != null)
-                                {
-                                    BankAccount_BankNameBox.Text = owner.BankAccount.BankName;
-                                    BankAccount_AccountnumberBox.Text = owner.BankAccount.Accountnumber;
-                                    BankAccount_BankCodeBox.Text = owner.BankAccount.BankCode;
-                                }
-                                PruefzifferBox.Focus();
-                            }
+                            LicenceBox1.Text = newKennzeichen[0];
+                            LicenceBox2.Text = newKennzeichen[1];
+                            LicenceBox3.Text = newKennzeichen[2];
                         }
 
-                        VehicleIdField.Value = autoQuery.Id.ToString();
-                        Vehicle_VariantBox.Text = autoQuery.Variant;
-                        HSNBox.Text = autoQuery.HSN;
-                        TSNBox.Text = autoQuery.TSN;
-                        Vehicle_ColorBox.Text = autoQuery.ColorCode.ToString();
+                        Registration_GeneralInspectionDateBox.SelectedDate = registration.GeneralInspectionDate;
+                        RegDocNumBox.Text = registration.RegistrationDocumentNumber;
+                        EmissionsCodeBox.Text = registration.EmissionCode;
+
+
+                        CarOwner owner = registration.CarOwner;
+                        if (owner != null)
+                        {
+                            CarOwner_NameBox.Text = owner.Name;
+                            if (owner.Adress != null)
+                            {
+                                Adress_StreetBox.Text = owner.Adress.Street;
+                                CarOwner_FirstnameBox.Text = owner.FirstName;
+                                Adress_StreetNumberBox.Text = owner.Adress.StreetNumber;
+                                Adress_ZipcodeBox.Text = owner.Adress.Zipcode;
+                                Adress_CityBox.Text = owner.Adress.City;
+                                Adress_CountryBox.Text = owner.Adress.Country;
+                            }
+                            if (owner.Contact != null)
+                            {
+                                Contact_PhoneBox.Text = owner.Contact.Phone;
+                                Contact_FaxBox.Text = owner.Contact.Fax;
+                                Contact_MobilePhoneBox.Text = owner.Contact.MobilePhone;
+                                Contact_EmailBox.Text = owner.Contact.Email;
+                            }
+                            if (owner.BankAccount != null)
+                            {
+                                BankAccount_BankNameBox.Text = owner.BankAccount.BankName;
+                                BankAccount_AccountnumberBox.Text = owner.BankAccount.Accountnumber;
+                                BankAccount_BankCodeBox.Text = owner.BankAccount.BankCode;
+                            }
+                            PruefzifferBox.Focus();
+                        }
                     }
-                }
-                // falls kein Fahrzeug gefunden
-                catch (Exception ex)
-                {
-                    VINBox.Focus();
+
+                    VehicleIdField.Value = vehicle.Id.ToString();
+                    Vehicle_VariantBox.Text = vehicle.Variant;
+                    HSNBox.Text = vehicle.HSN;
+                    TSNBox.Text = vehicle.TSN;
+                    Vehicle_ColorBox.Text = vehicle.ColorCode.ToString();
                 }
             }
         }
+
         #region Button Clicked
         //Neue Auftragseingang
         protected void AuftragZulassenButton_Clicked(object sender, EventArgs e)

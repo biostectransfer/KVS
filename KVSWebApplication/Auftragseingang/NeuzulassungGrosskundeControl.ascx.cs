@@ -244,6 +244,7 @@ namespace KVSWebApplication.Auftragseingang
                     VINBox.Focus();
                 }
             }
+
             if (finIsOkey == true)
             {
                 VINBox.Text = VINBox.Text.ToUpper();
