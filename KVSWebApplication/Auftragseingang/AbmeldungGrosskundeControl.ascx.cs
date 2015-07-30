@@ -646,34 +646,7 @@ namespace KVSWebApplication.Auftragseingang
         }
         #endregion
         #region Linq Data Sources
-        protected void LocationLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {
-            KVSEntities con = new KVSEntities();
-            if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue.ToString()))
-            {
-                var locationQuery = from loc in con.Location
-                                    join cust in con.Customer on loc.CustomerId equals cust.Id
-                                    where loc.CustomerId == Int32.Parse(CustomerDropDownList.SelectedValue)
-                                    select new
-                                    {
-                                        Name = loc.Name,
-                                        Value = loc.Id
-                                    };
-                e.Result = locationQuery;
-            }
-            else
-            {
-                var locationQuery = from loc in con.Location
-                                    join cust in con.Customer on loc.CustomerId equals cust.Id
-                                    where loc.CustomerId == null
-                                    select new
-                                    {
-                                        Name = loc.Name,
-                                        Value = loc.Id
-                                    };
-                e.Result = locationQuery;
-            }
-        }
+
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             e.Result = GetAllSmallCustomers();

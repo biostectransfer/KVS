@@ -244,6 +244,7 @@ namespace KVSWebApplication.Auftragseingang
                 ErrorLeereTextBoxenCaption.Visible = true;
             }
         }
+
         protected void ZulassungsstelleDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             e.Result = RegistrationLocationManager.GetEntities().Select(o => new
@@ -251,6 +252,28 @@ namespace KVSWebApplication.Auftragseingang
                 Name = o.RegistrationLocationName,
                 Value = o.ID
             }).OrderBy(o => o.Name).ToList();
+        }
+
+        protected void LocationLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
+        {
+            if (!String.IsNullOrEmpty(CustomerDropDown.SelectedValue.ToString()))
+            {
+                e.Result = LocationManager.GetEntities(o => o.CustomerId == Int32.Parse(CustomerDropDown.SelectedValue)).
+                                Select(loc => new
+                                {
+                                    Name = loc.Name,
+                                    Value = loc.Id
+                                }); ;
+            }
+            else
+            {
+                e.Result = LocationManager.GetEntities(o => !o.CustomerId.HasValue).
+                                Select(loc => new
+                                {
+                                    Name = loc.Name,
+                                    Value = loc.Id
+                                });
+            }
         }
 
         #endregion

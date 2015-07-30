@@ -124,6 +124,7 @@ namespace KVSWebApplication.Auftragseingang
         }
 
         #region Index Changed
+
         protected void SmallLargeCustomer_Changed(object sender, EventArgs e)
         {
             CustomerDropDownList.DataBind();
@@ -133,6 +134,7 @@ namespace KVSWebApplication.Auftragseingang
             ProductDropDownList.DataSource = null;
             ProductDropDownList.DataBind();
         }
+
         protected void DeleteNewPosButton_Clicked(object sender, EventArgs e)
         {
             if (DienstleistungTreeView.SelectedNodes.Count > 0)
@@ -140,6 +142,7 @@ namespace KVSWebApplication.Auftragseingang
                 DienstleistungTreeView.SelectedNode.Remove();
             }
         }
+
         protected void NewPosButton_Clicked(object sender, EventArgs e)
         {
             IRadTreeNodeContainer target = DienstleistungTreeView;
@@ -158,10 +161,11 @@ namespace KVSWebApplication.Auftragseingang
                 else
                     costCenter = "";
                 string value = ProductDropDownList.SelectedValue.ToString() + ";" + costCenter;
-                RadTreeNode addedNode = new RadTreeNode(ProductDropDownList.Text + "(" + CostCenterDropDownList.Text + ")", value);//+ ";" + CostCenterDropDownList.SelectedValue == "SmallCustomer" ? "" : CostCenterDropDownList.SelectedValue);
+                RadTreeNode addedNode = new RadTreeNode(ProductDropDownList.Text + "(" + CostCenterDropDownList.Text + ")", value);
                 target.Nodes.Add(addedNode);
             }
         }
+
         protected void RegistrationTyp_Changed(object sender, EventArgs e)
         {
             KennzeichenTauschButton.Visible = false;
@@ -173,6 +177,7 @@ namespace KVSWebApplication.Auftragseingang
             ProductDropDownList.Focus();
             SetCarOwnerData();
         }
+
         protected void CustomerIndex_Changed(object sender, EventArgs e)
         {
             ProductDropDownList.Text = null;
@@ -201,8 +206,11 @@ namespace KVSWebApplication.Auftragseingang
                 SmallCustomerHistorie.Visible = false;
             }
         }
+
         #endregion
+
         #region Linq Data Source
+
         protected void ProductDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             var selectedCustomer = 0;
@@ -288,35 +296,6 @@ namespace KVSWebApplication.Auftragseingang
             e.Result = GetAllLargeCustomers();
         }
 
-        protected void LocationLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {
-            KVSEntities con = new KVSEntities();
-
-            if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue.ToString()))
-            {
-                var locationQuery = from loc in con.Location
-                                    join cust in con.Customer on loc.CustomerId equals cust.Id
-                                    where loc.CustomerId == Int32.Parse(CustomerDropDownList.SelectedValue)
-                                    select new
-                                    {
-                                        Name = loc.Name,
-                                        Value = loc.Id
-                                    };
-                e.Result = locationQuery;
-            }
-            else
-            {
-                var locationQuery = from loc in con.Location
-                                    join cust in con.Customer on loc.CustomerId equals cust.Id
-                                    where loc.CustomerId == null
-                                    select new
-                                    {
-                                        Name = loc.Name,
-                                        Value = loc.Id
-                                    };
-                e.Result = locationQuery;
-            }
-        }
         protected void CostCenterLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             e.Result = GetCostCenters();
