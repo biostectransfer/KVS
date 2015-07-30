@@ -32,6 +32,39 @@ namespace KVSWebApplication.Auftragseingang
         protected override RadComboBox LocationDropDown { get { return this.LocationDropDownList; } }
         protected override RadTreeView ProductTree { get { return DienstleistungTreeView; } }
         protected override RadScriptManager RadScriptManager { get { return ((NeuzulassungGrosskunde)Page).getScriptManager(); } }
+
+        #region Panels
+
+        protected override Panel Vehicle_Variant_Panel { get { return this.Vehicle_Variant; } }
+        protected override Panel Registration_GeneralInspectionDate_Panel { get { return this.Registration_GeneralInspectionDate; } }
+        protected override Panel CarOwner_Name_Panel { get { return this.CarOwner_Name; } }
+        protected override Panel CarOwner_Firstname_Panel { get { return this.CarOwner_Firstname; } }
+        protected override Panel Adress_StreetNumber_Panel { get { return this.Adress_StreetNumber; } }
+        protected override Panel Adress_Street_Panel { get { return this.Adress_Street; } }
+        protected override Panel Adress_Zipcode_Panel { get { return this.Adress_Zipcode; } }
+        protected override Panel Adress_City_Panel { get { return this.Adress_City; } }
+        protected override Panel Adress_Country_Panel { get { return this.Adress_Country; } }
+        protected override Panel Contact_Phone_Panel { get { return this.Contact_Phone; } }
+        protected override Panel Contact_Fax_Panel { get { return this.Contact_Fax; } }
+        protected override Panel Contact_MobilePhone_Panel { get { return this.Contact_MobilePhone; } }
+        protected override Panel Contact_Email_Panel { get { return this.Contact_Email; } }
+        protected override Panel BankAccount_BankName_Panel { get { return this.BankAccount_BankName; } }
+        protected override Panel BankAccount_Accountnumber_Panel { get { return this.BankAccount_Accountnumber; } }
+        protected override Panel BankAccount_BankCode_Panel { get { return this.BankAccount_BankCode; } }
+        protected override Panel Registration_eVBNumber_Panel { get { return this.Registration_eVBNumber; } }
+        protected override Panel Vehicle_HSN_Panel { get { return this.Vehicle_HSN; } }
+        protected override Panel Vehicle_TSN_Panel { get { return this.Vehicle_TSN; } }
+        protected override Panel Vehicle_VIN_Panel { get { return this.Vehicle_VIN; } }
+        protected override Panel Registration_Licencenumber_Panel { get { return this.Registration_Licencenumber; } }
+        protected override Panel RegistrationOrder_PreviousLicencenumber_Panel { get { return this.RegistrationOrder_PreviousLicencenumber; } }
+        protected override Panel Registration_EmissionCode_Panel { get { return this.Registration_EmissionCode; } }
+        protected override Panel Registration_RegistrationDocumentNumber_Panel { get { return this.Registration_RegistrationDocumentNumber; } }
+        protected override Panel Vehicle_FirstRegistrationDate_Panel { get { return this.Vehicle_FirstRegistrationDate; } }
+        protected override Panel Vehicle_Color_Panel { get { return this.Vehicle_Color; } }
+        protected override Panel IBANPanel_Panel { get { return this.IBANPanel; } }
+
+        #endregion
+
         #endregion
 
         #region Methods
@@ -1145,41 +1178,6 @@ namespace KVSWebApplication.Auftragseingang
                     }
                 }
             }
-        }
-        //Gibt die Liste mit alle Controls aus der ASCX Seite zurück
-        protected List<Control> getAllControls()
-        {
-            if (controls.Count == 0)
-            {
-                controls.Add(Vehicle_Variant);
-                controls.Add(Registration_GeneralInspectionDate);
-                controls.Add(CarOwner_Name);
-                controls.Add(CarOwner_Firstname);
-                controls.Add(Adress_StreetNumber);
-                controls.Add(Adress_Street);
-                controls.Add(Adress_Zipcode);
-                controls.Add(Adress_City);
-                controls.Add(Adress_Country);
-                controls.Add(Contact_Phone);
-                controls.Add(Contact_Fax);
-                controls.Add(Contact_MobilePhone);
-                controls.Add(Contact_Email);
-                controls.Add(BankAccount_BankName);
-                controls.Add(BankAccount_Accountnumber);
-                controls.Add(BankAccount_BankCode);
-                controls.Add(Registration_eVBNumber);
-                controls.Add(Vehicle_HSN);
-                controls.Add(Vehicle_TSN);
-                controls.Add(Vehicle_VIN);
-                controls.Add(Registration_Licencenumber);
-                controls.Add(RegistrationOrder_PreviousLicencenumber);
-                controls.Add(Registration_EmissionCode);
-                controls.Add(Registration_RegistrationDocumentNumber);
-                controls.Add(Vehicle_FirstRegistrationDate);
-                controls.Add(Vehicle_Color);
-                controls.Add(IBANPanel);
-            }
-            return controls;
         }
 
         #endregion
