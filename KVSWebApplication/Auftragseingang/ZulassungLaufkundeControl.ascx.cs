@@ -190,47 +190,42 @@ namespace KVSWebApplication.Auftragseingang
         #region Linq Data Source
         protected void ProductDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
             var selectedCustomer = 0;
 
             if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
                 selectedCustomer = Int32.Parse(CustomerDropDownList.SelectedValue);
-            IQueryable productQuery = null;
+            IEnumerable<object> products = null;
 
             if (!String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue))
             {
-                productQuery = from prd in con.Product
-                               let price = con.Price.SingleOrDefault(q => q.ProductId == prd.Id && q.LocationId == null)
-                               join prA in con.PriceAccount on price.Id equals prA.PriceId
-                               where (prd.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) ||
-                               prd.OrderType.Id == (int)OrderTypes.Common)
-                               orderby prd.Name
-                               select new
-                               {
-                                   ItemNumber = prd.ItemNumber,
-                                   Name = prd.Name,
-                                   Value = prd.Id,
-                                   Category = prd.ProductCategory.Name,
-                                   Price = Math.Round(price.Amount, 2, MidpointRounding.AwayFromZero).ToString(),
-                                   AuthCharge = price.AuthorativeCharge.HasValue ? Math.Round(price.AuthorativeCharge.Value, 2, MidpointRounding.AwayFromZero).ToString().Trim() : ""
-                               };
+                products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 && o.Location == null &&
+                    (o.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) ||
+                        o.Product.OrderType.Id == (int)OrderTypes.Common)).
+                    Select(o => new
+                    {
+                        ItemNumber = o.Product.ItemNumber,
+                        Name = o.Product.Name,
+                        Value = o.Product.Id,
+                        Category = o.Product.ProductCategory.Name,
+                        Price = Math.Round(o.Amount, 2, MidpointRounding.AwayFromZero).ToString(),
+                        AuthCharge = o.AuthorativeCharge.HasValue ? Math.Round(o.AuthorativeCharge.Value, 2, MidpointRounding.AwayFromZero).ToString().Trim() : ""
+                    }).OrderBy(o => o.Name).ToList();
             }
             else
             {
-                productQuery = from p in con.Price
-                               join prA in con.PriceAccount on p.Id equals prA.PriceId
-                               where p.Location.CustomerId == null
-                               select new
-                               {
-                                   ItemNumber = p.Product.ItemNumber,
-                                   Name = p.Product.Name,
-                                   Value = p.Product.Id,
-                                   Category = p.Product.ProductCategory.Name,
-                                   Price = Math.Round(p.Amount, 2, MidpointRounding.AwayFromZero).ToString(),
-                                   AuthCharge = p.AuthorativeCharge.HasValue ? Math.Round(p.AuthorativeCharge.Value, 2, MidpointRounding.AwayFromZero).ToString().Trim() : ""
-                               };
+                products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 && o.Location != null && !o.Location.CustomerId.HasValue).
+                    Select(o => new
+                    {
+                        ItemNumber = o.Product.ItemNumber,
+                        Name = o.Product.Name,
+                        Value = o.Product.Id,
+                        Category = o.Product.ProductCategory.Name,
+                        Price = Math.Round(o.Amount, 2, MidpointRounding.AwayFromZero).ToString(),
+                        AuthCharge = o.AuthorativeCharge.HasValue ? Math.Round(o.AuthorativeCharge.Value, 2, MidpointRounding.AwayFromZero).ToString().Trim() : ""
+                    }).OrderBy(o => o.Name).ToList();
             }
-            e.Result = productQuery;
+
+            e.Result = products;
         }
         // Auswahl der KundenName
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)

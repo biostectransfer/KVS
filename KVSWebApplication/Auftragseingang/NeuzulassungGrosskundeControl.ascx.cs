@@ -205,51 +205,46 @@ namespace KVSWebApplication.Auftragseingang
         #region Linq Data Source
         protected void ProductDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
             var selectedCustomer = 0;
             var location = 0;
             if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
                 selectedCustomer = Int32.Parse(CustomerDropDownList.SelectedValue);
             if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
                 location = Int32.Parse(LocationDropDownList.SelectedValue);
-            IQueryable productQuery = null;
+            IEnumerable<object> products = null;
+
             if (!String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue))
             {
-                productQuery = from p in con.Price
-                               join prA in con.PriceAccount on p.Id equals prA.PriceId
-                               where (p.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) ||
-                               p.Product.OrderType.Id == (int)OrderTypes.Common)
-                               && p.Location.CustomerId == selectedCustomer
-                               && p.LocationId == location
-                               select new
-                               {
-                                   ItemNumber = p.Product.ItemNumber,
-                                   Name = p.Product.Name,
-                                   Value = p.Product.Id,
-                                   Category = p.Product.ProductCategory.Name
-                               };
+                products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 && o.Location == null &&
+                    (o.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) ||
+                        o.Product.OrderType.Id == (int)OrderTypes.Common)).
+                    Select(o => new
+                    {
+                        ItemNumber = o.Product.ItemNumber,
+                        Name = o.Product.Name,
+                        Value = o.Product.Id,
+                        Category = o.Product.ProductCategory.Name,
+                    }).OrderBy(o => o.Name).ToList();               
             }
             else
             {
-                productQuery = from p in con.Price
-                               join prA in con.PriceAccount on p.Id equals prA.PriceId
-                               where p.Location.CustomerId == null
-                               select new
-                               {
-                                   ItemNumber = p.Product.ItemNumber,
-                                   Name = p.Product.Name,
-                                   Value = p.Product.Id,
-                                   Category = p.Product.ProductCategory.Name
-                               };
+                products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 && o.Location != null &&  !o.Location.CustomerId.HasValue).
+                       Select(o => new
+                       {
+                           ItemNumber = o.Product.ItemNumber,
+                           Name = o.Product.Name,
+                           Value = o.Product.Id,
+                           Category = o.Product.ProductCategory.Name,
+                       }).OrderBy(o => o.Name).ToList();
             }
 
             //werden die vordefinierte Kundenprodukte in TreeNode geladen
-            if (productQuery != null && location != 0 && selectedCustomer != 0 && !String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue))
+            if (products.Count() != 0 && location != 0 && selectedCustomer != 0 && !String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue))
             {
                 LoadCustomerProductsInTreeView(selectedCustomer, location);
             }
 
-            e.Result = productQuery;
+            e.Result = products;
         }
 
         private void LoadCustomerProductsInTreeView(int selectedCustomer, int location)
@@ -347,32 +342,9 @@ namespace KVSWebApplication.Auftragseingang
         }
         protected void CostCenterLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
-            if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue.ToString()))
-            {
-                var costCenterQuery = from cost in con.CostCenter
-                                      join cust in con.Customer on cost.CustomerId equals cust.Id
-                                      where cost.CustomerId == Int32.Parse(CustomerDropDownList.SelectedValue)
-                                      select new
-                                      {
-                                          Name = cost.Name,
-                                          Value = cost.Id
-                                      };
-                e.Result = costCenterQuery;
-            }
-            else
-            {
-                var costCenterQuery = from cost in con.CostCenter
-                                      join cust in con.Customer on cost.CustomerId equals cust.Id
-                                      //where cost.CustomerId == 0 //TODO
-                                      select new
-                                      {
-                                          Name = cost.Name,
-                                          Value = cost.Id
-                                      };
-                e.Result = costCenterQuery;
-            }
+            e.Result = GetCostCenters();
         }
+
         protected void RegistrationOrderDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             KVSEntities con = new KVSEntities();

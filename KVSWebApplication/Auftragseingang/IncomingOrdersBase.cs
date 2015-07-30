@@ -634,6 +634,28 @@ namespace KVSWebApplication.Auftragseingang
                 }).OrderBy(o => o.Name).ToList();
         }
 
+        protected object GetCostCenters()
+        {
+            if (!String.IsNullOrEmpty(CustomerDropDown.SelectedValue.ToString()))
+            {
+                return CostCenterManager.GetEntities(o => o.CustomerId == Int32.Parse(CustomerDropDown.SelectedValue)).
+                                      Select(cost => new
+                                      {
+                                          Name = cost.Name,
+                                          Value = cost.Id
+                                      }).OrderBy(o => o.Name).ToList();
+            }
+            else
+            {
+                return CostCenterManager.GetEntities().
+                                      Select(cost => new
+                                      {
+                                          Name = cost.Name,
+                                          Value = cost.Id
+                                      }).OrderBy(o => o.Name).ToList();
+            }
+        }
+
         #endregion
 
         #region Private Methods

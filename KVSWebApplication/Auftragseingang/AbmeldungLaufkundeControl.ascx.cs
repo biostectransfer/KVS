@@ -456,24 +456,20 @@ namespace KVSWebApplication.Auftragseingang
         #endregion
         protected void ProductAbmDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
-
-            IQueryable productQuery1 = null;
-            productQuery1 = from prod in con.Product
-                            let price = con.Price.SingleOrDefault(q => q.ProductId == prod.Id && q.LocationId == null)
-                            join prA in con.PriceAccount on price.Id equals prA.PriceId
-                            where (prod.OrderType.Id == (int)OrderTypes.Cancellation || prod.OrderType.Id == (int)OrderTypes.Common)
-                            orderby prod.Name
-                            select new
-                            {
-                                ItemNumber = prod.ItemNumber,
-                                Name = prod.Name,
-                                Value = prod.Id,
-                                Category = prod.ProductCategory.Name,
-                                Price = Math.Round(price.Amount, 2, MidpointRounding.AwayFromZero).ToString(),
-                                AuthCharge = price.AuthorativeCharge.HasValue ? Math.Round(price.AuthorativeCharge.Value, 2, MidpointRounding.AwayFromZero).ToString().Trim() : ""
-                            };
-            e.Result = productQuery1;
+            var products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 && o.Location == null &&
+             (o.Product.OrderTypeId == (int)OrderTypes.Cancellation ||
+                o.Product.OrderType.Id == (int)OrderTypes.Common)).
+                    Select(o => new
+                    {
+                        ItemNumber = o.Product.ItemNumber,
+                        Name = o.Product.Name,
+                        Value = o.Product.Id,
+                        Category = o.Product.ProductCategory.Name,
+                        Price = Math.Round(o.Amount, 2, MidpointRounding.AwayFromZero).ToString(),
+                        AuthCharge = o.AuthorativeCharge.HasValue ? Math.Round(o.AuthorativeCharge.Value, 2, MidpointRounding.AwayFromZero).ToString().Trim() : ""
+                    }).OrderBy(o => o.Name).ToList();
+ 
+            e.Result = products;
         }
         #region Index Changed
 
