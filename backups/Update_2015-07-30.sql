@@ -39,3 +39,13 @@ ALTER TABLE [dbo].[Customer]
  [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
  [DeleteDate] datetime2(2) NULL
 GO
+ALTER TABLE [dbo].[RegistrationLocation]
+ ADD [CreateDate] datetime2(2) NOT NULL default(GetDate()),
+ [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
+ [DeleteDate] datetime2(2) NULL
+GO
+ALTER TABLE [dbo].[Vehicle]
+ ADD [CreateDate] datetime2(2) NOT NULL default(GetDate()),
+ [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
+ [DeleteDate] datetime2(2) NULL
+GO

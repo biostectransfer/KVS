@@ -380,6 +380,9 @@
       <Column Name="HSN" Type="System.String" DbType="varchar(4) not null" CanBeNull="true" />
       <Column Name="FirstRegistrationDate" Type="System.DateTime" DbType="datetime" CanBeNull="true" />
       <Column Name="ColorCode" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="Vehicle_DeregistrationOrder" Member="DeregistrationOrder" ThisKey="Id" OtherKey="VehicleId" Type="DeregistrationOrder" />
       <Association Name="Vehicle_Registration" Member="Registration" ThisKey="Id" OtherKey="VehicleId" Type="Registration" />
       <Association Name="Vehicle_RegistrationOrder" Member="RegistrationOrder" ThisKey="Id" OtherKey="VehicleId" Type="RegistrationOrder" />
@@ -694,6 +697,9 @@
       <Column Name="ID" AutoSync="Never" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="RegistrationLocationName" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
       <Column Name="RegistrationLocationAdressId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="RegistrationLocation_Order" Member="Order" ThisKey="ID" OtherKey="Zulassungsstelle" Type="Order" />
       <Association Name="Adress_RegistrationLocation" Member="Adress" ThisKey="RegistrationLocationAdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" DeleteRule="CASCADE" />
     </Type>

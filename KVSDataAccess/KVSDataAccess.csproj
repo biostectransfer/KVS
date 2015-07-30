@@ -63,6 +63,8 @@
     <Compile Include="Managers\AdressManager.cs" />
     <Compile Include="Managers\CostCenterManager.cs" />
     <Compile Include="Managers\CustomerManager.cs" />
+    <Compile Include="Managers\RegistrationLocationManager.cs" />
+    <Compile Include="Managers\VehicleManager.cs" />
     <Compile Include="Managers\ProductManager.cs" />
     <Compile Include="Managers\PriceManager.cs" />
     <Compile Include="Managers\OrderManager.cs" />

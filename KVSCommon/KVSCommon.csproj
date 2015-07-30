@@ -102,6 +102,7 @@
     <Compile Include="Database\Product.cs" />
     <Compile Include="Database\ProductCategory.cs" />
     <Compile Include="Database\Registration.cs" />
+    <Compile Include="Database\RegistrationLocation.cs" />
     <Compile Include="Database\RegistrationOrder.cs" />
     <Compile Include="Database\SmallCustomer.cs" />
     <Compile Include="Database\tempOrder.cs" />
@@ -128,6 +129,8 @@
     <Compile Include="Managers\Base\IReadOnlyEntityManager.cs" />
     <Compile Include="Managers\Base\IReadOnlyManagerBase.cs" />
     <Compile Include="Managers\IAdressManager.cs" />
+    <Compile Include="Managers\IRegistrationLocationManager.cs" />
+    <Compile Include="Managers\IVehicleManager.cs" />
     <Compile Include="Managers\IProductManager.cs" />
     <Compile Include="Managers\IInvoiceItemManager.cs" />
     <Compile Include="Managers\ILargeCustomerRequiredFieldManager.cs" />

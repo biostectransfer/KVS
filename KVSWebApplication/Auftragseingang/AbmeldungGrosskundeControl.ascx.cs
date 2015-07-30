@@ -511,18 +511,7 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
         }
-        protected void ZulassungsstelleDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {
-            KVSEntities con = new KVSEntities();
-            var zulassungsstelleQuery = from zul in con.RegistrationLocation
-                                        orderby zul.RegistrationLocationName
-                                        select new
-                                        {
-                                            Name = zul.RegistrationLocationName,
-                                            Value = zul.ID
-                                        };
-            e.Result = zulassungsstelleQuery;
-        }
+
         protected void CostCenterLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             e.Result = GetCostCenters();

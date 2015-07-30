@@ -37,6 +37,8 @@ namespace KVSConfiguration
             container.RegisterType<IAdressManager, AdressManager>(new PerRequestLifetimeManager()); 
             container.RegisterType<ICostCenterManager, CostCenterManager>(new PerRequestLifetimeManager()); 
             container.RegisterType<ICustomerManager, CustomerManager>(new PerRequestLifetimeManager()); 
+            container.RegisterType<IVehicleManager, VehicleManager>(new PerRequestLifetimeManager()); 
+            container.RegisterType<IRegistrationLocationManager, RegistrationLocationManager>(new PerRequestLifetimeManager()); 
         }
     }
 }

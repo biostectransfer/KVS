@@ -434,25 +434,7 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
         }
-        protected void ZulassungsstelleDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {
-            KVSEntities con = new KVSEntities();
-            var zulassungsstelleQuery = from zul in con.RegistrationLocation
-                                        orderby zul.RegistrationLocationName
-                                        select new
-                                        {
-                                            Name = zul.RegistrationLocationName,
-                                            Value = zul.ID
-                                        };
-            e.Result = zulassungsstelleQuery;
-        }
-        private Price findPrice(string produktId)
-        {
-            Price newPrice = null;
-            KVSEntities dbContext = new KVSEntities();
-            newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == Int32.Parse(produktId) && q.LocationId == null);
-            return newPrice;
-        }
+
         #endregion
         protected void ProductAbmDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {

@@ -38,7 +38,9 @@ namespace KVSWebApplication.Auftragseingang
             InvoiceItemManager = (IInvoiceItemManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceItemManager));
             AdressManager = (IAdressManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IAdressManager));
             CostCenterManager = (ICostCenterManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICostCenterManager));
-            CustomerManager = (ICustomerManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICustomerManager)); 
+            CustomerManager = (ICustomerManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICustomerManager));
+            VehicleManager = (IVehicleManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IVehicleManager));
+            RegistrationLocationManager = (IRegistrationLocationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationLocationManager)); 
         }
 
         #region Common
@@ -148,7 +150,9 @@ namespace KVSWebApplication.Auftragseingang
         public IAdressManager AdressManager { get; set; }
         public ICostCenterManager CostCenterManager { get; set; }
         public ICustomerManager CustomerManager { get; set; }
-        
+        public IVehicleManager VehicleManager { get; set; }
+        public IRegistrationLocationManager RegistrationLocationManager { get; set; }
+
         #endregion
 
         #region Labels
@@ -239,6 +243,14 @@ namespace KVSWebApplication.Auftragseingang
                 ErrorLeereTextBoxenCaption.Text = "Fehler: " + ex.Message;
                 ErrorLeereTextBoxenCaption.Visible = true;
             }
+        }
+        protected void ZulassungsstelleDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
+        {
+            e.Result = RegistrationLocationManager.GetEntities().Select(o => new
+            {
+                Name = o.RegistrationLocationName,
+                Value = o.ID
+            }).OrderBy(o => o.Name).ToList();
         }
 
         #endregion
