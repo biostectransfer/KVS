@@ -22,6 +22,8 @@ namespace KVSWebApplication.Auftragseingang
         protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
         protected override RadTreeView ProductTree { get { return DienstleistungTreeView; } }
         protected override RadScriptManager RadScriptManager { get { return ((NeuzulassungGrosskunde)Page).getScriptManager(); } }
+        protected override RadNumericTextBox Discount { get { return this.txbDiscount; } }
+        protected override HiddenField SmallCustomerOrder { get { return this.smallCustomerOrderHiddenField; } }
 
         #region Dates
 
@@ -55,7 +57,12 @@ namespace KVSWebApplication.Auftragseingang
         protected override RadTextBox CarOwner_Name_TextBox { get { return this.CarOwner_NameBox; } }
         protected override RadTextBox CarOwner_FirstName_TextBox { get { return this.CarOwner_FirstnameBox; } }
         protected override RadTextBox Registration_eVBNumber_TextBox { get { return this.Registration_eVBNumberBox; } }
-
+        protected override TextBox Street_TextBox { get { return this.StreetTextBox; } }
+        protected override TextBox StreetNumber_TextBox { get { return this.StreetNumberTextBox; } }
+        protected override TextBox Zipcode_TextBox { get { return this.ZipcodeTextBox; } }
+        protected override TextBox City_TextBox { get { return this.CityTextBox; } }
+        protected override TextBox Country_TextBox { get { return this.CountryTextBox; } }
+        protected override TextBox InvoiceRecipient_TextBox { get { return this.InvoiceRecipient; } }
         #endregion
 
         #region Panels
@@ -98,6 +105,7 @@ namespace KVSWebApplication.Auftragseingang
         protected override Label HalterdatenCaption { get { return this.HalterdatenLabel; } }
         protected override Label KontaktdatenCaption { get { return this.KontaktdatenLabel; } }
         protected override Label HSNSearchCaption { get { return this.HSNSearchLabel; } }
+        protected override Label ErrorLeereTextBoxenCaption { get { return this.ErrorLeereTextBoxenLabel; } }
         #endregion
 
         #endregion

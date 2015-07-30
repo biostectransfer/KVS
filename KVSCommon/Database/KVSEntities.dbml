@@ -46,6 +46,9 @@
       <Column Name="BankAccountId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="Name" Type="System.String" DbType="varchar(50)" CanBeNull="false" />
       <Column Name="CostcenterNumber" Type="System.String" DbType="varchar(20) not null" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="CostCenter_OrderItem" Member="OrderItem" ThisKey="Id" OtherKey="CostCenterId" Type="OrderItem" />
       <Association Name="CostCenter_InvoiceItem" Member="InvoiceItem" ThisKey="Id" OtherKey="CostcenterId" Type="InvoiceItem" />
       <Association Name="BankAccount_CostCenter" Member="BankAccount" ThisKey="BankAccountId" OtherKey="Id" Type="BankAccount" IsForeignKey="true" />
@@ -221,6 +224,9 @@
       <Column Name="Zipcode" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
       <Column Name="City" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Country" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="Adress_CarOwner" Member="CarOwner" ThisKey="Id" OtherKey="AdressId" Type="CarOwner" />
       <Association Name="Adress_Customer" Member="Customer" ThisKey="Id" OtherKey="AdressId" Type="Customer" />
       <Association Name="Adress_Customer1" Member="Customer1" ThisKey="Id" OtherKey="InvoiceAdressId" Type="Customer" />
@@ -524,6 +530,9 @@
       <Column Name="OrderItemId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="CostcenterId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="AccountNumber" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="InvoiceItem_InvoiceItemAccountItem" Member="InvoiceItemAccountItem" ThisKey="Id" OtherKey="InvoiceItemId" Type="InvoiceItemAccountItem" />
       <Association Name="CostCenter_InvoiceItem" Member="CostCenter" ThisKey="CostcenterId" OtherKey="Id" Type="CostCenter" IsForeignKey="true" />
       <Association Name="Invoice_InvoiceItem" Member="Invoice" ThisKey="InvoiceId" OtherKey="Id" Type="Invoice" IsForeignKey="true" />

@@ -32,7 +32,10 @@ namespace KVSConfiguration
             container.RegisterType<ILargeCustomerRequiredFieldManager, LargeCustomerRequiredFieldManager>(new PerRequestLifetimeManager()); 
             container.RegisterType<ILocationManager, LocationManager>(new PerRequestLifetimeManager()); 
             container.RegisterType<IInvoiceManager, InvoiceManager>(new PerRequestLifetimeManager()); 
-            container.RegisterType<IInvoiceItemAccountItemManager, InvoiceItemAccountItemManager>(new PerRequestLifetimeManager());
+            container.RegisterType<IInvoiceItemAccountItemManager, InvoiceItemAccountItemManager>(new PerRequestLifetimeManager()); 
+            container.RegisterType<IInvoiceItemManager, InvoiceItemManager>(new PerRequestLifetimeManager());
+            container.RegisterType<IAdressManager, AdressManager>(new PerRequestLifetimeManager()); 
+            container.RegisterType<ICostCenterManager, CostCenterManager>(new PerRequestLifetimeManager()); 
         }
     }
 }

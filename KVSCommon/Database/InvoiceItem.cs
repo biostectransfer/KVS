@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using KVSCommon.Database;
 using System.Data.Linq;
+using KVSCommon.Entities;
 
 namespace KVSCommon.Database
 {
     /// <summary>
     /// Erweiterungsklasse für die Rechnungspositionen
     /// </summary>
-    public partial class InvoiceItem : ILogging
+    public partial class InvoiceItem : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
         public KVSEntities LogDBContext
         {

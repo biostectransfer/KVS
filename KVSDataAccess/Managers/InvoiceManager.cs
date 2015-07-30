@@ -91,5 +91,39 @@ namespace KVSDataAccess.Managers
                 }
             }
         }
+
+        /// <summary>
+        /// Erstellt eine neue Rechnung.
+        /// </summary>
+        /// <param name="userId">Id des Benutzers.</param>
+        /// <param name="invoiceRecipient">Rechnungsempfänger.</param>
+        /// <param name="invoiceRecipientAdressId">Adresse des Rechnungsempfängers.</param>
+        /// <param name="customerId">Id des Kunden.</param>
+        /// <returns>Die neue Rechnung.</returns>
+        public Invoice CreateInvoice(int userId, string invoiceRecipient, Adress invoiceRecipientAdress, int customerId, double? discount, InvoiceType invType)
+        {
+            //if (string.IsNullOrEmpty(invoiceRecipient))
+            //{
+            //    throw new ArgumentNullException("Der Rechnungsempfänger darf nicht leer sein.");
+            //}
+
+            decimal? helper = null;
+            var invoice = new Invoice()
+            {
+                CreateDate = DateTime.Now,
+                IsPrinted = false,
+                UserId = userId,
+                InvoiceRecipient = invoiceRecipient,
+                Adress = invoiceRecipientAdress,
+                CustomerId = customerId,
+                discount = ((discount.HasValue) ? decimal.Parse(discount.Value.ToString()) : helper),
+                InvoiceType = (int)invType
+            };
+
+            DataContext.AddObject(invoice);
+            SaveChanges();
+            DataContext.WriteLogItem("Rechnung wurde angelegt.", LogTypes.INSERT, invoice.Id, "Invoice");
+            return invoice;
+        }
     }
 }

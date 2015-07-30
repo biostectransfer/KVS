@@ -23,6 +23,8 @@ namespace KVSWebApplication.Auftragseingang
         protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
         protected override RadTreeView ProductTree { get { return DienstleistungTreeView; } }
         protected override RadScriptManager RadScriptManager { get { return ((AbmeldungLaufkunde)Page).getScriptManager(); } }
+        protected override RadNumericTextBox Discount { get { return this.txbDiscount; } }
+        protected override HiddenField SmallCustomerOrder { get { return this.smallCustomerOrderHiddenField; } }
 
         #region Dates
 
@@ -57,7 +59,12 @@ namespace KVSWebApplication.Auftragseingang
         protected override RadTextBox CarOwner_Name_TextBox { get { return this.CarOwner_NameBox; } }
         protected override RadTextBox CarOwner_FirstName_TextBox { get { return this.CarOwner_FirstnameBox; } }
         protected override RadTextBox Registration_eVBNumber_TextBox { get { return this.Registration_eVBNumberBox; } }
-
+        protected override TextBox Street_TextBox { get { return this.StreetTextBox; } }
+        protected override TextBox StreetNumber_TextBox { get { return this.StreetNumberTextBox; } }
+        protected override TextBox Zipcode_TextBox { get { return this.ZipcodeTextBox; } }
+        protected override TextBox City_TextBox { get { return this.CityTextBox; } }
+        protected override TextBox Country_TextBox { get { return this.CountryTextBox; } }
+        protected override TextBox InvoiceRecipient_TextBox { get { return this.InvoiceRecipient; } }
         #endregion
 
         #region Panels
@@ -100,6 +107,7 @@ namespace KVSWebApplication.Auftragseingang
         protected override Label HalterdatenCaption { get { return this.HalterdatenLabel; } }
         protected override Label KontaktdatenCaption { get { return this.KontaktdatenLabel; } }
         protected override Label HSNSearchCaption { get { return this.HSNSearchLabel; } }
+        protected override Label ErrorLeereTextBoxenCaption { get { return this.ErrorLeereTextBoxenLabel; } }
         #endregion
 
         #endregion
@@ -699,75 +707,7 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
         }
-        // Create new Adress in der DatenBank
-        protected void OnAddAdressButton_Clicked(object sender, EventArgs e)
-        {
-            //Adress Eigenschaften
-            string street = "",
-                streetNumber = "",
-                zipcode = "",
-                city = "",
-                country = "",
-                invoiceRecipient = "";
-            // OrderItem Eigenschaften
-            string ProductName = "";
-            decimal Amount = 0;
-
-            street = StreetTextBox.Text;
-            streetNumber = StreetNumberTextBox.Text;
-            zipcode = ZipcodeTextBox.Text;
-            city = CityTextBox.Text;
-            country = CountryTextBox.Text;
-            invoiceRecipient = InvoiceRecipient.Text;
-            int itemCount = 0;
-            TransactionScope scope = null;
-            try
-            {
-                using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
-                {
-                    using (scope = new TransactionScope())
-                    {
-                        var newAdress = Adress.CreateAdress(street, streetNumber, zipcode, city, country, dbContext);
-                        var myCustomer = dbContext.Customer.FirstOrDefault(q => q.Id == Int32.Parse(CustomerDropDownList.SelectedValue));
-                        var newInvoice = Invoice.CreateInvoice(dbContext, Int32.Parse(Session["CurrentUserId"].ToString()), invoiceRecipient, newAdress,
-                            Int32.Parse(CustomerDropDownList.SelectedValue), txbDiscount.Value, "Einzelrechnung");
-                        //Submiting new Invoice and Adress
-                        dbContext.SubmitChanges();
-                        var orderQuery = dbContext.Order.SingleOrDefault(q => q.OrderNumber == Int32.Parse(smallCustomerOrderHiddenField.Value));
-                        foreach (OrderItem ordItem in orderQuery.OrderItem)
-                        {
-                            ProductName = ordItem.ProductName;
-                            Amount = ordItem.Amount;
-
-                            CostCenter costCenter = null;
-                            if (ordItem.CostCenterId.HasValue)
-                            {
-                                costCenter = dbContext.CostCenter.FirstOrDefault(o => o.Id == ordItem.CostCenterId.Value);
-                            }
-
-                            itemCount = ordItem.Count;
-                            InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(ProductName, Convert.ToDecimal(Amount), itemCount, ordItem, costCenter, dbContext);
-                            ordItem.LogDBContext = dbContext;
-                            ordItem.Status = (int)OrderItemStatusTypes.Payed;
-                            //newInvoiceItem.VAT = myCustomer.VAT;
-                            dbContext.SubmitChanges();
-                        }
-                        // Submiting new InvoiceItems
-                        dbContext.SubmitChanges();
-                        Print(newInvoice);
-                        scope.Complete();
-                    }
-                    MakeAllControlsEmpty();
-                }
-            }
-            catch (Exception ex)
-            {
-                DienstleistungTreeView.Nodes.Clear();
-                ErrorLeereTextBoxenLabel.Text = "Fehler: " + ex.Message;
-                ErrorLeereTextBoxenLabel.Visible = true;
-            }
-        }
-
+        
         protected void btnClearSelection_Click(object sender, EventArgs e)
         {
             CustomerDropDownList.ClearSelection();

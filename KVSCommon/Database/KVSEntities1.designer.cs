@@ -1617,6 +1617,12 @@ namespace KVSCommon.Database
 		
 		private string _CostcenterNumber;
 		
+		private System.DateTime _CreateDate;
+		
+		private System.DateTime _ChangeDate;
+		
+		private System.Nullable<System.DateTime> _DeleteDate;
+		
 		private EntitySet<OrderItem> _OrderItem;
 		
 		private EntitySet<InvoiceItem> _InvoiceItem;
@@ -1639,6 +1645,12 @@ namespace KVSCommon.Database
     partial void OnNameChanged();
     partial void OnCostcenterNumberChanging(string value);
     partial void OnCostcenterNumberChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnChangeDateChanging(System.DateTime value);
+    partial void OnChangeDateChanged();
+    partial void OnDeleteDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnDeleteDateChanged();
     #endregion
 		
 		public CostCenter()
@@ -1754,6 +1766,66 @@ namespace KVSCommon.Database
 					this._CostcenterNumber = value;
 					this.SendPropertyChanged("CostcenterNumber");
 					this.OnCostcenterNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="datetime2(2)")]
+		public System.DateTime CreateDate
+		{
+			get
+			{
+				return this._CreateDate;
+			}
+			set
+			{
+				if ((this._CreateDate != value))
+				{
+					this.OnCreateDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ChangeDate", DbType="datetime2(2)")]
+		public System.DateTime ChangeDate
+		{
+			get
+			{
+				return this._ChangeDate;
+			}
+			set
+			{
+				if ((this._ChangeDate != value))
+				{
+					this.OnChangeDateChanging(value);
+					this.SendPropertyChanging();
+					this._ChangeDate = value;
+					this.SendPropertyChanged("ChangeDate");
+					this.OnChangeDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeleteDate", DbType="datetime2(2)")]
+		public System.Nullable<System.DateTime> DeleteDate
+		{
+			get
+			{
+				return this._DeleteDate;
+			}
+			set
+			{
+				if ((this._DeleteDate != value))
+				{
+					this.OnDeleteDateChanging(value);
+					this.SendPropertyChanging();
+					this._DeleteDate = value;
+					this.SendPropertyChanged("DeleteDate");
+					this.OnDeleteDateChanged();
 				}
 			}
 		}
@@ -5476,6 +5548,12 @@ namespace KVSCommon.Database
 		
 		private string _Country;
 		
+		private System.DateTime _CreateDate;
+		
+		private System.DateTime _ChangeDate;
+		
+		private System.Nullable<System.DateTime> _DeleteDate;
+		
 		private EntitySet<CarOwner> _CarOwner;
 		
 		private EntitySet<Customer> _Customer;
@@ -5514,6 +5592,12 @@ namespace KVSCommon.Database
     partial void OnCityChanged();
     partial void OnCountryChanging(string value);
     partial void OnCountryChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnChangeDateChanging(System.DateTime value);
+    partial void OnChangeDateChanged();
+    partial void OnDeleteDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnDeleteDateChanged();
     #endregion
 		
 		public Adress()
@@ -5648,6 +5732,66 @@ namespace KVSCommon.Database
 					this._Country = value;
 					this.SendPropertyChanged("Country");
 					this.OnCountryChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="datetime2(2)")]
+		public System.DateTime CreateDate
+		{
+			get
+			{
+				return this._CreateDate;
+			}
+			set
+			{
+				if ((this._CreateDate != value))
+				{
+					this.OnCreateDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ChangeDate", DbType="datetime2(2)")]
+		public System.DateTime ChangeDate
+		{
+			get
+			{
+				return this._ChangeDate;
+			}
+			set
+			{
+				if ((this._ChangeDate != value))
+				{
+					this.OnChangeDateChanging(value);
+					this.SendPropertyChanging();
+					this._ChangeDate = value;
+					this.SendPropertyChanged("ChangeDate");
+					this.OnChangeDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeleteDate", DbType="datetime2(2)")]
+		public System.Nullable<System.DateTime> DeleteDate
+		{
+			get
+			{
+				return this._DeleteDate;
+			}
+			set
+			{
+				if ((this._DeleteDate != value))
+				{
+					this.OnDeleteDateChanging(value);
+					this.SendPropertyChanging();
+					this._DeleteDate = value;
+					this.SendPropertyChanged("DeleteDate");
+					this.OnDeleteDateChanged();
 				}
 			}
 		}
@@ -12196,6 +12340,12 @@ namespace KVSCommon.Database
 		
 		private string _AccountNumber;
 		
+		private System.DateTime _CreateDate;
+		
+		private System.DateTime _ChangeDate;
+		
+		private System.Nullable<System.DateTime> _DeleteDate;
+		
 		private EntitySet<InvoiceItemAccountItem> _InvoiceItemAccountItem;
 		
 		private EntityRef<CostCenter> _CostCenter;
@@ -12226,6 +12376,12 @@ namespace KVSCommon.Database
     partial void OnCostcenterIdChanged();
     partial void OnAccountNumberChanging(string value);
     partial void OnAccountNumberChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnChangeDateChanging(System.DateTime value);
+    partial void OnChangeDateChanged();
+    partial void OnDeleteDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnDeleteDateChanged();
     #endregion
 		
 		public InvoiceItem()
@@ -12425,6 +12581,66 @@ namespace KVSCommon.Database
 					this._AccountNumber = value;
 					this.SendPropertyChanged("AccountNumber");
 					this.OnAccountNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="datetime2(2)")]
+		public System.DateTime CreateDate
+		{
+			get
+			{
+				return this._CreateDate;
+			}
+			set
+			{
+				if ((this._CreateDate != value))
+				{
+					this.OnCreateDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ChangeDate", DbType="datetime2(2)")]
+		public System.DateTime ChangeDate
+		{
+			get
+			{
+				return this._ChangeDate;
+			}
+			set
+			{
+				if ((this._ChangeDate != value))
+				{
+					this.OnChangeDateChanging(value);
+					this.SendPropertyChanging();
+					this._ChangeDate = value;
+					this.SendPropertyChanged("ChangeDate");
+					this.OnChangeDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeleteDate", DbType="datetime2(2)")]
+		public System.Nullable<System.DateTime> DeleteDate
+		{
+			get
+			{
+				return this._DeleteDate;
+			}
+			set
+			{
+				if ((this._DeleteDate != value))
+				{
+					this.OnDeleteDateChanging(value);
+					this.SendPropertyChanging();
+					this._DeleteDate = value;
+					this.SendPropertyChanged("DeleteDate");
+					this.OnDeleteDateChanged();
 				}
 			}
 		}

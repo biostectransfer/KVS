@@ -55,10 +55,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\InvoiceItemManager.cs" />
     <Compile Include="Managers\LargeCustomerRequiredFieldManager.cs" />
     <Compile Include="Managers\LocationManager.cs" />
     <Compile Include="Managers\InvoiceManager.cs" />
     <Compile Include="Managers\InvoiceItemAccountItemManager.cs" />
+    <Compile Include="Managers\AdressManager.cs" />
+    <Compile Include="Managers\CostCenterManager.cs" />
     <Compile Include="Managers\ProductManager.cs" />
     <Compile Include="Managers\PriceManager.cs" />
     <Compile Include="Managers\OrderManager.cs" />

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Transactions;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Http;
@@ -34,6 +35,9 @@ namespace KVSWebApplication.Auftragseingang
             LocationManager = (ILocationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ILocationManager));
             InvoiceManager = (IInvoiceManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceManager));
             InvoiceItemAccountItemManager = (IInvoiceItemAccountItemManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceItemAccountItemManager));
+            InvoiceItemManager = (IInvoiceItemManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceItemManager));
+            AdressManager = (IAdressManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IAdressManager));
+            CostCenterManager = (ICostCenterManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICostCenterManager)); 
         }
 
         #region Common
@@ -48,7 +52,8 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract Label CustomerHistoryLabel { get; }
         protected abstract RadTreeView ProductTree { get; }
         protected abstract RadScriptManager RadScriptManager { get; }
-
+        protected abstract RadNumericTextBox Discount { get; }
+        protected abstract HiddenField SmallCustomerOrder { get; }
         #endregion
 
         #region Dates
@@ -84,7 +89,13 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract RadTextBox CarOwner_Name_TextBox { get; }
         protected abstract RadTextBox CarOwner_FirstName_TextBox { get; }
         protected abstract RadTextBox Registration_eVBNumber_TextBox { get; }
-
+        protected abstract TextBox Street_TextBox { get; }
+        protected abstract TextBox StreetNumber_TextBox { get; }
+        protected abstract TextBox Zipcode_TextBox { get; }
+        protected abstract TextBox City_TextBox { get; }
+        protected abstract TextBox Country_TextBox { get; }
+        protected abstract TextBox InvoiceRecipient_TextBox { get; }
+        
         #endregion
 
         #region Panels
@@ -131,7 +142,9 @@ namespace KVSWebApplication.Auftragseingang
         public ILocationManager LocationManager { get; set; }
         public IInvoiceManager InvoiceManager { get; set; }
         public IInvoiceItemAccountItemManager InvoiceItemAccountItemManager { get; set; }
-        
+        public IInvoiceItemManager InvoiceItemManager { get; set; }
+        public IAdressManager AdressManager { get; set; }
+        public ICostCenterManager CostCenterManager { get; set; }
         #endregion
 
         #region Labels
@@ -141,6 +154,7 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract Label HalterdatenCaption { get; }
         protected abstract Label KontaktdatenCaption { get; }
         protected abstract Label HSNSearchCaption { get; }
+        protected abstract Label ErrorLeereTextBoxenCaption { get; }
         #endregion
 
         #endregion
@@ -172,10 +186,58 @@ namespace KVSWebApplication.Auftragseingang
             }
         }
 
+        // Create new Adress in der DatenBank
+        protected void OnAddAdressButton_Clicked(object sender, EventArgs e)
+        {
+            var street = Street_TextBox.Text;
+            var streetNumber = StreetNumber_TextBox.Text;
+            var zipcode = Zipcode_TextBox.Text;
+            var city = City_TextBox.Text;
+            var country = Country_TextBox.Text;
+            var invoiceRecipient = InvoiceRecipient_TextBox.Text;
+
+            try
+            {
+                var newAdress = AdressManager.CreateAdress(street, streetNumber, zipcode, city, country);
+                
+                //TODO check or delete
+                //var myCustomer = CustomerMa.FirstOrDefault(q => q.Id == Int32.Parse(CustomerDropDown.SelectedValue));
+
+                var newInvoice = InvoiceManager.CreateInvoice(Int32.Parse(Session["CurrentUserId"].ToString()), invoiceRecipient, newAdress,
+                    Int32.Parse(CustomerDropDown.SelectedValue), Discount.Value, InvoiceType.Single);
+
+                var orderQuery = OrderManager.GetById(Int32.Parse(SmallCustomerOrder.Value));
+                foreach (var ordItem in orderQuery.OrderItem)
+                {
+                    var productName = ordItem.ProductName;
+                    var amount = ordItem.Amount;
+
+                    CostCenter costCenter = null;
+                    if (ordItem.CostCenterId.HasValue)
+                    {
+                        costCenter = CostCenterManager.GetById(ordItem.CostCenterId.Value);
+                    }
+
+                    var newInvoiceItem = InvoiceItemManager.AddInvoiceItem(newInvoice, productName, Convert.ToDecimal(amount), ordItem.Count, ordItem, costCenter);
+                    ordItem.Status = (int)OrderItemStatusTypes.Payed;
+                }
+
+                Print(newInvoice);
+
+                MakeAllControlsEmpty();
+            }
+            catch (Exception ex)
+            {
+                ProductTree.Nodes.Clear();
+                ErrorLeereTextBoxenCaption.Text = "Fehler: " + ex.Message;
+                ErrorLeereTextBoxenCaption.Visible = true;
+            }
+        }
+
         #endregion
 
         #region Methods
-        
+
         protected Price FindPrice(string productId)
         {
             int? locationId = null;
