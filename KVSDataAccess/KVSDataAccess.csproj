@@ -33,6 +33,18 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MigraDoc.DocumentObjectModel-WPF, Version=1.31.3066.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MigraDoc.DocumentObjectModel-WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="MigraDoc.Rendering-WPF, Version=1.31.3066.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MigraDoc.Rendering-WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfSharp-WPF, Version=1.31.1789.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\PdfSharp-WPF.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
@@ -45,6 +57,8 @@
   <ItemGroup>
     <Compile Include="Managers\LargeCustomerRequiredFieldManager.cs" />
     <Compile Include="Managers\LocationManager.cs" />
+    <Compile Include="Managers\InvoiceManager.cs" />
+    <Compile Include="Managers\InvoiceItemAccountItemManager.cs" />
     <Compile Include="Managers\ProductManager.cs" />
     <Compile Include="Managers\PriceManager.cs" />
     <Compile Include="Managers\OrderManager.cs" />
@@ -55,6 +69,11 @@
     <Compile Include="Managers\Base\ManagerBase.cs" />
     <Compile Include="Managers\Base\ReadOnlyEntityManager.cs" />
     <Compile Include="Managers\Base\ReadOnlyManagerBase.cs" />
+    <Compile Include="PDF\AbstractPDFCreator.cs" />
+    <Compile Include="PDF\GroupedAppendix.cs" />
+    <Compile Include="PDF\InvoicePDF.cs" />
+    <Compile Include="PDF\PDFCreatorExtension.cs" />
+    <Compile Include="PDF\PDFSharpUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

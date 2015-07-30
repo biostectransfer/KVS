@@ -12,10 +12,6 @@ namespace KVSCommon.Entities
     /// </summary>
     public partial interface IKVSEntities : IEntities
     {
-        /// <summary>
-        /// BICs
-        /// </summary>
-        System.Data.Linq.Table<BIC_DE> BIC_DE { get; }
 
     }
 }

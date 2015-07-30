@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KVSCommon.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,20 @@ namespace KVSCommon.Database
     /// <summary>
     /// Erweiterungsklasse für die Rechnugspositionen/Erloeskonten
     /// </summary>
-    partial class InvoiceItemAccountItem : ILogging
+    partial class InvoiceItemAccountItem : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
+        public int Id
+        {
+            get
+            {
+                return IIACCID;
+            }
+            set
+            {
+                IIACCID = value;
+            }
+        }
+
         public KVSEntities LogDBContext
         {
             get;

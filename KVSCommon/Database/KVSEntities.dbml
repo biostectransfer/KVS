@@ -391,6 +391,8 @@
       <Column Name="discount" Type="System.Decimal" DbType="Decimal(18,0)" CanBeNull="true" />
       <Column Name="InvoiceType" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="canceled" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="Invoice_OrderInvoice" Member="OrderInvoice" ThisKey="Id" OtherKey="InvoiceId" Type="OrderInvoice" />
       <Association Name="Invoice_InvoiceNumber" Member="InvoiceNumber" ThisKey="Id" OtherKey="InvoiceId" Type="InvoiceNumber" Cardinality="One" />
       <Association Name="Invoice_InvoiceItem" Member="InvoiceItem" ThisKey="Id" OtherKey="InvoiceId" Type="InvoiceItem" />
@@ -556,6 +558,9 @@
       <Column Name="IIACCID" AutoSync="Never" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="InvoiceItemId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="RevenueAccountText" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="InvoiceItem_InvoiceItemAccountItem" Member="InvoiceItem" ThisKey="InvoiceItemId" OtherKey="Id" Type="InvoiceItem" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>

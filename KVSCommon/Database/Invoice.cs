@@ -12,10 +12,12 @@ namespace KVSCommon.Database
     using System.Net.Mail;
     using System.Configuration;
     using KVSCommon.Enums;
+    using Entities;
+
     /// <summary>
     /// Erweiterungsklasse für die Tabelle Invoice
     /// </summary>
-    public partial class Invoice : ILogging
+    public partial class Invoice : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
         public KVSEntities LogDBContext
         {

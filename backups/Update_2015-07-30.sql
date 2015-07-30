@@ -15,4 +15,12 @@ ALTER TABLE [dbo].[Location]
  [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
  [DeleteDate] datetime2(2) NULL
 GO
-
+ALTER TABLE [dbo].[InvoiceItemAccountItem]
+ ADD [CreateDate] datetime2(2) NOT NULL default(GetDate()),
+ [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
+ [DeleteDate] datetime2(2) NULL
+GO
+ALTER TABLE [dbo].[Invoice]
+ ADD [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
+ [DeleteDate] datetime2(2) NULL
+GO

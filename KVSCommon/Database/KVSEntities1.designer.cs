@@ -9090,6 +9090,10 @@ namespace KVSCommon.Database
 		
 		private System.Nullable<bool> _canceled;
 		
+		private System.DateTime _ChangeDate;
+		
+		private System.Nullable<System.DateTime> _DeleteDate;
+		
 		private EntitySet<OrderInvoice> _OrderInvoice;
 		
 		private EntityRef<InvoiceNumber> _InvoiceNumber;
@@ -9136,6 +9140,10 @@ namespace KVSCommon.Database
     partial void OnInvoiceTypeChanged();
     partial void OncanceledChanging(System.Nullable<bool> value);
     partial void OncanceledChanged();
+    partial void OnChangeDateChanging(System.DateTime value);
+    partial void OnChangeDateChanged();
+    partial void OnDeleteDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnDeleteDateChanged();
     #endregion
 		
 		public Invoice()
@@ -9427,6 +9435,46 @@ namespace KVSCommon.Database
 					this._canceled = value;
 					this.SendPropertyChanged("canceled");
 					this.OncanceledChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ChangeDate", DbType="datetime2(2)")]
+		public System.DateTime ChangeDate
+		{
+			get
+			{
+				return this._ChangeDate;
+			}
+			set
+			{
+				if ((this._ChangeDate != value))
+				{
+					this.OnChangeDateChanging(value);
+					this.SendPropertyChanging();
+					this._ChangeDate = value;
+					this.SendPropertyChanged("ChangeDate");
+					this.OnChangeDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeleteDate", DbType="datetime2(2)")]
+		public System.Nullable<System.DateTime> DeleteDate
+		{
+			get
+			{
+				return this._DeleteDate;
+			}
+			set
+			{
+				if ((this._DeleteDate != value))
+				{
+					this.OnDeleteDateChanging(value);
+					this.SendPropertyChanging();
+					this._DeleteDate = value;
+					this.SendPropertyChanged("DeleteDate");
+					this.OnDeleteDateChanged();
 				}
 			}
 		}
@@ -13049,6 +13097,12 @@ namespace KVSCommon.Database
 		
 		private string _RevenueAccountText;
 		
+		private System.DateTime _CreateDate;
+		
+		private System.DateTime _ChangeDate;
+		
+		private System.Nullable<System.DateTime> _DeleteDate;
+		
 		private EntityRef<InvoiceItem> _InvoiceItem;
 		
     #region Extensibility Method Definitions
@@ -13061,6 +13115,12 @@ namespace KVSCommon.Database
     partial void OnInvoiceItemIdChanged();
     partial void OnRevenueAccountTextChanging(string value);
     partial void OnRevenueAccountTextChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnChangeDateChanging(System.DateTime value);
+    partial void OnChangeDateChanged();
+    partial void OnDeleteDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnDeleteDateChanged();
     #endregion
 		
 		public InvoiceItemAccountItem()
@@ -13129,6 +13189,66 @@ namespace KVSCommon.Database
 					this._RevenueAccountText = value;
 					this.SendPropertyChanged("RevenueAccountText");
 					this.OnRevenueAccountTextChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="datetime2(2)")]
+		public System.DateTime CreateDate
+		{
+			get
+			{
+				return this._CreateDate;
+			}
+			set
+			{
+				if ((this._CreateDate != value))
+				{
+					this.OnCreateDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ChangeDate", DbType="datetime2(2)")]
+		public System.DateTime ChangeDate
+		{
+			get
+			{
+				return this._ChangeDate;
+			}
+			set
+			{
+				if ((this._ChangeDate != value))
+				{
+					this.OnChangeDateChanging(value);
+					this.SendPropertyChanging();
+					this._ChangeDate = value;
+					this.SendPropertyChanged("ChangeDate");
+					this.OnChangeDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeleteDate", DbType="datetime2(2)")]
+		public System.Nullable<System.DateTime> DeleteDate
+		{
+			get
+			{
+				return this._DeleteDate;
+			}
+			set
+			{
+				if ((this._DeleteDate != value))
+				{
+					this.OnDeleteDateChanging(value);
+					this.SendPropertyChanging();
+					this._DeleteDate = value;
+					this.SendPropertyChanged("DeleteDate");
+					this.OnDeleteDateChanged();
 				}
 			}
 		}

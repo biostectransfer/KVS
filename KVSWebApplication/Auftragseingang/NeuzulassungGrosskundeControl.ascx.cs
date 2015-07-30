@@ -632,7 +632,7 @@ namespace KVSWebApplication.Auftragseingang
                                 }
                                 newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text,
                                     Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
-                                price = findPrice(ProduktId);
+                                price = FindPrice(ProduktId);
                                 if (price == null)
                                 {
                                     ErrorLeereTextBoxenLabel.Text = "Kein Price gefunden!";
@@ -696,7 +696,7 @@ namespace KVSWebApplication.Auftragseingang
                             }
                             newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text,
                                 Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
-                            price = findPrice(ProduktId);
+                            price = FindPrice(ProduktId);
                             if (price == null)
                             {
                                 ErrorLeereTextBoxenLabel.Text = "Keinen Preis gefunden!";
@@ -755,7 +755,7 @@ namespace KVSWebApplication.Auftragseingang
                             }
                             newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text,
                                 Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
-                            price = findPrice(ProduktId);
+                            price = FindPrice(ProduktId);
                             if (price == null)
                             {
                                 ErrorLeereTextBoxenLabel.Text = "Kein Price gefunden!";
@@ -927,7 +927,7 @@ namespace KVSWebApplication.Auftragseingang
                     }
                     // Submiting new InvoiceItems
                     dbContext.SubmitChanges();
-                    Print(newInvoice, dbContext);
+                    Print(newInvoice);
                     // Closing RadWindow
                 }
             }
@@ -937,45 +937,7 @@ namespace KVSWebApplication.Auftragseingang
                 ErrorLeereTextBoxenLabel.Visible = true;
             }
         }
-        protected string CheckIfFolderExistsAndReturnPathForPdf()
-        {
-            string newPdfPathAndName = "";
-            if (!Directory.Exists(ConfigurationManager.AppSettings["DataPath"]))
-            {
-                Directory.CreateDirectory(ConfigurationManager.AppSettings["DataPath"]);
-            }
 
-            if (!Directory.Exists(ConfigurationManager.AppSettings["DataPath"] + "/" + Session["CurrentUserId"].ToString()))
-            {
-                Directory.CreateDirectory(ConfigurationManager.AppSettings["DataPath"] + "/" + Session["CurrentUserId"].ToString());
-            }
-            newPdfPathAndName = ConfigurationManager.AppSettings["DataPath"] + "/" + Session["CurrentUserId"].ToString() + "/Lieferschein_" + DateTime.Today.Day + "_" +
-                DateTime.Today.Month + "_" + DateTime.Today.Year + "_" + Guid.NewGuid() + ".pdf";
-            return newPdfPathAndName;
-        }
-        private void OpenPrintfile(string myFile)
-        {
-            string url = ConfigurationManager.AppSettings["BaseUrl"];
-            string path = url + "UserData/" + Session["CurrentUserId"].ToString() + "/" + myFile;
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "Invoice", "<script>openFile('" + path + "');</script>", false);
-        }
-        protected void Print(Invoice newInvoice, KVSEntities dbContext)
-        {
-            using (MemoryStream memS = new MemoryStream())
-            {
-                InvoiceHelper.CreateAccounts(dbContext, newInvoice);
-                newInvoice.Print(dbContext, memS, "");
-                dbContext.SubmitChanges();
-                string fileName = "Rechnung_" + newInvoice.InvoiceNumber.Number + "_" + newInvoice.CreateDate.Day + "_" + newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + ".pdf";
-                string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
-                if (!Directory.Exists(serverPath)) Directory.CreateDirectory(serverPath);
-                if (!Directory.Exists(serverPath + "\\" + Session["CurrentUserId"].ToString())) Directory.CreateDirectory(serverPath + "\\" + Session["CurrentUserId"].ToString());
-                serverPath = serverPath + "\\" + Session["CurrentUserId"].ToString();
-                File.WriteAllBytes(serverPath + "\\" + fileName, memS.ToArray());
-                OpenPrintfile(fileName);
-                dbContext.SubmitChanges();
-            }
-        }
         //Tausch die Information aus neues zu altes Kennzeichen Boxen
         protected void KennzeichenTauschButton_Clicked(object sender, EventArgs e)
         {

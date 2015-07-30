@@ -4,6 +4,7 @@ using KVSCommon.Managers;
 using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -30,7 +31,9 @@ namespace KVSWebApplication.Auftragseingang
             PriceManager = (IPriceManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IPriceManager));
             ProductManager = (IProductManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IProductManager));
             LargeCustomerRequiredFieldManager = (ILargeCustomerRequiredFieldManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ILargeCustomerRequiredFieldManager));
-            LocationManager = (ILocationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ILocationManager)); 
+            LocationManager = (ILocationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ILocationManager));
+            InvoiceManager = (IInvoiceManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceManager));
+            InvoiceItemAccountItemManager = (IInvoiceItemAccountItemManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceItemAccountItemManager));
         }
 
         #region Common
@@ -124,8 +127,10 @@ namespace KVSWebApplication.Auftragseingang
         public IOrderManager OrderManager { get; set; }
         public IPriceManager PriceManager { get; set; }
         public IProductManager ProductManager { get; set; }
-        public ILargeCustomerRequiredFieldManager LargeCustomerRequiredFieldManager { get; set; }
+        public ILargeCustomerRequiredFieldManager LargeCustomerRequiredFieldManager { get; set; }        
         public ILocationManager LocationManager { get; set; }
+        public IInvoiceManager InvoiceManager { get; set; }
+        public IInvoiceItemAccountItemManager InvoiceItemAccountItemManager { get; set; }
         
         #endregion
 
@@ -167,8 +172,11 @@ namespace KVSWebApplication.Auftragseingang
             }
         }
 
-        // Suche nach Price. Falls keine gibt - stand.Price nehmen
-        protected Price findPrice(string productId)
+        #endregion
+
+        #region Methods
+        
+        protected Price FindPrice(string productId)
         {
             int? locationId = null;
             Price newPrice = null;
@@ -186,10 +194,6 @@ namespace KVSWebApplication.Auftragseingang
             return newPrice;
         }
 
-        #endregion
-
-        #region Methods
-        
         protected void CheckUserPermissions()
         {
             if (UserManager.CheckPermissionsForUser(Session["UserPermissions"], PagePermission))
@@ -388,7 +392,6 @@ namespace KVSWebApplication.Auftragseingang
 
         protected void SetCarOwnerData()
         {
-
             Adress_Street_TextBox.Text = String.Empty;
             Adress_StreetNumber_TextBox.Text = String.Empty;
             Adress_Zipcode_TextBox.Text = String.Empty;
@@ -421,6 +424,7 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
         }
+
         protected void MakeAllControlsEmpty()
         {
             var allControls = GetAllControls();
@@ -451,7 +455,7 @@ namespace KVSWebApplication.Auftragseingang
                 {
                     if (subControl is RadTextBox)
                     {
-                        RadTextBox box = subControl as RadTextBox;
+                        var box = subControl as RadTextBox;
                         if (box.Enabled == true && box != Adress_Country_TextBox)
                         {
                             box.Text = "";
@@ -513,8 +517,41 @@ namespace KVSWebApplication.Auftragseingang
 
         #endregion
 
-        #region Private Methods
+        #region Print
+                        
+        protected void Print(Invoice newInvoice)
+        {
+            using (var stream = new MemoryStream())
+            {
+                InvoiceItemAccountItemManager.CreateAccounts(newInvoice);
+                InvoiceManager.Print(newInvoice, stream, "", Convert.ToString(ConfigurationManager.AppSettings["DefaultAccountNumber"]));
 
+                string fileName = "Rechnung_" + newInvoice.InvoiceNumber.Number + "_" + 
+                    newInvoice.CreateDate.Day + "_" + newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + ".pdf";
+                string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
+
+                if (!Directory.Exists(serverPath))
+                    Directory.CreateDirectory(serverPath);
+
+                if (!Directory.Exists(serverPath + "\\" + Session["CurrentUserId"].ToString()))
+                    Directory.CreateDirectory(serverPath + "\\" + Session["CurrentUserId"].ToString());
+
+                serverPath = serverPath + "\\" + Session["CurrentUserId"].ToString();
+                File.WriteAllBytes(serverPath + "\\" + fileName, stream.ToArray());
+                OpenPrintfile(fileName);
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
+        
+        private void OpenPrintfile(string myFile)
+        {
+            string url = ConfigurationManager.AppSettings["BaseUrl"];
+            string path = url + "UserData/" + Session["CurrentUserId"].ToString() + "/" + myFile;
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Invoice", "<script>openFile('" + path + "');</script>", false);
+        }
 
         #endregion
     }
