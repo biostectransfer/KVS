@@ -363,24 +363,7 @@ namespace KVSWebApplication.Auftragseingang
             e.Result = regOrdQuery;
         }
         #endregion
-        protected void CheckIfButtonShouldBeEnabled()
-        {
-            if (AuftragZulassenButton.Enabled == true)
-            {
-                //falls keine Pflichtfelder angezeigt sind - button schließen
-                List<Control> allControls = getAllControls();
-                foreach (Control control in allControls)
-                {
-                    if (control.Visible == true)
-                    {
-                        AuftragZulassenButton.Enabled = true;
-                        break;
-                    }
-                    else
-                        AuftragZulassenButton.Enabled = false;
-                }
-            }
-        }
+
         //VIN ist eingegeben, versuch das Fahrzeug zu finden
         protected void VinBoxZulText_Changed(object sender, EventArgs e)
         {

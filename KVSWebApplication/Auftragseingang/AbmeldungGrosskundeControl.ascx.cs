@@ -830,35 +830,6 @@ namespace KVSWebApplication.Auftragseingang
                 target.Nodes.Add(addedNode);
             }
         }
-        protected void CheckIfButtonShouldBeEnabled()
-        {
-            if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue)
-                && !String.IsNullOrEmpty(LocationDropDownList.SelectedValue)
-                && !String.IsNullOrEmpty(ProductAbmDropDownList.SelectedValue)
-                && !String.IsNullOrEmpty(CostCenterDropDownList.SelectedValue))
-                AbmeldenButton.Enabled = true;
-            else if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue)
-                && !String.IsNullOrEmpty(ProductAbmDropDownList.SelectedValue)) //small without costcenter and location
-                AbmeldenButton.Enabled = true;
-            else
-                AbmeldenButton.Enabled = false;
-
-            if (AbmeldenButton.Enabled == true)
-            {
-                //falls keine Pflichtfelder angezeigt sind - button schließen
-                List<Control> allControls = getAllControls();
-                foreach (Control control in allControls)
-                {
-                    if (control.Visible == true)
-                    {
-                        AbmeldenButton.Enabled = true;
-                        break;
-                    }
-                    else
-                        AbmeldenButton.Enabled = false;
-                }
-            }
-        }
 
         // Create new Adress in der DatenBank
         protected void OnAddAdressButton_Clicked(object sender, EventArgs e)

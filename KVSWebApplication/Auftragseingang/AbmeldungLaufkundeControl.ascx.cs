@@ -641,27 +641,6 @@ namespace KVSWebApplication.Auftragseingang
                 target.Nodes.Add(addedNode);
             }
         }
-        protected void CheckIfButtonShouldBeEnabled()
-        {
-            if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue)
-                 && !String.IsNullOrEmpty(ProductAbmDropDownList.SelectedValue)) //small without costcenter and location
-                AbmeldenButton.Enabled = true;
-            if (AbmeldenButton.Enabled == true)
-            {
-                //falls keine Pflichtfelder angezeigt sind - button schließen
-                List<Control> allControls = getAllControls();
-                foreach (Control control in allControls)
-                {
-                    if (control.Visible == true)
-                    {
-                        AbmeldenButton.Enabled = true;
-                        break;
-                    }
-                    else
-                        AbmeldenButton.Enabled = false;
-                }
-            }
-        }
 
         protected void MakeInvoiceForSmallCustomer(int customerId, DeregistrationOrder regOrder)
         {
