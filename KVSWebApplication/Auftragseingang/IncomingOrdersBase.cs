@@ -29,7 +29,8 @@ namespace KVSWebApplication.Auftragseingang
             OrderManager = (IOrderManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IOrderManager));
             PriceManager = (IPriceManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IPriceManager));
             ProductManager = (IProductManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IProductManager));
-            LargeCustomerRequiredFieldManager = (ILargeCustomerRequiredFieldManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ILargeCustomerRequiredFieldManager)); 
+            LargeCustomerRequiredFieldManager = (ILargeCustomerRequiredFieldManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ILargeCustomerRequiredFieldManager));
+            LocationManager = (ILocationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ILocationManager)); 
         }
 
         #region Common
@@ -52,6 +53,14 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract RadComboBox LocationDropDown { get; }
         protected abstract RadTreeView ProductTree { get; }
         protected abstract RadScriptManager RadScriptManager { get; }
+        protected abstract RadTextBox Adress_Street_TextBox { get; }
+        protected abstract RadTextBox Adress_StreetNumber_TextBox { get; }
+        protected abstract RadTextBox Adress_Zipcode_TextBox { get; }
+        protected abstract RadTextBox Adress_City_TextBox { get; }
+        protected abstract RadTextBox Adress_Country_TextBox { get; }
+        protected abstract RadTextBox CarOwner_Name_TextBox { get; }
+        protected abstract RadTextBox CarOwner_FirstName_TextBox { get; }
+        protected abstract RadTextBox Registration_eVBNumber_TextBox { get; }
 
         #endregion
 
@@ -95,7 +104,8 @@ namespace KVSWebApplication.Auftragseingang
         public IPriceManager PriceManager { get; set; }
         public IProductManager ProductManager { get; set; }
         public ILargeCustomerRequiredFieldManager LargeCustomerRequiredFieldManager { get; set; }
-
+        public ILocationManager LocationManager { get; set; }
+        
         #endregion
 
         #region Labels
@@ -166,6 +176,7 @@ namespace KVSWebApplication.Auftragseingang
                 Panel.Enabled = true;
             }
         }
+
         protected void CheckUmsatzForSmallCustomer()
         {
             CustomerHistoryLabel.Visible = true;
@@ -349,6 +360,42 @@ namespace KVSWebApplication.Auftragseingang
 
                         if (control.ID == "Contact_Phone" || control.ID == "Contact_Fax" || control.ID == "Contact_MobilePhone" || control.ID == "Contact_Email")
                             KontaktdatenCaption.Visible = true;
+                    }
+                }
+            }
+        }
+
+        protected void SetCarOwnerData()
+        {
+
+            Adress_Street_TextBox.Text = String.Empty;
+            Adress_StreetNumber_TextBox.Text = String.Empty;
+            Adress_Zipcode_TextBox.Text = String.Empty;
+            Adress_City_TextBox.Text = String.Empty;
+            Adress_Country_TextBox.Text = String.Empty;
+            CarOwner_Name_TextBox.Text = String.Empty;
+            Registration_eVBNumber_TextBox.Text = String.Empty;
+
+            if (!String.IsNullOrEmpty(LocationDropDown.SelectedValue) && !String.IsNullOrEmpty(CustomerDropDown.SelectedValue))
+            {
+                var location = LocationManager.GetEntities(q => q.Id == Int32.Parse(LocationDropDown.SelectedValue) &&
+                    q.CustomerId == Int32.Parse(CustomerDropDown.SelectedValue)).FirstOrDefault();
+
+                if (location != null)
+                {
+                    CarOwner_Name_TextBox.Text = location.LargeCustomer.Customer.Name;
+                    Registration_eVBNumber_TextBox.Text = location.LargeCustomer.Customer.eVB_Number;
+
+                    if (location.LargeCustomer.Person != null)
+                        CarOwner_FirstName_TextBox.Text = location.LargeCustomer.Person.Name + " " + location.LargeCustomer.Person.FirstName;
+
+                    if (location.Adress != null)
+                    {
+                        Adress_Street_TextBox.Text = location.Adress.Street;
+                        Adress_StreetNumber_TextBox.Text = location.Adress.StreetNumber;
+                        Adress_Zipcode_TextBox.Text = location.Adress.Zipcode;
+                        Adress_City_TextBox.Text = location.Adress.City;
+                        Adress_Country_TextBox.Text = location.Adress.Country;
                     }
                 }
             }

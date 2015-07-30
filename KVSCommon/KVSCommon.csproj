@@ -127,6 +127,7 @@
     <Compile Include="Managers\Base\IReadOnlyEntityManager.cs" />
     <Compile Include="Managers\Base\IReadOnlyManagerBase.cs" />
     <Compile Include="Managers\ILargeCustomerRequiredFieldManager.cs" />
+    <Compile Include="Managers\ILocationManager.cs" />
     <Compile Include="Managers\IProductManager.cs" />
     <Compile Include="Managers\IPriceManager.cs" />
     <Compile Include="Managers\IOrderManager.cs" />

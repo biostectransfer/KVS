@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KVSCommon.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace KVSCommon.Database
     /// <summary>
     /// Erweiterungsklasse der Location DB
     /// </summary>
-    public partial class Location : ILogging
+    public partial class Location : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
         public KVSEntities LogDBContext
         {

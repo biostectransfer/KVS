@@ -21,21 +21,34 @@ namespace KVSWebApplication.Auftragseingang
 
         protected override PermissionTypes PagePermission { get { return PermissionTypes.ZULASSUNGSAUFTRAG_ANLEGEN; } }
         protected override OrderTypes OrderType { get { return OrderTypes.Admission; } }
-
-        protected override Panel Panel { get { return this.ZulassungPanel; } }
-        protected override RadTextBox AccountNumberTextBox { get { return this.BankAccount_AccountnumberBox; } }
-        protected override RadTextBox BankCodeTextBox { get { return this.BankAccount_BankCodeBox; } }
-        protected override RadTextBox BankNameTextBox { get { return this.BankAccount_BankNameBox; } }
-        protected override RadTextBox IBANTextBox { get { return this.txbBancAccountIban; } }
-        protected override RadTextBox BICTextBox { get { return txbBankAccount_Bic; } }
+        
         protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
         protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
         protected override RadComboBox LocationDropDown { get { return null; } }
         protected override RadTreeView ProductTree { get { return DienstleistungTreeView; } }
         protected override RadScriptManager RadScriptManager { get { return ((ZulassungLaufkunde)Page).getScriptManager(); } }
 
+        #region TextBoxes
+
+        protected override RadTextBox AccountNumberTextBox { get { return this.BankAccount_AccountnumberBox; } }
+        protected override RadTextBox BankCodeTextBox { get { return this.BankAccount_BankCodeBox; } }
+        protected override RadTextBox BankNameTextBox { get { return this.BankAccount_BankNameBox; } }
+        protected override RadTextBox IBANTextBox { get { return this.txbBancAccountIban; } }
+        protected override RadTextBox BICTextBox { get { return txbBankAccount_Bic; } }
+        protected override RadTextBox Adress_Street_TextBox { get { return this.Adress_StreetBox; } }
+        protected override RadTextBox Adress_StreetNumber_TextBox { get { return this.Adress_StreetNumberBox; } }
+        protected override RadTextBox Adress_Zipcode_TextBox { get { return this.Adress_ZipcodeBox; } }
+        protected override RadTextBox Adress_City_TextBox { get { return this.Adress_CityBox; } }
+        protected override RadTextBox Adress_Country_TextBox { get { return this.Adress_CountryBox; } }
+        protected override RadTextBox CarOwner_Name_TextBox { get { return this.CarOwner_NameBox; } }
+        protected override RadTextBox CarOwner_FirstName_TextBox { get { return this.CarOwner_FirstnameBox; } }
+        protected override RadTextBox Registration_eVBNumber_TextBox { get { return this.Registration_eVBNumberBox; } }
+
+        #endregion
+
         #region Panels
 
+        protected override Panel Panel { get { return this.ZulassungPanel; } }
         protected override Panel Vehicle_Variant_Panel { get { return this.Vehicle_Variant; } }
         protected override Panel Registration_GeneralInspectionDate_Panel { get { return this.Registration_GeneralInspectionDate; } }
         protected override Panel CarOwner_Name_Panel { get { return this.CarOwner_Name; } }

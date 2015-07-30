@@ -22,20 +22,34 @@ namespace KVSWebApplication.Auftragseingang
         protected override PermissionTypes PagePermission { get { return PermissionTypes.ZULASSUNGSAUFTRAG_ANLEGEN; } }
         protected override OrderTypes OrderType { get { return OrderTypes.Admission; } }
 
-        protected override Panel Panel { get { return this.ZulassungPanel; } }
-        protected override RadTextBox AccountNumberTextBox { get { return this.BankAccount_AccountnumberBox; } }
-        protected override RadTextBox BankCodeTextBox { get { return this.BankAccount_BankCodeBox; } }
-        protected override RadTextBox BankNameTextBox { get { return this.BankAccount_BankNameBox; } }
-        protected override RadTextBox IBANTextBox { get { return this.txbBancAccountIban; } }
-        protected override RadTextBox BICTextBox { get { return txbBancAccountBIC; } }
+       
         protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
         protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
         protected override RadComboBox LocationDropDown { get { return this.LocationDropDownList; } }
         protected override RadTreeView ProductTree { get { return DienstleistungTreeView; } }
         protected override RadScriptManager RadScriptManager { get { return ((NeuzulassungGrosskunde)Page).getScriptManager(); } }
 
+        #region TextBoxes
+
+        protected override RadTextBox AccountNumberTextBox { get { return this.BankAccount_AccountnumberBox; } }
+        protected override RadTextBox BankCodeTextBox { get { return this.BankAccount_BankCodeBox; } }
+        protected override RadTextBox BankNameTextBox { get { return this.BankAccount_BankNameBox; } }
+        protected override RadTextBox IBANTextBox { get { return this.txbBancAccountIban; } }
+        protected override RadTextBox BICTextBox { get { return txbBancAccountBIC; } }
+        protected override RadTextBox Adress_Street_TextBox { get { return this.Adress_StreetBox; } }
+        protected override RadTextBox Adress_StreetNumber_TextBox { get { return this.Adress_StreetNumberBox; } }
+        protected override RadTextBox Adress_Zipcode_TextBox { get { return this.Adress_ZipcodeBox; } }
+        protected override RadTextBox Adress_City_TextBox { get { return this.Adress_CityBox; } }
+        protected override RadTextBox Adress_Country_TextBox { get { return this.Adress_CountryBox; } }
+        protected override RadTextBox CarOwner_Name_TextBox { get { return this.CarOwner_NameBox; } }
+        protected override RadTextBox CarOwner_FirstName_TextBox { get { return this.CarOwner_FirstnameBox; } }
+        protected override RadTextBox Registration_eVBNumber_TextBox { get { return this.Registration_eVBNumberBox; } }
+
+        #endregion
+
         #region Panels
 
+        protected override Panel Panel { get { return this.ZulassungPanel; } }
         protected override Panel Vehicle_Variant_Panel { get { return this.Vehicle_Variant; } }
         protected override Panel Registration_GeneralInspectionDate_Panel { get { return this.Registration_GeneralInspectionDate; } }
         protected override Panel CarOwner_Name_Panel { get { return this.CarOwner_Name; } }
@@ -138,7 +152,7 @@ namespace KVSWebApplication.Auftragseingang
             ProductDropDownList.Items.Clear();
             ProductDropDownList.DataBind();
             ProductDropDownList.Focus();
-            setCarOwnerData();
+            SetCarOwnerData();
         }
         protected void CustomerIndex_Changed(object sender, EventArgs e)
         {
@@ -1077,40 +1091,6 @@ namespace KVSWebApplication.Auftragseingang
             MakeAllControlsEmpty();
             ZulassungOkLabel.Visible = false;
             SubmitChangesErrorLabel.Visible = false;
-        }
-
-        protected void setCarOwnerData()
-        {
-            using (KVSEntities con = new KVSEntities())
-            {
-                Adress_StreetBox.Text = string.Empty;
-                Adress_StreetNumberBox.Text = string.Empty;
-                Adress_ZipcodeBox.Text = string.Empty;
-                Adress_CityBox.Text = string.Empty;
-                Adress_CountryBox.Text = string.Empty;
-                CarOwner_NameBox.Text = string.Empty;
-                Registration_eVBNumberBox.Text = string.Empty;
-                if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue) && !String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
-                {
-                    var customerDetils = con.Location.FirstOrDefault(q => q.Id == Int32.Parse(LocationDropDownList.SelectedValue) && 
-                        q.CustomerId == Int32.Parse(CustomerDropDownList.SelectedValue));
-                    if (customerDetils != null)
-                    {
-                        CarOwner_NameBox.Text = customerDetils.LargeCustomer.Customer.Name;
-                        if (customerDetils.LargeCustomer.Person != null)
-                            CarOwner_FirstnameBox.Text = customerDetils.LargeCustomer.Person.Name + " " + customerDetils.LargeCustomer.Person.FirstName;
-                        Registration_eVBNumberBox.Text = customerDetils.LargeCustomer.Customer.eVB_Number;
-                        if (customerDetils.Adress != null)
-                        {
-                            Adress_StreetBox.Text = customerDetils.Adress.Street;
-                            Adress_StreetNumberBox.Text = customerDetils.Adress.StreetNumber;
-                            Adress_ZipcodeBox.Text = customerDetils.Adress.Zipcode;
-                            Adress_CityBox.Text = customerDetils.Adress.City;
-                            Adress_CountryBox.Text = customerDetils.Adress.Country;
-                        }
-                    }
-                }
-            }
         }
 
         #endregion

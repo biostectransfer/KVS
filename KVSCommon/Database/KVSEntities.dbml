@@ -100,6 +100,9 @@
       <Column Name="InvoiceAdressId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="InvoiceDispatchAdressId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(500) NOT NULL" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="Location_Mailinglist" Member="Mailinglist" ThisKey="Id" OtherKey="LocationId" Type="Mailinglist" />
       <Association Name="Location_Order" Member="Order" ThisKey="Id" OtherKey="LocationId" Type="Order" />
       <Association Name="Location_Price" Member="Price" ThisKey="Id" OtherKey="LocationId" Type="Price" />
