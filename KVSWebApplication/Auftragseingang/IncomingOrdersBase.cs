@@ -29,6 +29,7 @@ namespace KVSWebApplication.Auftragseingang
             OrderManager = (IOrderManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IOrderManager));
             PriceManager = (IPriceManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IPriceManager));
             ProductManager = (IProductManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IProductManager));
+            LargeCustomerRequiredFieldManager = (ILargeCustomerRequiredFieldManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ILargeCustomerRequiredFieldManager)); 
         }
 
         #region Common
@@ -37,6 +38,7 @@ namespace KVSWebApplication.Auftragseingang
         //protected abstract RadPersistenceManager RadPersistenceManager { get; }
 
         protected abstract PermissionTypes PagePermission { get; }
+        protected abstract OrderTypes OrderType { get; }
 
         protected List<Control> controls = new List<Control>();
         protected abstract Panel Panel { get; }
@@ -92,6 +94,16 @@ namespace KVSWebApplication.Auftragseingang
         public IOrderManager OrderManager { get; set; }
         public IPriceManager PriceManager { get; set; }
         public IProductManager ProductManager { get; set; }
+        public ILargeCustomerRequiredFieldManager LargeCustomerRequiredFieldManager { get; set; }
+
+        #endregion
+
+        #region Labels
+
+        protected abstract Label FahrzeugCaption { get; }
+        protected abstract Label HalterCaption { get; }
+        protected abstract Label HalterdatenCaption { get; }
+        protected abstract Label KontaktdatenCaption { get; }
 
         #endregion
 
@@ -267,6 +279,72 @@ namespace KVSWebApplication.Auftragseingang
             }
             return controls;
         }
+
+        protected void HideAllControls()
+        {
+            var controlsToHide = getAllControls();
+
+            var fields = LargeCustomerRequiredFieldManager.GetEntities(o => o.RequiredField.OrderTypeId == (int)OrderType).
+                Select(o => o.RequiredField.Name).ToList();
+
+            foreach (var field in fields)
+            {
+                foreach (var control in controlsToHide)
+                {
+                    if (control.ID == field)
+                    {
+                        control.Visible = false;
+                        FahrzeugCaption.Visible = false;
+                        HalterCaption.Visible = false;
+                        HalterdatenCaption.Visible = false;
+                        KontaktdatenCaption.Visible = false;
+                        IBANPanel_Panel.Visible = false;
+                    }
+                }
+            }
+        }
+
+        // find all showed checkboxes and check are they empty or not
+        //protected bool CheckIfBoxenNotEmpty()
+        //{
+        //    bool result = false;
+        //    bool hasVisibleControl = false;
+        //    var allControls = getAllControls();
+            
+        //    //if empty - shouldnt be checked
+        //    if (String.IsNullOrEmpty(PruefzifferBox.Text))
+        //        PruefzifferBox.Enabled = false;
+
+        //    if (String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue) || ProductTree.Nodes.Count == 0)
+        //    {
+        //        return true;
+        //    }
+
+        //    foreach (var control in allControls)
+        //    {
+        //        if (control.Visible == true)
+        //        {
+        //            hasVisibleControl = true;
+        //            foreach (var subControl in control.Controls)
+        //            {
+        //                if (subControl is RadTextBox)
+        //                {
+        //                    var box = subControl as RadTextBox;
+        //                    if (box.Enabled == true && String.IsNullOrEmpty(box.Text) && (box.ID == "VINBox"))
+        //                    {
+        //                        box.BorderColor = System.Drawing.Color.Red;
+        //                        result = true;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    if (hasVisibleControl == false)
+        //        result = true;
+
+        //    return result;
+        //}
 
         #endregion
 

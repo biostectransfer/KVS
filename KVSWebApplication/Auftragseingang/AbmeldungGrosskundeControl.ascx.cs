@@ -20,6 +20,8 @@ namespace KVSWebApplication.Auftragseingang
         #region Members
 
         protected override PermissionTypes PagePermission { get { return PermissionTypes.ABMELDEAUFTRAG_ANLEGEN; } }
+        protected override OrderTypes OrderType { get { return OrderTypes.Cancellation; } }
+        
 
         protected override Panel Panel { get { return this.EingangAbmeldungPanel; } }
         protected override RadTextBox AccountNumberTextBox { get { return this.BankAccount_AccountnumberBox; } }
@@ -62,6 +64,15 @@ namespace KVSWebApplication.Auftragseingang
         protected override Panel Vehicle_FirstRegistrationDate_Panel { get { return this.Vehicle_FirstRegistrationDate; } }
         protected override Panel Vehicle_Color_Panel { get { return this.Vehicle_Color; } }
         protected override Panel IBANPanel_Panel { get { return this.IBANPanel; } }
+
+        #endregion
+
+        #region Labels
+
+        protected override Label FahrzeugCaption { get { return this.FahrzeugLabel; } }
+        protected override Label HalterCaption { get { return this.HalterLabel; } }
+        protected override Label HalterdatenCaption { get { return this.HalterdatenLabel; } }
+        protected override Label KontaktdatenCaption { get { return this.KontaktdatenLabel; } }
 
         #endregion
 
@@ -564,21 +575,7 @@ namespace KVSWebApplication.Auftragseingang
                 e.Result = costCenterQuery;
             }
         }
-        private Price findPrice(string produktId)
-        {
-            Price newPrice = null;
-            KVSEntities dbContext = new KVSEntities();
-            if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue.ToString()))
-            {
-                newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == Int32.Parse(produktId) && q.LocationId == Int32.Parse(LocationDropDownList.SelectedValue));
-            }
 
-            if (String.IsNullOrEmpty(this.LocationDropDownList.SelectedValue) || newPrice == null)
-            {
-                newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == Int32.Parse(produktId) && q.LocationId == null);
-            }
-            return newPrice;
-        }
         #endregion
         protected void ProductAbmDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
@@ -859,32 +856,6 @@ namespace KVSWebApplication.Auftragseingang
                     }
                     else
                         AbmeldenButton.Enabled = false;
-                }
-            }
-        }
-        protected void HideAllControls()
-        {
-            List<Control> controlsToHide = new List<Control>();
-            controlsToHide = getAllControls();
-            KVSEntities con = new KVSEntities();
-            var cont = from largCust in con.LargeCustomerRequiredField
-                       join reqFiled in con.RequiredField on largCust.RequiredFieldId equals reqFiled.Id
-                       join ordTyp in con.OrderType on reqFiled.OrderTypeId equals ordTyp.Id
-                       where ordTyp.Id == (int)OrderTypes.Cancellation
-                       select reqFiled.Name;
-            foreach (var nameCon in cont)
-            {
-                foreach (Control control in controlsToHide)
-                {
-                    if (control.ID == nameCon)
-                    {
-                        control.Visible = false;
-                        FahrzeugLabel.Visible = false;
-                        HalterLabel.Visible = false;
-                        HalterdatenLabel.Visible = false;
-                        IBANPanel.Visible = false;
-                        KontaktdatenLabel.Visible = false;
-                    }
                 }
             }
         }

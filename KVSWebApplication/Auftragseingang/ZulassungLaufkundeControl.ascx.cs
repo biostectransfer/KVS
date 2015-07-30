@@ -20,6 +20,7 @@ namespace KVSWebApplication.Auftragseingang
         #region Members
 
         protected override PermissionTypes PagePermission { get { return PermissionTypes.ZULASSUNGSAUFTRAG_ANLEGEN; } }
+        protected override OrderTypes OrderType { get { return OrderTypes.Admission; } }
 
         protected override Panel Panel { get { return this.ZulassungPanel; } }
         protected override RadTextBox AccountNumberTextBox { get { return this.BankAccount_AccountnumberBox; } }
@@ -62,6 +63,15 @@ namespace KVSWebApplication.Auftragseingang
         protected override Panel Vehicle_FirstRegistrationDate_Panel { get { return this.Vehicle_FirstRegistrationDate; } }
         protected override Panel Vehicle_Color_Panel { get { return this.Vehicle_Color; } }
         protected override Panel IBANPanel_Panel { get { return this.IBANPanel; } }
+
+        #endregion
+        
+        #region Labels
+
+        protected override Label FahrzeugCaption { get { return this.FahrzeugLabel; } }
+        protected override Label HalterCaption { get { return this.HalterLabel; } }
+        protected override Label HalterdatenCaption { get { return this.HalterdatenLabel; } }
+        protected override Label KontaktdatenCaption { get { return this.KontaktdatenLabel; } }
 
         #endregion
 
@@ -1024,31 +1034,7 @@ namespace KVSWebApplication.Auftragseingang
             HalterdatenLabel.Visible = true;
             KontaktdatenLabel.Visible = true;
         }
-        protected void HideAllControls()
-        {
-            List<Control> controlsToHide = new List<Control>();
-            controlsToHide = getAllControls();
-            KVSEntities con = new KVSEntities();
-            var cont = from largCust in con.LargeCustomerRequiredField
-                       join reqFiled in con.RequiredField on largCust.RequiredFieldId equals reqFiled.Id
-                       join ordTyp in con.OrderType on reqFiled.OrderTypeId equals ordTyp.Id
-                       where ordTyp.Id == (int)OrderTypes.Admission
-                       select reqFiled.Name;
-            foreach (var nameCon in cont)
-            {
-                foreach (Control control in controlsToHide)
-                {
-                    if (control.ID == nameCon)
-                    {
-                        control.Visible = false;
-                        FahrzeugLabel.Visible = false;
-                        HalterLabel.Visible = false;
-                        HalterdatenLabel.Visible = false;
-                        KontaktdatenLabel.Visible = false;
-                    }
-                }
-            }
-        }
+
 
         protected void btnClearSelection_Click(object sender, EventArgs e)
         {

@@ -410,6 +410,9 @@
     <Type Name="LargeCustomerRequiredField">
       <Column Name="LargeCustomerId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="RequiredFieldId" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="RequiredField_LargeCustomerRequiredField" Member="RequiredField" ThisKey="RequiredFieldId" OtherKey="Id" Type="RequiredField" IsForeignKey="true" />
       <Association Name="LargeCustomer_LargeCustomerRequiredField" Member="LargeCustomer" ThisKey="LargeCustomerId" OtherKey="CustomerId" Type="LargeCustomer" IsForeignKey="true" />
     </Type>
