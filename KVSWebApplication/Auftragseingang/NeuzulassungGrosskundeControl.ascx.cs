@@ -753,10 +753,10 @@ namespace KVSWebApplication.Auftragseingang
 
         protected bool AddAnotherProducts(RegistrationOrder regOrd, int? locationId)
         {
-            bool allesHatGutGelaufen = false;
-            string ProduktId = "";
-            string CostCenterId = "";
+            bool result = false;
+            string produktId = "";
             int skipFirst = 0;
+
             foreach (RadTreeNode node in DienstleistungTreeView.Nodes)
             {
                 if (skipFirst > 0)
@@ -768,51 +768,48 @@ namespace KVSWebApplication.Auftragseingang
                         {
                             try
                             {
-                                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
-                                var orderNumber = regOrd.OrderNumber;
-                                Price newPrice;
-                                OrderItem newOrderItem1 = null;
-                                OrderItem newOrderItem2 = null;
-                                ProduktId = splited[0];
-                                CostCenterId = splited[1];
-                                if (!String.IsNullOrEmpty(ProduktId))
+                                OrderItem newOrderItem = null;
+
+                                produktId = splited[0];
+
+                                if (!String.IsNullOrEmpty(produktId))
                                 {
-                                    var productId = Int32.Parse(ProduktId);
                                     int? costCenterId = null;
-                                    KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == productId);
+                                    Price newPrice = null;
+
+                                    var newProduct = ProductManager.GetById(Int32.Parse(produktId));
                                     if (locationId == null) //small
                                     {
-                                        newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == null);
+                                        newPrice = PriceManager.GetEntities(q => q.ProductId == newProduct.Id && q.LocationId == null).SingleOrDefault();
                                     }
                                     else //large
                                     {
-                                        costCenterId = Int32.Parse(CostCenterId);
-                                        newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == locationId);
+                                        costCenterId = Int32.Parse(splited[1]);
+                                        newPrice = PriceManager.GetEntities(q => q.ProductId == newProduct.Id && q.LocationId == locationId).SingleOrDefault();
                                         if (newPrice == null)
-                                            newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == null);
+                                            newPrice = PriceManager.GetEntities(q => q.ProductId == newProduct.Id && q.LocationId == null).SingleOrDefault();
                                     }
-                                    var orderToUpdate = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
-                                    orderToUpdate.LogDBContext = dbContext;
+
+                                    var orderToUpdate = OrderManager.GetEntities(q => q.OrderNumber == regOrd.OrderNumber).SingleOrDefault();
+
                                     if (orderToUpdate != null)
                                     {
                                         CostCenter costCenter = null;
                                         if (costCenterId.HasValue)
                                         {
-                                            costCenter = dbContext.CostCenter.FirstOrDefault(o => o.Id == costCenterId.Value);
+                                            costCenter = CostCenterManager.GetById(costCenterId.Value);
                                         }
 
-                                        newOrderItem1 = orderToUpdate.AddOrderItem(newProduct.Id, newPrice.Amount, 1, costCenter, null, false, dbContext);
+                                        newOrderItem = OrderManager.AddOrderItem(orderToUpdate, newProduct.Id, newPrice.Amount, 1, costCenter, null, false);
                                         if (newPrice.AuthorativeCharge.HasValue)
                                         {
-                                            orderToUpdate.AddOrderItem(newProduct.Id, newPrice.AuthorativeCharge.Value, 1, costCenter, newOrderItem1.Id,
-                                                newPrice.AuthorativeCharge.HasValue, dbContext);
+                                            OrderManager.AddOrderItem(orderToUpdate, newProduct.Id, newPrice.AuthorativeCharge.Value, 1, costCenter, newOrderItem.Id,
+                                                newPrice.AuthorativeCharge.HasValue);
                                         }
-                                        dbContext.SubmitChanges();
-                                        allesHatGutGelaufen = true;
+
+                                        result = true;
                                     }
                                 }
-                                if (allesHatGutGelaufen)
-                                    dbContext.SubmitChanges();
                             }
                             catch (Exception ex)
                             {
@@ -826,7 +823,7 @@ namespace KVSWebApplication.Auftragseingang
                     skipFirst = 1;
                 }
             }
-            return allesHatGutGelaufen;
+            return result;
         }
         
         // findet alle angezeigte textboxen und überprüft ob die nicht leer sind

@@ -110,7 +110,7 @@ namespace KVSWebApplication.Auftragseingang
 
         #endregion
 
-        #region Methods
+        #region Event handlers
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -134,8 +134,7 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
         }
-
-        #region Index Changed
+        
         protected void DeleteNewPosButton_Clicked(object sender, EventArgs e)
         {
             if (DienstleistungTreeView.SelectedNodes.Count > 0)
@@ -143,6 +142,7 @@ namespace KVSWebApplication.Auftragseingang
                 DienstleistungTreeView.SelectedNode.Remove();
             }
         }
+
         protected void NewPosButton_Clicked(object sender, EventArgs e)
         {
             IRadTreeNodeContainer target = DienstleistungTreeView;
@@ -155,10 +155,11 @@ namespace KVSWebApplication.Auftragseingang
             {
                 string costCenter = "";
                 string value = ProductDropDownList.SelectedValue.ToString() + ";" + costCenter;
-                RadTreeNode addedNode = new RadTreeNode(ProductDropDownList.Text, value);
+                var addedNode = new RadTreeNode(ProductDropDownList.Text, value);
                 target.Nodes.Add(addedNode);
             }
         }
+
         protected void RegistrationTyp_Changed(object sender, EventArgs e)
         {
             KennzeichenTauschButton.Visible = false;
@@ -170,6 +171,7 @@ namespace KVSWebApplication.Auftragseingang
             ProductDropDownList.Focus();
             DienstleistungTreeView.Nodes.Clear();
         }
+
         protected void CustomerIndex_Changed(object sender, EventArgs e)
         {
             ProductDropDownList.Text = null;
@@ -186,65 +188,6 @@ namespace KVSWebApplication.Auftragseingang
                 CheckUmsatzForSmallCustomer();
             }
         }
-        #endregion
-        #region Linq Data Source
-        protected void ProductDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {
-            var selectedCustomer = 0;
-
-            if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
-                selectedCustomer = Int32.Parse(CustomerDropDownList.SelectedValue);
-            IEnumerable<object> products = null;
-
-            if (!String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue))
-            {
-                products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 && o.Location == null &&
-                    (o.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) ||
-                        o.Product.OrderType.Id == (int)OrderTypes.Common)).
-                    Select(o => new
-                    {
-                        ItemNumber = o.Product.ItemNumber,
-                        Name = o.Product.Name,
-                        Value = o.Product.Id,
-                        Category = o.Product.ProductCategory.Name,
-                        Price = Math.Round(o.Amount, 2, MidpointRounding.AwayFromZero).ToString(),
-                        AuthCharge = o.AuthorativeCharge.HasValue ? Math.Round(o.AuthorativeCharge.Value, 2, MidpointRounding.AwayFromZero).ToString().Trim() : ""
-                    }).OrderBy(o => o.Name).ToList();
-            }
-            else
-            {
-                products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 && o.Location != null && !o.Location.CustomerId.HasValue).
-                    Select(o => new
-                    {
-                        ItemNumber = o.Product.ItemNumber,
-                        Name = o.Product.Name,
-                        Value = o.Product.Id,
-                        Category = o.Product.ProductCategory.Name,
-                        Price = Math.Round(o.Amount, 2, MidpointRounding.AwayFromZero).ToString(),
-                        AuthCharge = o.AuthorativeCharge.HasValue ? Math.Round(o.AuthorativeCharge.Value, 2, MidpointRounding.AwayFromZero).ToString().Trim() : ""
-                    }).OrderBy(o => o.Name).ToList();
-            }
-
-            e.Result = products;
-        }
-        // Auswahl der KundenName
-        protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {
-            e.Result = GetAllSmallCustomers();
-        }
-
-        protected void RegistrationOrderDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {
-            KVSEntities con = new KVSEntities();
-            var regOrdQuery = from regord in con.RegistrationOrderType
-                              select new
-                              {
-                                  Name = regord.Name,
-                                  Value = regord.Id
-                              };
-            e.Result = regOrdQuery;
-        }
-        #endregion
 
         //VIN ist eingegeben, versuch das Fahrzeug zu finden
         protected void VinBoxZulText_Changed(object sender, EventArgs e)
@@ -354,6 +297,70 @@ namespace KVSWebApplication.Auftragseingang
             }
         }
 
+        #endregion
+
+        #region Linq Data Source
+
+        protected void ProductDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
+        {
+            var selectedCustomer = 0;
+
+            if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
+                selectedCustomer = Int32.Parse(CustomerDropDownList.SelectedValue);
+            IEnumerable<object> products = null;
+
+            if (!String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue))
+            {
+                products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 && o.Location == null &&
+                    (o.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) ||
+                        o.Product.OrderType.Id == (int)OrderTypes.Common)).
+                    Select(o => new
+                    {
+                        ItemNumber = o.Product.ItemNumber,
+                        Name = o.Product.Name,
+                        Value = o.Product.Id,
+                        Category = o.Product.ProductCategory.Name,
+                        Price = Math.Round(o.Amount, 2, MidpointRounding.AwayFromZero).ToString(),
+                        AuthCharge = o.AuthorativeCharge.HasValue ? Math.Round(o.AuthorativeCharge.Value, 2, MidpointRounding.AwayFromZero).ToString().Trim() : ""
+                    }).OrderBy(o => o.Name).ToList();
+            }
+            else
+            {
+                products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 && o.Location != null && !o.Location.CustomerId.HasValue).
+                    Select(o => new
+                    {
+                        ItemNumber = o.Product.ItemNumber,
+                        Name = o.Product.Name,
+                        Value = o.Product.Id,
+                        Category = o.Product.ProductCategory.Name,
+                        Price = Math.Round(o.Amount, 2, MidpointRounding.AwayFromZero).ToString(),
+                        AuthCharge = o.AuthorativeCharge.HasValue ? Math.Round(o.AuthorativeCharge.Value, 2, MidpointRounding.AwayFromZero).ToString().Trim() : ""
+                    }).OrderBy(o => o.Name).ToList();
+            }
+
+            e.Result = products;
+        }
+
+        // Auswahl der KundenName
+        protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
+        {
+            e.Result = GetAllSmallCustomers();
+        }
+
+        protected void RegistrationOrderDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
+        {
+            KVSEntities con = new KVSEntities();
+            var regOrdQuery = from regord in con.RegistrationOrderType
+                              select new
+                              {
+                                  Name = regord.Name,
+                                  Value = regord.Id
+                              };
+            e.Result = regOrdQuery;
+        }
+
+        #endregion
+        
         #region Button Clicked
         //Neue Auftragseingang
         protected void AuftragZulassenButton_Clicked(object sender, EventArgs e)
@@ -608,33 +615,33 @@ namespace KVSWebApplication.Auftragseingang
 
         #endregion
 
+        #region Methods
+
         protected void AddAnotherProducts(RegistrationOrder regOrd, int? locationId)
         {
-            string ProduktId = "";
+            string produktId = "";
             int itemIndexValue = 0;
             decimal amount = 0;
-            decimal authCharge = 0;
+
             var nodes = this.Request.Form.AllKeys.Where(q => q.Contains("txtItemPrice_"));
             foreach (var node in nodes)
             {
                 if (!String.IsNullOrEmpty(node))
                 {
-                    KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
-                    var orderNumber = regOrd.OrderNumber;
                     Price newPrice = null;
-                    OrderItem newOrderItem1 = null;
-                    ProduktId = node.Split('_')[1];
-                    if (!String.IsNullOrEmpty(ProduktId))
-                    {
-                        var productId = Int32.Parse(ProduktId);
+                    OrderItem newOrderItem = null;
+                    produktId = node.Split('_')[1];
 
-                        KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == productId);
+                    if (!String.IsNullOrEmpty(produktId))
+                    {
+                        var newProduct = ProductManager.GetById(Int32.Parse(produktId));
                         if (locationId == null) //small
                         {
-                            newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == null);
+                            newPrice = PriceManager.GetEntities(q => q.ProductId == newProduct.Id && q.LocationId == null).SingleOrDefault();
                         }
-                        var orderToUpdate = dbContext.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
-                        orderToUpdate.LogDBContext = dbContext;
+
+                        var orderToUpdate = OrderManager.GetEntities(q => q.OrderNumber == regOrd.OrderNumber).SingleOrDefault();
+
                         if (orderToUpdate != null)
                         {
                             if (this.Request.Form.GetValues(node) != null)
@@ -657,7 +664,7 @@ namespace KVSWebApplication.Auftragseingang
                             {
                                 amount = newPrice.Amount;
                             }
-                            newOrderItem1 = orderToUpdate.AddOrderItem(newProduct.Id, amount, 1, null, null, false, dbContext);
+                            newOrderItem = OrderManager.AddOrderItem(orderToUpdate, newProduct.Id, amount, 1, null, null, false);
                             if (newPrice != null && newPrice.AuthorativeCharge.HasValue)
                             {
                                 if (this.Request.Form.GetValues(node.Replace("txtItemPrice_", "txtAuthPrice_")) != null)
@@ -680,40 +687,35 @@ namespace KVSWebApplication.Auftragseingang
                                 {
                                     amount = newPrice.AuthorativeCharge.Value;
                                 }
-                                orderToUpdate.AddOrderItem(newProduct.Id, amount, 1, null, newOrderItem1.Id, newPrice.AuthorativeCharge.HasValue, dbContext);
+                                OrderManager.AddOrderItem(orderToUpdate, newProduct.Id, amount, 1, null, newOrderItem.Id, newPrice.AuthorativeCharge.HasValue);
                             }
                             itemIndexValue = itemIndexValue + 1;
-                            dbContext.SubmitChanges();
                         }
                     }
                 }
             }
         }
+
         protected void MakeInvoiceForSmallCustomer(int customerId, RegistrationOrder regOrder)
         {
             try
             {
-                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
-                var newOrder = dbContext.Order.Single(q => q.CustomerId == customerId && q.OrderNumber == regOrder.OrderNumber);
+                var newOrder = OrderManager.GetEntities(q => q.CustomerId == customerId && q.OrderNumber == regOrder.OrderNumber).Single();
                 smallCustomerOrderHiddenField.Value = regOrder.OrderNumber.ToString();
-                //updating order status
-                newOrder.LogDBContext = dbContext;
                 newOrder.Status = (int)OrderStatusTypes.Closed;
                 //updating orderitems status                          
                 foreach (OrderItem ordItem in newOrder.OrderItem)
                 {
-                    ordItem.LogDBContext = dbContext;
                     if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                     {
                         ordItem.Status = (int)OrderItemStatusTypes.Closed;
                     }
                 }
-                dbContext.SubmitChanges();
-                //updating order und items status one more time to make it abgerechnet
-                newOrder.LogDBContext = dbContext;
+
                 newOrder.ExecutionDate = DateTime.Now;
                 newOrder.Status = (int)OrderStatusTypes.Payed;
-                dbContext.SubmitChanges();
+                OrderManager.SaveChanges();
+                
                 //opening window for adress
                 string script = "function f(){$find(\"" + AddAdressRadWindow.ClientID + "\").show(); Sys.Application.remove_load(f);}Sys.Application.add_load(f);";
                 ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
@@ -725,22 +727,20 @@ namespace KVSWebApplication.Auftragseingang
                 ErrorLeereTextBoxenLabel.Visible = true;
             }
         }
+
         // getting adress from small customer
         protected void SetValuesForAdressWindow()
         {
-            KVSEntities dbContext = new KVSEntities();
-            var locationQuery = 
-                (from adr in dbContext.Adress
-                                 join cust in dbContext.Customer on adr.Id equals cust.InvoiceAdressId
-                                 where cust.Id == Int32.Parse(CustomerDropDownList.SelectedValue)
-                                 select adr).SingleOrDefault();
-            if (locationQuery != null)
+            var location = AdressManager.GetEntities(o => o.Invoice.Count != 0 &&
+                o.Customer.Any(q => q.Id == Int32.Parse(CustomerDropDownList.SelectedValue))).FirstOrDefault();
+
+            if (location != null)
             {
-                StreetTextBox.Text = locationQuery.Street;
-                StreetNumberTextBox.Text = locationQuery.StreetNumber;
-                ZipcodeTextBox.Text = locationQuery.Zipcode;
-                CityTextBox.Text = locationQuery.City;
-                CountryTextBox.Text = locationQuery.Country;
+                StreetTextBox.Text = location.Street;
+                StreetNumberTextBox.Text = location.StreetNumber;
+                ZipcodeTextBox.Text = location.Zipcode;
+                CityTextBox.Text = location.City;
+                CountryTextBox.Text = location.Country;
                 LocationLabelWindow.Text = "Fügen Sie bitte die Adresse für " + CustomerDropDownList.Text + " hinzu";
                 ZusatzlicheInfoLabel.Visible = false;
                 if (CustomerDropDownList.SelectedIndex == 1) // small
@@ -772,6 +772,7 @@ namespace KVSWebApplication.Auftragseingang
                 PreviousLicenceBox3.Text = "";
             }
         }
+
         // findet alle angezeigte textboxen und überprüft ob die nicht leer sind
         protected bool CheckIfBoxenNotEmpty()
         {
@@ -842,10 +843,9 @@ namespace KVSWebApplication.Auftragseingang
             CustomerDropDownList.ClearSelection();
             MakeAllControlsEmpty();
 
-            using (KVSEntities dbContext = new KVSEntities())
-            {
-                txbSmallCustomerNumber.Text = EmptyStringIfNull.generateIndividualNumber(dbContext.Customer.Max(q => q.CustomerNumber));
-            }
+            var maxCustomerNumber = CustomerManager.GetEntities().Max(o => o.CustomerNumber);
+            txbSmallCustomerNumber.Text = EmptyStringIfNull.generateIndividualNumber(maxCustomerNumber);
+
             setCustomerTXBEnable(true);
         }
         protected void setCustomerTXBEnable(bool value)
@@ -872,41 +872,40 @@ namespace KVSWebApplication.Auftragseingang
         {
             try
             {
-                using (KVSEntities dbContext = new KVSEntities())
+                var customerId = 0;
+                if (CustomerDropDownList.SelectedValue != string.Empty)
+                    customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
+
+                var checkThisCustomer = CustomerManager.GetEntities(q => q.Id == customerId).SingleOrDefault();
+                if (checkThisCustomer != null)
                 {
-                    var customerId = 0;
-                    if (CustomerDropDownList.SelectedValue != string.Empty)
-                        customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
-                    var checkThisCustomer = dbContext.Customer.SingleOrDefault(q => q.Id == customerId);
-                    if (checkThisCustomer != null)
-                    {
-                        // Kundendaten
-                        txbSmallCustomerVat.Text = checkThisCustomer.VAT.ToString();
-                        txbSmallCustomerZahlungsziel.Text = checkThisCustomer.TermOfCredit != null ? checkThisCustomer.TermOfCredit.Value.ToString() : "";
-                        txbSmallCustomerVorname.Text = checkThisCustomer.Name;
-                        txbSmallCustomerNachname.Text = checkThisCustomer.SmallCustomer.Person != null ? checkThisCustomer.SmallCustomer.Person.FirstName : "";
-                        txbSmallCustomerTitle.Text = checkThisCustomer.SmallCustomer.Person != null ? checkThisCustomer.SmallCustomer.Person.Title : "";
-                        cmbSmallCustomerGender.Text = checkThisCustomer.SmallCustomer.Person != null ? checkThisCustomer.SmallCustomer.Person.Gender : "";
-                        txbSmallCustomerStreet.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.Street : "";
-                        txbSmallCustomerNr.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.StreetNumber : "";
-                        txbSmallCustomerZipCode.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.Zipcode : "";
-                        cmbSmallCustomerCity.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.City : "";
-                        txbSmallCustomerCountry.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.Country : "";
-                        txbSmallCustomerPhone.Text = checkThisCustomer.Contact != null ? checkThisCustomer.Contact.Phone : "";
-                        txbSmallCustomerFax.Text = checkThisCustomer.Contact != null ? checkThisCustomer.Contact.Fax : "";
-                        txbSmallCustomerEmail.Text = checkThisCustomer.Contact != null ? checkThisCustomer.Contact.Email : "";
-                        txbSmallCustomerNumber.Text = checkThisCustomer.CustomerNumber;
-                        //Halterdaten
-                        CarOwner_FirstnameBox.Text = txbSmallCustomerVorname.Text;
-                        CarOwner_NameBox.Text = txbSmallCustomerNachname.Text;
-                        Adress_StreetNumberBox.Text = txbSmallCustomerNr.Text;
-                        Adress_StreetBox.Text = txbSmallCustomerStreet.Text;
-                        Adress_ZipcodeBox.Text = txbSmallCustomerZipCode.Text;
-                        Adress_CityBox.Text = cmbSmallCustomerCity.Text;
-                        Adress_CountryBox.Text = txbSmallCustomerCountry.Text;
-                    }
-                    setCustomerTXBEnable(false);
+                    // Kundendaten
+                    txbSmallCustomerVat.Text = checkThisCustomer.VAT.ToString();
+                    txbSmallCustomerZahlungsziel.Text = checkThisCustomer.TermOfCredit != null ? checkThisCustomer.TermOfCredit.Value.ToString() : "";
+                    txbSmallCustomerVorname.Text = checkThisCustomer.Name;
+                    txbSmallCustomerNachname.Text = checkThisCustomer.SmallCustomer.Person != null ? checkThisCustomer.SmallCustomer.Person.FirstName : "";
+                    txbSmallCustomerTitle.Text = checkThisCustomer.SmallCustomer.Person != null ? checkThisCustomer.SmallCustomer.Person.Title : "";
+                    cmbSmallCustomerGender.Text = checkThisCustomer.SmallCustomer.Person != null ? checkThisCustomer.SmallCustomer.Person.Gender : "";
+                    txbSmallCustomerStreet.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.Street : "";
+                    txbSmallCustomerNr.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.StreetNumber : "";
+                    txbSmallCustomerZipCode.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.Zipcode : "";
+                    cmbSmallCustomerCity.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.City : "";
+                    txbSmallCustomerCountry.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.Country : "";
+                    txbSmallCustomerPhone.Text = checkThisCustomer.Contact != null ? checkThisCustomer.Contact.Phone : "";
+                    txbSmallCustomerFax.Text = checkThisCustomer.Contact != null ? checkThisCustomer.Contact.Fax : "";
+                    txbSmallCustomerEmail.Text = checkThisCustomer.Contact != null ? checkThisCustomer.Contact.Email : "";
+                    txbSmallCustomerNumber.Text = checkThisCustomer.CustomerNumber;
+                    //Halterdaten
+                    CarOwner_FirstnameBox.Text = txbSmallCustomerVorname.Text;
+                    CarOwner_NameBox.Text = txbSmallCustomerNachname.Text;
+                    Adress_StreetNumberBox.Text = txbSmallCustomerNr.Text;
+                    Adress_StreetBox.Text = txbSmallCustomerStreet.Text;
+                    Adress_ZipcodeBox.Text = txbSmallCustomerZipCode.Text;
+                    Adress_CityBox.Text = cmbSmallCustomerCity.Text;
+                    Adress_CountryBox.Text = txbSmallCustomerCountry.Text;
                 }
+
+                setCustomerTXBEnable(false);
             }
             catch (Exception ex)
             {
@@ -914,11 +913,7 @@ namespace KVSWebApplication.Auftragseingang
                 ErrorLeereTextBoxenLabel.Visible = true;
             }
         }
-
-        #endregion
-
-        #region Methods
-
+        
         protected void AddCustomer()
         {
             if (CustomerDropDownList.SelectedValue == string.Empty)

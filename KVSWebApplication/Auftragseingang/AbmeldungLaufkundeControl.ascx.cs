@@ -112,7 +112,7 @@ namespace KVSWebApplication.Auftragseingang
 
         #endregion
 
-        #region Methods
+        #region Event handlers
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -138,6 +138,46 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
         }
+
+        protected void NewPosButton_Clicked(object sender, EventArgs e)
+        {
+            IRadTreeNodeContainer target = DienstleistungTreeView;
+            if (DienstleistungTreeView.SelectedNode != null)
+            {
+                DienstleistungTreeView.SelectedNode.Expanded = true;
+                target = DienstleistungTreeView.SelectedNode;
+            }
+
+            if (!String.IsNullOrEmpty(ProductAbmDropDownList.Text) && !String.IsNullOrEmpty(ProductAbmDropDownList.SelectedValue))
+            {
+                string costCenter = "";
+                string value = ProductAbmDropDownList.SelectedValue.ToString() + ";" + costCenter;
+                var addedNode = new RadTreeNode(ProductAbmDropDownList.Text, value);
+                target.Nodes.Add(addedNode);
+            }
+        }
+
+        protected void DeleteNewPosButton_Clicked(object sender, EventArgs e)
+        {
+            if (DienstleistungTreeView.SelectedNodes.Count > 0)
+            {
+                DienstleistungTreeView.SelectedNode.Remove();
+            }
+        }
+
+        protected void btnClearSelection_Click(object sender, EventArgs e)
+        {
+            CustomerDropDownList.ClearSelection();
+            MakeAllControlsEmpty();
+            ClearAdressData(string.Empty);
+
+            var maxCustomerNumber = CustomerManager.GetEntities().Max(o => o.CustomerNumber);
+            txbSmallCustomerNumber.Text = EmptyStringIfNull.generateIndividualNumber(maxCustomerNumber);
+
+            setCustomerTXBEnable(true);
+        }
+
+        #endregion
 
         #region Button Clicked
         //Fahrzeug abmelden
@@ -429,6 +469,9 @@ namespace KVSWebApplication.Auftragseingang
         }
 
         #endregion
+
+        #region Linq Data Source
+
         protected void ProductAbmDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             var products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 && o.Location == null &&
@@ -446,7 +489,6 @@ namespace KVSWebApplication.Auftragseingang
  
             e.Result = products;
         }
-        #region Index Changed
 
         protected void CustomerIndex_Changed(object sender, EventArgs e)
         {
@@ -462,11 +504,13 @@ namespace KVSWebApplication.Auftragseingang
                 CheckUmsatzForSmallCustomer();
             }
         }
+
         protected void LocationDropDownIndex_Changed(object sender, EventArgs e)
         {
             ProductAbmDropDownList.DataSource = null;
             ProductAbmDropDownList.DataBind();
         }
+
         protected void AddAnotherProducts(DeregistrationOrder regOrd, int? locationId)
         {
             string ProduktId = "";
@@ -548,8 +592,6 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
         }
-        #endregion
-        #region Linq Data Sources
 
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
@@ -558,55 +600,26 @@ namespace KVSWebApplication.Auftragseingang
 
         #endregion
 
-        protected void DeleteNewPosButton_Clicked(object sender, EventArgs e)
-        {
-            if (DienstleistungTreeView.SelectedNodes.Count > 0)
-            {
-                DienstleistungTreeView.SelectedNode.Remove();
-            }
-        }
-        protected void NewPosButton_Clicked(object sender, EventArgs e)
-        {
-            IRadTreeNodeContainer target = DienstleistungTreeView;
-            if (DienstleistungTreeView.SelectedNode != null)
-            {
-                DienstleistungTreeView.SelectedNode.Expanded = true;
-                target = DienstleistungTreeView.SelectedNode;
-            }
-
-            if (!String.IsNullOrEmpty(ProductAbmDropDownList.Text) && !String.IsNullOrEmpty(ProductAbmDropDownList.SelectedValue))
-            {
-                string costCenter = "";
-                string value = ProductAbmDropDownList.SelectedValue.ToString() + ";" + costCenter;
-                RadTreeNode addedNode = new RadTreeNode(ProductAbmDropDownList.Text, value);
-                target.Nodes.Add(addedNode);
-            }
-        }
+        #region Methods
 
         protected void MakeInvoiceForSmallCustomer(int customerId, DeregistrationOrder regOrder)
         {
             try
             {
-                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
-                var newOrder = dbContext.Order.Single(q => q.CustomerId == customerId && q.OrderNumber == regOrder.OrderNumber);
+                var newOrder = OrderManager.GetEntities(q => q.CustomerId == customerId && q.OrderNumber == regOrder.OrderNumber).SingleOrDefault();
                 smallCustomerOrderHiddenField.Value = regOrder.OrderNumber.ToString();
-                //updating order status
-                newOrder.LogDBContext = dbContext;
                 newOrder.Status = (int)OrderStatusTypes.Closed;
                 //updating orderitems status                          
                 foreach (OrderItem ordItem in newOrder.OrderItem)
                 {
-                    ordItem.LogDBContext = dbContext;
                     if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
                     {
                         ordItem.Status = (int)OrderItemStatusTypes.Closed;
                     }
                 }
-                dbContext.SubmitChanges();
-                //updating order und items status one more time to make it abgerechnet
-                newOrder.LogDBContext = dbContext;
+                
                 newOrder.Status = (int)OrderStatusTypes.Payed;
-                dbContext.SubmitChanges();
+                OrderManager.SaveChanges();
                 //opening window for adress
                 string script = "function f(){$find(\"" + AddAdressRadWindow.ClientID + "\").show(); Sys.Application.remove_load(f);}Sys.Application.add_load(f);";
                 ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
@@ -618,6 +631,7 @@ namespace KVSWebApplication.Auftragseingang
                 ErrorLeereTextBoxenLabel.Visible = true;
             }
         }
+
         // getting adress from small customer
         protected void SetValuesForAdressWindow()
         {
@@ -642,17 +656,6 @@ namespace KVSWebApplication.Auftragseingang
             }
         }
         
-        protected void btnClearSelection_Click(object sender, EventArgs e)
-        {
-            CustomerDropDownList.ClearSelection();
-            MakeAllControlsEmpty();
-            ClearAdressData(string.Empty);
-            using (KVSEntities dbContext = new KVSEntities())
-            {
-                txbSmallCustomerNumber.Text = EmptyStringIfNull.generateIndividualNumber(dbContext.Customer.Max(q => q.CustomerNumber));
-            }
-            setCustomerTXBEnable(true);
-        }
         protected void setCustomerTXBEnable(bool value)
         {
             txbSmallCustomerVat.Enabled = value;
@@ -672,6 +675,7 @@ namespace KVSWebApplication.Auftragseingang
             txbSmallCustomerNumber.Enabled = value;
             txbSmallCustomerMobil.Enabled = value;
         }
+
         protected void ClearAdressData(string value)
         {
             txbSmallCustomerZahlungsziel.Text = value;
@@ -689,45 +693,44 @@ namespace KVSWebApplication.Auftragseingang
             txbSmallCustomerNumber.Text = value;
             txbSmallCustomerMobil.Text = value;
         }
+
         protected void GetCustomerInfo()
         {
             try
             {
-                using (KVSEntities dbContext = new KVSEntities())
+                var customerId = 0;
+                if (CustomerDropDownList.SelectedValue != string.Empty)
+                    customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
+
+                var checkThisCustomer = CustomerManager.GetEntities(q => q.Id == customerId).SingleOrDefault();
+                if (checkThisCustomer != null)
                 {
-                    var customerId = 0;
-                    if (CustomerDropDownList.SelectedValue != string.Empty)
-                        customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
-                    var checkThisCustomer = dbContext.Customer.SingleOrDefault(q => q.Id == customerId);
-                    if (checkThisCustomer != null)
-                    {
-                        //Kundendaten
-                        txbSmallCustomerVat.Text = checkThisCustomer.VAT.ToString();
-                        txbSmallCustomerZahlungsziel.Text = checkThisCustomer.TermOfCredit != null ? checkThisCustomer.TermOfCredit.Value.ToString() : "";
-                        txbSmallCustomerVorname.Text = checkThisCustomer.Name;
-                        txbSmallCustomerNachname.Text = checkThisCustomer.SmallCustomer.Person != null ? checkThisCustomer.SmallCustomer.Person.FirstName : "";
-                        txbSmallCustomerTitle.Text = checkThisCustomer.SmallCustomer.Person != null ? checkThisCustomer.SmallCustomer.Person.Title : "";
-                        cmbSmallCustomerGender.Text = checkThisCustomer.SmallCustomer.Person != null ? checkThisCustomer.SmallCustomer.Person.Gender : "";
-                        txbSmallCustomerStreet.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.Street : "";
-                        txbSmallCustomerNr.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.StreetNumber : "";
-                        txbSmallCustomerZipCode.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.Zipcode : "";
-                        cmbSmallCustomerCity.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.City : "";
-                        txbSmallCustomerCountry.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.Country : "";
-                        txbSmallCustomerPhone.Text = checkThisCustomer.Contact != null ? checkThisCustomer.Contact.Phone : "";
-                        txbSmallCustomerFax.Text = checkThisCustomer.Contact != null ? checkThisCustomer.Contact.Fax : "";
-                        txbSmallCustomerEmail.Text = checkThisCustomer.Contact != null ? checkThisCustomer.Contact.Email : "";
-                        txbSmallCustomerNumber.Text = checkThisCustomer.CustomerNumber;
-                        //Halterdaten
-                        CarOwner_FirstnameBox.Text = txbSmallCustomerVorname.Text;
-                        CarOwner_NameBox.Text = txbSmallCustomerNachname.Text;
-                        Adress_StreetNumberBox.Text = txbSmallCustomerNr.Text;
-                        Adress_StreetBox.Text = txbSmallCustomerStreet.Text;
-                        Adress_ZipcodeBox.Text = txbSmallCustomerZipCode.Text;
-                        Adress_CityBox.Text = cmbSmallCustomerCity.Text;
-                        Adress_CountryBox.Text = txbSmallCustomerCountry.Text;
-                    }
-                    setCustomerTXBEnable(false);
+                    //Kundendaten
+                    txbSmallCustomerVat.Text = checkThisCustomer.VAT.ToString();
+                    txbSmallCustomerZahlungsziel.Text = checkThisCustomer.TermOfCredit != null ? checkThisCustomer.TermOfCredit.Value.ToString() : "";
+                    txbSmallCustomerVorname.Text = checkThisCustomer.Name;
+                    txbSmallCustomerNachname.Text = checkThisCustomer.SmallCustomer.Person != null ? checkThisCustomer.SmallCustomer.Person.FirstName : "";
+                    txbSmallCustomerTitle.Text = checkThisCustomer.SmallCustomer.Person != null ? checkThisCustomer.SmallCustomer.Person.Title : "";
+                    cmbSmallCustomerGender.Text = checkThisCustomer.SmallCustomer.Person != null ? checkThisCustomer.SmallCustomer.Person.Gender : "";
+                    txbSmallCustomerStreet.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.Street : "";
+                    txbSmallCustomerNr.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.StreetNumber : "";
+                    txbSmallCustomerZipCode.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.Zipcode : "";
+                    cmbSmallCustomerCity.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.City : "";
+                    txbSmallCustomerCountry.Text = checkThisCustomer.Adress != null ? checkThisCustomer.Adress.Country : "";
+                    txbSmallCustomerPhone.Text = checkThisCustomer.Contact != null ? checkThisCustomer.Contact.Phone : "";
+                    txbSmallCustomerFax.Text = checkThisCustomer.Contact != null ? checkThisCustomer.Contact.Fax : "";
+                    txbSmallCustomerEmail.Text = checkThisCustomer.Contact != null ? checkThisCustomer.Contact.Email : "";
+                    txbSmallCustomerNumber.Text = checkThisCustomer.CustomerNumber;
+                    //Halterdaten
+                    CarOwner_FirstnameBox.Text = txbSmallCustomerVorname.Text;
+                    CarOwner_NameBox.Text = txbSmallCustomerNachname.Text;
+                    Adress_StreetNumberBox.Text = txbSmallCustomerNr.Text;
+                    Adress_StreetBox.Text = txbSmallCustomerStreet.Text;
+                    Adress_ZipcodeBox.Text = txbSmallCustomerZipCode.Text;
+                    Adress_CityBox.Text = cmbSmallCustomerCity.Text;
+                    Adress_CountryBox.Text = txbSmallCustomerCountry.Text;
                 }
+                setCustomerTXBEnable(false);
             }
             catch (Exception ex)
             {
@@ -735,60 +738,64 @@ namespace KVSWebApplication.Auftragseingang
                 ErrorLeereTextBoxenLabel.Visible = true;
             }
         }
+
         protected void AddCustomer()
         {
             if (CustomerDropDownList.SelectedValue == string.Empty)
             {
-                using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
+                try
                 {
-                    try
+                    var checkThisCustomer = CustomerManager.GetEntities(q => q.CustomerNumber == txbSmallCustomerNumber.Text).SingleOrDefault();
+
+                    while (checkThisCustomer != null)
                     {
-                        var checkThisCustomer = dbContext.Customer.SingleOrDefault(q => q.CustomerNumber == txbSmallCustomerNumber.Text);
-                        while (checkThisCustomer != null)
+                        var maxCustomerNumber = CustomerManager.GetEntities().Max(o => o.CustomerNumber);
+                        txbSmallCustomerNumber.Text = EmptyStringIfNull.generateIndividualNumber(maxCustomerNumber);
+                        checkThisCustomer = CustomerManager.GetEntities(q => q.CustomerNumber == txbSmallCustomerNumber.Text).SingleOrDefault();
+                    }
+
+                    if (checkThisCustomer == null)
+                    {
+                        decimal vat = 0;
+                        txbSmallCustomerVat.Text = txbSmallCustomerVat.Text.Trim();
+                        txbSmallCustomerVat.Text = txbSmallCustomerVat.Text.Replace('.', ',');
+                        try
                         {
-                            txbSmallCustomerNumber.Text = EmptyStringIfNull.generateIndividualNumber(dbContext.Customer.Max(q => q.CustomerNumber));
-                            checkThisCustomer = dbContext.Customer.SingleOrDefault(q => q.CustomerNumber == txbSmallCustomerNumber.Text);
+                            if (txbSmallCustomerVat.Text != string.Empty)
+                                vat = decimal.Parse(txbSmallCustomerVat.Text);
                         }
-                        if (checkThisCustomer == null)
+                        catch
                         {
-                            decimal vat = 0;
-                            txbSmallCustomerVat.Text = txbSmallCustomerVat.Text.Trim();
-                            txbSmallCustomerVat.Text = txbSmallCustomerVat.Text.Replace('.', ',');
+                            throw new Exception("Die MwSt muss eine Dezimalzahl sein");
+                        }
+
+                        int payment = 0;
+                        txbSmallCustomerZahlungsziel.Text = txbSmallCustomerZahlungsziel.Text.Trim();
+                        if (txbSmallCustomerZahlungsziel.Text != string.Empty)
+                        {
                             try
                             {
-                                if (txbSmallCustomerVat.Text != string.Empty)
-                                    vat = decimal.Parse(txbSmallCustomerVat.Text);
+                                payment = int.Parse(txbSmallCustomerZahlungsziel.SelectedValue);
                             }
                             catch
                             {
-                                throw new Exception("Die MwSt muss eine Dezimalzahl sein");
+                                throw new Exception("Das Zahlungsziel muss eine Gleitkommazahl sein");
                             }
-                            int zz = 0;
-                            txbSmallCustomerZahlungsziel.Text = txbSmallCustomerZahlungsziel.Text.Trim();
-                            if (txbSmallCustomerZahlungsziel.Text != string.Empty)
-                            {
-                                try
-                                {
-                                    zz = int.Parse(txbSmallCustomerZahlungsziel.SelectedValue);
-                                }
-                                catch
-                                {
-                                    throw new Exception("Das Zahlungsziel muss eine Gleitkommazahl sein");
-                                }
-                            }
-                            var newSmallCustomer = SmallCustomer.CreateSmallCustomer(txbSmallCustomerVorname.Text, txbSmallCustomerNachname.Text, txbSmallCustomerTitle.Text, cmbSmallCustomerGender.SelectedValue,
-                              txbSmallCustomerStreet.Text, txbSmallCustomerNr.Text, txbSmallCustomerZipCode.Text, cmbSmallCustomerCity.Text, txbSmallCustomerCountry.Text, txbSmallCustomerPhone.Text,
-                                txbSmallCustomerFax.Text, txbSmallCustomerMobil.Text, txbSmallCustomerEmail.Text, vat, zz, txbSmallCustomerNumber.Text, dbContext);
-                            dbContext.SubmitChanges();
-                            CustomerDropDownList.DataBind();
-                            CustomerDropDownList.FindItemByValue(newSmallCustomer.CustomerId.ToString()).Selected = true;
                         }
+
+                        var newSmallCustomer = CustomerManager.CreateSmallCustomer(txbSmallCustomerVorname.Text, txbSmallCustomerNachname.Text, txbSmallCustomerTitle.Text, 
+                            cmbSmallCustomerGender.SelectedValue, txbSmallCustomerStreet.Text, txbSmallCustomerNr.Text, txbSmallCustomerZipCode.Text, cmbSmallCustomerCity.Text, 
+                            txbSmallCustomerCountry.Text, txbSmallCustomerPhone.Text, txbSmallCustomerFax.Text, txbSmallCustomerMobil.Text, txbSmallCustomerEmail.Text, vat, 
+                            payment, txbSmallCustomerNumber.Text);
+
+                        CustomerDropDownList.DataBind();
+                        CustomerDropDownList.FindItemByValue(newSmallCustomer.CustomerId.ToString()).Selected = true;
                     }
-                    catch (Exception ex)
-                    {
-                        ErrorLeereTextBoxenLabel.Text = "Fehler: " + ex.Message;
-                        ErrorLeereTextBoxenLabel.Visible = true;
-                    }
+                }
+                catch (Exception ex)
+                {
+                    ErrorLeereTextBoxenLabel.Text = "Fehler: " + ex.Message;
+                    ErrorLeereTextBoxenLabel.Visible = true;
                 }
             }
         }
