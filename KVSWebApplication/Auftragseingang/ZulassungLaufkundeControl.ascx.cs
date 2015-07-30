@@ -872,7 +872,7 @@ namespace KVSWebApplication.Auftragseingang
         {
             CustomerDropDownList.ClearSelection();
             MakeAllControlsEmpty();
-            ClearAdressData(string.Empty);
+
             using (KVSEntities dbContext = new KVSEntities())
             {
                 txbSmallCustomerNumber.Text = EmptyStringIfNull.generateIndividualNumber(dbContext.Customer.Max(q => q.CustomerNumber));
@@ -898,23 +898,7 @@ namespace KVSWebApplication.Auftragseingang
             txbSmallCustomerNumber.Enabled = value;
             txbSmallCustomerMobil.Enabled = value;
         }
-        protected void ClearAdressData(string value)
-        {
-            txbSmallCustomerZahlungsziel.Text = value;
-            txbSmallCustomerVorname.Text = value;
-            txbSmallCustomerNachname.Text = value;
-            txbSmallCustomerTitle.Text = value;
-            cmbSmallCustomerGender.Text = value;
-            txbSmallCustomerStreet.Text = value;
-            txbSmallCustomerNr.Text = value;
-            txbSmallCustomerZipCode.Text = value;
-            cmbSmallCustomerCity.Text = value;
-            txbSmallCustomerPhone.Text = value;
-            txbSmallCustomerFax.Text = value;
-            txbSmallCustomerEmail.Text = value;
-            txbSmallCustomerNumber.Text = value;
-            txbSmallCustomerMobil.Text = value;
-        }
+
         protected void GetCustomerInfo()
         {
             try
@@ -961,61 +945,67 @@ namespace KVSWebApplication.Auftragseingang
                 ErrorLeereTextBoxenLabel.Visible = true;
             }
         }
+
+        #endregion
+
+        #region Methods
+
         protected void AddCustomer()
         {
             if (CustomerDropDownList.SelectedValue == string.Empty)
             {
-                using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
+                try
                 {
-                    try
+                    var checkThisCustomer = CustomerManager.GetEntities(q => q.CustomerNumber == txbSmallCustomerNumber.Text).FirstOrDefault();
+                    var maxCustomerNumber = CustomerManager.GetEntities().Max(q => q.CustomerNumber);
+                    while (checkThisCustomer != null)
                     {
-                        var checkThisCustomer = dbContext.Customer.SingleOrDefault(q => q.CustomerNumber == txbSmallCustomerNumber.Text);
-                        while (checkThisCustomer != null)
+                        txbSmallCustomerNumber.Text = EmptyStringIfNull.generateIndividualNumber(maxCustomerNumber);
+                        checkThisCustomer = CustomerManager.GetEntities(q => q.CustomerNumber == txbSmallCustomerNumber.Text).FirstOrDefault();
+                    }
+
+                    if (checkThisCustomer == null)
+                    {
+                        decimal vat = 0;
+                        txbSmallCustomerVat.Text = txbSmallCustomerVat.Text.Trim();
+                        txbSmallCustomerVat.Text = txbSmallCustomerVat.Text.Replace('.', ',');
+                        try
                         {
-                            txbSmallCustomerNumber.Text = EmptyStringIfNull.generateIndividualNumber(dbContext.Customer.Max(q => q.CustomerNumber));
-                            checkThisCustomer = dbContext.Customer.SingleOrDefault(q => q.CustomerNumber == txbSmallCustomerNumber.Text);
+                            if (txbSmallCustomerVat.Text != string.Empty)
+                                vat = decimal.Parse(txbSmallCustomerVat.Text);
                         }
-                        if (checkThisCustomer == null)
+                        catch
                         {
-                            decimal vat = 0;
-                            txbSmallCustomerVat.Text = txbSmallCustomerVat.Text.Trim();
-                            txbSmallCustomerVat.Text = txbSmallCustomerVat.Text.Replace('.', ',');
+                            throw new Exception("Die MwSt muss eine Dezimalzahl sein");
+                        }
+
+                        int payment = 0;
+                        txbSmallCustomerZahlungsziel.Text = txbSmallCustomerZahlungsziel.Text.Trim();
+                        if (txbSmallCustomerZahlungsziel.Text != string.Empty)
+                        {
                             try
                             {
-                                if (txbSmallCustomerVat.Text != string.Empty)
-                                    vat = decimal.Parse(txbSmallCustomerVat.Text);
+                                payment = int.Parse(txbSmallCustomerZahlungsziel.SelectedValue);
                             }
                             catch
                             {
-                                throw new Exception("Die MwSt muss eine Dezimalzahl sein");
+                                throw new Exception("Das Zahlungsziel muss eine Gleitkommazahl sein");
                             }
-                            int zz = 0;
-                            txbSmallCustomerZahlungsziel.Text = txbSmallCustomerZahlungsziel.Text.Trim();
-                            if (txbSmallCustomerZahlungsziel.Text != string.Empty)
-                            {
-                                try
-                                {
-                                    zz = int.Parse(txbSmallCustomerZahlungsziel.SelectedValue);
-                                }
-                                catch
-                                {
-                                    throw new Exception("Das Zahlungsziel muss eine Gleitkommazahl sein");
-                                }
-                            }
-                            var newSmallCustomer = SmallCustomer.CreateSmallCustomer(txbSmallCustomerVorname.Text, txbSmallCustomerNachname.Text, txbSmallCustomerTitle.Text,
-                                cmbSmallCustomerGender.SelectedValue, txbSmallCustomerStreet.Text, txbSmallCustomerNr.Text, txbSmallCustomerZipCode.Text, cmbSmallCustomerCity.Text,
-                                txbSmallCustomerCountry.Text, txbSmallCustomerPhone.Text,
-                                txbSmallCustomerFax.Text, txbSmallCustomerMobil.Text, txbSmallCustomerEmail.Text, vat, zz, txbSmallCustomerNumber.Text, dbContext);
-                            dbContext.SubmitChanges();
-                            CustomerDropDownList.DataBind();
-                            CustomerDropDownList.FindItemByValue(newSmallCustomer.CustomerId.ToString()).Selected = true;
                         }
+
+                        var newSmallCustomer = CustomerManager.CreateSmallCustomer(txbSmallCustomerVorname.Text, txbSmallCustomerNachname.Text, txbSmallCustomerTitle.Text,
+                            cmbSmallCustomerGender.SelectedValue, txbSmallCustomerStreet.Text, txbSmallCustomerNr.Text, txbSmallCustomerZipCode.Text, cmbSmallCustomerCity.Text,
+                            txbSmallCustomerCountry.Text, txbSmallCustomerPhone.Text,
+                            txbSmallCustomerFax.Text, txbSmallCustomerMobil.Text, txbSmallCustomerEmail.Text, vat, payment, txbSmallCustomerNumber.Text);
+                        
+                        CustomerDropDownList.DataBind();
+                        CustomerDropDownList.FindItemByValue(newSmallCustomer.CustomerId.ToString()).Selected = true;
                     }
-                    catch (Exception ex)
-                    {
-                        ErrorLeereTextBoxenLabel.Text = "Fehler: " + ex.Message;
-                        ErrorLeereTextBoxenLabel.Visible = true;
-                    }
+                }
+                catch (Exception ex)
+                {
+                    ErrorLeereTextBoxenLabel.Text = "Fehler: " + ex.Message;
+                    ErrorLeereTextBoxenLabel.Visible = true;
                 }
             }
         }

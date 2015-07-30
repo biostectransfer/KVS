@@ -37,7 +37,8 @@ namespace KVSWebApplication.Auftragseingang
             InvoiceItemAccountItemManager = (IInvoiceItemAccountItemManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceItemAccountItemManager));
             InvoiceItemManager = (IInvoiceItemManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceItemManager));
             AdressManager = (IAdressManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IAdressManager));
-            CostCenterManager = (ICostCenterManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICostCenterManager)); 
+            CostCenterManager = (ICostCenterManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICostCenterManager));
+            CustomerManager = (ICustomerManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICustomerManager)); 
         }
 
         #region Common
@@ -146,6 +147,8 @@ namespace KVSWebApplication.Auftragseingang
         public IInvoiceItemManager InvoiceItemManager { get; set; }
         public IAdressManager AdressManager { get; set; }
         public ICostCenterManager CostCenterManager { get; set; }
+        public ICustomerManager CustomerManager { get; set; }
+        
         #endregion
 
         #region Labels

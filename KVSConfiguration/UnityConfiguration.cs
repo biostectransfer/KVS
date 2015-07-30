@@ -36,6 +36,7 @@ namespace KVSConfiguration
             container.RegisterType<IInvoiceItemManager, InvoiceItemManager>(new PerRequestLifetimeManager());
             container.RegisterType<IAdressManager, AdressManager>(new PerRequestLifetimeManager()); 
             container.RegisterType<ICostCenterManager, CostCenterManager>(new PerRequestLifetimeManager()); 
+            container.RegisterType<ICustomerManager, CustomerManager>(new PerRequestLifetimeManager()); 
         }
     }
 }

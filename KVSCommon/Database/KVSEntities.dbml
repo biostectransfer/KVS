@@ -70,6 +70,9 @@
       <Column Name="CustomerNumber" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="eVB_Number" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="InternalId" Type="System.Int32" CanBeNull="true" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
       <Association Name="Customer_SmallCustomer" Member="SmallCustomer" ThisKey="Id" OtherKey="CustomerId" Type="SmallCustomer" Cardinality="One" />
       <Association Name="Customer_Invoice" Member="Invoice" ThisKey="Id" OtherKey="CustomerId" Type="Invoice" />
       <Association Name="Customer_Order" Member="Order" ThisKey="Id" OtherKey="CustomerId" Type="Order" />
