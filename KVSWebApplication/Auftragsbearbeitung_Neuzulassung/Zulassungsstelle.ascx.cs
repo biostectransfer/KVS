@@ -15,15 +15,26 @@ using KVSCommon.Enums;
 using KVSWebApplication.Auftragseingang;
 namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 {
-    public partial class Zulassungsstelle : System.Web.UI.UserControl
+    public partial class Zulassungsstelle : EditOrdersBase
     {
+        #region Members  
+
         private string customer = string.Empty;
+
         RadScriptManager script = null;
-        public bool comeFromOrder
-        {
-            set;
-            get;
-        }
+        public bool comeFromOrder { set; get; }
+
+        protected override RadGrid OrderGrid { get { return this.RadGridNeuzulassung; } }
+        protected override RadDatePicker RegistrationDatePicker { get { return null; } }
+        protected override RadComboBox CustomerTypeDropDown { get { return this.RadComboBoxCustomerZulassungsstelle; } }
+        protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownListZulassungsstelle; } }
+        protected override PermissionTypes PagePermission { get { return PermissionTypes.LOESCHEN_AUFTRAGSPOSITION; } }
+        protected override OrderTypes OrderType { get { return OrderTypes.Admission; } }
+        protected override OrderStatusTypes OrderStatusType { get { return OrderStatusTypes.AdmissionPoint; } }
+
+        #endregion
+
+   
         protected void RadGridNeuzulassung_PreRender(object sender, EventArgs e)
         {
 
@@ -97,129 +108,116 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 go.Visible = true;
             }
         }
-        protected void AbmeldungenLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {
-            //select all values for small customers
-            if (RadComboBoxCustomerZulassungsstelle.SelectedValue == "1") // Small
-            {
-                KVSEntities con = new KVSEntities();
-                RadGridNeuzulassung.Columns.FindByUniqueName("CustomerLocation").Visible = false;
 
-                var smallCustomerQuery = from ord in con.Order
-                                         join ordst in con.OrderStatus on ord.Status equals ordst.Id
-                                         join cust in con.Customer on ord.CustomerId equals cust.Id
-                                         join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
-                                         join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
-                                         join reg in con.Registration on regord.RegistrationId equals reg.Id
-                                         join veh in con.Vehicle on regord.VehicleId equals veh.Id
-                                         join smc in con.SmallCustomer on cust.Id equals smc.CustomerId
-                                         orderby ord.OrderNumber descending
-                                         where ord.Status == (int)OrderStatusTypes.AdmissionPoint && ordtype.Id == (int)OrderTypes.Admission && ord.HasError.GetValueOrDefault(false) != true
-                                         select new
-                                         {
-                                             OrderNumber = ord.OrderNumber,
-                                             locationId = "",
-                                             CreateDate = ord.CreateDate,
-                                             customerID = ord.CustomerId,
-                                             Status = ordst.Name,
-                                             CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " + cust.SmallCustomer.Person.Name : cust.Name,
-                                             Kennzeichen = reg.Licencenumber,
-                                             VIN = veh.VIN,
-                                             TSN = veh.TSN,
-                                             HSN = veh.HSN,
-                                             CustomerLocation = "",
-                                             OrderTyp = ordtype.Name,
-                                             Freitext = ord.FreeText
-                                         };
-                if (CustomerDropDownListZulassungsstelle.SelectedValue != string.Empty)
-                {
-                    var custId = Int32.Parse(CustomerDropDownListZulassungsstelle.SelectedValue);
-                    smallCustomerQuery = smallCustomerQuery.Where(q => q.customerID == custId);
-                }
-                e.Result = smallCustomerQuery;
-            }
-            //select all values for large customers
-            else if (RadComboBoxCustomerZulassungsstelle.SelectedValue == "2") // Large
-            {
-                KVSEntities con = new KVSEntities();
-                var largeCustomerQuery1 = from ord in con.Order
-                                          join ordst in con.OrderStatus on ord.Status equals ordst.Id
-                                          join cust in con.Customer on ord.CustomerId equals cust.Id
-                                          join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
-                                          join loc in con.Location on ord.LocationId equals loc.Id
-                                          join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
-                                          join reg in con.Registration on regord.RegistrationId equals reg.Id
-                                          join veh in con.Vehicle on regord.VehicleId equals veh.Id
-                                          join lmc in con.LargeCustomer on cust.Id equals lmc.CustomerId
-                                          orderby ord.OrderNumber descending
-                                          where ord.Status == (int)OrderStatusTypes.AdmissionPoint && ordtype.Id == (int)OrderTypes.Admission && ord.HasError.GetValueOrDefault(false) != true
-                                          select new
-                                          {
-                                              OrderNumber = ord.OrderNumber,
-                                              locationId = loc.Id,
-                                              customerID = ord.CustomerId,
-                                              CreateDate = ord.CreateDate,
-                                              Status = ordst.Name,
-                                              CustomerName = cust.Name,
-                                              Kennzeichen = reg.Licencenumber,
-                                              VIN = veh.VIN,
-                                              TSN = veh.TSN,
-                                              HSN = veh.HSN,
-                                              CustomerLocation = loc.Name,
-                                              OrderTyp = ordtype.Name,
-                                              Freitext = ord.FreeText
-                                          };
-                if (CustomerDropDownListZulassungsstelle.SelectedValue != string.Empty)
-                {
-                    var custId = Int32.Parse(CustomerDropDownListZulassungsstelle.SelectedValue);
-                    largeCustomerQuery1 = largeCustomerQuery1.Where(q => q.customerID == custId);
-                }
-                if (Session["orderNumberSearch"] != null)
-                {
-                    if (!String.IsNullOrEmpty(Session["orderNumberSearch"].ToString()))
-                    {
-                        if (Session["orderStatusSearch"].ToString().Contains("Zulassungsstelle"))
-                        {
-                            int orderNumber = Convert.ToInt32(Session["orderNumberSearch"].ToString());
-                            largeCustomerQuery1 = largeCustomerQuery1.Where(q => q.OrderNumber == orderNumber);
-                        }
-                    }
-                }
-                e.Result = largeCustomerQuery1;
-                CheckOpenedOrders();
-            }
+        protected override void SmallCustomerOrdersFunctions()
+        {
+            RadGridNeuzulassung.Columns.FindByUniqueName("CustomerLocation").Visible = false;
         }
+
+        protected override void LargeCustomerOrdersFunctions()
+        {
+            CheckOpenedOrders();
+        }
+
+        //protected void AbmeldungenLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
+        //{
+        //    //select all values for small customers
+        //    if (RadComboBoxCustomerZulassungsstelle.SelectedValue == "1") // Small
+        //    {
+        //        KVSEntities con = new KVSEntities();
+        //        RadGridNeuzulassung.Columns.FindByUniqueName("CustomerLocation").Visible = false;
+
+        //        var smallCustomerQuery = from ord in con.Order
+        //                                 join ordst in con.OrderStatus on ord.Status equals ordst.Id
+        //                                 join cust in con.Customer on ord.CustomerId equals cust.Id
+        //                                 join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
+        //                                 join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
+        //                                 join reg in con.Registration on regord.RegistrationId equals reg.Id
+        //                                 join veh in con.Vehicle on regord.VehicleId equals veh.Id
+        //                                 join smc in con.SmallCustomer on cust.Id equals smc.CustomerId
+        //                                 orderby ord.OrderNumber descending
+        //                                 where ord.Status == (int)OrderStatusTypes.AdmissionPoint && ordtype.Id == (int)OrderTypes.Admission && ord.HasError.GetValueOrDefault(false) != true
+        //                                 select new
+        //                                 {
+        //                                     OrderNumber = ord.OrderNumber,
+        //                                     locationId = "",
+        //                                     CreateDate = ord.CreateDate,
+        //                                     customerID = ord.CustomerId,
+        //                                     Status = ordst.Name,
+        //                                     CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " + cust.SmallCustomer.Person.Name : cust.Name,
+        //                                     Kennzeichen = reg.Licencenumber,
+        //                                     VIN = veh.VIN,
+        //                                     TSN = veh.TSN,
+        //                                     HSN = veh.HSN,
+        //                                     CustomerLocation = "",
+        //                                     OrderTyp = ordtype.Name,
+        //                                     Freitext = ord.FreeText
+        //                                 };
+        //        if (CustomerDropDownListZulassungsstelle.SelectedValue != string.Empty)
+        //        {
+        //            var custId = Int32.Parse(CustomerDropDownListZulassungsstelle.SelectedValue);
+        //            smallCustomerQuery = smallCustomerQuery.Where(q => q.customerID == custId);
+        //        }
+        //        e.Result = smallCustomerQuery;
+        //    }
+        //    //select all values for large customers
+        //    else if (RadComboBoxCustomerZulassungsstelle.SelectedValue == "2") // Large
+        //    {
+        //        KVSEntities con = new KVSEntities();
+        //        var largeCustomerQuery1 = from ord in con.Order
+        //                                  join ordst in con.OrderStatus on ord.Status equals ordst.Id
+        //                                  join cust in con.Customer on ord.CustomerId equals cust.Id
+        //                                  join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
+        //                                  join loc in con.Location on ord.LocationId equals loc.Id
+        //                                  join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
+        //                                  join reg in con.Registration on regord.RegistrationId equals reg.Id
+        //                                  join veh in con.Vehicle on regord.VehicleId equals veh.Id
+        //                                  join lmc in con.LargeCustomer on cust.Id equals lmc.CustomerId
+        //                                  orderby ord.OrderNumber descending
+        //                                  where ord.Status == (int)OrderStatusTypes.AdmissionPoint && ordtype.Id == (int)OrderTypes.Admission && ord.HasError.GetValueOrDefault(false) != true
+        //                                  select new
+        //                                  {
+        //                                      OrderNumber = ord.OrderNumber,
+        //                                      locationId = loc.Id,
+        //                                      customerID = ord.CustomerId,
+        //                                      CreateDate = ord.CreateDate,
+        //                                      Status = ordst.Name,
+        //                                      CustomerName = cust.Name,
+        //                                      Kennzeichen = reg.Licencenumber,
+        //                                      VIN = veh.VIN,
+        //                                      TSN = veh.TSN,
+        //                                      HSN = veh.HSN,
+        //                                      CustomerLocation = loc.Name,
+        //                                      OrderTyp = ordtype.Name,
+        //                                      Freitext = ord.FreeText
+        //                                  };
+        //        if (CustomerDropDownListZulassungsstelle.SelectedValue != string.Empty)
+        //        {
+        //            var custId = Int32.Parse(CustomerDropDownListZulassungsstelle.SelectedValue);
+        //            largeCustomerQuery1 = largeCustomerQuery1.Where(q => q.customerID == custId);
+        //        }
+        //        if (Session["orderNumberSearch"] != null)
+        //        {
+        //            if (!String.IsNullOrEmpty(Session["orderNumberSearch"].ToString()))
+        //            {
+        //                if (Session["orderStatusSearch"].ToString().Contains("Zulassungsstelle"))
+        //                {
+        //                    int orderNumber = Convert.ToInt32(Session["orderNumberSearch"].ToString());
+        //                    largeCustomerQuery1 = largeCustomerQuery1.Where(q => q.OrderNumber == orderNumber);
+        //                }
+        //            }
+        //        }
+        //        e.Result = largeCustomerQuery1;
+        //        CheckOpenedOrders();
+        //    }
+        //}
         protected void ShowAllButton_Click(object sender, EventArgs e)
         {
             CustomerDropDownListZulassungsstelle.ClearSelection();
             RadGridNeuzulassung.Enabled = true;
             RadGridNeuzulassung.Rebind();
         }
-        // Small oder Large -> Auswahl der KundenName
-        protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {
-            KVSEntities con = new KVSEntities();
-            if (RadComboBoxCustomerZulassungsstelle.SelectedValue == "1") //Small Customers
-            {
-                var customerQuery = from cust in con.Customer
-                                    where cust.Id == cust.SmallCustomer.CustomerId
-                                    select new
-                                    {
-                                        Name = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
-                                        Value = cust.Id,
-                                        Matchcode = cust.MatchCode,
-                                        Kundennummer = cust.CustomerNumber
-                                    };
-                e.Result = customerQuery;
-            }
-            else if (RadComboBoxCustomerZulassungsstelle.SelectedValue == "2") //Large Customers
-            {
-                var customerQuery = from cust in con.Customer
-                                    where cust.Id == cust.LargeCustomer.CustomerId
-                                    select new { Name = cust.Name, Value = cust.Id, Matchcode = cust.MatchCode, Kundennummer = cust.CustomerNumber };
-                e.Result = customerQuery;
-            }
-        }
+        
         // Large oder small Customer
         protected void SmallLargeCustomerIndex_Changed(object sender, EventArgs e)
         {

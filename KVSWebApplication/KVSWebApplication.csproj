@@ -211,6 +211,7 @@
     <Compile Include="Auftragsbearbeitung_Neuzulassung\FehlerhaftZulassung.ascx.designer.cs">
       <DependentUpon>FehlerhaftZulassung.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Auftragsbearbeitung_Neuzulassung\EditOrdersBase.cs" />
     <Compile Include="Auftragsbearbeitung_Neuzulassung\Lieferscheine.ascx.cs">
       <DependentUpon>Lieferscheine.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -755,7 +756,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties UseJQuerySupport="True" UseAjaxifiedTemplates="True" />
+      <UserProperties UseAjaxifiedTemplates="True" UseJQuerySupport="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

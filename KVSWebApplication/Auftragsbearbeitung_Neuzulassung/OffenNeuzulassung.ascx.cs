@@ -15,15 +15,27 @@ using KVSCommon.Enums;
 
 namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 {
+
     /// <summary>
     /// Codebehind fuer den Reiter Offen Neuzulassung
     /// </summary>
-    public partial class OffenNeuzulassung : System.Web.UI.UserControl
+    public partial class OffenNeuzulassung : EditOrdersBase
     {
+        #region Members  
 
         private string customer = string.Empty;
 
         RadScriptManager script = null;
+
+        protected override RadGrid OrderGrid { get { return this.RadGridOffNeuzulassung; } }
+        protected override RadDatePicker RegistrationDatePicker { get { return this.ZulassungsDatumPicker; } }    
+        protected override RadComboBox CustomerTypeDropDown { get { return this.RadComboBoxCustomerOffenNeuzulassung; } }
+        protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownListOffenNeuzulassung; } }
+        protected override PermissionTypes PagePermission { get { return PermissionTypes.LOESCHEN_AUFTRAGSPOSITION; } }
+        protected override OrderTypes OrderType { get { return OrderTypes.Admission; } }
+        protected override OrderStatusTypes OrderStatusType { get { return OrderStatusTypes.Open; } }
+
+        #endregion
 
         protected void RadGridRadGridOffNeuzulassung_PreRender(object sender, EventArgs e)
         {
@@ -117,152 +129,9 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 go.Visible = true;
             }
         }
-        /// <summary>
-        /// Datasource fuer die Uebersichtsgrud
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected void AbmeldungenLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {
+        
 
-            if (RadComboBoxCustomerOffenNeuzulassung.SelectedValue == "1")
-            {
-
-                KVSEntities con = new KVSEntities();
-
-                var smallCustomerQuery = from ord in con.Order
-                                         join ordst in con.OrderStatus on ord.Status equals ordst.Id
-                                         join cust in con.Customer on ord.CustomerId equals cust.Id
-                                         join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
-                                         join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
-                                         join reg in con.Registration on regord.RegistrationId equals reg.Id
-                                         join veh in con.Vehicle on regord.VehicleId equals veh.Id
-                                         join smc in con.SmallCustomer on cust.Id equals smc.CustomerId
-                                         orderby ord.OrderNumber descending
-                                         where ord.Status == (int)OrderStatusTypes.Open && ordtype.Id == (int)OrderTypes.Admission &&
-                                         ord.HasError.GetValueOrDefault(false) != true
-                                         select new
-                                         {
-                                             OrderNumber = ord.OrderNumber,
-                                             customerId = cust.Id,
-                                             customerID = ord.CustomerId,
-                                             CreateDate = ord.CreateDate,
-                                             Status = ordst.Name,
-                                             CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " +
-                                             cust.SmallCustomer.Person.Name : cust.Name,
-                                             CustomerLocation = "",
-                                             Kennzeichen = reg.Licencenumber,
-                                             VIN = veh.VIN,
-                                             TSN = veh.TSN,
-                                             HSN = veh.HSN,
-                                             OrderTyp = ordtype.Name,
-                                             Freitext = ord.FreeText,
-                                             Geprueft = ord.Geprueft == null ? "Nein" : "Ja",
-                                             Datum = ord.RegistrationOrder.Registration.RegistrationDate
-                                         };
-
-                if (CustomerDropDownListOffenNeuzulassung.SelectedValue != string.Empty)
-                {
-                    var custId = Int32.Parse(CustomerDropDownListOffenNeuzulassung.SelectedValue);
-                    smallCustomerQuery = smallCustomerQuery.Where(q => q.customerID == custId);
-                }
-
-                e.Result = smallCustomerQuery;
-            }
-
-            //select all values for large customers
-            else if (RadComboBoxCustomerOffenNeuzulassung.SelectedValue == "2")
-            {
-                KVSEntities con = new KVSEntities();
-
-
-                var zulassungQuery = from ord in con.Order
-                                     join ordst in con.OrderStatus on ord.Status equals ordst.Id
-                                     join cust in con.Customer on ord.CustomerId equals cust.Id
-                                     join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
-                                     join loc in con.Location on ord.LocationId equals loc.Id
-                                     join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
-                                     join reg in con.Registration on regord.RegistrationId equals reg.Id
-                                     join veh in con.Vehicle on regord.VehicleId equals veh.Id
-                                     join lmc in con.LargeCustomer on cust.Id equals lmc.CustomerId
-                                     orderby ord.OrderNumber descending
-                                     where ord.Status == (int)OrderStatusTypes.Open && ordtype.Id == (int)OrderTypes.Admission &&
-                                     ord.HasError.GetValueOrDefault(false) != true
-                                     select new
-                                     {
-                                         OrderNumber = ord.OrderNumber,
-                                         locationId = loc.Id,
-                                         customerID = cust.Id,
-                                         CreateDate = ord.CreateDate,
-                                         Status = ordst.Name,
-                                         CustomerName = cust.Name,
-                                         Kennzeichen = reg.Licencenumber,
-                                         VIN = veh.VIN,
-                                         TSN = veh.TSN,
-                                         HSN = veh.HSN,
-                                         CustomerLocation = loc.Name,
-                                         OrderTyp = ordtype.Name,
-                                         Freitext = ord.FreeText,
-                                         Geprueft = ord.Geprueft == null ? "Nein" : "Ja",
-                                         Datum = ord.RegistrationOrder.Registration.RegistrationDate
-                                     };
-
-                if (CustomerDropDownListOffenNeuzulassung.SelectedValue != string.Empty)
-                {
-                    var custId = Int32.Parse(CustomerDropDownListOffenNeuzulassung.SelectedValue);
-                    zulassungQuery = zulassungQuery.Where(q => q.customerID == custId);
-                }
-
-
-
-                if (Session["orderNumberSearch"] != null && Session["orderStatusSearch"] != null)
-                {
-                    if (!String.IsNullOrEmpty(Session["orderNumberSearch"].ToString()))
-                    {
-                        if (Session["orderStatusSearch"].ToString().Contains("Offen"))
-                        {
-                            int orderNumber = Convert.ToInt32(Session["orderNumberSearch"].ToString());
-                            zulassungQuery = zulassungQuery.Where(q => q.OrderNumber == orderNumber);
-
-                        }
-                    }
-                }
-                e.Result = zulassungQuery;
-            }
-        }
-        /// <summary>
-        /// Small oder Large -> Auswahl der KundenName
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {
-            KVSEntities con = new KVSEntities();
-
-            if (RadComboBoxCustomerOffenNeuzulassung.SelectedValue == "1") //Small Customers
-            {
-                var customerQuery = from cust in con.Customer
-                                    where cust.Id == cust.SmallCustomer.CustomerId
-                                    select new
-                                    {
-                                        Name = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
-                                        Value = cust.Id,
-                                        Matchcode = cust.MatchCode,
-                                        Kundennummer = cust.CustomerNumber
-                                    };
-
-                e.Result = customerQuery;
-            }
-
-            else if (RadComboBoxCustomerOffenNeuzulassung.SelectedValue == "2") //Large Customers
-            {
-                var customerQuery = from cust in con.Customer
-                                    where cust.Id == cust.LargeCustomer.CustomerId
-                                    select new { Name = cust.Name, Value = cust.Id, Matchcode = cust.MatchCode, Kundennummer = cust.CustomerNumber };
-
-                e.Result = customerQuery;
-            }
-        }
+        
 
         // Large oder small Customer
         protected void SmallLargeCustomerIndex_Changed(object sender, EventArgs e)
@@ -306,21 +175,6 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             e.Result = productQuery;
         }
 
-
-        //protected void CostCenterDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        //{
-        //    DataClasses1DataContext con = new DataClasses1DataContext();
-
-        //    var costCenterQuery = from cost in con.CostCenter
-        //                          orderby cost.Name 
-        //                          select new
-        //                          {
-        //                              Name = cost.Name,
-        //                              Value = cost.Id
-        //                          };
-
-        //    e.Result = costCenterQuery;
-        //}
         /// <summary>
         /// Datasource fuer die Detailgrid
         /// </summary>
@@ -694,7 +548,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                                 con.SubmitChanges();
                                 string fromEmail = ConfigurationManager.AppSettings["FromEmail"];
                                 string host = ConfigurationManager.AppSettings["smtpHost"];
-                                //File.WriteAllBytes(myPackListFileName, ms.ToArray());
+
                                 PdfDocument d = PdfReader.Open(new MemoryStream(ms.ToArray(), 0, Convert.ToInt32(ms.Length)));
                                 d.Save(myPackListFileName);
                                 docketList.SendByEmail(ms, fromEmail, host);
@@ -718,10 +572,6 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                             PackingList.MergePackingLists(laufzettel.ToArray(), myMergedFileName);
 
                             myMergedFileName = myMergedFileName.Replace(ConfigurationManager.AppSettings["BasePath"], ConfigurationManager.AppSettings["BaseUrl"]);
-                            // myInvoiceListFileName = myInvoiceListFileName.Replace("//", "/");
-                            //myMergedFileName = myMergedFileName.Replace(@"\", "");
-                            //myMergedFileName = myMergedFileName.Replace(@"/\", @"/");
-                            //myMergedFileName = myMergedFileName.Replace(@"\", @"/");
                             myMergedFileName = myMergedFileName.Replace(@"\\", @"/");
                             myMergedFileName = myMergedFileName.Replace(@"\", @"/");
                             LieferscheinePath.Text = "<a href=" + '\u0022' + myMergedFileName + '\u0022' + " target=" + '\u0022' + "_blank" + '\u0022' + "> Laufzettel öffnen</a>";
@@ -730,13 +580,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         else if (laufzettel.Count == 1)
                         {
                             string myMergedFileName = laufzettel[0];
-                            //PackingList.MergePackingLists(lieferscheine.ToArray(), myMergedFileName);
-
                             myMergedFileName = myMergedFileName.Replace(ConfigurationManager.AppSettings["BasePath"], ConfigurationManager.AppSettings["BaseUrl"]);
-                            // myInvoiceListFileName = myInvoiceListFileName.Replace("//", "/");
-                            //myMergedFileName = myMergedFileName.Replace(@"\", "");
-                            //myMergedFileName = myMergedFileName.Replace(@"/\", @"/");
-                            //myMergedFileName = myMergedFileName.Replace(@"\", @"/");
                             myMergedFileName = myMergedFileName.Replace(@"\\", @"/");
                             myMergedFileName = myMergedFileName.Replace(@"\", @"/");
 

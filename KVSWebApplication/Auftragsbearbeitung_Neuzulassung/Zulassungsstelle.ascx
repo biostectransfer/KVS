@@ -31,10 +31,11 @@
 <telerik:RadFormDecorator ID="MyDecorator" runat="server" />
 <asp:Panel ID="panel111" runat="server">
 </asp:Panel>
-<telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Sofort- oder Großkunde: " ID="RadTextBox2" Width="240px"></telerik:RadTextBox>
+<telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Sofort/Großkunde: " ID="RadTextBox2" Width="240px"></telerik:RadTextBox>
 <telerik:RadComboBox ID="RadComboBoxCustomerZulassungsstelle" runat="server"
     OnSelectedIndexChanged="SmallLargeCustomerIndex_Changed" Width="250px" OnItemsRequested="SmallLargeCustomerIndex_Changed" AutoPostBack="true">
     <Items>
+        <telerik:RadComboBoxItem runat="server" Value="0" Text="Alle" />
         <telerik:RadComboBoxItem runat="server" Value="2" Text="Großkunden" />
         <telerik:RadComboBoxItem runat="server" Value="1" Text="Sofortkunden" />
     </Items>
