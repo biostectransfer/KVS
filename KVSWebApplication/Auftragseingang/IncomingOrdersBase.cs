@@ -293,10 +293,12 @@ namespace KVSWebApplication.Auftragseingang
                 newPrice = PriceManager.GetEntities(q => q.ProductId == Int32.Parse(productId) && q.LocationId == locationId).FirstOrDefault();
             }
 
-            if (String.IsNullOrEmpty(this.LocationDropDown.SelectedValue) || newPrice == null)
+            if (LocationDropDown == null || 
+               (LocationDropDown != null && String.IsNullOrEmpty(this.LocationDropDown.SelectedValue)) || newPrice == null)
             {
                 newPrice = PriceManager.GetEntities(q => q.ProductId == Int32.Parse(productId) && q.LocationId == null).FirstOrDefault();
             }
+
             return newPrice;
         }
 

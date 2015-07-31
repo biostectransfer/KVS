@@ -57,8 +57,8 @@ namespace KVSCommon.Database
             int logUserId;
             if (!this.LogUserId.HasValue &&
                 HttpContext.Current != null && HttpContext.Current.Session != null &&
-                HttpContext.Current.Session["UserId"] != null &&
-                Int32.TryParse(HttpContext.Current.Session["UserId"].ToString(), out logUserId))
+                HttpContext.Current.Session["CurrentUserId"] != null &&
+                Int32.TryParse(HttpContext.Current.Session["CurrentUserId"].ToString(), out logUserId))
             {
                 this.LogUserId = logUserId;
             }

@@ -366,7 +366,7 @@ namespace KVSWebApplication.Auftragseingang
         protected void AuftragZulassenButton_Clicked(object sender, EventArgs e)
         {
             string ProduktId = "";
-            string CostCenterId = "";
+
             LoadState();
             ZulassungOkLabel.Visible = false;
             SubmitChangesErrorLabel.Visible = false;
