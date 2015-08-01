@@ -26,6 +26,7 @@ namespace KVSWebApplication.Auftragseingang
         protected override HiddenField SmallCustomerOrder { get { return this.smallCustomerOrderHiddenField; } }
         protected override HiddenField VehicleId { get { return this.vehicleIdField; } }
         protected override RequiredFieldValidator InvoiceValidator { get { return this.InvoiceRecValidator; } }
+        protected override RadWindow RadWindow { get { return this.AddAdressRadWindow; } }
 
         #region Dates
 
@@ -121,6 +122,8 @@ namespace KVSWebApplication.Auftragseingang
         protected override Label KontaktdatenCaption { get { return this.KontaktdatenLabel; } }
         protected override Label HSNSearchCaption { get { return this.HSNSearchLabel; } }
         protected override Label ErrorLeereTextBoxenCaption { get { return this.ErrorLeereTextBoxenLabel; } }
+        protected override Label AdditionalInfoCaption { get { return this.ZusatzlicheInfoLabel; } }
+        protected override Label LocationWindowCaption { get { return this.LocationLabelWindow; } }
 
         #endregion
 
@@ -237,7 +240,7 @@ namespace KVSWebApplication.Auftragseingang
             else
                 locationId = null;
 
-            if (CheckIfBoxenNotEmpty()) //gibt es leer boxen, die angezeigt sind.
+            if (CheckIfBoxenEmpty()) //gibt es leer boxen, die angezeigt sind.
             {
                 if (DienstleistungTreeView.Nodes.Count == 0)
                 {
@@ -391,7 +394,7 @@ namespace KVSWebApplication.Auftragseingang
         }
 
         // findet alle angezeigte textboxen und überprüft ob die nicht leer sind
-        protected bool CheckIfBoxenNotEmpty()
+        protected override bool CheckIfBoxenEmpty()
         {
             bool gibtsBoxenDieLeerSind = false;
             bool iFound1VisibleBox = false;

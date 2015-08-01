@@ -27,6 +27,7 @@ namespace KVSWebApplication.Auftragseingang
         protected override RadNumericTextBox Discount { get { return this.txbDiscount; } }
         protected override HiddenField SmallCustomerOrder { get { return this.smallCustomerOrderHiddenField; } }
         protected override HiddenField VehicleId { get { return this.VehicleIdField; } }
+        protected override RadWindow RadWindow { get { return this.AddAdressRadWindow; } }
 
         #region Dates
 
@@ -122,6 +123,8 @@ namespace KVSWebApplication.Auftragseingang
         protected override Label KontaktdatenCaption { get { return this.KontaktdatenLabel; } }
         protected override Label HSNSearchCaption { get { return this.HSNSearchLabel; } }
         protected override Label ErrorLeereTextBoxenCaption { get { return this.ErrorLeereTextBoxenLabel; } }
+        protected override Label AdditionalInfoCaption { get { return this.ZusatzlicheInfoLabel; } }
+        protected override Label LocationWindowCaption { get { return this.LocationLabelWindow; } }
         #endregion
 
         #endregion
@@ -472,7 +475,7 @@ namespace KVSWebApplication.Auftragseingang
             SubmitChangesErrorLabel.Visible = false;
             ErrorLeereTextBoxenLabel.Visible = false;
 
-            if (CheckRegistrationFields()) //gibt es leer boxen, die angezeigt sind.
+            if (CheckRegistrationFields()) //exists empty required fields
             {
                 int? locationId = null;
                 if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
@@ -511,16 +514,15 @@ namespace KVSWebApplication.Auftragseingang
                         ZulassungOkLabel.Visible = false;
                         SubmitChangesErrorLabel.Visible = false;
                         string licenceNumber = String.Empty,
-                        oldKennzeichen = String.Empty;
+                        oldLicenceNumber = String.Empty;
                         
                         RegistrationOrder newRegistrationOrder = null;
    
                         if (!String.IsNullOrEmpty(LicenceBox1.Text))
                             licenceNumber = LicenceBox1.Text + "-" + LicenceBox2.Text + "-" + LicenceBox3.Text;
                         if (!String.IsNullOrEmpty(PreviousLicenceBox1.Text))
-                            oldKennzeichen = PreviousLicenceBox1.Text + "-" + PreviousLicenceBox2.Text + "-" + PreviousLicenceBox3.Text;
-
-
+                            oldLicenceNumber = PreviousLicenceBox1.Text + "-" + PreviousLicenceBox2.Text + "-" + PreviousLicenceBox3.Text;
+                        
                         CostCenter costCenter = null;
                         if (!String.IsNullOrEmpty(costCenterId))
                         {
@@ -530,7 +532,7 @@ namespace KVSWebApplication.Auftragseingang
                         var newVehicle = GetVehicle();
                         var newCarOwner = GetCarOwner();
                         var newRegistration = CreateRegistration(newCarOwner, newVehicle, licenceNumber);
-                        
+                        RegistrationOrderTypes? registrationOrderType = null;
 
                         if (RegistrationOrderDropDownList.Text.Contains("Umkennzeichnung")) // Umkennzeichnung
                         {
@@ -538,8 +540,7 @@ namespace KVSWebApplication.Auftragseingang
                             FahrzeugLabel.ForeColor = Color.Blue;
                             if (!String.IsNullOrEmpty(licenceNumber))
                             {
-                                newRegistrationOrder = CreateRegistrationOrder(RegistrationOrderTypes.Renumbering, licenceNumber, oldKennzeichen, newVehicle,
-                                    newRegistration, locationId);
+                                registrationOrderType = RegistrationOrderTypes.Renumbering;
                             }
                             else
                             {
@@ -549,19 +550,24 @@ namespace KVSWebApplication.Auftragseingang
                         }
                         else if (RegistrationOrderDropDownList.Text.Contains("Wiederzulassung")) // Wiederzulassung
                         {
-                            newRegistrationOrder = CreateRegistrationOrder(RegistrationOrderTypes.Readmission, licenceNumber, oldKennzeichen, newVehicle,
-                                   newRegistration, locationId);
+                            registrationOrderType = RegistrationOrderTypes.Readmission;
                         }
                         else // Neuzulassung
                         {
-                            newRegistrationOrder = CreateRegistrationOrder(RegistrationOrderTypes.NewAdmission, licenceNumber, oldKennzeichen, newVehicle,
-                                   newRegistration, locationId);
+                            registrationOrderType = RegistrationOrderTypes.NewAdmission;
                         }
 
 
-                        if(newRegistrationOrder != null)
+                        if (registrationOrderType.HasValue)
                         {
-                            ProcessRegistrationOrder(newRegistrationOrder, productId, price, costCenter, newRegistration, newVehicle, locationId, ((RadButton)(sender)).ID);
+                            newRegistrationOrder = CreateRegistrationOrder(registrationOrderType.Value, licenceNumber, oldLicenceNumber, newVehicle,
+                                    newRegistration, locationId);
+
+                            if (newRegistrationOrder != null)
+                            {
+                                ProcessRegistrationOrderForLargeCustomer(newRegistrationOrder, productId, price, costCenter, newRegistration, newVehicle, locationId,
+                                    registrationOrderType.Value, ((RadButton)(sender)).ID);
+                            }
                         }
 
                         VehicleIdField.Value = "";
@@ -579,7 +585,7 @@ namespace KVSWebApplication.Auftragseingang
 
         #region Methods
 
-        protected bool AddAnotherProducts(RegistrationOrder regOrd, int? locationId)
+        protected override bool AddAnotherProducts(RegistrationOrder regOrd, int? locationId)
         {
             bool result = false;
             string produktId = "";
@@ -655,7 +661,7 @@ namespace KVSWebApplication.Auftragseingang
         }
         
         // findet alle angezeigte textboxen und überprüft ob die nicht leer sind
-        protected bool CheckIfBoxenNotEmpty()
+        protected override bool CheckIfBoxenEmpty()
         {
             bool gibtsBoxenDieLeerSind = false;
             bool iFound1VisibleBox = false;

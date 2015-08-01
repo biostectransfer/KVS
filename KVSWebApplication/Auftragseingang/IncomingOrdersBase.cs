@@ -65,6 +65,7 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract HiddenField SmallCustomerOrder { get; }
         protected abstract HiddenField VehicleId { get; }
         protected virtual RequiredFieldValidator InvoiceValidator { get { return null; } }
+        protected abstract RadWindow RadWindow { get; }
         #endregion
 
         #region Dates
@@ -187,6 +188,8 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract Label KontaktdatenCaption { get; }
         protected abstract Label HSNSearchCaption { get; }
         protected abstract Label ErrorLeereTextBoxenCaption { get; }
+        protected abstract Label AdditionalInfoCaption { get; }
+        protected abstract Label LocationWindowCaption { get; }
         #endregion
 
         #endregion
@@ -601,76 +604,20 @@ namespace KVSWebApplication.Auftragseingang
         {
 
         }
-
-
+        
         // find all showed checkboxes and check are they empty or not
-        protected virtual bool CheckIfBoxenNotEmpty()
+        protected virtual bool CheckIfBoxenEmpty()
         {
             bool result = false;
-            //    bool hasVisibleControl = false;
-            //    var allControls = getAllControls();
-
-            //    //if empty - shouldnt be checked
-            //    if (String.IsNullOrEmpty(PruefzifferBox.Text))
-            //        PruefzifferBox.Enabled = false;
-
-            //    if (String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue) || ProductTree.Nodes.Count == 0)
-            //    {
-            //        return true;
-            //    }
-
-            //    foreach (var control in allControls)
-            //    {
-            //        if (control.Visible == true)
-            //        {
-            //            hasVisibleControl = true;
-            //            foreach (var subControl in control.Controls)
-            //            {
-            //                if (subControl is RadTextBox)
-            //                {
-            //                    var box = subControl as RadTextBox;
-            //                    if (box.Enabled == true && String.IsNullOrEmpty(box.Text) && (box.ID == "VINBox"))
-            //                    {
-            //                        box.BorderColor = System.Drawing.Color.Red;
-            //                        result = true;
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-
-            //    if (hasVisibleControl == false)
-            //        result = true;
-
             return result;
         }
 
-        #endregion
-
-        #region Print
-                        
-        protected void Print(Invoice newInvoice)
+        protected virtual bool AddAnotherProducts(RegistrationOrder registrationOrder, int? locatinId)
         {
-            using (var stream = new MemoryStream())
-            {
-                InvoiceItemAccountItemManager.CreateAccounts(newInvoice);
-                InvoiceManager.Print(newInvoice, stream, "", Convert.ToString(ConfigurationManager.AppSettings["DefaultAccountNumber"]));
-
-                string fileName = "Rechnung_" + newInvoice.InvoiceNumber.Number + "_" + 
-                    newInvoice.CreateDate.Day + "_" + newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + ".pdf";
-                string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
-
-                if (!Directory.Exists(serverPath))
-                    Directory.CreateDirectory(serverPath);
-
-                if (!Directory.Exists(serverPath + "\\" + Session["CurrentUserId"].ToString()))
-                    Directory.CreateDirectory(serverPath + "\\" + Session["CurrentUserId"].ToString());
-
-                serverPath = serverPath + "\\" + Session["CurrentUserId"].ToString();
-                File.WriteAllBytes(serverPath + "\\" + fileName, stream.ToArray());
-                OpenPrintfile(fileName);
-            }
+            bool result = false;
+            return result;
         }
+
         protected object GetAllSmallCustomers()
         {
             return CustomerManager.GetEntities(o => o.SmallCustomer != null).
@@ -761,9 +708,9 @@ namespace KVSWebApplication.Auftragseingang
             {
                 newZulassungsDatum = RegistrationDatePicker.SelectedDate.Value;
             }
-            
+
             return RegistrationManager.CreateRegistration(newCarOwner, newVehicle, licenceNumber, Registration_eVBNumber_TextBox.Text,
-                Registration_GeneralInspectionDatePicker.SelectedDate, newZulassungsDatum, RegistrationDocumentNumber_TextBox.Text, 
+                Registration_GeneralInspectionDatePicker.SelectedDate, newZulassungsDatum, RegistrationDocumentNumber_TextBox.Text,
                 EmissionsCode_TextBox.Text);
         }
 
@@ -775,8 +722,8 @@ namespace KVSWebApplication.Auftragseingang
                     registrationOrderType, locationId, Int32.Parse(AdmissionPointDropDown.SelectedValue), FreeTextBox.Text);
         }
 
-        protected void ProcessRegistrationOrder(RegistrationOrder newRegistrationOrder, int productId, Price price, CostCenter costCenter,
-            Registration newRegistration, Vehicle newVehicle, int? locationId, string senderId)
+        protected void ProcessRegistrationOrderForLargeCustomer(RegistrationOrder newRegistrationOrder, int productId, Price price, CostCenter costCenter,
+            Registration newRegistration, Vehicle newVehicle, int? locationId, RegistrationOrderTypes registrationOrderType, string senderId)
         {
             var newOrderItem1 = OrderManager.AddOrderItem(newRegistrationOrder.Order, productId, price.Amount, 1, costCenter, null, false);
             if (price.AuthorativeCharge.HasValue)
@@ -787,10 +734,10 @@ namespace KVSWebApplication.Auftragseingang
 
             if (ProductTree.Nodes.Count > 1)
             {
-                //TODO AddAnotherProducts(newRegistrationOrder, locationId);
+                AddAnotherProducts(newRegistrationOrder, locationId);
             }
 
-            if (String.IsNullOrEmpty(VehicleId.Value)) //update CurrentRegistration Id
+            if (registrationOrderType == RegistrationOrderTypes.NewAdmission || String.IsNullOrEmpty(VehicleId.Value)) //update CurrentRegistration Id
             {
                 newVehicle.CurrentRegistrationId = newRegistration.Id;
                 VehicleManager.SaveChanges();
@@ -802,11 +749,88 @@ namespace KVSWebApplication.Auftragseingang
             ScriptManager.RegisterStartupScript(Page, Page.GetType(), "finishedMessage", "alert('Auftrag wurde erfolgreich angelegt.');", true);
         }
 
+        protected void ProcessRegistrationOrderForSmallCustomer(RegistrationOrder newRegistrationOrder, Registration newRegistration, Vehicle newVehicle, 
+            RegistrationOrderTypes registrationOrderType, bool generateInvoice)
+        {
+            AddAnotherProducts(newRegistrationOrder, null);
+
+            if (registrationOrderType == RegistrationOrderTypes.NewAdmission || String.IsNullOrEmpty(VehicleId.Value)) //update CurrentRegistration Id
+            {
+                newVehicle.CurrentRegistrationId = newRegistration.Id;
+                VehicleManager.SaveChanges();
+            }
+
+            if (generateInvoice)
+            {
+                MakeInvoiceForSmallCustomer(Int32.Parse(CustomerDropDown.SelectedValue), newRegistrationOrder.OrderNumber);
+            }
+            else
+            {
+                MakeAllControlsEmpty();
+                ScriptManager.RegisterStartupScript(Page, Page.GetType(), "finishedMessage", "alert('Auftrag wurde erfolgreich angelegt.');", true);
+            }
+        }
+        
+        protected void MakeInvoiceForSmallCustomer(int customerId, int orderNumber)
+        {
+            try
+            {
+                var newOrder = OrderManager.GetEntities(q => q.CustomerId == customerId && q.OrderNumber == orderNumber).Single();
+                SmallCustomerOrder.Value = orderNumber.ToString();
+
+                //updating orderitems status                          
+                foreach (OrderItem ordItem in newOrder.OrderItem)
+                {
+                    if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
+                    {
+                        ordItem.Status = (int)OrderItemStatusTypes.Closed;
+                    }
+                }
+
+                newOrder.Status = (int)OrderStatusTypes.Closed;
+                newOrder.ExecutionDate = DateTime.Now;
+                newOrder.Status = (int)OrderStatusTypes.Payed;
+                OrderManager.SaveChanges();
+
+                //opening window for adress
+                string script = "function f(){$find(\"" + RadWindow.ClientID + "\").show(); Sys.Application.remove_load(f);}Sys.Application.add_load(f);";
+                ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
+                SetValuesForAdressWindow();
+            }
+            catch (Exception ex)
+            {
+                ErrorLeereTextBoxenCaption.Text = "Error: " + ex.Message;
+                ErrorLeereTextBoxenCaption.Visible = true;
+            }
+        }
+        
+        // getting adress from small customer
+        protected void SetValuesForAdressWindow()
+        {
+            var location = AdressManager.GetEntities(o => o.Invoice.Count != 0 &&
+                o.Customer.Any(q => q.Id == Int32.Parse(CustomerDropDown.SelectedValue))).FirstOrDefault();
+
+            if (location != null)
+            {
+                Street_TextBox.Text = location.Street;
+                StreetNumber_TextBox.Text = location.StreetNumber;
+                Zipcode_TextBox.Text = location.Zipcode;
+                City_TextBox.Text = location.City;
+                Country_TextBox.Text = location.Country;
+                LocationWindowCaption.Text = "Fügen Sie bitte die Adresse für " + CustomerDropDown.Text + " hinzu";
+                AdditionalInfoCaption.Visible = false;
+                if (CustomerDropDown.SelectedIndex == 1) // small
+                {
+                    AdditionalInfoCaption.Visible = true;
+                }
+            }
+        }
+
         protected bool CheckRegistrationFields()
         {
-            var result = CheckIfBoxenNotEmpty(); //gibt es leer boxen, die angezeigt sind
+            var boxenEmpty = CheckIfBoxenEmpty(); //gibt es leer boxen, die angezeigt sind
 
-            if(result)
+            if (boxenEmpty)
             {
                 if (ProductTree.Nodes.Count == 0)
                 {
@@ -835,12 +859,39 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
 
-            return result;
+            return !boxenEmpty;
         }
 
         #endregion
 
-            #region Private Methods
+        #region Print
+
+        protected void Print(Invoice newInvoice)
+        {
+            using (var stream = new MemoryStream())
+            {
+                InvoiceItemAccountItemManager.CreateAccounts(newInvoice);
+                InvoiceManager.Print(newInvoice, stream, "", Convert.ToString(ConfigurationManager.AppSettings["DefaultAccountNumber"]));
+
+                string fileName = "Rechnung_" + newInvoice.InvoiceNumber.Number + "_" + 
+                    newInvoice.CreateDate.Day + "_" + newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + ".pdf";
+                string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
+
+                if (!Directory.Exists(serverPath))
+                    Directory.CreateDirectory(serverPath);
+
+                if (!Directory.Exists(serverPath + "\\" + Session["CurrentUserId"].ToString()))
+                    Directory.CreateDirectory(serverPath + "\\" + Session["CurrentUserId"].ToString());
+
+                serverPath = serverPath + "\\" + Session["CurrentUserId"].ToString();
+                File.WriteAllBytes(serverPath + "\\" + fileName, stream.ToArray());
+                OpenPrintfile(fileName);
+            }
+        }
+        
+        #endregion
+
+        #region Private Methods
 
         private void OpenPrintfile(string myFile)
         {

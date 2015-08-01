@@ -26,6 +26,7 @@ namespace KVSWebApplication.Auftragseingang
         protected override RadNumericTextBox Discount { get { return this.txbDiscount; } }
         protected override HiddenField SmallCustomerOrder { get { return this.smallCustomerOrderHiddenField; } }
         protected override HiddenField VehicleId { get { return this.vehicleIdField; } }
+        protected override RadWindow RadWindow { get { return this.AddAdressRadWindow; } }
 
         #region Dates
 
@@ -122,6 +123,8 @@ namespace KVSWebApplication.Auftragseingang
         protected override Label KontaktdatenCaption { get { return this.KontaktdatenLabel; } }
         protected override Label HSNSearchCaption { get { return this.HSNSearchLabel; } }
         protected override Label ErrorLeereTextBoxenCaption { get { return this.ErrorLeereTextBoxenLabel; } }
+        protected override Label AdditionalInfoCaption { get { return this.ZusatzlicheInfoLabel; } }
+        protected override Label LocationWindowCaption { get { return this.LocationLabelWindow; } }
         #endregion
 
         #endregion
@@ -203,7 +206,7 @@ namespace KVSWebApplication.Auftragseingang
             AbmeldungOkLabel.Visible = false;
             SubmitChangesErrorLabel.Visible = false;
             ErrorLeereTextBoxenLabel.Visible = false;
-            if (CheckIfBoxenNotEmpty()) //gibt es leer boxen, die angezeigt sind.
+            if (CheckIfBoxenEmpty()) //gibt es leer boxen, die angezeigt sind.
             {
                 if (DienstleistungTreeView.Nodes.Count == 0)
                 {
@@ -314,7 +317,7 @@ namespace KVSWebApplication.Auftragseingang
                         }
                         if (invoiceNow.Checked == true && invoiceNow.Enabled == true)
                         {
-                            MakeInvoiceForSmallCustomer(Int32.Parse(CustomerDropDownList.SelectedValue), newDeregOrder);
+                            MakeInvoiceForSmallCustomer(Int32.Parse(CustomerDropDownList.SelectedValue), newDeregOrder.OrderNumber);
                         }
                         else
                         {
@@ -350,7 +353,7 @@ namespace KVSWebApplication.Auftragseingang
         }
 
         // findet alle angezeigte textboxen und überprüft ob die nicht leer sind
-        protected bool CheckIfBoxenNotEmpty()
+        protected override bool CheckIfBoxenEmpty()
         {
             bool gibtsBoxenDieLeerSind = false;
             List<Control> allControls = GetAllControls();
@@ -615,60 +618,6 @@ namespace KVSWebApplication.Auftragseingang
         #endregion
 
         #region Methods
-
-        protected void MakeInvoiceForSmallCustomer(int customerId, DeregistrationOrder regOrder)
-        {
-            try
-            {
-                var newOrder = OrderManager.GetEntities(q => q.CustomerId == customerId && q.OrderNumber == regOrder.OrderNumber).SingleOrDefault();
-                smallCustomerOrderHiddenField.Value = regOrder.OrderNumber.ToString();
-                newOrder.Status = (int)OrderStatusTypes.Closed;
-                //updating orderitems status                          
-                foreach (OrderItem ordItem in newOrder.OrderItem)
-                {
-                    if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
-                    {
-                        ordItem.Status = (int)OrderItemStatusTypes.Closed;
-                    }
-                }
-                
-                newOrder.Status = (int)OrderStatusTypes.Payed;
-                OrderManager.SaveChanges();
-                //opening window for adress
-                string script = "function f(){$find(\"" + AddAdressRadWindow.ClientID + "\").show(); Sys.Application.remove_load(f);}Sys.Application.add_load(f);";
-                ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
-                SetValuesForAdressWindow();
-            }
-            catch (Exception ex)
-            {
-                ErrorLeereTextBoxenLabel.Text = "Error: " + ex.Message;
-                ErrorLeereTextBoxenLabel.Visible = true;
-            }
-        }
-
-        // getting adress from small customer
-        protected void SetValuesForAdressWindow()
-        {
-            KVSEntities dbContext = new KVSEntities();
-            var locationQuery = (from adr in dbContext.Adress
-                                 join cust in dbContext.Customer on adr.Id equals cust.InvoiceAdressId
-                                 where cust.Id == Int32.Parse(CustomerDropDownList.SelectedValue)
-                                 select adr).SingleOrDefault();
-            if (locationQuery != null)
-            {
-                StreetTextBox.Text = locationQuery.Street;
-                StreetNumberTextBox.Text = locationQuery.StreetNumber;
-                ZipcodeTextBox.Text = locationQuery.Zipcode;
-                CityTextBox.Text = locationQuery.City;
-                CountryTextBox.Text = locationQuery.Country;
-                LocationLabelWindow.Text = "Fügen Sie bitte die Adresse für " + CustomerDropDownList.Text + " hinzu";
-                ZusatzlicheInfoLabel.Visible = false;
-                if (CustomerDropDownList.SelectedIndex == 1) // small
-                {
-                    ZusatzlicheInfoLabel.Visible = true;
-                }
-            }
-        }
         
         protected void setCustomerTXBEnable(bool value)
         {
