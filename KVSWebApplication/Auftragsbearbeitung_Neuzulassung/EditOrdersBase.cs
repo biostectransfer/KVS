@@ -64,8 +64,16 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             VehicleManager = (IVehicleManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IVehicleManager));
             RegistrationLocationManager = (IRegistrationLocationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationLocationManager));
             RegistrationManager = (IRegistrationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationManager));
+            RegistrationOrderTypeManager = (IRegistrationOrderTypeManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationOrderTypeManager));
+            ContactManager = (IContactManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IContactManager));
+            BankAccountManager = (IBankAccountManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IBankAccountManager));
+            CarOwnerManager = (ICarOwnerManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICarOwnerManager));
+            RegistrationOrderManager = (IRegistrationOrderManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationOrderManager));
+            DeregistrationOrderManager = (IDeregistrationOrderManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IDeregistrationOrderManager));
+
             OrderTypeManager = (IOrderTypeManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IOrderTypeManager));
             OrderStatusManager = (IOrderStatusManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IOrderStatusManager));
+            DocketListManager = (IDocketListManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IDocketListManager));
 
             OrderStatuses = OrderStatusManager.GetEntities().ToList();
             OrderTypesCollection = OrderTypeManager.GetEntities().ToList();
@@ -96,7 +104,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         #endregion
 
         #region TextBoxes
-        
+
         #endregion
 
         #region Panels
@@ -112,7 +120,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         public IOrderStatusManager OrderStatusManager { get; set; }
         public IPriceManager PriceManager { get; set; }
         public IProductManager ProductManager { get; set; }
-        public ILargeCustomerRequiredFieldManager LargeCustomerRequiredFieldManager { get; set; }        
+        public ILargeCustomerRequiredFieldManager LargeCustomerRequiredFieldManager { get; set; }
         public ILocationManager LocationManager { get; set; }
         public IInvoiceManager InvoiceManager { get; set; }
         public IInvoiceItemAccountItemManager InvoiceItemAccountItemManager { get; set; }
@@ -123,7 +131,14 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         public IVehicleManager VehicleManager { get; set; }
         public IRegistrationLocationManager RegistrationLocationManager { get; set; }
         public IRegistrationManager RegistrationManager { get; set; }
-
+        public IRegistrationOrderTypeManager RegistrationOrderTypeManager { get; set; }
+        public IContactManager ContactManager { get; set; }
+        public IBankAccountManager BankAccountManager { get; set; }
+        public ICarOwnerManager CarOwnerManager { get; set; }
+        public IRegistrationOrderManager RegistrationOrderManager { get; set; }
+        public IDeregistrationOrderManager DeregistrationOrderManager { get; set; }
+        public IDocketListManager DocketListManager { get; set; }
+        
         #endregion
 
         #region Labels
@@ -175,7 +190,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 {
                     largeCustomerOrders = largeCustomerOrders.ToList().Where(q => q.customerId == Int32.Parse(CustomerDropDown.SelectedValue)).AsQueryable();
                 }
-                
+
                 if (Session["orderNumberSearch"] != null && Session["orderStatusSearch"] != null)
                 {
                     if (!String.IsNullOrEmpty(Session["orderNumberSearch"].ToString()))
@@ -201,7 +216,6 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         /// <param name="e"></param>
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
             if (CustomerTypeDropDown.SelectedValue == "0") //all Customers
             {
                 e.Result = new List<string>();
@@ -234,6 +248,12 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             }
         }
 
+        protected int GetUnfineshedOrdersCount(OrderTypes orderType, OrderStatusTypes orderStatus)
+        {
+            return OrderManager.GetEntities().Count(q => q.Status == (int)orderStatus &&
+                q.OrderType.Id == (int)orderType && q.HasError.GetValueOrDefault(false) != true);
+        }
+
         #endregion
 
         #region Methods
@@ -248,7 +268,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
         protected IEnumerable<OrderViewModel> GetSmallCustomerOrders()
         {
-            return OrderManager.GetEntities(o => o.Customer.SmallCustomer != null && 
+            return OrderManager.GetEntities(o => o.Customer.SmallCustomer != null &&
                 o.Status == (int)this.OrderStatusType && o.OrderTypeId == (int)this.OrderType &&
                 o.HasError.GetValueOrDefault(false) != true).Select(ord => new OrderViewModel()
                 {
@@ -256,7 +276,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     customerId = ord.CustomerId,
                     CreateDate = ord.CreateDate,
                     Status = OrderStatuses.FirstOrDefault(o => o.Id == ord.Status).Name,
-                    CustomerName = ord.Customer.SmallCustomer.Person != null ? 
+                    CustomerName = ord.Customer.SmallCustomer.Person != null ?
                         ord.Customer.SmallCustomer.Person.FirstName + "  " + ord.Customer.SmallCustomer.Person.Name : ord.Customer.Name,
                     CustomerLocation = "",
                     Kennzeichen = ord.RegistrationOrder.Licencenumber,
@@ -269,7 +289,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     Datum = ord.RegistrationOrder.Registration.RegistrationDate
                 });
         }
-        
+
         protected IEnumerable<OrderViewModel> GetLargeCustomerOrders()
         {
             return OrderManager.GetEntities(o => o.Customer.LargeCustomer != null &&

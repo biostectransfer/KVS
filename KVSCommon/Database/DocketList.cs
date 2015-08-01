@@ -7,14 +7,27 @@ using PdfSharp.Pdf.IO;
 using System.IO;
 using System.Net.Mail;
 using KVSCommon.Enums;
+using KVSCommon.Entities;
 
 namespace KVSCommon.Database
 {
     /// <summary>
     /// Erweiterungsklasse für die DocketList Tabelle (Laufzettelverwaltung)
     /// </summary>
-    public partial class DocketList : ILogging
+    public partial class DocketList : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
+        public int Id
+        {
+            get
+            {
+                return DocketListNumber;
+            }
+            set
+            {
+                DocketListNumber = value;
+            }
+        }
+
         public KVSEntities LogDBContext
         {
             get;

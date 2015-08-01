@@ -830,6 +830,9 @@
       <Column Name="RecipientAdressId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="Recipient" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="DocumentId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
       <Association Name="DocketList_Order" Member="Order" ThisKey="DocketListNumber" OtherKey="DocketListNumber" Type="Order" />
       <Association Name="Adress_DocketList" Member="Adress" ThisKey="RecipientAdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />
     </Type>

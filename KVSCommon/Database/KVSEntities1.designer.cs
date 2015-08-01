@@ -18261,6 +18261,12 @@ namespace KVSCommon.Database
 		
 		private System.Nullable<int> _DocumentId;
 		
+		private System.Nullable<System.DateTime> _DeleteDate;
+		
+		private System.DateTime _CreateDate;
+		
+		private System.DateTime _ChangeDate;
+		
 		private EntitySet<Order> _Order;
 		
 		private EntityRef<Adress> _Adress;
@@ -18283,6 +18289,12 @@ namespace KVSCommon.Database
     partial void OnRecipientChanged();
     partial void OnDocumentIdChanging(System.Nullable<int> value);
     partial void OnDocumentIdChanged();
+    partial void OnDeleteDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnDeleteDateChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnChangeDateChanging(System.DateTime value);
+    partial void OnChangeDateChanged();
     #endregion
 		
 		public DocketList()
@@ -18432,6 +18444,66 @@ namespace KVSCommon.Database
 					this._DocumentId = value;
 					this.SendPropertyChanged("DocumentId");
 					this.OnDocumentIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DeleteDate", DbType="datetime2(2)")]
+		public System.Nullable<System.DateTime> DeleteDate
+		{
+			get
+			{
+				return this._DeleteDate;
+			}
+			set
+			{
+				if ((this._DeleteDate != value))
+				{
+					this.OnDeleteDateChanging(value);
+					this.SendPropertyChanging();
+					this._DeleteDate = value;
+					this.SendPropertyChanged("DeleteDate");
+					this.OnDeleteDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="datetime2(2)")]
+		public System.DateTime CreateDate
+		{
+			get
+			{
+				return this._CreateDate;
+			}
+			set
+			{
+				if ((this._CreateDate != value))
+				{
+					this.OnCreateDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ChangeDate", DbType="datetime2(2)")]
+		public System.DateTime ChangeDate
+		{
+			get
+			{
+				return this._ChangeDate;
+			}
+			set
+			{
+				if ((this._ChangeDate != value))
+				{
+					this.OnChangeDateChanging(value);
+					this.SendPropertyChanging();
+					this._ChangeDate = value;
+					this.SendPropertyChanged("ChangeDate");
+					this.OnChangeDateChanged();
 				}
 			}
 		}

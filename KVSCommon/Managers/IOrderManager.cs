@@ -21,5 +21,40 @@ namespace KVSCommon.Managers
         /// <param name="isAuthorativeCharge">Gibt an, ob es sich um eine behoerdliche Gebühr handelt oder nicht.</param>
         /// <returns>Die neue Auftragsposition.</returns>
         OrderItem AddOrderItem(Order order, int productId, decimal priceAmount, int count, CostCenter costCenter, int? superOrderItemId, bool isAuthorativeCharge);
+
+        /// <summary>
+        /// Update order item amount
+        /// </summary>
+        /// <param name="orderItemId"></param>
+        /// <param name="amount"></param>
+        void UpdateOrderItemAmount(int orderItemId, decimal amount);
+
+        /// <summary>
+        /// Erstellt die amtlichen Gebuehren
+        /// </summary>
+        /// <param name="authId">Amtliche Gebuehr ID</param>
+        /// <param name="itemId">Auftragspositionen Id</param>
+        /// <param name="amount">Betrag</param>
+        /// <returns>bool</returns>
+        bool GenerateAuthCharge(int? authId, int itemId, string amount);
+
+        /// <summary>
+        /// Get order items
+        /// </summary>
+        /// <returns></returns>
+        IQueryable<OrderItem> GetOrderItems();
+
+        /// <summary>
+        /// Get order items
+        /// </summary>
+        /// <param name="orderNumber">Order number</param>
+        /// <returns></returns>
+        IQueryable<OrderItem> GetOrderItems(int orderNumber);
+
+        /// <summary>
+        /// Loescht eine Auftragsposition und ggf. die Amtlichen Gebuehren dazu
+        /// </summary>
+        /// <param name="orderItemId">AuftragspositionID</param>
+        void RemoveOrderItem(int orderItemId);
     }
 }
