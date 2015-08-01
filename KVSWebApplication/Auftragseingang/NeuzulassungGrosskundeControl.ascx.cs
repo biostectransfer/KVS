@@ -488,7 +488,9 @@ namespace KVSWebApplication.Auftragseingang
                     ErrorLeereTextBoxenLabel.Visible = true;
                     return;
                 }
-                else if (DienstleistungTreeView.Nodes.Count > 0)
+
+
+                if (DienstleistungTreeView.Nodes.Count > 0)
                 {
                     RadTreeNode node = DienstleistungTreeView.Nodes[0];
                     string[] splited = node.Value.Split(';');

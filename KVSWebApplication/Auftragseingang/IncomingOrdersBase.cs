@@ -47,6 +47,7 @@ namespace KVSWebApplication.Auftragseingang
             BankAccountManager = (IBankAccountManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IBankAccountManager));
             CarOwnerManager = (ICarOwnerManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICarOwnerManager));
             RegistrationOrderManager = (IRegistrationOrderManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationOrderManager));
+            DeregistrationOrderManager = (IDeregistrationOrderManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IDeregistrationOrderManager));
         }
 
         #region Common
@@ -178,6 +179,7 @@ namespace KVSWebApplication.Auftragseingang
         public IBankAccountManager BankAccountManager { get; set; }
         public ICarOwnerManager CarOwnerManager { get; set; }
         public IRegistrationOrderManager RegistrationOrderManager { get; set; }
+        public IDeregistrationOrderManager DeregistrationOrderManager { get; set; }
         #endregion
 
         #region Labels
