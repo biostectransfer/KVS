@@ -62,6 +62,7 @@
     <Compile Include="Database\Adress.cs" />
     <Compile Include="Database\BankAccount.cs" />
     <Compile Include="Database\OrderStatus.cs" />
+    <Compile Include="Database\RegistrationOrderType.cs" />
     <Compile Include="Database\OrderType.cs" />
     <Compile Include="Database\LargeCustomerRequiredField.cs" />
     <Compile Include="Database\BIC_DE.cs" />
@@ -131,7 +132,13 @@
     <Compile Include="Managers\Base\IReadOnlyEntityManager.cs" />
     <Compile Include="Managers\Base\IReadOnlyManagerBase.cs" />
     <Compile Include="Managers\IAdressManager.cs" />
+    <Compile Include="Managers\IBankAccountManager.cs" />
     <Compile Include="Managers\IOrderStatusManager.cs" />
+    <Compile Include="Managers\IContactManager.cs" />
+    <Compile Include="Managers\ICarOwnerManager.cs" />
+    <Compile Include="Managers\IDeregistrationOrderManager.cs" />
+    <Compile Include="Managers\IRegistrationOrderManager.cs" />
+    <Compile Include="Managers\IRegistrationOrderTypeManager.cs" />
     <Compile Include="Managers\IOrderTypeManager.cs" />
     <Compile Include="Managers\IRegistrationManager.cs" />
     <Compile Include="Managers\IRegistrationLocationManager.cs" />

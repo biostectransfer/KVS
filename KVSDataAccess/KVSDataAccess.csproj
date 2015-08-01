@@ -64,6 +64,12 @@
     <Compile Include="Managers\CostCenterManager.cs" />
     <Compile Include="Managers\CustomerManager.cs" />
     <Compile Include="Managers\OrderStatusManager.cs" />
+    <Compile Include="Managers\ContactManager.cs" />
+    <Compile Include="Managers\BankAccountManager.cs" />
+    <Compile Include="Managers\CarOwnerManager.cs" />
+    <Compile Include="Managers\DeregistrationOrderManager.cs" />
+    <Compile Include="Managers\RegistrationOrderManager.cs" />
+    <Compile Include="Managers\RegistrationOrderTypeManager.cs" />
     <Compile Include="Managers\OrderTypeManager.cs" />
     <Compile Include="Managers\RegistrationManager.cs" />
     <Compile Include="Managers\RegistrationLocationManager.cs" />

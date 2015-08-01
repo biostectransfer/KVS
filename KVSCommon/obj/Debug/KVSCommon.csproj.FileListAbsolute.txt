@@ -24,4 +24,3 @@ G:\Escoda\KVSCommon\bin\Debug\MigraDoc.Rendering-WPF.dll
 G:\Escoda\KVSCommon\bin\Debug\PdfSharp-WPF.dll
 G:\Escoda\KVSCommon\obj\Debug\KVSCommon.dll
 G:\Escoda\KVSCommon\obj\Debug\KVSCommon.pdb
-G:\Escoda\KVSCommon\obj\Debug\KVSCommon.csprojResolveAssemblyReference.cache

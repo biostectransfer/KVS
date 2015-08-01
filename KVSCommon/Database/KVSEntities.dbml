@@ -7,6 +7,9 @@
       <Column Name="BankCode" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="true" />
       <Column Name="IBAN" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
       <Column Name="BIC" Type="System.String" CanBeNull="true" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
       <Association Name="BankAccount_CarOwner" Member="CarOwner" ThisKey="Id" OtherKey="BankAccountId" Type="CarOwner" />
       <Association Name="BankAccount_CostCenter" Member="CostCenter" ThisKey="Id" OtherKey="BankAccountId" Type="CostCenter" />
       <Association Name="BankAccount_SmallCustomer" Member="SmallCustomer" ThisKey="Id" OtherKey="BankAccountId" Type="SmallCustomer" />
@@ -20,6 +23,9 @@
       <Column Name="AdressId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="ContactId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="BankAccountId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
       <Association Name="CarOwner_Registration" Member="Registration" ThisKey="Id" OtherKey="CarOwnerId" Type="Registration" />
       <Association Name="BankAccount_CarOwner" Member="BankAccount" ThisKey="BankAccountId" OtherKey="Id" Type="BankAccount" IsForeignKey="true" />
       <Association Name="Contact_CarOwner" Member="Contact" ThisKey="ContactId" OtherKey="Id" Type="Contact" IsForeignKey="true" />
@@ -33,6 +39,9 @@
       <Column Name="Fax" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="MobilePhone" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
       <Column Name="Email" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
       <Association Name="Contact_CarOwner" Member="CarOwner" ThisKey="Id" OtherKey="ContactId" Type="CarOwner" />
       <Association Name="Contact_Customer" Member="Customer" ThisKey="Id" OtherKey="ContactId" Type="Customer" />
       <Association Name="Contact_Location" Member="Location" ThisKey="Id" OtherKey="ContactId" Type="Location" />
@@ -90,6 +99,9 @@
       <Column Name="OrderNumber" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="VehicleId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="RegistrationId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
       <Association Name="Registration_DeregistrationOrder" Member="Registration" ThisKey="RegistrationId" OtherKey="Id" Type="Registration" IsForeignKey="true" />
       <Association Name="Vehicle_DeregistrationOrder" Member="Vehicle" ThisKey="VehicleId" OtherKey="Id" Type="Vehicle" IsForeignKey="true" />
       <Association Name="Order_DeregistrationOrder" Member="Order" ThisKey="OrderNumber" OtherKey="OrderNumber" Type="Order" IsForeignKey="true" />
@@ -302,6 +314,9 @@
     <Type Name="RegistrationOrderType">
       <Column Name="Id" AutoSync="Never" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="RegistrationOrderType_RegistrationOrder" Member="RegistrationOrder" ThisKey="Id" OtherKey="RegistrationOrderTypeId" Type="RegistrationOrder" />
       <Association Name="RegistrationOrderType_Product" Member="Product" ThisKey="Id" OtherKey="RegistrationOrderTypeId" Type="Product" />
     </Type>
@@ -366,6 +381,9 @@
       <Column Name="PreviousLicencenumber" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
       <Column Name="RegistrationOrderTypeId" Type="System.Int32" DbType="int NOT NULL" CanBeNull="false" />
       <Column Name="eVBNumber" Type="System.String" DbType="VarChar(7)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
       <Association Name="Registration_RegistrationOrder" Member="Registration" ThisKey="RegistrationId" OtherKey="Id" Type="Registration" IsForeignKey="true" />
       <Association Name="RegistrationOrderType_RegistrationOrder" Member="RegistrationOrderType" ThisKey="RegistrationOrderTypeId" OtherKey="Id" Type="RegistrationOrderType" IsForeignKey="true" />
       <Association Name="Vehicle_RegistrationOrder" Member="Vehicle" ThisKey="VehicleId" OtherKey="Id" Type="Vehicle" IsForeignKey="true" />

@@ -38,7 +38,7 @@ namespace KVSDataAccess.Managers
             SaltedHash sh = new SaltedHash();
             if (sh.VerifyHashString(password, user.Password, user.Salt))
             {
-                DataContext.SetLogUserId(user.Id);
+                DataContext.LogUserId = user.Id;
                 user.LastLogin = DateTime.Now;
                 DataContext.WriteLogItem("Benutzer " + login + " eingeloggt.", LogTypes.INFO, user.Id, "User");
                 SaveChanges();

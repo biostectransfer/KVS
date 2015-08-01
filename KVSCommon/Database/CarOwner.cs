@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KVSCommon.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace KVSCommon.Database
     /// <summary>
     /// Erweiterungsklasse zur DB CarOwner
     /// </summary>
-    public partial class CarOwner : ILogging
+    public partial class CarOwner : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
         public KVSEntities LogDBContext
         {

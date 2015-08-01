@@ -69,3 +69,33 @@ ALTER TABLE [dbo].[OrderType]
  [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
  [DeleteDate] datetime2(2) NULL
 GO
+ALTER TABLE [dbo].[RegistrationOrderType]
+ ADD [CreateDate] datetime2(2) NOT NULL default(GetDate()),
+ [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
+ [DeleteDate] datetime2(2) NULL
+GO
+ALTER TABLE [dbo].[Contact]
+ ADD [CreateDate] datetime2(2) NOT NULL default(GetDate()),
+ [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
+ [DeleteDate] datetime2(2) NULL
+GO
+ALTER TABLE [dbo].[CarOwner]
+ ADD [CreateDate] datetime2(2) NOT NULL default(GetDate()),
+ [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
+ [DeleteDate] datetime2(2) NULL
+GO
+ALTER TABLE [dbo].[BankAccount]
+ ADD [CreateDate] datetime2(2) NOT NULL default(GetDate()),
+ [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
+ [DeleteDate] datetime2(2) NULL
+GO
+ALTER TABLE [dbo].[DeregistrationOrder]
+ ADD [CreateDate] datetime2(2) NOT NULL default(GetDate()),
+ [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
+ [DeleteDate] datetime2(2) NULL
+GO
+ALTER TABLE [dbo].[RegistrationOrder]
+ ADD [CreateDate] datetime2(2) NOT NULL default(GetDate()),
+ [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
+ [DeleteDate] datetime2(2) NULL
+GO

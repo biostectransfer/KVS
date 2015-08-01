@@ -24,12 +24,14 @@ namespace KVSWebApplication.Auftragseingang
         protected override RadScriptManager RadScriptManager { get { return ((AbmeldungGrosskunde)Page).getScriptManager(); } }
         protected override RadNumericTextBox Discount { get { return this.txbDiscount; } }
         protected override HiddenField SmallCustomerOrder { get { return this.smallCustomerOrderHiddenField; } }
+        protected override HiddenField VehicleId { get { return this.vehicleIdField; } }
         protected override RequiredFieldValidator InvoiceValidator { get { return this.InvoiceRecValidator; } }
 
         #region Dates
 
         protected override RadMonthYearPicker Registration_GeneralInspectionDatePicker { get { return this.Registration_GeneralInspectionDateBox; } }
         protected override RadDatePicker FirstRegistrationDatePicker { get { return this.FirstRegistrationDateBox; } }
+        protected override RadDatePicker RegistrationDatePicker { get { return null; } }
 
         #endregion
 
@@ -64,6 +66,18 @@ namespace KVSWebApplication.Auftragseingang
         protected override TextBox City_TextBox { get { return this.CityTextBox; } }
         protected override TextBox Country_TextBox { get { return this.CountryTextBox; } }
         protected override TextBox InvoiceRecipient_TextBox { get { return this.InvoiceRecipient; } }
+        protected override RadTextBox VIN_TextBox { get { return this.VINBox; } }
+        protected override RadTextBox HSN_TextBox { get { return this.HSNAbmBox; } }
+        protected override RadTextBox TSN_TextBox { get { return this.TSNAbmBox; } }
+        protected override RadTextBox Variant_TextBox { get { return this.Vehicle_VariantBox; } }
+        protected override RadTextBox Color_TextBox { get { return this.Vehicle_ColorBox; } }
+        protected override RadTextBox Contact_Phone_TextBox { get { return this.Contact_PhoneBox; } }
+        protected override RadTextBox Contact_Fax_TextBox { get { return this.Contact_FaxBox; } }
+        protected override RadTextBox Contact_MobilePhone_TextBox { get { return this.Contact_MobilePhoneBox; } }
+        protected override RadTextBox Contact_Email_TextBox { get { return this.Contact_EmailBox; } }
+        protected override RadTextBox EmissionsCode_TextBox { get { return this.EmissionsCodeBox; } }
+        protected override RadTextBox RegistrationDocumentNumber_TextBox { get { return this.RegDocNumBox; } }
+        protected override RadTextBox FreeTextBox { get { return this.FreiTextBox; } }
         #endregion
 
         #region Panels
@@ -213,7 +227,7 @@ namespace KVSWebApplication.Auftragseingang
         protected void AbmeldenButton_Clicked(object sender, EventArgs e)
         {
             int? locationId = null;
-            string ProduktId = "";
+
             string CostCenterId = "";
             AbmeldungOkLabel.Visible = false;
             SubmitChangesErrorLabel.Visible = false;
@@ -267,7 +281,7 @@ namespace KVSWebApplication.Auftragseingang
                     SubmitChangesErrorLabel.Visible = false;
                     RadTreeNode node = DienstleistungTreeView.Nodes[0];
                     string[] splited = node.Value.Split(';');
-                    ProduktId = splited[0];
+                    var productId = Int32.Parse(splited[0]);
                     CostCenterId = splited[1];
                     if (CostCenterId == string.Empty)
                         CostCenterId = CostCenterDropDownList.SelectedValue;
@@ -329,7 +343,7 @@ namespace KVSWebApplication.Auftragseingang
                                 Registration_GeneralInspectionDateBox.SelectedDate, newAbmeldeDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
                         }
                         //weitere Logik für die Abmeldung 
-                        price = FindPrice(ProduktId);
+                        price = FindPrice(productId);
                         if (price == null)
                         {
                             ErrorLeereTextBoxenLabel.Text = "Kein Preis gefunden!";
@@ -347,10 +361,10 @@ namespace KVSWebApplication.Auftragseingang
                         newDeregOrder = DeregistrationOrder.CreateDeregistrationOrder(Int32.Parse(Session["CurrentUserId"].ToString()),
                             Int32.Parse(CustomerDropDownList.SelectedValue), newVehicle, newRegistration, locationId, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
                         //adding new Deregestrationorder Items
-                        newOrderItem1 = newDeregOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.Amount, 1, costCenter, null, false, dbContext);
+                        newOrderItem1 = newDeregOrder.Order.AddOrderItem(productId, price.Amount, 1, costCenter, null, false, dbContext);
                         if (price.AuthorativeCharge.HasValue)
                         {
-                            newOrderItem2 = newDeregOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.AuthorativeCharge.Value, 1, costCenter, newOrderItem1.Id, true, dbContext);
+                            newOrderItem2 = newDeregOrder.Order.AddOrderItem(productId, price.AuthorativeCharge.Value, 1, costCenter, newOrderItem1.Id, true, dbContext);
                         }
                         dbContext.SubmitChanges();
                         if (DienstleistungTreeView.Nodes.Count > 1)

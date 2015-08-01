@@ -1,4 +1,5 @@
-﻿using KVSCommon.Enums;
+﻿using KVSCommon.Entities;
+using KVSCommon.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,20 @@ namespace KVSCommon.Database
     /// <summary>
     /// Erweiterungsklasse fuer die DB Tabelle RegistrationOrder
     /// </summary>
-    public partial class RegistrationOrder : ILogging
+    public partial class RegistrationOrder : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
+        public int Id
+        {
+            get
+            {
+                return OrderNumber;
+            }
+            set
+            {
+                OrderNumber = value;
+            }
+        }
+
         public KVSEntities LogDBContext
         {
             get;

@@ -10,6 +10,8 @@ using System.Configuration;
 using Telerik.Web.UI;
 using KVSCommon.Enums;
 using KVSCommon.Managers;
+using System.Drawing;
+
 namespace KVSWebApplication.Auftragseingang
 {
     /// <summary>
@@ -24,11 +26,13 @@ namespace KVSWebApplication.Auftragseingang
         protected override RadScriptManager RadScriptManager { get { return ((NeuzulassungGrosskunde)Page).getScriptManager(); } }
         protected override RadNumericTextBox Discount { get { return this.txbDiscount; } }
         protected override HiddenField SmallCustomerOrder { get { return this.smallCustomerOrderHiddenField; } }
+        protected override HiddenField VehicleId { get { return this.VehicleIdField; } }
 
         #region Dates
 
         protected override RadMonthYearPicker Registration_GeneralInspectionDatePicker { get { return this.Registration_GeneralInspectionDateBox; } }
         protected override RadDatePicker FirstRegistrationDatePicker { get { return this.FirstRegistrationDateBox; } }
+        protected override RadDatePicker RegistrationDatePicker { get { return this.ZulassungsdatumPicker; } }
 
         #endregion
 
@@ -63,6 +67,18 @@ namespace KVSWebApplication.Auftragseingang
         protected override TextBox City_TextBox { get { return this.CityTextBox; } }
         protected override TextBox Country_TextBox { get { return this.CountryTextBox; } }
         protected override TextBox InvoiceRecipient_TextBox { get { return this.InvoiceRecipient; } }
+        protected override RadTextBox VIN_TextBox { get { return this.VINBox; } }
+        protected override RadTextBox HSN_TextBox { get { return this.HSNBox; } }
+        protected override RadTextBox TSN_TextBox { get { return this.TSNBox; } }
+        protected override RadTextBox Variant_TextBox { get { return this.Vehicle_VariantBox; } }
+        protected override RadTextBox Color_TextBox { get { return this.Vehicle_ColorBox; } }
+        protected override RadTextBox Contact_Phone_TextBox { get { return this.Contact_PhoneBox; } }
+        protected override RadTextBox Contact_Fax_TextBox { get { return this.Contact_FaxBox; } }
+        protected override RadTextBox Contact_MobilePhone_TextBox { get { return this.Contact_MobilePhoneBox; } }
+        protected override RadTextBox Contact_Email_TextBox { get { return this.Contact_EmailBox; } }
+        protected override RadTextBox EmissionsCode_TextBox { get { return this.EmissionsCodeBox; } }
+        protected override RadTextBox RegistrationDocumentNumber_TextBox { get { return this.RegDocNumBox; } }
+        protected override RadTextBox FreeTextBox { get { return this.FreiTextBox; } }
         #endregion
 
         #region Panels
@@ -439,14 +455,11 @@ namespace KVSWebApplication.Auftragseingang
 
         protected void RegistrationOrderDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
-            var regOrdQuery = from regord in con.RegistrationOrderType
-                              select new
-                              {
-                                  Name = regord.Name,
-                                  Value = regord.Id
-                              };
-            e.Result = regOrdQuery;
+            e.Result = RegistrationOrderTypeManager.GetEntities().Select(o => new
+            {
+                Name = o.Name,
+                Value = o.Id
+            }).ToList();
         }
 
         #endregion
@@ -455,45 +468,16 @@ namespace KVSWebApplication.Auftragseingang
         //Neue Auftragseingang
         protected void AuftragZulassenButton_Clicked(object sender, EventArgs e)
         {
-            int? locationId = null;
-            string ProduktId = "";
-            string CostCenterId = "";
             ZulassungOkLabel.Visible = false;
             SubmitChangesErrorLabel.Visible = false;
             ErrorLeereTextBoxenLabel.Visible = false;
-            if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
-                locationId = Int32.Parse(LocationDropDownList.SelectedValue);
 
-            if (CheckIfBoxenNotEmpty()) //gibt es leer boxen, die angezeigt sind.
+            if (CheckRegistrationFields()) //gibt es leer boxen, die angezeigt sind.
             {
-                if (DienstleistungTreeView.Nodes.Count == 0)
-                {
-                    ErrorLeereTextBoxenLabel.Text = "Bitte Dienstleistung hinzufügen!";
-                    ErrorLeereTextBoxenLabel.Visible = true;
-                }
-                else if (String.IsNullOrEmpty(CostCenterDropDownList.SelectedValue))
-                {
-                    ErrorLeereTextBoxenLabel.Text = "Bitte tragen Sie die Kostenstelle ein!";
-                    ErrorLeereTextBoxenLabel.Visible = true;
-                }
-                else if (String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
-                {
-                    ErrorLeereTextBoxenLabel.Text = "Bitte wählen Sie der Standort aus!";
-                    ErrorLeereTextBoxenLabel.Visible = true;
-                }
-                else if (String.IsNullOrEmpty(ZulassungsstelleComboBox.SelectedValue))
-                {
-                    ErrorLeereTextBoxenLabel.Text = "Bitte wählen Sie die Zulassungsstelle aus!";
-                    ErrorLeereTextBoxenLabel.Visible = true;
-                }
-                else
-                {
-                    ErrorLeereTextBoxenLabel.Text = "Bitte Pflichtfelder überprüfen!";
-                    ErrorLeereTextBoxenLabel.Visible = true;
-                }
-            }
-            else
-            {
+                int? locationId = null;
+                if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
+                    locationId = Int32.Parse(LocationDropDownList.SelectedValue);
+
                 var productsPriceCheck = CheckIfAllProduktsHavingPrice(locationId);
                 if (!String.IsNullOrEmpty(productsPriceCheck))
                 {
@@ -505,237 +489,81 @@ namespace KVSWebApplication.Auftragseingang
                 {
                     RadTreeNode node = DienstleistungTreeView.Nodes[0];
                     string[] splited = node.Value.Split(';');
-                    ProduktId = splited[0];
-                    CostCenterId = splited[1];
-                    if (CostCenterId == string.Empty)
-                        CostCenterId = CostCenterDropDownList.SelectedValue;
+
+                    var costCenterId = splited[1];
+                    if (costCenterId == string.Empty)
+                        costCenterId = CostCenterDropDownList.SelectedValue;
+
+                    var productId = Int32.Parse(splited[0]);
+
+                    var price = FindPrice(productId);
+                    if (price == null)
+                    {
+                        ErrorLeereTextBoxenLabel.Text = "Kein Price gefunden!";
+                        ErrorLeereTextBoxenLabel.Visible = true;
+                        return;
+                    }
+
 
                     ErrorLeereTextBoxenLabel.Visible = false;
                     try
                     {
                         ZulassungOkLabel.Visible = false;
                         SubmitChangesErrorLabel.Visible = false;
-                        string kennzeichen = string.Empty,
-                        oldKennzeichen = string.Empty;
-                        KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
-                        Adress newAdress = null;
-                        Contact newContact = null;
-                        BankAccount newBankAccount = null;
-                        CarOwner newCarOwner = null;
-                        Registration newRegistration = null;
-                        Price price = null;
-                        RegistrationOrder newKennzeichenRegOrder = null;
-                        OrderItem newOrderItem1 = null;
-                        OrderItem newOrderItem2 = null;
-                        Vehicle newVehicle = null;
-                        DateTime? FirstRegistrationDate = null;
-
-                        int? color = null;
+                        string licenceNumber = String.Empty,
+                        oldKennzeichen = String.Empty;
+                        
+                        RegistrationOrder newRegistrationOrder = null;
+   
                         if (!String.IsNullOrEmpty(LicenceBox1.Text))
-                            kennzeichen = LicenceBox1.Text + "-" + LicenceBox2.Text + "-" + LicenceBox3.Text;
+                            licenceNumber = LicenceBox1.Text + "-" + LicenceBox2.Text + "-" + LicenceBox3.Text;
                         if (!String.IsNullOrEmpty(PreviousLicenceBox1.Text))
                             oldKennzeichen = PreviousLicenceBox1.Text + "-" + PreviousLicenceBox2.Text + "-" + PreviousLicenceBox3.Text;
 
 
                         CostCenter costCenter = null;
-
-                        if (!String.IsNullOrEmpty(CostCenterId))
+                        if (!String.IsNullOrEmpty(costCenterId))
                         {
-                            costCenter = dbContext.CostCenter.FirstOrDefault(o => o.Id == Int32.Parse(CostCenterId));
+                            costCenter = CostCenterManager.GetById(Int32.Parse(costCenterId));
                         }
 
-                        if (!String.IsNullOrEmpty(FirstRegistrationDateBox.SelectedDate.ToString()))
-                            FirstRegistrationDate = FirstRegistrationDateBox.SelectedDate;
-                        if (!String.IsNullOrEmpty(Vehicle_ColorBox.Text))
-                            color = Convert.ToInt32(Vehicle_ColorBox.Text);
-
+                        var newVehicle = GetVehicle();
+                        var newCarOwner = GetCarOwner();
+                        var newRegistration = CreateRegistration(newCarOwner, newVehicle, licenceNumber);
+                        
 
                         if (RegistrationOrderDropDownList.Text.Contains("Umkennzeichnung")) // Umkennzeichnung
                         {
                             FahrzeugLabel.Text = "Fahrzeug";
-                            FahrzeugLabel.ForeColor = System.Drawing.Color.Blue;
-                            if (!String.IsNullOrEmpty(kennzeichen))
+                            FahrzeugLabel.ForeColor = Color.Blue;
+                            if (!String.IsNullOrEmpty(licenceNumber))
                             {
-                                if (!String.IsNullOrEmpty(VehicleIdField.Value)) //falls auto gefunden wurde
-                                {
-                                    newVehicle = dbContext.Vehicle.SingleOrDefault(q => q.Id == Int32.Parse(VehicleIdField.Value));
-                                }
-                                else // neues Auto muss angelegt werden
-                                {
-                                    newVehicle = Vehicle.CreateVehicle(VINBox.Text, HSNBox.Text, TSNBox.Text, Vehicle_VariantBox.Text, FirstRegistrationDate, color, dbContext);
-                                }
-
-                                // another logic after new/existing Vehicle
-                                newAdress = Adress.CreateAdress(Adress_StreetBox.Text, Adress_StreetNumberBox.Text, Adress_ZipcodeBox.Text, Adress_CityBox.Text, Adress_CountryBox.Text, dbContext);
-                                newContact = Contact.CreateContact(Contact_PhoneBox.Text, Contact_FaxBox.Text, Contact_MobilePhoneBox.Text, Contact_EmailBox.Text, dbContext);
-                                newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text,
-                                    BankAccount_BankCodeBox.Text, txbBancAccountIban.Text, txbBancAccountBIC.Text);
-
-
-                                newCarOwner = CarOwner.CreateCarOwner(CarOwner_NameBox.Text, CarOwner_FirstnameBox.Text, newBankAccount, newContact, newAdress, dbContext);
-                                DateTime newZulassungsDatum = DateTime.Now;
-                                if (ZulassungsdatumPicker.SelectedDate != null)
-                                {
-                                    if (!string.IsNullOrEmpty(ZulassungsdatumPicker.SelectedDate.ToString()))
-                                    {
-                                        newZulassungsDatum = (DateTime)ZulassungsdatumPicker.SelectedDate;
-                                    }
-                                }
-                                newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text,
-                                    Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
-                                price = FindPrice(ProduktId);
-                                if (price == null)
-                                {
-                                    ErrorLeereTextBoxenLabel.Text = "Kein Price gefunden!";
-                                    ErrorLeereTextBoxenLabel.Visible = true;
-                                    return;
-                                }
-                                newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(Int32.Parse(Session["CurrentUserId"].ToString()),
-                                    Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration,
-                                    RegistrationOrderTypes.Renumbering, locationId, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
-                                newKennzeichenRegOrder.Order.FreeText = FreiTextBox.Text;
-
-                                newOrderItem1 = newKennzeichenRegOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.Amount, 1, costCenter, null, false, dbContext);
-                                if (price.AuthorativeCharge.HasValue)
-                                {
-                                    newOrderItem2 = newKennzeichenRegOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.AuthorativeCharge.Value, 1, costCenter, newOrderItem1.Id, true, dbContext);
-                                }
-                                dbContext.SubmitChanges();
-                                if (DienstleistungTreeView.Nodes.Count > 1)
-                                {
-                                    bool inOrdnung = AddAnotherProducts(newKennzeichenRegOrder, locationId);
-                                }
-                                if (String.IsNullOrEmpty(VehicleIdField.Value)) //update CurrentRegistration Id
-                                {
-                                    newVehicle.CurrentRegistrationId = newRegistration.Id;
-                                    dbContext.SubmitChanges();
-                                }
-                                //ZulassungOkLabel.Visible = true;
-                                if (((RadButton)(sender)).ID != "rbtSameOrder")
-                                    MakeAllControlsEmpty();
-                                ScriptManager.RegisterStartupScript(Page, Page.GetType(), "finishedMessage", "alert('Auftrag wurde erfolgreich angelegt.');", true);
+                                newRegistrationOrder = CreateRegistrationOrder(RegistrationOrderTypes.Renumbering, licenceNumber, oldKennzeichen, newVehicle,
+                                    newRegistration, locationId);
                             }
                             else
                             {
                                 FahrzeugLabel.Text = "Für die Umkennzeichnung mind. neues Kennzeichen erforderlich!";
-                                FahrzeugLabel.ForeColor = System.Drawing.Color.Red;
+                                FahrzeugLabel.ForeColor = Color.Red;
                             }
                         }
                         else if (RegistrationOrderDropDownList.Text.Contains("Wiederzulassung")) // Wiederzulassung
                         {
-                            if (!String.IsNullOrEmpty(VehicleIdField.Value)) //falls auto gefunden wurde
-                            {
-                                newVehicle = dbContext.Vehicle.SingleOrDefault(q => q.Id == Int32.Parse(VehicleIdField.Value));
-                            }
-                            else // neues Auto muss angelegt werden
-                            {
-                                newVehicle = Vehicle.CreateVehicle(VINBox.Text, HSNBox.Text, TSNBox.Text, Vehicle_VariantBox.Text, FirstRegistrationDate, color, dbContext);
-                            }
-                            // another logic after new/existing Vehicle
-                            newAdress = Adress.CreateAdress(Adress_StreetBox.Text, Adress_StreetNumberBox.Text, Adress_ZipcodeBox.Text, Adress_CityBox.Text, Adress_CountryBox.Text, dbContext);
-                            newContact = Contact.CreateContact(Contact_PhoneBox.Text, Contact_FaxBox.Text, Contact_MobilePhoneBox.Text, Contact_EmailBox.Text, dbContext);
-                            newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text,
-                                BankAccount_BankCodeBox.Text, txbBancAccountIban.Text, txbBancAccountBIC.Text);
-                            newCarOwner = CarOwner.CreateCarOwner(CarOwner_NameBox.Text, CarOwner_FirstnameBox.Text, newBankAccount, newContact, newAdress, dbContext);
-                            DateTime newZulassungsDatum = DateTime.Now;
-                            if (ZulassungsdatumPicker.SelectedDate != null)
-                            {
-                                if (!string.IsNullOrEmpty(ZulassungsdatumPicker.SelectedDate.ToString()))
-                                {
-                                    newZulassungsDatum = (DateTime)ZulassungsdatumPicker.SelectedDate;
-                                }
-                            }
-                            newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text,
-                                Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
-                            price = FindPrice(ProduktId);
-                            if (price == null)
-                            {
-                                ErrorLeereTextBoxenLabel.Text = "Keinen Preis gefunden!";
-                                ErrorLeereTextBoxenLabel.Visible = true;
-                                return;
-                            }
-                            newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(Int32.Parse(Session["CurrentUserId"].ToString()),
-                                Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration,
-                                RegistrationOrderTypes.Readmission, locationId, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
-                            if (!String.IsNullOrEmpty(FreiTextBox.Text))
-                            {
-                                newKennzeichenRegOrder.Order.FreeText = FreiTextBox.Text;
-                            }
-                            newOrderItem1 = newKennzeichenRegOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.Amount, 1, costCenter, null, false, dbContext);
-                            if (price.AuthorativeCharge.HasValue)
-                            {
-                                newOrderItem2 = newKennzeichenRegOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.AuthorativeCharge.Value, 1, costCenter, newOrderItem1.Id, true, dbContext);
-                            }
-                            dbContext.SubmitChanges();
-                            if (DienstleistungTreeView.Nodes.Count > 1)
-                            {
-                                bool inOrdnung = AddAnotherProducts(newKennzeichenRegOrder, locationId);
-                            }
-                            if (String.IsNullOrEmpty(VehicleIdField.Value)) //update CurrentRegistration Id
-                            {
-                                newVehicle.CurrentRegistrationId = newRegistration.Id;
-                                dbContext.SubmitChanges();
-                            }
-                            // ZulassungOkLabel.Visible = true;
-                            if (((RadButton)(sender)).ID != "rbtSameOrder")
-                                MakeAllControlsEmpty();
-                            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "finishedMessage", "alert('Auftrag wurde erfolgreich angelegt.');", true);
+                            newRegistrationOrder = CreateRegistrationOrder(RegistrationOrderTypes.Readmission, licenceNumber, oldKennzeichen, newVehicle,
+                                   newRegistration, locationId);
                         }
                         else // Neuzulassung
                         {
-                            if (!String.IsNullOrEmpty(VehicleIdField.Value)) //falls auto gefunden wurde
-                            {
-                                newVehicle = dbContext.Vehicle.SingleOrDefault(q => q.Id == Int32.Parse(VehicleIdField.Value));
-                            }
-                            else // neues Auto muss angelegt werden
-                            {
-                                newVehicle = Vehicle.CreateVehicle(VINBox.Text, HSNBox.Text, TSNBox.Text, Vehicle_VariantBox.Text, FirstRegistrationDate, color, dbContext);
-                            }
-                            newAdress = Adress.CreateAdress(Adress_StreetBox.Text, Adress_StreetNumberBox.Text, Adress_ZipcodeBox.Text, Adress_CityBox.Text, Adress_CountryBox.Text, dbContext);
-                            newContact = Contact.CreateContact(Contact_PhoneBox.Text, Contact_FaxBox.Text, Contact_MobilePhoneBox.Text, Contact_EmailBox.Text, dbContext);
-                            newBankAccount = BankAccount.CreateBankAccount(dbContext, BankAccount_BankNameBox.Text, BankAccount_AccountnumberBox.Text, BankAccount_BankCodeBox.Text,
-                                txbBancAccountIban.Text, txbBancAccountBIC.Text);
-                            newCarOwner = CarOwner.CreateCarOwner(CarOwner_NameBox.Text, CarOwner_FirstnameBox.Text, newBankAccount, newContact, newAdress, dbContext);
-                            DateTime newZulassungsDatum = DateTime.Now;
-                            if (ZulassungsdatumPicker.SelectedDate != null)
-                            {
-                                if (!string.IsNullOrEmpty(ZulassungsdatumPicker.SelectedDate.ToString()))
-                                {
-                                    newZulassungsDatum = (DateTime)ZulassungsdatumPicker.SelectedDate;
-                                }
-                            }
-                            newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text,
-                                Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
-                            price = FindPrice(ProduktId);
-                            if (price == null)
-                            {
-                                ErrorLeereTextBoxenLabel.Text = "Kein Price gefunden!";
-                                ErrorLeereTextBoxenLabel.Visible = true;
-                                return;
-                            }
-                            newKennzeichenRegOrder = RegistrationOrder.CreateRegistrationOrder(Int32.Parse(Session["CurrentUserId"].ToString()),
-                                Int32.Parse(CustomerDropDownList.SelectedValue), kennzeichen, oldKennzeichen, Registration_eVBNumberBox.Text, newVehicle, newRegistration,
-                                RegistrationOrderTypes.NewAdmission, locationId, Int32.Parse(ZulassungsstelleComboBox.SelectedValue), dbContext);
-                            if (!String.IsNullOrEmpty(FreiTextBox.Text))
-                            {
-                                newKennzeichenRegOrder.Order.FreeText = FreiTextBox.Text;
-                            }
-                            newOrderItem1 = newKennzeichenRegOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.Amount, 1, costCenter, null, false, dbContext);
-                            if (price.AuthorativeCharge.HasValue)
-                            {
-                                newOrderItem2 = newKennzeichenRegOrder.Order.AddOrderItem(Int32.Parse(ProduktId), price.AuthorativeCharge.Value, 1, costCenter, newOrderItem1.Id, true, dbContext);
-                            }
-                            dbContext.SubmitChanges();
-                            if (DienstleistungTreeView.Nodes.Count > 1)
-                            {
-                                bool inOrdnung = AddAnotherProducts(newKennzeichenRegOrder, locationId);
-                            }
-                            newVehicle.CurrentRegistrationId = newRegistration.Id;
-                            dbContext.SubmitChanges();
-                            if (((RadButton)(sender)).ID != "rbtSameOrder")
-                                MakeAllControlsEmpty();
-                            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "finishedMessage", "alert('Auftrag wurde erfolgreich angelegt.');", true);
+                            newRegistrationOrder = CreateRegistrationOrder(RegistrationOrderTypes.NewAdmission, licenceNumber, oldKennzeichen, newVehicle,
+                                   newRegistration, locationId);
                         }
+
+
+                        if(newRegistrationOrder != null)
+                        {
+                            ProcessRegistrationOrder(newRegistrationOrder, productId, price, costCenter, newRegistration, newVehicle, locationId, ((RadButton)(sender)).ID);
+                        }
+
                         VehicleIdField.Value = "";
                     }
                     catch (Exception ex)

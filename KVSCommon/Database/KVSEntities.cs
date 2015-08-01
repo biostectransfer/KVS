@@ -25,17 +25,12 @@ namespace KVSCommon.Database
             this.LogUserId = logUserId;
         }
 
-        internal int? LogUserId
+        public int? LogUserId
         {
             get;
             set;
         }
-
-        public void SetLogUserId(int id)
-        {
-            LogUserId = id;
-        }
-                
+                        
         /// <summary>
         /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
         /// </summary>

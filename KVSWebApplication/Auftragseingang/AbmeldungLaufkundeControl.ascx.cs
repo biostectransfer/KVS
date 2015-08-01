@@ -25,11 +25,13 @@ namespace KVSWebApplication.Auftragseingang
         protected override RadScriptManager RadScriptManager { get { return ((AbmeldungLaufkunde)Page).getScriptManager(); } }
         protected override RadNumericTextBox Discount { get { return this.txbDiscount; } }
         protected override HiddenField SmallCustomerOrder { get { return this.smallCustomerOrderHiddenField; } }
+        protected override HiddenField VehicleId { get { return this.vehicleIdField; } }
 
         #region Dates
 
         protected override RadMonthYearPicker Registration_GeneralInspectionDatePicker { get { return this.Registration_GeneralInspectionDateBox; } }
         protected override RadDatePicker FirstRegistrationDatePicker { get { return this.FirstRegistrationDateBox; } }
+        protected override RadDatePicker RegistrationDatePicker { get { return null; } }
 
         #endregion
 
@@ -65,6 +67,18 @@ namespace KVSWebApplication.Auftragseingang
         protected override TextBox City_TextBox { get { return this.CityTextBox; } }
         protected override TextBox Country_TextBox { get { return this.CountryTextBox; } }
         protected override TextBox InvoiceRecipient_TextBox { get { return this.InvoiceRecipient; } }
+        protected override RadTextBox VIN_TextBox { get { return this.VINBox; } }
+        protected override RadTextBox HSN_TextBox { get { return this.HSNAbmBox; } }
+        protected override RadTextBox TSN_TextBox { get { return this.TSNAbmBox; } }
+        protected override RadTextBox Variant_TextBox { get { return this.Vehicle_VariantBox; } }
+        protected override RadTextBox Color_TextBox { get { return this.Vehicle_ColorBox; } }
+        protected override RadTextBox Contact_Phone_TextBox { get { return this.Contact_PhoneBox; } }
+        protected override RadTextBox Contact_Fax_TextBox { get { return this.Contact_FaxBox; } }
+        protected override RadTextBox Contact_MobilePhone_TextBox { get { return this.Contact_MobilePhoneBox; } }
+        protected override RadTextBox Contact_Email_TextBox { get { return this.Contact_EmailBox; } }
+        protected override RadTextBox EmissionsCode_TextBox { get { return this.EmissionsCodeBox; } }
+        protected override RadTextBox RegistrationDocumentNumber_TextBox { get { return this.RegDocNumBox; } }
+        protected override RadTextBox FreeTextBox { get { return this.FreiTextBox; } }
         #endregion
 
         #region Panels

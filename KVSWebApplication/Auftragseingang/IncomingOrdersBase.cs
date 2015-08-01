@@ -42,6 +42,11 @@ namespace KVSWebApplication.Auftragseingang
             VehicleManager = (IVehicleManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IVehicleManager));
             RegistrationLocationManager = (IRegistrationLocationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationLocationManager));
             RegistrationManager = (IRegistrationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationManager));
+            RegistrationOrderTypeManager = (IRegistrationOrderTypeManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationOrderTypeManager));
+            ContactManager = (IContactManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IContactManager));
+            BankAccountManager = (IBankAccountManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IBankAccountManager));
+            CarOwnerManager = (ICarOwnerManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICarOwnerManager));
+            RegistrationOrderManager = (IRegistrationOrderManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationOrderManager));
         }
 
         #region Common
@@ -58,6 +63,7 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract RadScriptManager RadScriptManager { get; }
         protected abstract RadNumericTextBox Discount { get; }
         protected abstract HiddenField SmallCustomerOrder { get; }
+        protected abstract HiddenField VehicleId { get; }
         protected virtual RequiredFieldValidator InvoiceValidator { get { return null; } }
         #endregion
 
@@ -65,6 +71,7 @@ namespace KVSWebApplication.Auftragseingang
 
         protected abstract RadMonthYearPicker Registration_GeneralInspectionDatePicker { get; }
         protected abstract RadDatePicker FirstRegistrationDatePicker { get; }
+        protected abstract RadDatePicker RegistrationDatePicker { get; }
 
         #endregion
 
@@ -100,7 +107,18 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract TextBox City_TextBox { get; }
         protected abstract TextBox Country_TextBox { get; }
         protected abstract TextBox InvoiceRecipient_TextBox { get; }
-        
+        protected abstract RadTextBox VIN_TextBox { get; }
+        protected abstract RadTextBox HSN_TextBox { get; }
+        protected abstract RadTextBox TSN_TextBox { get; }
+        protected abstract RadTextBox Variant_TextBox { get; }
+        protected abstract RadTextBox Color_TextBox { get; }
+        protected abstract RadTextBox Contact_Phone_TextBox { get; }
+        protected abstract RadTextBox Contact_Fax_TextBox { get; }
+        protected abstract RadTextBox Contact_MobilePhone_TextBox { get; }
+        protected abstract RadTextBox Contact_Email_TextBox { get; }
+        protected abstract RadTextBox EmissionsCode_TextBox { get; }
+        protected abstract RadTextBox RegistrationDocumentNumber_TextBox { get; }
+        protected abstract RadTextBox FreeTextBox { get; }
         #endregion
 
         #region Panels
@@ -154,7 +172,11 @@ namespace KVSWebApplication.Auftragseingang
         public IVehicleManager VehicleManager { get; set; }
         public IRegistrationLocationManager RegistrationLocationManager { get; set; }
         public IRegistrationManager RegistrationManager { get; set; }
-
+        public IRegistrationOrderTypeManager RegistrationOrderTypeManager { get; set; }
+        public IContactManager ContactManager { get; set; }
+        public IBankAccountManager BankAccountManager { get; set; }
+        public ICarOwnerManager CarOwnerManager { get; set; }
+        public IRegistrationOrderManager RegistrationOrderManager { get; set; }
         #endregion
 
         #region Labels
@@ -282,7 +304,7 @@ namespace KVSWebApplication.Auftragseingang
 
         #region Methods
 
-        protected Price FindPrice(string productId)
+        protected Price FindPrice(int productId)
         {
             int? locationId = null;
             Price newPrice = null;
@@ -290,13 +312,13 @@ namespace KVSWebApplication.Auftragseingang
             if (LocationDropDown != null && !String.IsNullOrEmpty(LocationDropDown.SelectedValue))
             {
                 locationId = Int32.Parse(LocationDropDown.SelectedValue);
-                newPrice = PriceManager.GetEntities(q => q.ProductId == Int32.Parse(productId) && q.LocationId == locationId).FirstOrDefault();
+                newPrice = PriceManager.GetEntities(q => q.ProductId == productId && q.LocationId == locationId).FirstOrDefault();
             }
 
             if (LocationDropDown == null || 
                (LocationDropDown != null && String.IsNullOrEmpty(this.LocationDropDown.SelectedValue)) || newPrice == null)
             {
-                newPrice = PriceManager.GetEntities(q => q.ProductId == Int32.Parse(productId) && q.LocationId == null).FirstOrDefault();
+                newPrice = PriceManager.GetEntities(q => q.ProductId == productId && q.LocationId == null).FirstOrDefault();
             }
 
             return newPrice;
@@ -582,46 +604,46 @@ namespace KVSWebApplication.Auftragseingang
 
 
         // find all showed checkboxes and check are they empty or not
-        //protected bool CheckIfBoxenNotEmpty()
-        //{
-        //    bool result = false;
-        //    bool hasVisibleControl = false;
-        //    var allControls = getAllControls();
+        protected virtual bool CheckIfBoxenNotEmpty()
+        {
+            bool result = false;
+            //    bool hasVisibleControl = false;
+            //    var allControls = getAllControls();
 
-        //    //if empty - shouldnt be checked
-        //    if (String.IsNullOrEmpty(PruefzifferBox.Text))
-        //        PruefzifferBox.Enabled = false;
+            //    //if empty - shouldnt be checked
+            //    if (String.IsNullOrEmpty(PruefzifferBox.Text))
+            //        PruefzifferBox.Enabled = false;
 
-        //    if (String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue) || ProductTree.Nodes.Count == 0)
-        //    {
-        //        return true;
-        //    }
+            //    if (String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue) || ProductTree.Nodes.Count == 0)
+            //    {
+            //        return true;
+            //    }
 
-        //    foreach (var control in allControls)
-        //    {
-        //        if (control.Visible == true)
-        //        {
-        //            hasVisibleControl = true;
-        //            foreach (var subControl in control.Controls)
-        //            {
-        //                if (subControl is RadTextBox)
-        //                {
-        //                    var box = subControl as RadTextBox;
-        //                    if (box.Enabled == true && String.IsNullOrEmpty(box.Text) && (box.ID == "VINBox"))
-        //                    {
-        //                        box.BorderColor = System.Drawing.Color.Red;
-        //                        result = true;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
+            //    foreach (var control in allControls)
+            //    {
+            //        if (control.Visible == true)
+            //        {
+            //            hasVisibleControl = true;
+            //            foreach (var subControl in control.Controls)
+            //            {
+            //                if (subControl is RadTextBox)
+            //                {
+            //                    var box = subControl as RadTextBox;
+            //                    if (box.Enabled == true && String.IsNullOrEmpty(box.Text) && (box.ID == "VINBox"))
+            //                    {
+            //                        box.BorderColor = System.Drawing.Color.Red;
+            //                        result = true;
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
 
-        //    if (hasVisibleControl == false)
-        //        result = true;
+            //    if (hasVisibleControl == false)
+            //        result = true;
 
-        //    return result;
-        //}
+            return result;
+        }
 
         #endregion
 
@@ -695,9 +717,130 @@ namespace KVSWebApplication.Auftragseingang
             }
         }
 
+        protected Vehicle GetVehicle()
+        {
+            Vehicle result = null;
+            DateTime? FirstRegistrationDate = null;
+            int? color = null;
+
+            if (!String.IsNullOrEmpty(FirstRegistrationDatePicker.SelectedDate.ToString()))
+                FirstRegistrationDate = FirstRegistrationDatePicker.SelectedDate;
+
+            if (!String.IsNullOrEmpty(Color_TextBox.Text))
+                color = Convert.ToInt32(Color_TextBox.Text);
+
+            if (!String.IsNullOrEmpty(VehicleId.Value)) //falls auto gefunden wurde
+            {
+                result = VehicleManager.GetById(Int32.Parse(VehicleId.Value));
+            }
+            else // neues Auto muss angelegt werden
+            {
+                result = VehicleManager.CreateVehicle(VIN_TextBox.Text, HSN_TextBox.Text, TSN_TextBox.Text, Variant_TextBox.Text,
+                    FirstRegistrationDate, color);
+            }
+
+            return result;
+        }
+
+        protected CarOwner GetCarOwner()
+        {
+            var newAdress = AdressManager.CreateAdress(Adress_Street_TextBox.Text, Adress_StreetNumber_TextBox.Text, Adress_Zipcode_TextBox.Text,
+                                    Adress_City_TextBox.Text, Adress_Country_TextBox.Text);
+            // another logic after new/existing Vehicle
+            var newContact = ContactManager.CreateContact(Contact_Phone_TextBox.Text, Contact_Fax_TextBox.Text, Contact_MobilePhone_TextBox.Text, Contact_Email_TextBox.Text);
+            var newBankAccount = BankAccountManager.CreateBankAccount(BankNameTextBox.Text, AccountNumberTextBox.Text,
+                BankCodeTextBox.Text, IBANTextBox.Text, BICTextBox.Text);
+
+            return CarOwnerManager.CreateCarOwner(CarOwner_Name_TextBox.Text, CarOwner_FirstName_TextBox.Text, newBankAccount, newContact, newAdress);
+        }
+
+        protected Registration CreateRegistration(CarOwner newCarOwner, Vehicle newVehicle, string licenceNumber)
+        {
+            var newZulassungsDatum = DateTime.Now;
+            if (RegistrationDatePicker.SelectedDate.HasValue)
+            {
+                newZulassungsDatum = RegistrationDatePicker.SelectedDate.Value;
+            }
+            
+            return RegistrationManager.CreateRegistration(newCarOwner, newVehicle, licenceNumber, Registration_eVBNumber_TextBox.Text,
+                Registration_GeneralInspectionDatePicker.SelectedDate, newZulassungsDatum, RegistrationDocumentNumber_TextBox.Text, 
+                EmissionsCode_TextBox.Text);
+        }
+
+        protected RegistrationOrder CreateRegistrationOrder(RegistrationOrderTypes registrationOrderType, string licenceNumber,
+            string oldKennzeichen, Vehicle newVehicle, Registration newRegistration, int? locationId)
+        {
+            return RegistrationOrderManager.CreateRegistrationOrder(
+                    Int32.Parse(CustomerDropDown.SelectedValue), licenceNumber, oldKennzeichen, Registration_eVBNumber_TextBox.Text, newVehicle, newRegistration,
+                    registrationOrderType, locationId, Int32.Parse(AdmissionPointDropDown.SelectedValue), FreeTextBox.Text);
+        }
+
+        protected void ProcessRegistrationOrder(RegistrationOrder newRegistrationOrder, int productId, Price price, CostCenter costCenter,
+            Registration newRegistration, Vehicle newVehicle, int? locationId, string senderId)
+        {
+            var newOrderItem1 = OrderManager.AddOrderItem(newRegistrationOrder.Order, productId, price.Amount, 1, costCenter, null, false);
+            if (price.AuthorativeCharge.HasValue)
+            {
+                var newOrderItem2 = OrderManager.AddOrderItem(newRegistrationOrder.Order, productId, price.AuthorativeCharge.Value, 1, costCenter,
+                    newOrderItem1.Id, true);
+            }
+
+            if (ProductTree.Nodes.Count > 1)
+            {
+                //TODO AddAnotherProducts(newRegistrationOrder, locationId);
+            }
+
+            if (String.IsNullOrEmpty(VehicleId.Value)) //update CurrentRegistration Id
+            {
+                newVehicle.CurrentRegistrationId = newRegistration.Id;
+                VehicleManager.SaveChanges();
+            }
+
+            if (senderId != "rbtSameOrder")
+                MakeAllControlsEmpty();
+
+            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "finishedMessage", "alert('Auftrag wurde erfolgreich angelegt.');", true);
+        }
+
+        protected bool CheckRegistrationFields()
+        {
+            var result = CheckIfBoxenNotEmpty(); //gibt es leer boxen, die angezeigt sind
+
+            if(result)
+            {
+                if (ProductTree.Nodes.Count == 0)
+                {
+                    ErrorLeereTextBoxenCaption.Text = "Bitte Dienstleistung hinzufügen!";
+                    ErrorLeereTextBoxenCaption.Visible = true;
+                }
+                else if (CostCenterDropDown != null && String.IsNullOrEmpty(CostCenterDropDown.SelectedValue))
+                {
+                    ErrorLeereTextBoxenCaption.Text = "Bitte tragen Sie die Kostenstelle ein!";
+                    ErrorLeereTextBoxenCaption.Visible = true;
+                }
+                else if (LocationDropDown != null && String.IsNullOrEmpty(LocationDropDown.SelectedValue))
+                {
+                    ErrorLeereTextBoxenCaption.Text = "Bitte wählen Sie der Standort aus!";
+                    ErrorLeereTextBoxenCaption.Visible = true;
+                }
+                else if (AdmissionPointDropDown != null && String.IsNullOrEmpty(AdmissionPointDropDown.SelectedValue))
+                {
+                    ErrorLeereTextBoxenCaption.Text = "Bitte wählen Sie die Zulassungsstelle aus!";
+                    ErrorLeereTextBoxenCaption.Visible = true;
+                }
+                else
+                {
+                    ErrorLeereTextBoxenCaption.Text = "Bitte Pflichtfelder überprüfen!";
+                    ErrorLeereTextBoxenCaption.Visible = true;
+                }
+            }
+
+            return result;
+        }
+
         #endregion
 
-        #region Private Methods
+            #region Private Methods
 
         private void OpenPrintfile(string myFile)
         {

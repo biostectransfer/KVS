@@ -42,6 +42,12 @@ namespace KVSConfiguration
             container.RegisterType<IVehicleManager, VehicleManager>(new PerRequestLifetimeManager()); 
             container.RegisterType<IRegistrationLocationManager, RegistrationLocationManager>(new PerRequestLifetimeManager()); 
             container.RegisterType<IRegistrationManager, RegistrationManager>(new PerRequestLifetimeManager()); 
+            container.RegisterType<IRegistrationOrderTypeManager, RegistrationOrderTypeManager>(new PerRequestLifetimeManager()); 
+            container.RegisterType<IRegistrationOrderManager, RegistrationOrderManager>(new PerRequestLifetimeManager());
+            container.RegisterType<IDeregistrationOrderManager, DeregistrationOrderManager>(new PerRequestLifetimeManager());
+            container.RegisterType<IContactManager, ContactManager>(new PerRequestLifetimeManager()); 
+            container.RegisterType<IBankAccountManager, BankAccountManager>(new PerRequestLifetimeManager()); 
+            container.RegisterType<ICarOwnerManager, CarOwnerManager>(new PerRequestLifetimeManager()); 
         }
     }
 }

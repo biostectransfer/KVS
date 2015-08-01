@@ -24,11 +24,13 @@ namespace KVSWebApplication.Auftragseingang
         protected override RadScriptManager RadScriptManager { get { return ((ZulassungLaufkunde)Page).getScriptManager(); } }
         protected override RadNumericTextBox Discount { get { return this.txbDiscount; } }
         protected override HiddenField SmallCustomerOrder { get { return this.smallCustomerOrderHiddenField; } }
+        protected override HiddenField VehicleId { get { return this.VehicleIdField; } }
 
         #region Dates
 
         protected override RadMonthYearPicker Registration_GeneralInspectionDatePicker { get { return this.Registration_GeneralInspectionDateBox; } }
         protected override RadDatePicker FirstRegistrationDatePicker { get { return this.FirstRegistrationDateBox; } }
+        protected override RadDatePicker RegistrationDatePicker { get { return this.ZulassungsdatumPicker; } }
 
         #endregion
 
@@ -63,6 +65,18 @@ namespace KVSWebApplication.Auftragseingang
         protected override TextBox City_TextBox { get { return this.CityTextBox; } }
         protected override TextBox Country_TextBox { get { return this.CountryTextBox; } }
         protected override TextBox InvoiceRecipient_TextBox { get { return this.InvoiceRecipient; } }
+        protected override RadTextBox VIN_TextBox { get { return this.VINBox; } }
+        protected override RadTextBox HSN_TextBox { get { return this.HSNBox; } }
+        protected override RadTextBox TSN_TextBox { get { return this.TSNBox; } }
+        protected override RadTextBox Variant_TextBox { get { return this.Vehicle_VariantBox; } }
+        protected override RadTextBox Color_TextBox { get { return this.Vehicle_ColorBox; } }
+        protected override RadTextBox Contact_Phone_TextBox { get { return this.Contact_PhoneBox; } }
+        protected override RadTextBox Contact_Fax_TextBox { get { return this.Contact_FaxBox; } }
+        protected override RadTextBox Contact_MobilePhone_TextBox { get { return this.Contact_MobilePhoneBox; } }
+        protected override RadTextBox Contact_Email_TextBox { get { return this.Contact_EmailBox; } }
+        protected override RadTextBox EmissionsCode_TextBox { get { return this.EmissionsCodeBox; } }
+        protected override RadTextBox RegistrationDocumentNumber_TextBox { get { return this.RegDocNumBox; } }
+        protected override RadTextBox FreeTextBox { get { return this.FreiTextBox; } }
         #endregion
 
         #region Panels
@@ -349,14 +363,11 @@ namespace KVSWebApplication.Auftragseingang
 
         protected void RegistrationOrderDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
-            var regOrdQuery = from regord in con.RegistrationOrderType
-                              select new
-                              {
-                                  Name = regord.Name,
-                                  Value = regord.Id
-                              };
-            e.Result = regOrdQuery;
+            e.Result = RegistrationOrderTypeManager.GetEntities().Select(o => new
+            {
+                Name = o.Name,
+                Value = o.Id
+            }).ToList();
         }
 
         #endregion
@@ -365,8 +376,6 @@ namespace KVSWebApplication.Auftragseingang
         //Neue Auftragseingang
         protected void AuftragZulassenButton_Clicked(object sender, EventArgs e)
         {
-            string ProduktId = "";
-
             LoadState();
             ZulassungOkLabel.Visible = false;
             SubmitChangesErrorLabel.Visible = false;
@@ -401,7 +410,7 @@ namespace KVSWebApplication.Auftragseingang
                 AddCustomer();
                 RadTreeNode node = DienstleistungTreeView.Nodes[0];
                 string[] splited = node.Value.Split(';');
-                ProduktId = splited[0];
+                var produktId = Int32.Parse(splited[0]);
                 ErrorLeereTextBoxenLabel.Visible = false;
                 try
                 {
@@ -517,7 +526,7 @@ namespace KVSWebApplication.Auftragseingang
                         }
                         newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text,
                             Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
-                        price = FindPrice(ProduktId);
+                        price = FindPrice(produktId);
                         if (price == null)
                         {
                             ErrorLeereTextBoxenLabel.Text = "Kein Preis gefunden!";
@@ -573,7 +582,7 @@ namespace KVSWebApplication.Auftragseingang
                         }
                         newRegistration = Registration.CreateRegistration(newCarOwner, newVehicle, kennzeichen, Registration_eVBNumberBox.Text,
                             Registration_GeneralInspectionDateBox.SelectedDate, newZulassungsDatum, RegDocNumBox.Text, EmissionsCodeBox.Text, dbContext);
-                        price = FindPrice(ProduktId);
+                        price = FindPrice(produktId);
                         if (price == null)
                         {
                             ErrorLeereTextBoxenLabel.Text = "Kein Preis gefunden!";

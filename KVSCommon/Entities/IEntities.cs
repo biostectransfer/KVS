@@ -13,7 +13,7 @@ namespace KVSCommon.Entities
     /// </summary>
     public interface IEntities
     {
-        void SetLogUserId(int id);
+        int? LogUserId { get; set; }
 
         /// <summary>
         /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
