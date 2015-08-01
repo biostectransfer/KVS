@@ -54,3 +54,18 @@ ALTER TABLE [dbo].[Registration]
  [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
  [DeleteDate] datetime2(2) NULL
 GO
+ALTER TABLE [dbo].[InvoiceItem]
+ ADD [CreateDate] datetime2(2) NOT NULL default(GetDate()),
+ [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
+ [DeleteDate] datetime2(2) NULL
+GO
+ALTER TABLE [dbo].[OrderStatus]
+ ADD [CreateDate] datetime2(2) NOT NULL default(GetDate()),
+ [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
+ [DeleteDate] datetime2(2) NULL
+GO
+ALTER TABLE [dbo].[OrderType]
+ ADD [CreateDate] datetime2(2) NOT NULL default(GetDate()),
+ [ChangeDate] datetime2(2) NOT NULL default(GetDate()),
+ [DeleteDate] datetime2(2) NULL
+GO

@@ -64,10 +64,17 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             VehicleManager = (IVehicleManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IVehicleManager));
             RegistrationLocationManager = (IRegistrationLocationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationLocationManager));
             RegistrationManager = (IRegistrationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationManager));
+            OrderTypeManager = (IOrderTypeManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IOrderTypeManager));
+            OrderStatusManager = (IOrderStatusManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IOrderStatusManager));
+
+            OrderStatuses = OrderStatusManager.GetEntities().ToList();
+            OrderTypesCollection = OrderTypeManager.GetEntities().ToList();
         }
 
         #region Common
 
+        protected IEnumerable<OrderStatus> OrderStatuses { get; set; }
+        protected IEnumerable<OrderType> OrderTypesCollection { get; set; }
         protected abstract PermissionTypes PagePermission { get; }
         protected abstract OrderTypes OrderType { get; }
         protected abstract OrderStatusTypes OrderStatusType { get; }
@@ -101,6 +108,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         public IBicManager BicManager { get; set; }
         public IUserManager UserManager { get; set; }
         public IOrderManager OrderManager { get; set; }
+        public IOrderTypeManager OrderTypeManager { get; set; }
+        public IOrderStatusManager OrderStatusManager { get; set; }
         public IPriceManager PriceManager { get; set; }
         public IProductManager ProductManager { get; set; }
         public ILargeCustomerRequiredFieldManager LargeCustomerRequiredFieldManager { get; set; }        
@@ -139,32 +148,32 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         {
             if (CustomerTypeDropDown.SelectedValue == "0")
             {
-                var allCustomers = new List<OrderViewModel>(GetSmallCustomerOrders().ToList());
-                allCustomers.AddRange(GetLargeCustomerOrders().ToList());
+                var allCustomerOrders = new List<OrderViewModel>(GetSmallCustomerOrders().ToList());
+                allCustomerOrders.AddRange(GetLargeCustomerOrders().ToList());
 
-                e.Result = allCustomers;
+                e.Result = allCustomerOrders;
             }
             else if (CustomerTypeDropDown.SelectedValue == "1")
             {
                 SmallCustomerOrdersFunctions();
 
-                var smallCustomers = GetSmallCustomerOrders();
+                var smallCustomerOrders = GetSmallCustomerOrders();
 
                 if (!String.IsNullOrEmpty(CustomerDropDown.SelectedValue))
                 {
-                    smallCustomers = smallCustomers.Where(q => q.customerId == Int32.Parse(CustomerDropDown.SelectedValue));
+                    smallCustomerOrders = smallCustomerOrders.Where(q => q.customerId == Int32.Parse(CustomerDropDown.SelectedValue));
                 }
 
-                e.Result = smallCustomers.ToList();
+                e.Result = smallCustomerOrders.ToList();
             }
             //select all values for large customers
             else if (CustomerTypeDropDown.SelectedValue == "2")
             {
-                var largeCustomers = GetLargeCustomerOrders();
+                var largeCustomerOrders = GetLargeCustomerOrders();
 
                 if (!String.IsNullOrEmpty(CustomerDropDown.SelectedValue))
                 {
-                    largeCustomers = largeCustomers.Where(q => q.customerId == Int32.Parse(CustomerDropDown.SelectedValue));
+                    largeCustomerOrders = largeCustomerOrders.ToList().Where(q => q.customerId == Int32.Parse(CustomerDropDown.SelectedValue)).AsQueryable();
                 }
                 
                 if (Session["orderNumberSearch"] != null && Session["orderStatusSearch"] != null)
@@ -174,15 +183,14 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         if (Session["orderStatusSearch"].ToString().Contains("Offen"))
                         {
                             int orderNumber = Convert.ToInt32(Session["orderNumberSearch"].ToString());
-                            largeCustomers = largeCustomers.Where(q => q.OrderNumber == orderNumber);
-
+                            largeCustomerOrders = largeCustomerOrders.Where(q => q.OrderNumber == orderNumber);
                         }
                     }
                 }
 
                 LargeCustomerOrdersFunctions();
 
-                e.Result = largeCustomers.ToList();
+                e.Result = largeCustomerOrders.ToList();
             }
         }
 
@@ -200,25 +208,29 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             }
             else if (CustomerTypeDropDown.SelectedValue == "1") //Small Customers
             {
-                var customerQuery = from cust in con.Customer
-                                    where cust.Id == cust.SmallCustomer.CustomerId
-                                    select new
-                                    {
-                                        Name = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
-                                        Value = cust.Id,
-                                        Matchcode = cust.MatchCode,
-                                        Kundennummer = cust.CustomerNumber
-                                    };
+                var customerQuery = CustomerManager.GetEntities(o => o.SmallCustomer != null).
+                    Select(cust => new
+                    {
+                        Name = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
+                        Value = cust.Id,
+                        Matchcode = cust.MatchCode,
+                        Kundennummer = cust.CustomerNumber
+                    });
 
-                e.Result = customerQuery;
+                e.Result = customerQuery.ToList();
             }
             else if (CustomerTypeDropDown.SelectedValue == "2") //Large Customers
             {
-                var customerQuery = from cust in con.Customer
-                                    where cust.Id == cust.LargeCustomer.CustomerId
-                                    select new { Name = cust.Name, Value = cust.Id, Matchcode = cust.MatchCode, Kundennummer = cust.CustomerNumber };
+                var customerQuery = CustomerManager.GetEntities(o => o.LargeCustomer != null).
+                    Select(cust => new
+                    {
+                        Name = cust.Name,
+                        Value = cust.Id,
+                        Matchcode = cust.MatchCode,
+                        Kundennummer = cust.CustomerNumber
+                    });
 
-                e.Result = customerQuery;
+                e.Result = customerQuery.ToList();
             }
         }
 
@@ -234,80 +246,52 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         {
         }
 
-        protected IQueryable<OrderViewModel> GetSmallCustomerOrders()
+        protected IEnumerable<OrderViewModel> GetSmallCustomerOrders()
         {
-            KVSEntities con = new KVSEntities();
-
-            var smallCustomerQuery = from ord in con.Order
-                                     join ordst in con.OrderStatus on ord.Status equals ordst.Id
-                                     join cust in con.Customer on ord.CustomerId equals cust.Id
-                                     join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
-                                     join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
-                                     join reg in con.Registration on regord.RegistrationId equals reg.Id
-                                     join veh in con.Vehicle on regord.VehicleId equals veh.Id
-                                     join smc in con.SmallCustomer on cust.Id equals smc.CustomerId
-                                     orderby ord.OrderNumber descending
-                                     where ord.Status == (int)this.OrderStatusType && ordtype.Id == (int)this.OrderType && 
-                                     ord.HasError.GetValueOrDefault(false) != true
-                                     select new OrderViewModel()
-                                     {
-                                         OrderNumber = ord.OrderNumber,
-                                         customerId = cust.Id,
-                                         //customerID = ord.CustomerId,
-                                         CreateDate = ord.CreateDate,
-                                         Status = ordst.Name,
-                                         CustomerName = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + "  " +
-                                         cust.SmallCustomer.Person.Name : cust.Name,
-                                         CustomerLocation = "",
-                                         Kennzeichen = reg.Licencenumber,
-                                         VIN = veh.VIN,
-                                         TSN = veh.TSN,
-                                         HSN = veh.HSN,
-                                         OrderTyp = ordtype.Name,
-                                         Freitext = ord.FreeText,
-                                         Geprueft = ord.Geprueft == null ? "Nein" : "Ja",
-                                         Datum = ord.RegistrationOrder.Registration.RegistrationDate
-                                     };
-
-            return smallCustomerQuery;
+            return OrderManager.GetEntities(o => o.Customer.SmallCustomer != null && 
+                o.Status == (int)this.OrderStatusType && o.OrderTypeId == (int)this.OrderType &&
+                o.HasError.GetValueOrDefault(false) != true).Select(ord => new OrderViewModel()
+                {
+                    OrderNumber = ord.OrderNumber,
+                    customerId = ord.CustomerId,
+                    CreateDate = ord.CreateDate,
+                    Status = OrderStatuses.FirstOrDefault(o => o.Id == ord.Status).Name,
+                    CustomerName = ord.Customer.SmallCustomer.Person != null ? 
+                        ord.Customer.SmallCustomer.Person.FirstName + "  " + ord.Customer.SmallCustomer.Person.Name : ord.Customer.Name,
+                    CustomerLocation = "",
+                    Kennzeichen = ord.RegistrationOrder.Licencenumber,
+                    VIN = ord.RegistrationOrder.Vehicle.VIN,
+                    TSN = ord.RegistrationOrder.Vehicle.TSN,
+                    HSN = ord.RegistrationOrder.Vehicle.HSN,
+                    OrderTyp = OrderTypesCollection.FirstOrDefault(o => o.Id == ord.OrderTypeId).Name,
+                    Freitext = ord.FreeText,
+                    Geprueft = ord.Geprueft == null ? "Nein" : "Ja",
+                    Datum = ord.RegistrationOrder.Registration.RegistrationDate
+                });
         }
         
-        protected IQueryable<OrderViewModel> GetLargeCustomerOrders()
+        protected IEnumerable<OrderViewModel> GetLargeCustomerOrders()
         {
-            KVSEntities con = new KVSEntities();
-
-            var zulassungQuery = from ord in con.Order
-                                 join ordst in con.OrderStatus on ord.Status equals ordst.Id
-                                 join cust in con.Customer on ord.CustomerId equals cust.Id
-                                 join ordtype in con.OrderType on ord.OrderTypeId equals ordtype.Id
-                                 join loc in con.Location on ord.LocationId equals loc.Id
-                                 join regord in con.RegistrationOrder on ord.OrderNumber equals regord.OrderNumber
-                                 join reg in con.Registration on regord.RegistrationId equals reg.Id
-                                 join veh in con.Vehicle on regord.VehicleId equals veh.Id
-                                 join lmc in con.LargeCustomer on cust.Id equals lmc.CustomerId
-                                 orderby ord.OrderNumber descending
-                                 where ord.Status == (int)this.OrderStatusType && ordtype.Id == (int)this.OrderType &&
-                                 ord.HasError.GetValueOrDefault(false) != true
-                                 select new OrderViewModel()
-                                 {
-                                     OrderNumber = ord.OrderNumber,
-                                     locationId = loc.Id,
-                                     //customerID = cust.Id,
-                                     CreateDate = ord.CreateDate,
-                                     Status = ordst.Name,
-                                     CustomerName = cust.Name,
-                                     Kennzeichen = reg.Licencenumber,
-                                     VIN = veh.VIN,
-                                     TSN = veh.TSN,
-                                     HSN = veh.HSN,
-                                     CustomerLocation = loc.Name,
-                                     OrderTyp = ordtype.Name,
-                                     Freitext = ord.FreeText,
-                                     Geprueft = ord.Geprueft == null ? "Nein" : "Ja",
-                                     Datum = ord.RegistrationOrder.Registration.RegistrationDate
-                                 };
-
-            return zulassungQuery;
+            return OrderManager.GetEntities(o => o.Customer.LargeCustomer != null &&
+                o.Status == (int)this.OrderStatusType && o.OrderTypeId == (int)this.OrderType &&
+                o.HasError.GetValueOrDefault(false) != true).Select(ord => new OrderViewModel()
+                {
+                    OrderNumber = ord.OrderNumber,
+                    locationId = ord.LocationId.HasValue ? ord.LocationId.Value : 0,
+                    customerId = ord.CustomerId,
+                    CreateDate = ord.CreateDate,
+                    Status = OrderStatuses.FirstOrDefault(o => o.Id == ord.Status).Name,
+                    CustomerName = ord.Customer.Name,
+                    CustomerLocation = ord.Location != null ? ord.Location.Name : String.Empty,
+                    Kennzeichen = ord.RegistrationOrder.Licencenumber,
+                    VIN = ord.RegistrationOrder.Vehicle.VIN,
+                    TSN = ord.RegistrationOrder.Vehicle.TSN,
+                    HSN = ord.RegistrationOrder.Vehicle.HSN,
+                    OrderTyp = OrderTypesCollection.FirstOrDefault(o => o.Id == ord.OrderTypeId).Name,
+                    Freitext = ord.FreeText,
+                    Geprueft = ord.Geprueft == null ? "Nein" : "Ja",
+                    Datum = ord.RegistrationOrder.Registration.RegistrationDate
+                });
         }
 
         #endregion

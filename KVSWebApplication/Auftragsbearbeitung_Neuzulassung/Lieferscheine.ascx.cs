@@ -372,6 +372,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             }
             else
             {
+                e.Result = new List<string>();
+
                 OffenePanel.Visible = false;
                 NochOffenAuftraegeRadGrid.Enabled = false;
                 AllesIsOkeyBeiOffene.Visible = false;

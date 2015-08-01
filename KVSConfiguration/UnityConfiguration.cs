@@ -27,6 +27,8 @@ namespace KVSConfiguration
             container.RegisterType<IBicManager, BicManager>(new PerRequestLifetimeManager());
             container.RegisterType<IUserManager, UserManager>(new PerRequestLifetimeManager());
             container.RegisterType<IOrderManager, OrderManager>(new PerRequestLifetimeManager());
+            container.RegisterType<IOrderStatusManager, OrderStatusManager>(new PerRequestLifetimeManager());
+            container.RegisterType<IOrderTypeManager, OrderTypeManager>(new PerRequestLifetimeManager());
             container.RegisterType<IPriceManager, PriceManager>(new PerRequestLifetimeManager());
             container.RegisterType<IProductManager, ProductManager>(new PerRequestLifetimeManager()); 
             container.RegisterType<ILargeCustomerRequiredFieldManager, LargeCustomerRequiredFieldManager>(new PerRequestLifetimeManager()); 
