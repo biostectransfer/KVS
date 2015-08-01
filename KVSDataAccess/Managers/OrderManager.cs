@@ -101,7 +101,6 @@ namespace KVSDataAccess.Managers
             }
             else
             {
-
                 return false;
             }
         }
@@ -159,6 +158,89 @@ namespace KVSDataAccess.Managers
                 DataContext.WriteLogItem("Auftragsposition " + orderItemToDelete.ProductName + " mit der Auftragsnummer " + orderItemToDelete.Order.OrderNumber + " wurde gelöscht.",
                     LogTypes.DELETE, orderItemToDelete.Id, "OrderItem");
             }
+        }
+
+        /// <summary>
+        /// Sendet eine Benachrichtigungsemail über den Abschluss des angegebenen Auftrag.
+        /// </summary>
+        /// <param name="order">Der Auftrag.</param>
+        /// <param name="fromEmailAddress">Absenderemailadresse.</param>
+        /// <param name="smtpServer">SMTP-Server für den Emailversand.</param>
+        /// <remarks>Die Methode ruft dbContext.SubmitChanges() auf, um den Status der Versendung zu speichern.</remarks>
+        public void SendOrderFinishedNote(Order order, string fromEmailAddress, string smtpServer)
+        {
+            var emails = new List<string>();
+            var customer = order.Customer.LargeCustomer;
+            if (customer == null)
+            {
+                return;
+            }
+
+            if (customer.SendOrderFinishedNoteToLocation.GetValueOrDefault(false))
+            {
+                emails.AddRange(order.Location.Mailinglist.Where(q => q.MailinglistType.Name == "Auftragserledigung").Select(q => q.Email).ToList());
+            }
+
+            if (customer.SendOrderFinishedNoteToCustomer.GetValueOrDefault(false))
+            {
+                emails.AddRange(customer.Mailinglist.Where(q => q.MailinglistType.Name == "Auftragserledigung").Select(q => q.Email).ToList());
+            }
+
+            if (emails.Count > 0)
+            {
+                SendOrderFinishedNote(new List<Order>() { order }.AsEnumerable(), emails, fromEmailAddress, smtpServer);
+                order.HasFinishedNoteBeenSent = true;
+                SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Sendet eine Email mit einer Auflistung der in <paramref name="orders"/> übergebenen Aufträge.
+        /// </summary>
+        /// <param name="orders">Aufträge, deren Daten versendet werden sollen.</param>
+        /// <param name="toEmailAddresses">Liste der Empfängeremailadressen.</param>
+        /// <param name="fromEmailAddress">Absenderemailadresse.</param>
+        /// <param name="smtpServer">SMTP-Server für den Emailversand.</param>
+        private void SendOrderFinishedNote(IEnumerable<Order> orders, List<string> toEmailAddresses, string fromEmailAddress, string smtpServer)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("<p>Sehr geehrte Damen und Herren, </p>");
+            if (orders.Count() > 1)
+            {
+                sb.AppendLine("<p>im Anschluss finden Sie die Liste der kürzlich erledigten Zulassungs- und Abmeldeaufträge.</p>");
+            }
+            else
+            {
+                sb.AppendLine("<p>nachfolgender Auftrag wurde kürzlich erledigt.</p>");
+            }
+
+            sb.AppendLine("<table border=1>");
+            sb.AppendLine("<tr>");
+            sb.AppendLine("<th>Auftragsnummer</th>");
+            sb.AppendLine("<th>FIN</th>");
+            sb.AppendLine("<th>Kennzeichen</th>");
+            sb.AppendLine("<th>Halter</th>");
+            sb.AppendLine("<th>Erledigungsdatum</th>");
+            sb.AppendLine("<tr/>");
+
+            foreach (var order in orders.OrderBy(q => q.OrderNumber))
+            {
+                var vehicle = order.RegistrationOrder != null ? order.RegistrationOrder.Vehicle : order.DeregistrationOrder.Vehicle;
+                var registration = order.RegistrationOrder != null ? order.RegistrationOrder.Registration : order.DeregistrationOrder.Registration;
+                sb.AppendLine("<tr>");
+                sb.AppendLine("<td>" + order.OrderNumber.ToString() + "</td>");
+                sb.AppendLine("<td>" + vehicle.VIN + "</td>");
+                sb.AppendLine("<td>" + registration.Licencenumber + "</td>");
+                sb.AppendLine("<td>" + (registration.CarOwner != null ? registration.CarOwner.FullName : string.Empty) + "</td>");
+                sb.AppendLine("<td>" + (order.FinishDate.HasValue ? order.FinishDate.Value.ToString("dd.MM.yyyy HH:mm") : string.Empty) + "</td>");
+                sb.AppendLine("</tr>");
+            }
+            sb.AppendLine("</table>");
+            sb.AppendLine("<br/><br/>");
+            sb.AppendLine("<p>Mit freundlichen Grüßen,<br/>");
+            sb.AppendLine("Ihr CASE-Team</p>");
+
+            KVSCommon.Utility.Email.SendMail(fromEmailAddress, toEmailAddresses, "Benachrichtigung über erledigte Aufträge", sb.ToString(), null, null, smtpServer, null);
         }
     }
 }

@@ -56,5 +56,14 @@ namespace KVSCommon.Managers
         /// </summary>
         /// <param name="orderItemId">AuftragspositionID</param>
         void RemoveOrderItem(int orderItemId);
+
+        /// <summary>
+        /// Sendet eine Benachrichtigungsemail über den Abschluss des angegebenen Auftrag.
+        /// </summary>
+        /// <param name="order">Der Auftrag.</param>
+        /// <param name="fromEmailAddress">Absenderemailadresse.</param>
+        /// <param name="smtpServer">SMTP-Server für den Emailversand.</param>
+        /// <remarks>Die Methode ruft dbContext.SubmitChanges() auf, um den Status der Versendung zu speichern.</remarks>
+        void SendOrderFinishedNote(Order order, string fromEmailAddress, string smtpServer);
     }
 }

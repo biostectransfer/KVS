@@ -39,31 +39,6 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
         #region Event handlers
 
-        protected void RadGridRadGridOffNeuzulassung_PreRender(object sender, EventArgs e)
-        {
-
-            HideExpandColumnRecursive(RadGridOffNeuzulassung.MasterTableView);
-
-        }
-        /// <summary>
-        /// Lilfsmethoden fuer das oeffnen der Grid
-        /// </summary>
-        /// <param name="tableView"></param>
-        public void HideExpandColumnRecursive(GridTableView tableView)
-        {
-            GridItem[] nestedViewItems = tableView.GetItems(GridItemType.NestedView);
-            foreach (GridNestedViewItem nestedViewItem in nestedViewItems)
-            {
-                foreach (GridTableView nestedView in nestedViewItem.NestedTableViews)
-                {
-
-                    nestedView.ParentItem.Expanded = true;
-
-                    HideExpandColumnRecursive(nestedView);
-                }
-            }
-        }
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (UserManager.CheckPermissionsForUser(Session["UserPermissions"], PagePermission))
@@ -118,6 +93,30 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             }
         }
 
+        protected void RadGridRadGridOffNeuzulassung_PreRender(object sender, EventArgs e)
+        {
+            HideExpandColumnRecursive(RadGridOffNeuzulassung.MasterTableView);
+        }
+        
+        /// <summary>
+        /// Lilfsmethoden fuer das oeffnen der Grid
+        /// </summary>
+        /// <param name="tableView"></param>
+        public void HideExpandColumnRecursive(GridTableView tableView)
+        {
+            GridItem[] nestedViewItems = tableView.GetItems(GridItemType.NestedView);
+            foreach (GridNestedViewItem nestedViewItem in nestedViewItems)
+            {
+                foreach (GridTableView nestedView in nestedViewItem.NestedTableViews)
+                {
+
+                    nestedView.ParentItem.Expanded = true;
+
+                    HideExpandColumnRecursive(nestedView);
+                }
+            }
+        }
+        
         // Large oder small Customer
         protected void SmallLargeCustomerIndex_Changed(object sender, EventArgs e)
         {
@@ -139,24 +138,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             Session["CustomerIndex"] = RadComboBoxCustomerOffenNeuzulassung.SelectedValue;
             Session["CustomerId"] = CustomerDropDownListOffenNeuzulassung.SelectedValue;
         }
-
-        /// <summary>
-        /// Datasource fuer die Dienstleistungen
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected void ProductLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
-        {
-            e.Result = ProductManager.GetEntities().
-                               Select(prod => new
-                               {
-                                   ItemNumber = prod.ItemNumber,
-                                   Name = prod.Name,
-                                   Value = prod.Id,
-                                   Category = prod.ProductCategory.Name
-                               }).ToList();
-        }
-
+        
         /// <summary>
         /// Datasource fuer die Detailgrid
         /// </summary>
@@ -165,28 +147,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         protected void RadGridZulOffen_DetailTableDataBind(object source, GridDetailTableDataBindEventArgs e)
         {
             var item = (GridDataItem)e.DetailTableView.ParentItem;
-            var orderNumber = Int32.Parse(item["OrderNumber"].Text);
-
-            var positions = OrderManager.GetOrderItems(orderNumber).Where(o => !o.SuperOrderItemId.HasValue).ToList();
-            var positionIds = positions.Select(o => o.Id);
-            var authChargePositions = OrderManager.GetOrderItems().Where(o =>
-                o.SuperOrderItemId.HasValue && positionIds.Contains(o.SuperOrderItemId.Value)).ToList();
-
-            e.DetailTableView.DataSource = positions.
-                Select(ordItem =>
-                {
-                    var authCharge = authChargePositions.FirstOrDefault(o => o.SuperOrderItemId == ordItem.Id);
-
-                    return new
-                    {
-                        OrderItemId = ordItem.Id,
-                        Amount = ordItem.Amount == 0 ? "kein Preis" : (Math.Round(ordItem.Amount, 2, MidpointRounding.AwayFromZero)).ToString(),
-                        ProductName = ordItem.IsAuthorativeCharge ? ordItem.ProductName + " (Amtl.Gebühr)" : ordItem.ProductName,
-                        AmtGebuhr = authCharge == null ? false : true,
-                        AuthCharge = authCharge == null || authCharge.Amount == 0 ? "kein Preis" : (Math.Round(authCharge.Amount, 2, MidpointRounding.AwayFromZero)).ToString(),
-                        AuthChargeId = authCharge == null ? (int?)null : authCharge.Id,
-                    };
-                }).ToList();
+    
+            e.DetailTableView.DataSource = GetOrderPositions(item["OrderNumber"].Text);
         }
 
         /// <summary>
@@ -258,6 +220,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             {
                 ZulassungErrLabel.Visible = true;
             }
+
             CheckOpenedOrders();
         }
 

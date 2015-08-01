@@ -3,6 +3,7 @@ using KVSCommon.Enums;
 using KVSCommon.Managers;
 using Microsoft.Practices.Unity;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -247,13 +248,24 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 e.Result = customerQuery.ToList();
             }
         }
-
-        protected int GetUnfineshedOrdersCount(OrderTypes orderType, OrderStatusTypes orderStatus)
+        
+        /// <summary>
+        /// Datasource fuer die Dienstleistungen
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void ProductLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            return OrderManager.GetEntities().Count(q => q.Status == (int)orderStatus &&
-                q.OrderType.Id == (int)orderType && q.HasError.GetValueOrDefault(false) != true);
+            e.Result = ProductManager.GetEntities().
+                               Select(prod => new
+                               {
+                                   ItemNumber = prod.ItemNumber,
+                                   Name = prod.Name,
+                                   Value = prod.Id,
+                                   Category = prod.ProductCategory.Name
+                               }).ToList();
         }
-
+        
         #endregion
 
         #region Methods
@@ -312,6 +324,37 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     Geprueft = ord.Geprueft == null ? "Nein" : "Ja",
                     Datum = ord.RegistrationOrder.Registration.RegistrationDate
                 });
+        }
+
+        protected IEnumerable GetOrderPositions(string orderNumberStr)
+        {
+            var orderNumber = Int32.Parse(orderNumberStr);
+            var positions = OrderManager.GetOrderItems(orderNumber).Where(o => !o.SuperOrderItemId.HasValue).ToList();
+            var positionIds = positions.Select(o => o.Id);
+            var authChargePositions = OrderManager.GetOrderItems().Where(o =>
+                o.SuperOrderItemId.HasValue && positionIds.Contains(o.SuperOrderItemId.Value)).ToList();
+
+           return positions.
+                Select(ordItem =>
+                {
+                    var authCharge = authChargePositions.FirstOrDefault(o => o.SuperOrderItemId == ordItem.Id);
+
+                    return new
+                    {
+                        OrderItemId = ordItem.Id,
+                        Amount = ordItem.Amount == 0 ? "kein Preis" : (Math.Round(ordItem.Amount, 2, MidpointRounding.AwayFromZero)).ToString(),
+                        ProductName = ordItem.IsAuthorativeCharge ? ordItem.ProductName + " (Amtl.Gebühr)" : ordItem.ProductName,
+                        AmtGebuhr = authCharge == null ? false : true,
+                        AuthCharge = authCharge == null || authCharge.Amount == 0 ? "kein Preis" : (Math.Round(authCharge.Amount, 2, MidpointRounding.AwayFromZero)).ToString(),
+                        AuthChargeId = authCharge == null ? (int?)null : authCharge.Id,
+                    };
+                }).ToList();
+        }
+        
+        protected int GetUnfineshedOrdersCount(OrderTypes orderType, OrderStatusTypes orderStatus)
+        {
+            return OrderManager.GetEntities().Count(q => q.Status == (int)orderStatus &&
+                q.OrderType.Id == (int)orderType && q.HasError.GetValueOrDefault(false) != true);
         }
 
         #endregion

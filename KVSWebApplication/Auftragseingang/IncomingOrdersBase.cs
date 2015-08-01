@@ -238,12 +238,8 @@ namespace KVSWebApplication.Auftragseingang
 
             try
             {
-                var newAdress = AdressManager.CreateAdress(street, streetNumber, zipcode, city, country);
-                
-                //TODO check or delete
-                //var myCustomer = CustomerMa.FirstOrDefault(q => q.Id == Int32.Parse(CustomerDropDown.SelectedValue));
-
-                var newInvoice = InvoiceManager.CreateInvoice(Int32.Parse(Session["CurrentUserId"].ToString()), invoiceRecipient, newAdress,
+                var newAdress = AdressManager.CreateAdress(street, streetNumber, zipcode, city, country);                
+                var newInvoice = InvoiceManager.CreateInvoice(invoiceRecipient, newAdress,
                     Int32.Parse(CustomerDropDown.SelectedValue), Discount.Value, InvoiceType.Single);
 
                 var orderQuery = OrderManager.GetById(Int32.Parse(SmallCustomerOrder.Value));
