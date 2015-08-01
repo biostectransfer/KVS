@@ -101,7 +101,7 @@ namespace KVSCommon.Database
                 }
             }
 
-            this.WriteUpdateLogItem("Status", this.Status, value);
+            //TODO this.WriteUpdateLogItem("Status", this.Status, value);
         }
         /// <summary>
         /// Aenderungsevents für die Historie

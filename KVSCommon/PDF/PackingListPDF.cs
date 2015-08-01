@@ -46,16 +46,15 @@ namespace KVSCommon.PDF
                     "Erstellungsdatum: " + DateTime.Now.ToShortDateString()}
             };
         }
+
         /// <summary>
         /// Erstelle den PDF Kontext
         /// </summary>
         protected override void WriteContent()
         {
             var dt = this.GetPackingListDataTable();
-           // var table = this.GetTableFromDataTable(dt, new List<int>() { 10, 20, 35, 25, 17, 17 }, new List<int> { 0 }, true);
             var table = this.GetTableFromDataTable(dt, new List<int>() { 10, 20, 35, 25, 17 }, new List<int> { 0 }, true);
             table.Columns[4].Format.Alignment = MigraDoc.DocumentObjectModel.ParagraphAlignment.Right;
-            //table.Columns[5].Format.Alignment = MigraDoc.DocumentObjectModel.ParagraphAlignment.Right;
             this.Document.LastSection.Add(table);
         }
 
@@ -66,16 +65,13 @@ namespace KVSCommon.PDF
         protected override void WriteCoverSheet()
         {
         }
-
-
-     
+             
         /// <summary>
         /// Erstelle die Tabelle fuer den Lieferschein
         /// </summary>
         /// <returns>DataTable</returns>
         private DataTable GetPackingListDataTable()
         {
-            //List<string> headers = new List<string>() { "Pos.", "Kennzeichen", "FIN", "Halter", "Kosten", "Gebühren" };
             List<string> headers = new List<string>() { "Pos.", "Kennzeichen", "FIN", "Halter", "Gebühren" };
             DataTable dt = new DataTable();
             foreach (var header in headers)
@@ -87,7 +83,6 @@ namespace KVSCommon.PDF
 
             foreach (var order in this.PackingList.Order)
             {
-
                 string licencenumber = string.Empty;
                 string vin = string.Empty;
                 string carOwnerName = string.Empty;
@@ -104,6 +99,7 @@ namespace KVSCommon.PDF
                     vin = order.DeregistrationOrder.Vehicle.VIN;
                     carOwnerName = order.DeregistrationOrder.Registration.CarOwner.FullName;
                 }
+
                 if (licencenumber.Split('-').Count() > 2)
                 {
                     string[] splittedNumber = licencenumber.Split('-');
@@ -114,7 +110,6 @@ namespace KVSCommon.PDF
                         licencenumber,
                         vin,
                         carOwnerName,
-                       // order.OrderItem.Where(q => q.IsAuthorativeCharge == false).Sum(q => q.Count * q.Amount).ToString("C2"),
                         order.OrderItem.Where(q => q.IsAuthorativeCharge).Sum(q => q.Count * q.Amount).ToString("C2"));
                 i++;
             }

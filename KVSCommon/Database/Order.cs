@@ -466,7 +466,7 @@ namespace KVSCommon.Database
                 this.FinishDate = DateTime.Now;
             }
 
-            this.WriteUpdateLogItem("Status", this.Status, value);
+            //TODO this.WriteUpdateLogItem("Status", this.Status, value);
         }
         /// <summary>
         /// Aenderungsevents für die Historie
@@ -474,7 +474,7 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnExecutionDateChanging(DateTime? value)
         {
-            this.WriteUpdateLogItem("Erledigungsdatum", this.ExecutionDate, value);
+            //TODO this.WriteUpdateLogItem("Erledigungsdatum", this.ExecutionDate, value);
         }
         /// <summary>
         /// Aenderungsevents für die Historie
@@ -482,7 +482,7 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnErrorReasonChanging(string value)
         {
-            this.WriteUpdateLogItem("Fehlerbegründung", this.ErrorReason, value);
+            //TODO this.WriteUpdateLogItem("Fehlerbegründung", this.ErrorReason, value);
         }
         /// <summary>
         /// Aenderungsevents für die Historie
