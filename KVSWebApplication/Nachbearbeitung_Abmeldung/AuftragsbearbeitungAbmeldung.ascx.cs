@@ -28,7 +28,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         protected override RadComboBox CustomerTypeDropDown { get { return this.RadComboBoxCustomerAbmeldungOffen; } }
         protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownListAbmeldungOffen; } }
         protected override PermissionTypes PagePermission { get { return PermissionTypes.LOESCHEN_AUFTRAGSPOSITION; } }
-        protected override OrderTypes OrderType { get { return OrderTypes.Admission; } }
+        protected override OrderTypes OrderType { get { return OrderTypes.Cancellation; } }
         protected override OrderStatusTypes OrderStatusType { get { return OrderStatusTypes.Open; } }
         protected override string OrderStatusSearch { get { return "Offen"; } }
         #endregion

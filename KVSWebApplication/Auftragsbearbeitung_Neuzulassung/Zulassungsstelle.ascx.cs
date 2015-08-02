@@ -354,7 +354,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             country = CountryTextBox.Text;
             invoiceRecipient = InvoiceRecipient.Text;
             int itemCount = 0;
-            TransactionScope scope = null;
+
             ZulassungErrLabel.Visible = false;
             try
             {
@@ -389,8 +389,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
                 order.Status = (int)OrderStatusTypes.Payed;
                 OrderManager.SaveChanges();
-                scope.Complete();
-
+ 
                 RadGridNeuzulassung.Rebind();
             }
             catch (Exception ex)

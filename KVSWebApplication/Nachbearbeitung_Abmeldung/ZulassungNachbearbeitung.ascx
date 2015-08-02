@@ -415,5 +415,5 @@
 </asp:LinqDataSource>--%>
 <asp:LinqDataSource TableName = "Customer" ID="LinqDataSourceZulassungCust" runat="server" OnSelecting="OrderLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext" >                 
 </asp:LinqDataSource>
-<asp:LinqDataSource ID="CustomerZulDataSource" runat="server" OnSelecting="CustomerZulLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext" >                 
+<asp:LinqDataSource ID="CustomerZulDataSource" runat="server" OnSelecting="CustomerLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext" >                 
 </asp:LinqDataSource>
