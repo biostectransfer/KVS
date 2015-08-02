@@ -151,8 +151,8 @@
                                         ShowFilterIcon="false">
                                     </telerik:GridBoundColumn>
 
-                                    <telerik:GridBoundColumn FilterControlWidth="105px" DataField="HasError" HeaderText="Fehler"
-                                        SortExpression="HasError" UniqueName="HasError" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
+                                    <telerik:GridBoundColumn FilterControlWidth="105px" DataField="HasErrorAsString" HeaderText="Fehler"
+                                        SortExpression="HasErrorAsString" UniqueName="HasErrorAsString" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                                         ShowFilterIcon="false">
                                     </telerik:GridBoundColumn>
 

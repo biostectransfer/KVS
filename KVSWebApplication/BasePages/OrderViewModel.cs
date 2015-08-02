@@ -27,6 +27,7 @@ namespace KVSWebApplication.BasePages
         public string Geprueft { get; set; }
         public DateTime? Datum { get; set; }
         public bool? HasError { get; set; }
+        public string HasErrorAsString { get; set; }
         public string ErrorReason { get; set; }
 
         #region Small Customer Fields
@@ -54,6 +55,12 @@ namespace KVSWebApplication.BasePages
         public int OrderStatusId { get; set; }
 
         public bool? ReadyToSend { get; set; }
+
+        public string PostBackUrl { get; set; }
+        public bool VisibleWeiterleitung { get; set; }
+        public string ZumAuftragText { get; set; }
+        public string Haltername { get; set; }
+
 
         #endregion
     }

@@ -5,6 +5,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using KVSCommon.Database;
+using KVSCommon.Managers;
+using System.Web.Http;
+
 namespace KVSWebApplication
 {
     /// <summary>
@@ -15,18 +18,19 @@ namespace KVSWebApplication
         protected void Page_Load(object sender, EventArgs e)
         {
         }
+
         protected void ChangeSaveBtn_Click(object sender, EventArgs e)
         {
-            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())); // hier kommt die Loggingid
             try
             {
                 if (txbNewPassword.Text == txbRepeatPWD.Text)
                 {
-                    var thisUser = dbContext.User.SingleOrDefault(q => q.Id == Int32.Parse(Session["CurrentUserId"].ToString()));
-                    if (thisUser != null)
+                    var userManager = (IUserManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IUserManager));
+                    var user = userManager.GetById(Int32.Parse(Session["CurrentUserId"].ToString()));
+                    if (user != null)
                     {
-                        thisUser.ChangePassword(txbNewPassword.Text, txbOldPWD.Text, dbContext);
-                        dbContext.SubmitChanges();
+                        userManager.ChangePassword(user, txbNewPassword.Text, txbOldPWD.Text);
+                        userManager.SaveChanges();
                         RadWindowManagerChangePassword.RadAlert("Das Passwort wurde erfolgreich geändert", 380, 180, "Info", "");
                     }
                     else
@@ -42,7 +46,7 @@ namespace KVSWebApplication
             catch (Exception ex)
             {
                 FailureText.Text = ex.Message;
-                dbContext.WriteLogItem("ChangePassowrd Error:  " + ex.Message, LogTypes.ERROR, "User");
+                //TODO WriteLogItem("ChangePassowrd Error:  " + ex.Message, LogTypes.ERROR, "User");
             }
         }
     }

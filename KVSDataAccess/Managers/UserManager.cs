@@ -121,5 +121,47 @@ namespace KVSDataAccess.Managers
 
             return result;
         }
+
+        /// <summary>
+        /// Aendert das Passwort des Benutzers.
+        /// </summary>
+        /// <param name="user">User</param>
+        /// <param name="newPassword">Neues Passwort.</param>
+        /// <param name="oldPassword">Altes Passwort.</param>
+        public void ChangePassword(User user, string newPassword, string oldPassword)
+        {
+            CheckPassword(newPassword);
+
+            var sh = new SaltedHash();
+            if (sh.VerifyHashString(oldPassword, user.Password, user.Salt))
+            {
+                string passwordHash = string.Empty;
+                string salt = string.Empty;
+                sh.GetHashAndSaltString(newPassword, out passwordHash, out salt);
+                user.Password = passwordHash;
+                user.Salt = salt;
+            }
+            else
+            {
+                throw new Exception("Das alte Passwort konnte nicht verifiziert werden.");
+            }
+        }
+
+        /// <summary>
+        /// Prueft ob das Passwort leer oder kleiner 8 Zeichen lang ist
+        /// </summary>
+        /// <param name="newPassword">Neues Passwort</param>
+        private void CheckPassword(string newPassword)
+        {
+            if (string.IsNullOrEmpty(newPassword))
+            {
+                throw new ArgumentNullException("Das Passwort darf nicht leer sein.");
+            }
+
+            if (newPassword.Length < 8)
+            {
+                throw new ArgumentException("Das Passwort muss mindestens 8 Zeichen lang sein.");
+            }
+        }
     }
 }

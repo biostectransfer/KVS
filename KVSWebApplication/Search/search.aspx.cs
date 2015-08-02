@@ -6,30 +6,18 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
 using KVSCommon.Database;
+using KVSWebApplication.BasePages;
 
 namespace KVSWebApplication.Search
 {
     /// <summary>
     ///Suchmaske fuer die einzelnen Auftraege
     /// </summary>
-    public partial class search : System.Web.UI.Page
+    public partial class search : BasePage
     {
-
-        PageStatePersister _pers;
-        protected override PageStatePersister PageStatePersister
-        {
-            get
-            {
-                if (_pers == null)
-                {
-                    _pers = new SessionPageStatePersister(Page);
-                }
-                return _pers;
-            }
-        }
         protected void Page_Load(object sender, EventArgs e)
         {
-           
+
         }
 
         protected void RadGridSearch_NeedDataSource_Linq(object sender, LinqDataSourceSelectEventArgs e)
@@ -41,62 +29,16 @@ namespace KVSWebApplication.Search
         {
             SearchErrorLabel.Visible = false;
 
-            KVSEntities con = new KVSEntities();
+            var smallCustomerOrders = GetSmallCustomerOrders();
+            var largeCustomerOrders = GetLargeCustomerOrders();
 
-            var newQuery = from ord in con.Order
-                           let dockList = con.Document.FirstOrDefault(q => q.Id == ord.DocketList.DocumentId) 
-                           let registration = ord.RegistrationOrder != null ? ord.RegistrationOrder.Registration : ord.DeregistrationOrder.Registration
-      
-                           select new
-                              {
-                                  OrderNumber = ord.OrderNumber,
-                                  CustomerId = ord.CustomerId,
-                                  PostBackUrl = (dockList != null)? "<a href=" + '\u0022' + dockList.FileName + '\u0022' + " target=" + '\u0022' + "_blank" + '\u0022' + "> Laufzettel öffnen</a>" : "",
-                                  CreateDate = ord.CreateDate,
-                                  Status = ord.OrderStatus.Name,
-                                  CustomerName =  ord.Customer.SmallCustomer != null &&  ord.Customer.SmallCustomer.Person != null ?  ord.Customer.SmallCustomer.Person.FirstName + " " + 
-                                  ord.Customer.SmallCustomer.Person.Name :  ord.Customer.Name, 
-                                  Kennzeichen = registration.Licencenumber,
-                                  VIN = registration.Vehicle.VIN,
-                                  CustomerLocation = ord.Location.Name,
-                                  OrderTyp = ord.OrderType.Name,
-                                  Haltername = registration.CarOwner.Name != string.Empty && registration.CarOwner.FirstName == string.Empty
-                                  ? registration.CarOwner.Name:registration.CarOwner.FirstName,
-                                  reg = registration,
-                                  HasError = ord.HasError == true ? "Ja" : "Nein",
-                                  Inspection = registration.GeneralInspectionDate,
-                                  Variant = registration.Vehicle.Variant,
-                                  TSN = registration.Vehicle.TSN,
-                                  HSN = registration.Vehicle.HSN,
-                                  Prevkennzeichen = ord.RegistrationOrder.PreviousLicencenumber,
-                                  eVBNum = registration.eVBNumber,
-                                  Name = registration.CarOwner.Name,
-                                  FirstName = registration.CarOwner.FirstName,
-                                  BankName = registration.CarOwner.BankAccount.BankName,
-                                  AccountNum = registration.CarOwner.BankAccount.Accountnumber,
-                                  BankCode = registration.CarOwner.BankAccount.BankCode,
-                                  Street = registration.CarOwner.Adress.Street,
-                                  StreetNr = registration.CarOwner.Adress.StreetNumber,
-                                  Zip = registration.CarOwner.Adress.Zipcode,
-                                  City = registration.CarOwner.Adress.City,
-                                  Country = registration.CarOwner.Adress.Country,
-                                  Phone = registration.CarOwner.Contact.Phone,
-                                  Mobile = registration.CarOwner.Contact.MobilePhone,
-                                  Fax = registration.CarOwner.Contact.Fax,
-                                  Email = registration.CarOwner.Contact.Email,
-                                  locationId = ord.LocationId,
-                                  Freitext = ord.FreeText,
-                                  VisibleWeiterleitung = (ord.OrderStatus.Name.Contains("Abgerechnet") || ord.OrderStatus.Name.Contains("Storniert") || ord.OrderStatus.Name.Contains("Zulassungsstelle")) ? false : true,
-                                  ZumAuftragText = ord.OrderStatus.Name.Contains("Abgerechnet") ? "Schon abgerechnet" : ord.OrderStatus.Name.Contains("Storniert") ? "Schon storniert" : "Zum Auftrag"
-                                  
-                              };
-                         
 
             if (!String.IsNullOrEmpty(CustomerNameBox.SelectedValue))
             {
                 try
                 {
-                    newQuery = newQuery.Where(q => q.CustomerId == Int32.Parse(CustomerNameBox.SelectedValue));
+                    smallCustomerOrders = smallCustomerOrders.Where(q => q.customerId == Int32.Parse(CustomerNameBox.SelectedValue));
+                    largeCustomerOrders = largeCustomerOrders.Where(q => q.customerId == Int32.Parse(CustomerNameBox.SelectedValue));
                 }
 
                 catch
@@ -110,7 +52,8 @@ namespace KVSWebApplication.Search
             {
                 try
                 {
-                    newQuery = newQuery.Where(q => q.reg.Licencenumber.Contains(KennzeichenSearchBox.Text));
+                    smallCustomerOrders = smallCustomerOrders.Where(q => q.Kennzeichen.Contains(KennzeichenSearchBox.Text));
+                    largeCustomerOrders = largeCustomerOrders.Where(q => q.Kennzeichen.Contains(KennzeichenSearchBox.Text));
                 }
 
                 catch
@@ -124,7 +67,8 @@ namespace KVSWebApplication.Search
             {
                 try
                 {
-                    newQuery = newQuery.Where(q => q.reg.CarOwner.Name.Contains(HalterNameBox.Text));
+                    smallCustomerOrders = smallCustomerOrders.Where(q => q.Haltername.Contains(HalterNameBox.Text));
+                    largeCustomerOrders = largeCustomerOrders.Where(q => q.Haltername.Contains(HalterNameBox.Text));
                 }
 
                 catch
@@ -138,7 +82,8 @@ namespace KVSWebApplication.Search
             {
                 try
                 {
-                    newQuery = newQuery.Where(q => q.VIN.Contains(FINBox.Text));
+                    smallCustomerOrders = smallCustomerOrders.Where(q => q.VIN.Contains(FINBox.Text));
+                    largeCustomerOrders = largeCustomerOrders.Where(q => q.VIN.Contains(FINBox.Text));
                 }
 
                 catch
@@ -148,7 +93,10 @@ namespace KVSWebApplication.Search
                 }
             }
 
-            return newQuery;        
+            var result = new List<OrderViewModel>(smallCustomerOrders.ToList());
+            result.AddRange(largeCustomerOrders.ToList());
+
+            return result;
         }
 
         protected void searchButton_Clicked(object sender, EventArgs e)
@@ -158,15 +106,16 @@ namespace KVSWebApplication.Search
 
         protected void CustomerName_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
-            var CustomerName = from cust in con.Customer
-                               select new {
-                                   Name = cust.SmallCustomer != null && cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name, 
-                                   Value = cust.Id,
-                                   Matchcode = cust.MatchCode,
-                                   Kundennummer = cust.CustomerNumber 
-                               };
-            e.Result = CustomerName;
+            var customerQuery = CustomerManager.GetEntities().
+                    Select(cust => new
+                    {
+                        Name = cust.SmallCustomer != null && cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
+                        Value = cust.Id,
+                        Matchcode = cust.MatchCode,
+                        Kundennummer = cust.CustomerNumber
+                    });
+
+            e.Result = customerQuery.ToList();
         }
 
         protected void NeueSucheButton_Clicked(object sender, EventArgs e)
@@ -191,7 +140,7 @@ namespace KVSWebApplication.Search
             {
                 //muss nicht bearbeitet werden, da diese Events aus dem RadGrid kommen und mit der Suchfunktion nicht zu tun hat
             }
-            else if(e.Item is GridDataItem)
+            else if (e.Item is GridDataItem)
             {
                 SearchErrorLabel.Visible = false;
                 bool showErrorLabel = false;
@@ -200,85 +149,75 @@ namespace KVSWebApplication.Search
                 var customerId = Int32.Parse(item["CustomerId"].Text);
                 string status = item["Status"].Text;
 
-                
-                    if (!String.IsNullOrEmpty(item["OrderTyp"].Text))
+
+                if (!String.IsNullOrEmpty(item["OrderTyp"].Text))
+                {
+                    if (item["OrderTyp"].Text.Contains("Zulassung")) // *** ZULASSUNG ***
                     {
-                        if (item["OrderTyp"].Text.Contains("Zulassung")) // *** ZULASSUNG ***
+                        if (item["HasError"].Text.Contains("Nein")) // falls kein Fehler
                         {
-                            if (item["HasError"].Text.Contains("Nein")) // falls kein Fehler
-                            {
-                                if (status.Contains("Offen") )// || status.Contains("Zulassungsstelle"))
-                                {
-                                    Session["customerIndexSearch"] = String.IsNullOrEmpty(item["CustomerLocation"].Text) ? 1 : 2;
-                                    Session["orderStatusSearch"] = status;
-                                    Session["customerIdSearch"] = customerId;
-                                    Session["orderNumberSearch"] = item["OrderNumber"].Text;
-                                    RadAjaxPanel1.Redirect("../Auftragsbearbeitung_Neuzulassung/AuftragsbearbeitungNeuzulassung.aspx");
-                                }
-
-                                else if (status.Contains("Abgeschlossen"))
-                                    RadAjaxPanel1.Redirect("../Abrechnung/Abrechnung.aspx");
-                                else
-                                    showErrorLabel = true;
-                            }
-
-                            else if (item["HasError"].Text.Contains("Ja")) // soll zu Fehlerhaft redirect werden
+                            if (status.Contains("Offen"))// || status.Contains("Zulassungsstelle"))
                             {
                                 Session["customerIndexSearch"] = String.IsNullOrEmpty(item["CustomerLocation"].Text) ? 1 : 2;
-                                Session["orderStatusSearch"] = "Error";
+                                Session["orderStatusSearch"] = status;
                                 Session["customerIdSearch"] = customerId;
                                 Session["orderNumberSearch"] = item["OrderNumber"].Text;
                                 RadAjaxPanel1.Redirect("../Auftragsbearbeitung_Neuzulassung/AuftragsbearbeitungNeuzulassung.aspx");
                             }
+
+                            else if (status.Contains("Abgeschlossen"))
+                                RadAjaxPanel1.Redirect("../Abrechnung/Abrechnung.aspx");
+                            else
+                                showErrorLabel = true;
                         }
 
-                        else if (item["OrderTyp"].Text.Contains("Abmeldung")) // *** ABMELDUNG ***
+                        else if (item["HasError"].Text.Contains("Ja")) // soll zu Fehlerhaft redirect werden
                         {
-                            if (item["HasError"].Text.Contains("Nein")) // falls kein Fehler
-                            {
-                                if (status.Contains("Offen") )//|| status.Contains("Zulassungsstelle"))
-                                {
-                                    Session["customerIndexSearch"] = String.IsNullOrEmpty(item["CustomerLocation"].Text) ? 1 : 2;
-                                    Session["orderStatusSearch"] = status;
-                                    Session["customerIdSearch"] = customerId;
-                                    Session["orderNumberSearch"] = item["OrderNumber"].Text;
-                                    RadAjaxPanel1.Redirect("../Nachbearbeitung_Abmeldung/NachbearbeitungAbmeldung.aspx");
-                                }
+                            Session["customerIndexSearch"] = String.IsNullOrEmpty(item["CustomerLocation"].Text) ? 1 : 2;
+                            Session["orderStatusSearch"] = "Error";
+                            Session["customerIdSearch"] = customerId;
+                            Session["orderNumberSearch"] = item["OrderNumber"].Text;
+                            RadAjaxPanel1.Redirect("../Auftragsbearbeitung_Neuzulassung/AuftragsbearbeitungNeuzulassung.aspx");
+                        }
+                    }
 
-                                else if (status.Contains("Abgeschlossen"))
-                                    RadAjaxPanel1.Redirect("../Abrechnung/Abrechnung.aspx");
-
-                                else
-                                    showErrorLabel = true;
-                            }
-
-                            else if (item["HasError"].Text.Contains("Ja")) // soll zu Fehlerhaft redirect werden
+                    else if (item["OrderTyp"].Text.Contains("Abmeldung")) // *** ABMELDUNG ***
+                    {
+                        if (item["HasError"].Text.Contains("Nein")) // falls kein Fehler
+                        {
+                            if (status.Contains("Offen"))//|| status.Contains("Zulassungsstelle"))
                             {
                                 Session["customerIndexSearch"] = String.IsNullOrEmpty(item["CustomerLocation"].Text) ? 1 : 2;
-                                Session["orderStatusSearch"] = "Error";
+                                Session["orderStatusSearch"] = status;
                                 Session["customerIdSearch"] = customerId;
                                 Session["orderNumberSearch"] = item["OrderNumber"].Text;
                                 RadAjaxPanel1.Redirect("../Nachbearbeitung_Abmeldung/NachbearbeitungAbmeldung.aspx");
                             }
+
+                            else if (status.Contains("Abgeschlossen"))
+                                RadAjaxPanel1.Redirect("../Abrechnung/Abrechnung.aspx");
+
+                            else
+                                showErrorLabel = true;
                         }
 
-                        if (showErrorLabel == true)
+                        else if (item["HasError"].Text.Contains("Ja")) // soll zu Fehlerhaft redirect werden
                         {
-                            SearchErrorLabel.Visible = true;
-                            SearchErrorLabel.Text = "Auftrag mit dem Status " + item["Status"].Text + " kann nicht angezeigt werden";
+                            Session["customerIndexSearch"] = String.IsNullOrEmpty(item["CustomerLocation"].Text) ? 1 : 2;
+                            Session["orderStatusSearch"] = "Error";
+                            Session["customerIdSearch"] = customerId;
+                            Session["orderNumberSearch"] = item["OrderNumber"].Text;
+                            RadAjaxPanel1.Redirect("../Nachbearbeitung_Abmeldung/NachbearbeitungAbmeldung.aspx");
                         }
                     }
-                
 
-                //else
-                //{
-                //    Session["customerIndexSearch"] = String.IsNullOrEmpty(item["CustomerLocation"].Text) ? 1 : 2;
-                //    Session["orderStatusSearch"] = status;
-                //    Session["customerIdSearch"] = customerId;
-                //    Session["orderNumberSearch"] = item["OrderNumber"].Text;
-                //    Response.Redirect("../Auftragsbearbeitung_Neuzulassung/AuftragsbearbeitungNeuzulassung.aspx");
-                //}
-            }          
+                    if (showErrorLabel == true)
+                    {
+                        SearchErrorLabel.Visible = true;
+                        SearchErrorLabel.Text = "Auftrag mit dem Status " + item["Status"].Text + " kann nicht angezeigt werden";
+                    }
+                }
+            }
         }
     }
 }

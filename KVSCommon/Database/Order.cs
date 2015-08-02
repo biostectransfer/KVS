@@ -111,65 +111,7 @@ namespace KVSCommon.Database
             dbContext.WriteLogItem("Auftrag angelegt.", LogTypes.INSERT, order.OrderNumber, "Order");
             return order;
         }
-
-        /// <summary>
-        /// Aktualisiert den Auftragsstatus
-        /// </summary>
-        /// <param name="orderNumbers">List mit OrderIds</param>
-        /// <param name="dbContext">DB Kontext</param>
-        public static void UpdateOrderStates(List<int> orderNumbers, KVSEntities dbContext)
-        {
-            IQueryable<Order> orders = dbContext.Order.Where(q => orderNumbers.Contains(q.OrderNumber));
-            foreach (var order in orders.Where(q => q.OrderItem.Any(p => p.Status == (int)OrderItemStatusTypes.Payed) &&
-                !q.OrderItem.All(r => r.Status == (int)OrderItemStatusTypes.Payed || r.Status == (int)OrderItemStatusTypes.Cancelled)))
-            {
-                order.LogDBContext = dbContext;
-                order.Status = (int)OrderStatusTypes.PartiallyPayed;
-            }
-
-            foreach (var order in orders.Where(q => q.OrderItem.All(p => p.Status == (int)OrderItemStatusTypes.Cancelled ||
-                p.Status == (int)OrderItemStatusTypes.Payed)))
-            {
-                order.LogDBContext = dbContext;
-                order.Status = (int)OrderStatusTypes.Payed;
-            }
-        }
-
-        /// <summary>
-        /// Sendet eine Benachrichtigungsemail über den Abschluss des angegebenen Auftrag.
-        /// </summary>
-        /// <param name="order">Der Auftrag.</param>
-        /// <param name="fromEmailAddress">Absenderemailadresse.</param>
-        /// <param name="smtpServer">SMTP-Server für den Emailversand.</param>
-        /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        /// <remarks>Die Methode ruft dbContext.SubmitChanges() auf, um den Status der Versendung zu speichern.</remarks>
-        public static void SendOrderFinishedNote(Order order, string fromEmailAddress, string smtpServer, KVSEntities dbContext)
-        {
-            List<string> emails = new List<string>();
-            var customer = order.Customer.LargeCustomer;
-            if (customer == null)
-            {
-                return;
-            }
-
-            if (customer.SendOrderFinishedNoteToLocation.GetValueOrDefault(false))
-            {
-                emails.AddRange(order.Location.Mailinglist.Where(q => q.MailinglistType.Name == "Auftragserledigung").Select(q => q.Email).ToList());
-            }
-
-            if (customer.SendOrderFinishedNoteToCustomer.GetValueOrDefault(false))
-            {
-                emails.AddRange(customer.Mailinglist.Where(q => q.MailinglistType.Name == "Auftragserledigung").Select(q => q.Email).ToList());
-            }
-            
-            if (emails.Count > 0)
-            {
-                SendOrderFinishedNote(new List<Order>() { order }.AsEnumerable(), emails, fromEmailAddress, smtpServer);
-                order.LogDBContext = dbContext;
-                order.HasFinishedNoteBeenSent = true;
-                dbContext.SubmitChanges();
-            }
-        }
+       
 
         /// <summary>
         /// Sendet eine Email mit einer Auflistung der in <paramref name="orders"/> übergebenen Aufträge.
@@ -519,5 +461,13 @@ namespace KVSCommon.Database
         {
             this.WriteUpdateLogItem("Auftragserledigungsemail gesendet", this.HasFinishedNoteBeenSent, value);
         }
+
+        //public OrderStatusTypes OrderStatusType
+        //{
+        //    get
+        //    {
+        //        return (OrderStatusTypes)this.Status;
+        //    }
+        //}
     }
 }

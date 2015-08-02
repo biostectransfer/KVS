@@ -103,7 +103,8 @@ namespace KVSWebApplication
             //select all values for small customers
             if (RadComboBoxCustomerOffenNeuzulassung.SelectedValue == "1")
             {
-                var smallCustomerOrders = GetSmallCustomerOrders(false).Where(o => o.OrderStatusId >= (int)OrderStatusTypes.Closed);
+                var smallCustomerOrders = GetSmallCustomerOrders().Where(o => o.OrderStatusId >= (int)OrderStatusTypes.Closed &&
+                    o.HasError.GetValueOrDefault(false) != true);
 
                 if (CustomerDropDownListOffenNeuzulassung.SelectedValue != string.Empty)
                 {
@@ -116,7 +117,8 @@ namespace KVSWebApplication
             //select all values for large customers
             else if (RadComboBoxCustomerOffenNeuzulassung.SelectedValue == "2")
             {
-                var largeCustomerOrders = GetLargeCustomerOrders(false).Where(o => o.OrderStatusId >= (int)OrderStatusTypes.Closed &&
+                var largeCustomerOrders = GetLargeCustomerOrders().Where(o => o.OrderStatusId >= (int)OrderStatusTypes.Closed &&
+                    o.HasError.GetValueOrDefault(false) != true &&
                     o.ReadyToSend.GetValueOrDefault(false) == true);
 
                 if (CustomerDropDownListOffenNeuzulassung.SelectedValue != string.Empty)

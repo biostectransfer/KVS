@@ -135,21 +135,22 @@ namespace KVSWebApplication.BasePages
                  }).ToList();
         }
 
-        protected IEnumerable<OrderViewModel> GetSmallCustomerOrders(bool orderWithErrors)
+        protected IEnumerable<OrderViewModel> GetSmallCustomerOrders()
         {
             return OrderManager.GetEntities(o => o.Customer.SmallCustomer != null &&
-                (o.RegistrationOrder != null || o.DeregistrationOrder != null) &&
-                o.HasError.GetValueOrDefault(false) != !orderWithErrors).Select(ord =>
+                (o.RegistrationOrder != null || o.DeregistrationOrder != null)).Select(ord =>
                 {
                     Vehicle vehicle = null;
                     Registration registration = null;
                     string licenceNumber = String.Empty;
+                    string previousLicenceNumber = String.Empty;
 
                     if (ord.RegistrationOrder != null)
                     {
                         vehicle = ord.RegistrationOrder.Vehicle;
                         registration = ord.RegistrationOrder.Registration;
                         licenceNumber = ord.RegistrationOrder.Licencenumber;
+                        previousLicenceNumber = ord.RegistrationOrder.PreviousLicencenumber;
                     }
                     else
                     {
@@ -180,26 +181,53 @@ namespace KVSWebApplication.BasePages
 
                         OrderStatusId = ord.Status,
                         OrderTypeId = ord.OrderTypeId,
-                        ReadyToSend = ord.ReadyToSend
+                        ReadyToSend = ord.ReadyToSend,
+
+                        Inspection = registration.GeneralInspectionDate,
+                        Variant = registration.Vehicle.Variant,
+                        eVBNum = registration.eVBNumber,
+                        Name = registration.CarOwner.Name,
+                        FirstName = registration.CarOwner.FirstName,
+                        BankName = registration.CarOwner.BankAccount.BankName,
+                        AccountNum = registration.CarOwner.BankAccount.Accountnumber,
+                        Prevkennzeichen = previousLicenceNumber,
+                        BankCode = registration.CarOwner.BankAccount.BankCode,
+                        Street = registration.CarOwner.Adress.Street,
+                        StreetNr = registration.CarOwner.Adress.StreetNumber,
+                        Zip = registration.CarOwner.Adress.Zipcode,
+                        City = registration.CarOwner.Adress.City,
+                        Country = registration.CarOwner.Adress.Country,
+                        Phone = registration.CarOwner.Contact.Phone,
+                        Mobile = registration.CarOwner.Contact.MobilePhone,
+                        Fax = registration.CarOwner.Contact.Fax,
+                        Email = registration.CarOwner.Contact.Email,
+
+                        VisibleWeiterleitung = (ord.Status == (int)OrderStatusTypes.Payed || ord.Status == (int)OrderStatusTypes.Cancelled || ord.Status == (int)OrderStatusTypes.AdmissionPoint) ? false : true,
+                        ZumAuftragText = ord.Status == (int)OrderStatusTypes.Payed ? "Schon abgerechnet" : ord.Status == (int)OrderStatusTypes.Cancelled ? "Schon storniert" : "Zum Auftrag",
+                        Haltername = registration.CarOwner.Name != String.Empty && registration.CarOwner.FirstName == String.Empty
+                                  ? registration.CarOwner.Name : registration.CarOwner.FirstName,
+
+                        HasErrorAsString = ord.HasError == true ? "Ja" : "Nein",
                     };
                 });
         }
 
-        protected IEnumerable<OrderViewModel> GetLargeCustomerOrders(bool orderWithErrors)
+        protected IEnumerable<OrderViewModel> GetLargeCustomerOrders()
         {
             return OrderManager.GetEntities(o => o.Customer.LargeCustomer != null &&
-                (o.RegistrationOrder != null || o.DeregistrationOrder != null) &&
-                o.HasError.GetValueOrDefault(false) != !orderWithErrors).Select(ord =>
+                (o.RegistrationOrder != null || o.DeregistrationOrder != null)).Select(ord =>
                 {
                     Vehicle vehicle = null;
                     Registration registration = null;
                     string licenceNumber = String.Empty;
+                    string previousLicenceNumber = String.Empty;
 
                     if (ord.RegistrationOrder != null)
                     {
                         vehicle = ord.RegistrationOrder.Vehicle;
                         registration = ord.RegistrationOrder.Registration;
                         licenceNumber = ord.RegistrationOrder.Licencenumber;
+                        previousLicenceNumber = ord.RegistrationOrder.PreviousLicencenumber;
                     }
                     else
                     {
@@ -230,7 +258,34 @@ namespace KVSWebApplication.BasePages
 
                         OrderStatusId = ord.Status,
                         OrderTypeId = ord.OrderTypeId,
-                        ReadyToSend = ord.ReadyToSend
+                        ReadyToSend = ord.ReadyToSend,
+
+                        Inspection = registration.GeneralInspectionDate,
+                        Variant = registration.Vehicle.Variant,
+                        eVBNum = registration.eVBNumber,
+                        Name = registration.CarOwner.Name,
+                        FirstName = registration.CarOwner.FirstName,
+                        BankName = registration.CarOwner.BankAccount.BankName,
+                        AccountNum = registration.CarOwner.BankAccount.Accountnumber,
+                        Prevkennzeichen = previousLicenceNumber,
+                        BankCode = registration.CarOwner.BankAccount.BankCode,
+                        Street = registration.CarOwner.Adress.Street,
+                        StreetNr = registration.CarOwner.Adress.StreetNumber,
+                        Zip = registration.CarOwner.Adress.Zipcode,
+                        City = registration.CarOwner.Adress.City,
+                        Country = registration.CarOwner.Adress.Country,
+                        Phone = registration.CarOwner.Contact.Phone,
+                        Mobile = registration.CarOwner.Contact.MobilePhone,
+                        Fax = registration.CarOwner.Contact.Fax,
+                        Email = registration.CarOwner.Contact.Email,
+
+                        //PostBackUrl = (ord.DocketList != null) ? "<a href=" + '\u0022' + ord.DocketList..FileName + '\u0022' + " target=" + '\u0022' + "_blank" + '\u0022' + "> Laufzettel öffnen</a>" : "",
+                        VisibleWeiterleitung = (ord.Status == (int)OrderStatusTypes.Payed || ord.Status == (int)OrderStatusTypes.Cancelled || ord.Status == (int)OrderStatusTypes.AdmissionPoint) ? false : true,
+                        ZumAuftragText = ord.Status == (int)OrderStatusTypes.Payed ? "Schon abgerechnet" : ord.Status == (int)OrderStatusTypes.Cancelled ? "Schon storniert" : "Zum Auftrag",
+                        Haltername = registration.CarOwner.Name != String.Empty && registration.CarOwner.FirstName == String.Empty
+                                  ? registration.CarOwner.Name : registration.CarOwner.FirstName,
+   
+                        HasErrorAsString = ord.HasError == true ? "Ja" : "Nein",
                     };
                 });
         }

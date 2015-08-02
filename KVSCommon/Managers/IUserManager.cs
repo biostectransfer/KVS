@@ -35,5 +35,13 @@ namespace KVSCommon.Managers
         /// Überprüft Berechtigungen für den angegebenen Benutzer.
         /// </summary>
         bool CheckPermissionsForUser(object userPermission, PermissionTypes permission);
+
+        /// <summary>
+        /// Aendert das Passwort des Benutzers.
+        /// </summary>
+        /// <param name="user">User</param>
+        /// <param name="newPassword">Neues Passwort.</param>
+        /// <param name="oldPassword">Altes Passwort.</param>
+        void ChangePassword(User user, string newPassword, string oldPassword);
     }
 }
