@@ -65,5 +65,11 @@ namespace KVSCommon.Managers
         /// <param name="smtpServer">SMTP-Server für den Emailversand.</param>
         /// <remarks>Die Methode ruft dbContext.SubmitChanges() auf, um den Status der Versendung zu speichern.</remarks>
         void SendOrderFinishedNote(Order order, string fromEmailAddress, string smtpServer);
+
+        /// <summary>
+        /// Entfernt die LieferscheinId und versetzt den Auftag in den Status Zulassungsstelle
+        ///</summary>
+        ///<param name="packingListNumber">Lieferschein ID</param>
+        void TryToRemovePackingListIdAndSetStateToRegistration(int packingListNumber);
     }
 }

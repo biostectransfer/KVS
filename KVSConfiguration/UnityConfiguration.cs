@@ -49,6 +49,7 @@ namespace KVSConfiguration
             container.RegisterType<IBankAccountManager, BankAccountManager>(new PerRequestLifetimeManager()); 
             container.RegisterType<ICarOwnerManager, CarOwnerManager>(new PerRequestLifetimeManager()); 
             container.RegisterType<IDocketListManager, DocketListManager>(new PerRequestLifetimeManager()); 
+            container.RegisterType<IPackingListManager, PackingListManager>(new PerRequestLifetimeManager()); 
         }
     }
 }

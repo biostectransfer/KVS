@@ -242,5 +242,46 @@ namespace KVSDataAccess.Managers
 
             KVSCommon.Utility.Email.SendMail(fromEmailAddress, toEmailAddresses, "Benachrichtigung über erledigte Aufträge", sb.ToString(), null, null, smtpServer, null);
         }
+
+        /// <summary>
+        /// Entfernt die LieferscheinId und versetzt den Auftag in den Status Zulassungsstelle
+        ///</summary>
+        ///<param name="packingListNumber">Lieferschein ID</param>
+        public void TryToRemovePackingListIdAndSetStateToRegistration(int packingListNumber)
+        {
+            var orders = DataContext.GetSet<Order>().Where(q => q.PackingListNumber == packingListNumber);
+            foreach (var order in orders)
+            {
+                if (order != null)
+                {
+                    int temp_packingListId = 0;
+
+                    if (order.PackingList != null)
+                    {
+                        order.PackingList.OldOrderNumber = order.OrderNumber;
+                        temp_packingListId = order.PackingList.PackingListNumber;
+
+                        DataContext.WriteLogItem("Lieferschein: " + temp_packingListId + " zum Auftrag: " + order.OrderNumber + "  wurde gelöscht. ", LogTypes.UPDATE,
+                            order.PackingList.PackingListNumber, "PackingList");
+
+                    }
+
+                    order.PackingList = null;
+                    order.Status = (int)OrderStatusTypes.AdmissionPoint;
+                    order.ReadyToSend = false;
+                    order.FinishDate = null;
+
+                    foreach (var orIt in order.OrderItem)
+                    {
+                        orIt.Status = (int)OrderItemStatusTypes.InProgress;
+                    }
+
+                    DataContext.WriteLogItem("Auftrag: " + order.OrderNumber + "  wurde wieder in die Zulassungsstelle versetzt.",
+                        LogTypes.UPDATE, order.OrderNumber, "Order");
+                }
+
+                SaveChanges();
+            }
+        }
     }
 }

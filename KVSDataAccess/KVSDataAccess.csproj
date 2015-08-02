@@ -69,6 +69,7 @@
     <Compile Include="Managers\CarOwnerManager.cs" />
     <Compile Include="Managers\DeregistrationOrderManager.cs" />
     <Compile Include="Managers\DocketListManager.cs" />
+    <Compile Include="Managers\PackingListManager.cs" />
     <Compile Include="Managers\RegistrationOrderManager.cs" />
     <Compile Include="Managers\RegistrationOrderTypeManager.cs" />
     <Compile Include="Managers\OrderTypeManager.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="PDF\AbstractPDFCreator.cs" />
     <Compile Include="PDF\GroupedAppendix.cs" />
     <Compile Include="PDF\InvoicePDF.cs" />
+    <Compile Include="PDF\PackingListPDF.cs" />
     <Compile Include="PDF\PackingListPDF_Zulassungsstelle.cs" />
     <Compile Include="PDF\PDFCreatorExtension.cs" />
     <Compile Include="PDF\PDFSharpUtil.cs" />

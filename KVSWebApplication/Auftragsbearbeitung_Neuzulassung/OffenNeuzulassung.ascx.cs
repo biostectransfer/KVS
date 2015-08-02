@@ -22,11 +22,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
     public partial class OffenNeuzulassung : EditOrdersBase
     {
         #region Members  
-
-        private string customer = string.Empty;
-
-        RadScriptManager script = null;
-
+        
         protected override RadGrid OrderGrid { get { return this.RadGridOffNeuzulassung; } }
         protected override RadDatePicker RegistrationDatePicker { get { return this.ZulassungsDatumPicker; } }
         protected override RadComboBox CustomerTypeDropDown { get { return this.RadComboBoxCustomerOffenNeuzulassung; } }
@@ -50,7 +46,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 }
             }
 
-            AuftragsbearbeitungNeuzulassung auftragNeu = Page as AuftragsbearbeitungNeuzulassung;
+            var auftragNeu = Page as AuftragsbearbeitungNeuzulassung;
             script = auftragNeu.getScriptManager() as RadScriptManager;
             script.RegisterPostBackControl(ZulassungsstelleLieferscheineButton);
 
@@ -185,7 +181,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                             newPrice = PriceManager.GetEntities(q => q.ProductId == newProduct.Id && q.LocationId == null).SingleOrDefault();
                         }
 
-                        var orderToUpdate = OrderManager.GetEntities(q => q.OrderNumber == orderNumber).SingleOrDefault();
+                        var orderToUpdate = OrderManager.GetById(orderNumber);
 
                         if (newPrice == null || newProduct == null || orderToUpdate == null)
                             throw new Exception("Achtung, die Position kann nicht hinzugefügt werden, es konnte entweder kein Preis, Produkt oder der Auftrag gefunden werden!");
@@ -592,7 +588,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
                     try
                     {
-                        var newOrder = OrderManager.GetEntities(q => q.OrderNumber == orderNumber).SingleOrDefault();
+                        var newOrder = OrderManager.GetById(orderNumber);
                         newOrder.Status = (int)OrderStatusTypes.Cancelled;
 
                         //updating orderitems status                          
@@ -773,7 +769,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         /// <param name="kennzeichen">Kennzeichen</param>
         protected void updateDataBase(string vin, string tsn, string hsn, int orderNumber, int customerId, string kennzeichen)
         {
-            var orderToUpdate = RegistrationOrderManager.GetEntities(q => q.OrderNumber == orderNumber).Single();
+            var orderToUpdate = RegistrationOrderManager.GetById(orderNumber);
 
             orderToUpdate.Vehicle.VIN = vin;
             orderToUpdate.Registration.Licencenumber = kennzeichen;

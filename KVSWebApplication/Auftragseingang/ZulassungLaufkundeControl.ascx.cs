@@ -516,7 +516,7 @@ namespace KVSWebApplication.Auftragseingang
                             newPrice = PriceManager.GetEntities(q => q.ProductId == newProduct.Id && q.LocationId == null).SingleOrDefault();
                         }
 
-                        var orderToUpdate = OrderManager.GetEntities(q => q.OrderNumber == regOrd.OrderNumber).SingleOrDefault();
+                        var orderToUpdate = OrderManager.GetById(regOrd.OrderNumber);
 
                         if (orderToUpdate != null)
                         {

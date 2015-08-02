@@ -138,6 +138,7 @@
     <Compile Include="Managers\ICarOwnerManager.cs" />
     <Compile Include="Managers\IDeregistrationOrderManager.cs" />
     <Compile Include="Managers\IDocketListManager.cs" />
+    <Compile Include="Managers\IPackingListManager.cs" />
     <Compile Include="Managers\IRegistrationOrderManager.cs" />
     <Compile Include="Managers\IRegistrationOrderTypeManager.cs" />
     <Compile Include="Managers\IOrderTypeManager.cs" />

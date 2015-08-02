@@ -481,6 +481,9 @@
       <Column Name="Recipient" Type="System.String" DbType="varchar(50) not null" CanBeNull="false" />
       <Column Name="DocumentId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="OldOrderNumber" Storage="_OldOrderId" Type="System.Int32" DbType="int" CanBeNull="true" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
       <Association Name="PackingList_Order" Member="Order" ThisKey="PackingListNumber" OtherKey="PackingListNumber" Type="Order" />
       <Association Name="Document_PackingList" Member="Document" ThisKey="DocumentId" OtherKey="Id" Type="Document" IsForeignKey="true" />
       <Association Name="Adress_PackingList" Member="Adress" ThisKey="RecipientAdressId" OtherKey="Id" Type="Adress" IsForeignKey="true" />

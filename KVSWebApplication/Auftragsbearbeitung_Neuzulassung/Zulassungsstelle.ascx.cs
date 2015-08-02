@@ -19,9 +19,9 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
     {
         #region Members  
 
-        private string customer = string.Empty;
 
-        RadScriptManager script = null;
+
+
         public bool comeFromOrder { set; get; }
 
         protected override RadGrid OrderGrid { get { return this.RadGridNeuzulassung; } }
@@ -46,13 +46,13 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             if (comeFromOrder == true)
             {
                 var auftrag = Page as ZulassungLaufkunde;
-                RadScriptManager script = auftrag.getScriptManager() as RadScriptManager;
+                var script = auftrag.getScriptManager() as RadScriptManager;
                 script.RegisterPostBackControl(AddAdressButton);
             }
             else
             {
-                AuftragsbearbeitungNeuzulassung auftragNeu = Page as AuftragsbearbeitungNeuzulassung;
-                script = auftragNeu.getScriptManager() as RadScriptManager;
+                var auftragNeu = Page as AuftragsbearbeitungNeuzulassung;
+                var script = auftragNeu.getScriptManager() as RadScriptManager;
                 script.RegisterPostBackControl(AddAdressButton);
             }
 
@@ -150,7 +150,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             amtGebLabel.Visible = false;
 
 
-            var order = OrderManager.GetEntities(q => q.OrderNumber == Int32.Parse(orderIdBox.Text)).SingleOrDefault();
+            var order = OrderManager.GetById(Int32.Parse(orderIdBox.Text));
             if (order != null)
             {
                 foreach (OrderItem item in order.OrderItem)
@@ -439,7 +439,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                             newPrice = PriceManager.GetEntities(q => q.ProductId == newProduct.Id && q.LocationId == null).SingleOrDefault();
                         }
 
-                        var orderToUpdate = OrderManager.GetEntities(q => q.OrderNumber == Int32.Parse(item["OrderNumber"].Text)).SingleOrDefault();
+                        var orderToUpdate = OrderManager.GetById(Int32.Parse(item["OrderNumber"].Text));
 
                         if (newPrice == null || newProduct == null || orderToUpdate == null)
                             throw new Exception("Achtung, die Position kann nicht hinzugefügt werden, es konnte entweder kein Preis, Produkt oder der Auftrag gefunden werden!");
@@ -513,7 +513,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     var orderNumber = Int32.Parse(item["OrderNumber"].Text);
                     try
                     {
-                        var newOrder = OrderManager.GetEntities(q => q.OrderNumber == orderNumber).SingleOrDefault();
+                        var newOrder = OrderManager.GetById(orderNumber);
                         
                         //updating order status
                         newOrder.Status = (int)OrderStatusTypes.Cancelled;

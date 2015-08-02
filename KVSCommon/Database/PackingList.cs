@@ -7,6 +7,7 @@ using System.Net.Mail;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using KVSCommon.Enums;
+using KVSCommon.Entities;
 
 namespace KVSCommon.Database
 {
@@ -14,8 +15,20 @@ namespace KVSCommon.Database
     /// <summary>
     /// Erweiterungsklasse für die Datenbanktabelle PackingList (Lieferscheintabelle)
     /// </summary>
-    partial class PackingList : ILogging
+    partial class PackingList : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
+        public int Id
+        {
+            get
+            {
+                return PackingListNumber;
+            }
+            set
+            {
+                PackingListNumber = value;
+            }
+        }
+
         public KVSEntities LogDBContext
         {
             get;
