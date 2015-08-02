@@ -12,6 +12,7 @@
     <telerik:radcombobox id="RadComboBoxCustomer" runat="server" OnSelectedIndexChanged = "SmallLargeCustomerIndex_Changed" 
   AutoPostBack = "true"  Width="250px"> 
     <Items>   
+        <telerik:RadComboBoxItem runat="server" Value="0" Text="Alle" />
         <telerik:RadComboBoxItem runat="server" Value = "2" Text="Großkunden" /> 
         <telerik:RadComboBoxItem runat="server" Value = "1" Text="Sofortkunden" />    
     </Items>
@@ -254,7 +255,7 @@ DataTextField = "Name" DataValueField = "Value" ID = "CustomerDropDownList"
              <Selecting AllowRowSelect="false" ></Selecting>         
         </clientsettings>
     </telerik:RadGrid>
-<asp:LinqDataSource TableName = "Customer" ID="LinqDataSourceFehlerHaft" runat="server" OnSelecting="FehlerhaftLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext" >                 
+<asp:LinqDataSource TableName = "Customer" ID="LinqDataSourceFehlerHaft" runat="server" OnSelecting="OrderLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext" >                 
 </asp:LinqDataSource>
 <asp:LinqDataSource ID="CustomerDataSource" runat="server" OnSelecting="CustomerLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext" >                 
 </asp:LinqDataSource>

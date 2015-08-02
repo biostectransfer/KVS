@@ -22,7 +22,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
     public partial class OffenNeuzulassung : EditOrdersBase
     {
         #region Members  
-        
+
         protected override RadGrid OrderGrid { get { return this.RadGridOffNeuzulassung; } }
         protected override RadDatePicker RegistrationDatePicker { get { return this.ZulassungsDatumPicker; } }
         protected override RadComboBox CustomerTypeDropDown { get { return this.RadComboBoxCustomerOffenNeuzulassung; } }
@@ -30,7 +30,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         protected override PermissionTypes PagePermission { get { return PermissionTypes.LOESCHEN_AUFTRAGSPOSITION; } }
         protected override OrderTypes OrderType { get { return OrderTypes.Admission; } }
         protected override OrderStatusTypes OrderStatusType { get { return OrderStatusTypes.Open; } }
-
+        protected override string OrderStatusSearch { get { return "Offen"; } }
         #endregion
 
         #region Event handlers
@@ -93,7 +93,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         {
             HideExpandColumnRecursive(RadGridOffNeuzulassung.MasterTableView);
         }
-        
+
         /// <summary>
         /// Lilfsmethoden fuer das oeffnen der Grid
         /// </summary>
@@ -112,7 +112,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 }
             }
         }
-        
+
         // Large oder small Customer
         protected void SmallLargeCustomerIndex_Changed(object sender, EventArgs e)
         {
@@ -134,7 +134,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             Session["CustomerIndex"] = RadComboBoxCustomerOffenNeuzulassung.SelectedValue;
             Session["CustomerId"] = CustomerDropDownListOffenNeuzulassung.SelectedValue;
         }
-        
+
         /// <summary>
         /// Datasource fuer die Detailgrid
         /// </summary>
@@ -143,7 +143,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         protected void RadGridZulOffen_DetailTableDataBind(object source, GridDetailTableDataBindEventArgs e)
         {
             var item = (GridDataItem)e.DetailTableView.ParentItem;
-    
+
             e.DetailTableView.DataSource = GetOrderPositions(item["OrderNumber"].Text);
         }
 

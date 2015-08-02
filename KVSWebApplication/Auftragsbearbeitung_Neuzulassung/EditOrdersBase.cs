@@ -40,6 +40,29 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         public DateTime? Datum { get; set; }
         public bool? HasError { get; set; }
         public string ErrorReason { get; set; }
+
+        #region Small Customer Fields
+
+        public DateTime? Inspection { get; set; }
+        public string Variant { get; set; }
+        public string eVBNum { get; set; }
+        public string Name { get; set; }
+        public string FirstName { get; set; }
+        public string BankName { get; set; }
+        public string AccountNum { get; set; }
+        public string Prevkennzeichen { get; set; }
+        public string BankCode { get; set; }
+        public string Street { get; set; }
+        public string StreetNr { get; set; }
+        public string Zip { get; set; }
+        public string City { get; set; }
+        public string Country { get; set; }
+        public string Phone { get; set; }
+        public string Mobile { get; set; }
+        public string Fax { get; set; }
+        public string Email { get; set; }
+
+        #endregion
     }
 
     /// <summary>
@@ -94,6 +117,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         protected abstract OrderStatusTypes OrderStatusType { get; }
 
         protected abstract RadGrid OrderGrid { get; }
+        protected abstract string OrderStatusSearch { get; }
+        protected virtual bool OrderWithErrors { get { return false; } }
         #endregion
 
         #region Dates
@@ -165,7 +190,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected void AbmeldungenLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
+        protected void OrderLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
             if (CustomerTypeDropDown.SelectedValue == "0")
             {
@@ -201,7 +226,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 {
                     if (!String.IsNullOrEmpty(Session["orderNumberSearch"].ToString()))
                     {
-                        if (Session["orderStatusSearch"].ToString().Contains("Offen"))
+                        if (Session["orderStatusSearch"].ToString().Contains(this.OrderStatusSearch))
                         {
                             int orderNumber = Convert.ToInt32(Session["orderNumberSearch"].ToString());
                             largeCustomerOrders = largeCustomerOrders.Where(q => q.OrderNumber == orderNumber);
@@ -286,8 +311,10 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         protected IEnumerable<OrderViewModel> GetSmallCustomerOrders()
         {
             return OrderManager.GetEntities(o => o.Customer.SmallCustomer != null &&
-                o.Status == (int)this.OrderStatusType && o.OrderTypeId == (int)this.OrderType &&
-                o.HasError.GetValueOrDefault(false) != true).Select(ord => new OrderViewModel()
+                o.RegistrationOrder != null &&
+                (this.OrderWithErrors || (!this.OrderWithErrors && o.Status == (int)this.OrderStatusType)) && 
+                o.OrderTypeId == (int)this.OrderType &&
+                o.HasError.GetValueOrDefault(false) != !this.OrderWithErrors).Select(ord => new OrderViewModel()
                 {
                     OrderNumber = ord.OrderNumber,
                     customerId = ord.CustomerId,
@@ -303,7 +330,28 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     OrderTyp = OrderTypesCollection.FirstOrDefault(o => o.Id == ord.OrderTypeId).Name,
                     Freitext = ord.FreeText,
                     Geprueft = ord.Geprueft == null ? "Nein" : "Ja",
-                    Datum = ord.RegistrationOrder.Registration.RegistrationDate
+                    Datum = ord.RegistrationOrder.Registration.RegistrationDate,
+                    HasError = ord.HasError,
+                    ErrorReason = ord.ErrorReason,
+
+                    Inspection = ord.RegistrationOrder.Registration.GeneralInspectionDate,
+                    Variant = ord.RegistrationOrder.Registration.Vehicle.Variant,
+                    eVBNum = ord.RegistrationOrder.Registration.eVBNumber,
+                    Name = ord.RegistrationOrder.Registration.CarOwner.Name,
+                    FirstName = ord.RegistrationOrder.Registration.CarOwner.FirstName,
+                    BankName = ord.RegistrationOrder.Registration.CarOwner.BankAccount.BankName,
+                    AccountNum = ord.RegistrationOrder.Registration.CarOwner.BankAccount.Accountnumber,
+                    Prevkennzeichen = ord.RegistrationOrder.PreviousLicencenumber,
+                    BankCode = ord.RegistrationOrder.Registration.CarOwner.BankAccount.BankCode,
+                    Street = ord.RegistrationOrder.Registration.CarOwner.Adress.Street,
+                    StreetNr = ord.RegistrationOrder.Registration.CarOwner.Adress.StreetNumber,
+                    Zip = ord.RegistrationOrder.Registration.CarOwner.Adress.Zipcode,
+                    City = ord.RegistrationOrder.Registration.CarOwner.Adress.City,
+                    Country = ord.RegistrationOrder.Registration.CarOwner.Adress.Country,
+                    Phone = ord.RegistrationOrder.Registration.CarOwner.Contact.Phone,
+                    Mobile = ord.RegistrationOrder.Registration.CarOwner.Contact.MobilePhone,
+                    Fax = ord.RegistrationOrder.Registration.CarOwner.Contact.Fax,
+                    Email = ord.RegistrationOrder.Registration.CarOwner.Contact.Email,
                 });
         }
 
@@ -315,8 +363,10 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         protected IEnumerable<OrderViewModel> GetLargeCustomerOrders(OrderTypes orderType, OrderStatusTypes orderStatusType)
         {
             return OrderManager.GetEntities(o => o.Customer.LargeCustomer != null &&
-                o.Status == (int)orderStatusType && o.OrderTypeId == (int)orderType &&
-                o.HasError.GetValueOrDefault(false) != true).Select(ord => new OrderViewModel()
+                o.RegistrationOrder != null &&
+                (this.OrderWithErrors || (!this.OrderWithErrors && o.Status == (int)this.OrderStatusType)) &&
+                o.OrderTypeId == (int)orderType &&
+                o.HasError.GetValueOrDefault(false) != !this.OrderWithErrors).Select(ord => new OrderViewModel()
                 {
                     OrderNumber = ord.OrderNumber,
                     locationId = ord.LocationId.HasValue ? ord.LocationId.Value : 0,
@@ -334,7 +384,26 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     Geprueft = ord.Geprueft == null ? "Nein" : "Ja",
                     Datum = ord.RegistrationOrder.Registration.RegistrationDate,
                     HasError = ord.HasError,
-                    ErrorReason = ord.ErrorReason
+                    ErrorReason = ord.ErrorReason,
+
+                    Variant = ord.RegistrationOrder.Registration.Vehicle.Variant,
+                    Prevkennzeichen = ord.RegistrationOrder.PreviousLicencenumber,
+                    Inspection = ord.RegistrationOrder.Registration.GeneralInspectionDate,
+                    eVBNum = ord.RegistrationOrder.Registration.eVBNumber,
+                    Name = ord.RegistrationOrder.Registration.CarOwner.Name,
+                    FirstName = ord.RegistrationOrder.Registration.CarOwner.FirstName,
+                    BankName = ord.RegistrationOrder.Registration.CarOwner.BankAccount.BankName,
+                    AccountNum = ord.RegistrationOrder.Registration.CarOwner.BankAccount.Accountnumber,
+                    BankCode = ord.RegistrationOrder.Registration.CarOwner.BankAccount.BankCode,
+                    Street = ord.RegistrationOrder.Registration.CarOwner.Adress.Street,
+                    StreetNr = ord.RegistrationOrder.Registration.CarOwner.Adress.StreetNumber,
+                    Zip = ord.RegistrationOrder.Registration.CarOwner.Adress.Zipcode,
+                    City = ord.RegistrationOrder.Registration.CarOwner.Adress.City,
+                    Country = ord.RegistrationOrder.Registration.CarOwner.Adress.Country,
+                    Phone = ord.RegistrationOrder.Registration.CarOwner.Contact.Phone,
+                    Mobile = ord.RegistrationOrder.Registration.CarOwner.Contact.MobilePhone,
+                    Fax = ord.RegistrationOrder.Registration.CarOwner.Contact.Fax,
+                    Email = ord.RegistrationOrder.Registration.CarOwner.Contact.Email,
                 });
         }
 

@@ -18,10 +18,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
     public partial class Zulassungsstelle : EditOrdersBase
     {
         #region Members  
-
-
-
-
+        
         public bool comeFromOrder { set; get; }
 
         protected override RadGrid OrderGrid { get { return this.RadGridNeuzulassung; } }
@@ -31,6 +28,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         protected override PermissionTypes PagePermission { get { return PermissionTypes.LOESCHEN_AUFTRAGSPOSITION; } }
         protected override OrderTypes OrderType { get { return OrderTypes.Admission; } }
         protected override OrderStatusTypes OrderStatusType { get { return OrderStatusTypes.AdmissionPoint; } }
+        protected override string OrderStatusSearch { get { return "Zulassungsstelle"; } }
 
         #endregion
 

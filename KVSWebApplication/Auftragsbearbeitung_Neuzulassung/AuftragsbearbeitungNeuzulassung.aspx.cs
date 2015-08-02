@@ -23,14 +23,11 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 return _pers;
             }
         }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
             {
-                //AddTab("OffenNeuzulassung", "Offen");
-                //if (RadTabStripNeuzulassung.Tabs[0].Value == "Offen")
-                //    AddPageView(RadTabStripNeuzulassung.FindTabByValue("Offen"));
-
                 AddTab("OffenNeuzulassung", "Offen");
                 RadPageView offenPageView = new RadPageView();
                 offenPageView.ID = "OffenNeuzulassung";
@@ -72,11 +69,6 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     Session["CustomerIndex"] = Session["customerIndexSearch"];
                     RadTab offenTab = RadTabStripNeuzulassung.Tabs.FindTabByText("Zulassungsstelle");
                     offenTab.Selected = true;
-
-                    //AddTab("Zulassungsstelle", "Zulassungsstelle");
-                    //RadPageView offenPageView = new RadPageView();
-                    //offenPageView.ID = "Zulassungsstelle";
-                    //RadMultiPageNeuzulassung.PageViews.Add(offenPageView);
 
                     Session["customerIdSearch"] = null;
                     RadMultiPageNeuzulassung.SelectedIndex = 1;
@@ -129,8 +121,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             {
                 AddPageView(e.Tab);
                 e.Tab.PageView.Selected = true;
-            }
-          
+            }          
         }
 
         public RadScriptManager getScriptManager()

@@ -26,7 +26,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         protected override PermissionTypes PagePermission { get { return PermissionTypes.LOESCHEN_AUFTRAGSPOSITION; } }
         protected override OrderTypes OrderType { get { return OrderTypes.Admission; } }
         protected override OrderStatusTypes OrderStatusType { get { return OrderStatusTypes.Closed; } }
-
+        protected override string OrderStatusSearch { get { return "Offen"; } }
         #endregion
 
         #region Event handlers

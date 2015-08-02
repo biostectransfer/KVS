@@ -572,7 +572,7 @@
     <asp:Label runat="server" ID="StornierungErfolgLabel" Text="Auftrag ist erfolgreich storniert" Visible="false" ForeColor="Green"></asp:Label>
     <br />
 
-    <asp:LinqDataSource TableName="Customer" ID="LinqDataSourceAbmeldung" runat="server" OnSelecting="AbmeldungenLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext">
+    <asp:LinqDataSource TableName="Customer" ID="LinqDataSourceAbmeldung" runat="server" OnSelecting="OrderLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext">
     </asp:LinqDataSource>
 
     <asp:LinqDataSource ID="CustomerDataSource" runat="server" OnSelecting="CustomerLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext">
