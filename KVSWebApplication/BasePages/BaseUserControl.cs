@@ -26,6 +26,8 @@ namespace KVSWebApplication.BasePages
 
         protected IEnumerable<OrderStatus> OrderStatuses { get; set; }
         protected IEnumerable<OrderType> OrderTypesCollection { get; set; }
+        protected IEnumerable<ProductCategory> ProductCategoryCollection { get; set; }
+        protected IEnumerable<RegistrationOrderType> RegistrationOrderTypeCollection { get; set; }
 
         public BaseUserControl()
         {
@@ -56,9 +58,12 @@ namespace KVSWebApplication.BasePages
             OrderStatusManager = (IOrderStatusManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IOrderStatusManager));
             DocketListManager = (IDocketListManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IDocketListManager));
             PackingListManager = (IPackingListManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IPackingListManager));
+            ProductCategoryManager = (IProductCategoryManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IProductCategoryManager));
 
             OrderStatuses = OrderStatusManager.GetEntities().ToList();
             OrderTypesCollection = OrderTypeManager.GetEntities().ToList();
+            ProductCategoryCollection = ProductCategoryManager.GetEntities().ToList();
+            RegistrationOrderTypeCollection = RegistrationOrderTypeManager.GetEntities().ToList();
         }
 
         #endregion
@@ -91,7 +96,8 @@ namespace KVSWebApplication.BasePages
         public IDeregistrationOrderManager DeregistrationOrderManager { get; set; }
         public IDocketListManager DocketListManager { get; set; }
         public IPackingListManager PackingListManager { get; set; }
-        
-        #endregion           
+        public IProductCategoryManager ProductCategoryManager { get; set; }
+
+        #endregion
     }
 }

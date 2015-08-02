@@ -27,6 +27,9 @@ namespace KVSWebApplication.BasePages
 
         protected IEnumerable<OrderStatus> OrderStatuses { get; set; }
         protected IEnumerable<OrderType> OrderTypesCollection { get; set; }
+        protected IEnumerable<ProductCategory> ProductCategoryCollection { get; set; }
+        protected IEnumerable<RegistrationOrderType> RegistrationOrderTypeCollection { get; set; }
+        
 
         PageStatePersister _pers;
         protected override PageStatePersister PageStatePersister
@@ -70,9 +73,12 @@ namespace KVSWebApplication.BasePages
             OrderStatusManager = (IOrderStatusManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IOrderStatusManager));
             DocketListManager = (IDocketListManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IDocketListManager));
             PackingListManager = (IPackingListManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IPackingListManager));
+            ProductCategoryManager = (IProductCategoryManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IProductCategoryManager));
 
             OrderStatuses = OrderStatusManager.GetEntities().ToList();
             OrderTypesCollection = OrderTypeManager.GetEntities().ToList();
+            ProductCategoryCollection = ProductCategoryManager.GetEntities().ToList();
+            RegistrationOrderTypeCollection = RegistrationOrderTypeManager.GetEntities().ToList();
         }
 
         #endregion
@@ -105,6 +111,7 @@ namespace KVSWebApplication.BasePages
         public IDeregistrationOrderManager DeregistrationOrderManager { get; set; }
         public IDocketListManager DocketListManager { get; set; }
         public IPackingListManager PackingListManager { get; set; }
+        public IProductCategoryManager ProductCategoryManager { get; set; }
 
         #endregion
 
@@ -284,7 +291,7 @@ namespace KVSWebApplication.BasePages
                         ZumAuftragText = ord.Status == (int)OrderStatusTypes.Payed ? "Schon abgerechnet" : ord.Status == (int)OrderStatusTypes.Cancelled ? "Schon storniert" : "Zum Auftrag",
                         Haltername = registration.CarOwner.Name != String.Empty && registration.CarOwner.FirstName == String.Empty
                                   ? registration.CarOwner.Name : registration.CarOwner.FirstName,
-   
+
                         HasErrorAsString = ord.HasError == true ? "Ja" : "Nein",
                     };
                 });
