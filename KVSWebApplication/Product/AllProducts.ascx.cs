@@ -105,45 +105,56 @@ namespace KVSWebApplication.Product
 
         protected void GetAllProductsDataSource_Selecting(object sender, LinqDataSourceSelectEventArgs e)
         {
-            Dictionary<int, string> myProductCategorys = ((Dictionary<int, string>)Session["myProductCategorys"]);
-            Dictionary<int, string> myOrderTypeNames = ((Dictionary<int, string>)Session["myOrderTypeNames"]);
-            Dictionary<int, string> myRegistrationOrderTypeNames = ((Dictionary<int, string>)Session["myRegistrationOrderTypeNames"]);
-
-            KVSEntities dbContext = new KVSEntities();
-            var query = from products in dbContext.Product
-                        let PriceId = products.Price.FirstOrDefault(p => p.ProductId == products.Id && p.LocationId == null)
-                        let price = (PriceId == null) ? (int?)null : PriceId.Id
-                        orderby products.ItemNumber
-                        select new
-                        {
-                            products.Id,
-                            PriceId = price,
-                            OrderTypeId = products.OrderTypeId,
-                            ProductCategoryId = products.ProductCategoryId,
-                            RegistrationOrderTypeId = products.RegistrationOrderTypeId,
-                            ProductName = products.Name,
-                            ItemNumber = products.ItemNumber != null ? products.ItemNumber : "",
-                            OrderTypeName = products.OrderType != null ? products.OrderType.Name : "",
-                            ProductCategorieName = products.ProductCategory != null ? products.ProductCategory.Name : "",
-                            RegistrationOrderTypeName = products.RegistrationOrderType != null ? products.RegistrationOrderType.Name : "",
-                            EnableDropDown = products.OrderType.Id == (int)OrderTypes.Admission ? "true" : "false",
-                            Amount = EmptyStringIfNull.ReturnEmptyStringIfNull(products.Price.SingleOrDefault(q => q.ProductId == products.Id && q.LocationId == null).Amount.ToString()),
-                            AutoCharge = EmptyStringIfNull.ReturnEmptyStringIfNull(products.Price.SingleOrDefault(q => q.ProductId == products.Id && q.LocationId == null).AuthorativeCharge.ToString()),
-                            Vat = products.NeedsVAT == true ? "true" : "false",
-                            AccountNumber = (from price_ in dbContext.Price
-                                             join _priceAccounts in dbContext.PriceAccount on price_.Id equals _priceAccounts.PriceId
-                                             where price_.Id == price && price_.LocationId == null
-                                             select _priceAccounts.Accounts.AccountNumber).SingleOrDefault()
-                        };
             try
             {
+                var myProductCategorys = ((Dictionary<int, string>)Session["myProductCategorys"]);
+                var myOrderTypeNames = ((Dictionary<int, string>)Session["myOrderTypeNames"]);
+                var myRegistrationOrderTypeNames = ((Dictionary<int, string>)Session["myRegistrationOrderTypeNames"]);
+
+                var products = ProductManager.GetEntities().Select(prod =>
+                {
+                    var price = prod.Price.FirstOrDefault(o => !o.LocationId.HasValue);
+                    string accountNumber = String.Empty;
+
+                    if(price != null)
+                    {
+                        var account = price.PriceAccount.FirstOrDefault();
+                        if(account != null)
+                        {
+                            accountNumber = account.Accounts.AccountNumber;
+                        }
+                    }
+
+                    return new
+                    {
+                        Id = prod.Id,
+                        PriceId = price != null ? price.Id : 0,
+                        OrderTypeId = prod.OrderTypeId,
+                        ProductCategoryId = prod.ProductCategoryId,
+                        RegistrationOrderTypeId = prod.RegistrationOrderTypeId,
+                        ProductName = prod.Name,
+                        ItemNumber = prod.ItemNumber,
+                        OrderTypeName = OrderTypesCollection.FirstOrDefault(o => o.Id == prod.OrderTypeId).Name,
+                        ProductCategorieName = prod.ProductCategoryId.HasValue ?
+                            ProductCategoryCollection.FirstOrDefault(o => o.Id == prod.ProductCategoryId.Value).Name : String.Empty,
+                        RegistrationOrderTypeName = prod.RegistrationOrderTypeId.HasValue ?
+                            RegistrationOrderTypeCollection.FirstOrDefault(o => o.Id == prod.RegistrationOrderTypeId.Value).Name : String.Empty,
+                        EnableDropDown = prod.OrderTypeId == (int)OrderTypes.Admission ? "true" : "false",
+                        Amount =  price != null ? price.Amount.ToString() : String.Empty,
+                        AutoCharge = price != null && price.AuthorativeCharge.HasValue? price.AuthorativeCharge.Value.ToString() : String.Empty,
+                        Vat = prod.NeedsVAT == true ? "true" : "false",
+                        AccountNumber = accountNumber
+                    };
+                });
+
+
                 myProductCategorys.Clear();
                 foreach (var Category in ProductCategoryCollection)
                 {
                     if (!myProductCategorys.ContainsKey(Category.Id))
                         myProductCategorys.Add(Category.Id, Category.Name);
                 }
-                
+
 
                 myOrderTypeNames.Clear();
                 foreach (var orderTypeName in OrderTypesCollection)
@@ -158,13 +169,14 @@ namespace KVSWebApplication.Product
                     if (myRegistrationOrderTypeNames.ContainsKey(RegistrationOrderTypeName.Id) == false)
                         myRegistrationOrderTypeNames.Add(RegistrationOrderTypeName.Id, RegistrationOrderTypeName.Name);
                 }
+
+                e.Result = products.OrderBy(o => o.ItemNumber).ToList();
             }
             catch (Exception ex)
             {
                 RadWindowManagerAllProducts.RadAlert(Server.HtmlEncode(ex.Message).RemoveLineEndings(), 380, 180, "Fehler", "");
                 //TODO WriteLogItem("Product Error " + ex.Message, LogTypes.ERROR, "Product");
             }
-            e.Result = query;
         }
 
         protected void Grid_UpdateCommand(object sender, GridCommandEventArgs e)
@@ -209,7 +221,7 @@ namespace KVSWebApplication.Product
                 throw new Exception(ex.Message);
             }
         }
-        
+
         protected void cmbCategory_OnLoad(object sender, EventArgs e)
         {
             try
@@ -476,7 +488,7 @@ namespace KVSWebApplication.Product
             {
                 if (!String.IsNullOrEmpty(item.Value))
                 {
-                    ProductManager.UpdateCustomerProducts(Int32.Parse(item.Value), Int32.Parse(productId), item.Checked);                    
+                    ProductManager.UpdateCustomerProducts(Int32.Parse(item.Value), Int32.Parse(productId), item.Checked);
                 }
             }
         }
