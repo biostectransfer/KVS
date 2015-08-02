@@ -11,6 +11,7 @@ using System.Configuration;
 using System.Transactions;
 using KVSCommon.Enums;
 using System.Collections;
+using KVSWebApplication.BasePages;
 
 namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 {

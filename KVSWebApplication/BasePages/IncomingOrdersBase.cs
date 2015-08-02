@@ -15,41 +15,15 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
 
-namespace KVSWebApplication.Auftragseingang
+namespace KVSWebApplication.BasePages
 {
     /// <summary>
     ///  Incoming Orders base class
     /// </summary>
-    public abstract class IncomingOrdersBase : UserControl
+    public abstract class IncomingOrdersBase : BaseUserControl
     {
         #region Members
-
-        public IncomingOrdersBase()
-        {
-            BicManager = (IBicManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IBicManager));
-            UserManager = (IUserManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IUserManager));
-            OrderManager = (IOrderManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IOrderManager));
-            PriceManager = (IPriceManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IPriceManager));
-            ProductManager = (IProductManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IProductManager));
-            LargeCustomerRequiredFieldManager = (ILargeCustomerRequiredFieldManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ILargeCustomerRequiredFieldManager));
-            LocationManager = (ILocationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ILocationManager));
-            InvoiceManager = (IInvoiceManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceManager));
-            InvoiceItemAccountItemManager = (IInvoiceItemAccountItemManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceItemAccountItemManager));
-            InvoiceItemManager = (IInvoiceItemManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceItemManager));
-            AdressManager = (IAdressManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IAdressManager));
-            CostCenterManager = (ICostCenterManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICostCenterManager));
-            CustomerManager = (ICustomerManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICustomerManager));
-            VehicleManager = (IVehicleManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IVehicleManager));
-            RegistrationLocationManager = (IRegistrationLocationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationLocationManager));
-            RegistrationManager = (IRegistrationManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationManager));
-            RegistrationOrderTypeManager = (IRegistrationOrderTypeManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationOrderTypeManager));
-            ContactManager = (IContactManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IContactManager));
-            BankAccountManager = (IBankAccountManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IBankAccountManager));
-            CarOwnerManager = (ICarOwnerManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(ICarOwnerManager));
-            RegistrationOrderManager = (IRegistrationOrderManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IRegistrationOrderManager));
-            DeregistrationOrderManager = (IDeregistrationOrderManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IDeregistrationOrderManager));
-        }
-
+        
         #region Common
 
         //TODO protected abstract HiddenField SessionId { get; }
@@ -156,32 +130,6 @@ namespace KVSWebApplication.Auftragseingang
 
         #endregion
 
-        #region Managers
-
-        public IBicManager BicManager { get; set; }
-        public IUserManager UserManager { get; set; }
-        public IOrderManager OrderManager { get; set; }
-        public IPriceManager PriceManager { get; set; }
-        public IProductManager ProductManager { get; set; }
-        public ILargeCustomerRequiredFieldManager LargeCustomerRequiredFieldManager { get; set; }        
-        public ILocationManager LocationManager { get; set; }
-        public IInvoiceManager InvoiceManager { get; set; }
-        public IInvoiceItemAccountItemManager InvoiceItemAccountItemManager { get; set; }
-        public IInvoiceItemManager InvoiceItemManager { get; set; }
-        public IAdressManager AdressManager { get; set; }
-        public ICostCenterManager CostCenterManager { get; set; }
-        public ICustomerManager CustomerManager { get; set; }
-        public IVehicleManager VehicleManager { get; set; }
-        public IRegistrationLocationManager RegistrationLocationManager { get; set; }
-        public IRegistrationManager RegistrationManager { get; set; }
-        public IRegistrationOrderTypeManager RegistrationOrderTypeManager { get; set; }
-        public IContactManager ContactManager { get; set; }
-        public IBankAccountManager BankAccountManager { get; set; }
-        public ICarOwnerManager CarOwnerManager { get; set; }
-        public IRegistrationOrderManager RegistrationOrderManager { get; set; }
-        public IDeregistrationOrderManager DeregistrationOrderManager { get; set; }
-        #endregion
-
         #region Labels
 
         protected abstract Label FahrzeugCaption { get; }
@@ -193,7 +141,7 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract Label AdditionalInfoCaption { get; }
         protected abstract Label LocationWindowCaption { get; }
         #endregion
-
+        
         #endregion
 
         #region Event Handlers

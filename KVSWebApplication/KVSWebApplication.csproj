@@ -211,7 +211,12 @@
     <Compile Include="Auftragsbearbeitung_Neuzulassung\FehlerhaftZulassung.ascx.designer.cs">
       <DependentUpon>FehlerhaftZulassung.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Auftragsbearbeitung_Neuzulassung\EditOrdersBase.cs" />
+    <Compile Include="BasePages\BasePage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePages\EditOrdersBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Auftragsbearbeitung_Neuzulassung\Lieferscheine.ascx.cs">
       <DependentUpon>Lieferscheine.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -242,7 +247,6 @@
     </Compile>
     <Compile Include="Auftragseingang\AbmeldungGrosskundeControl.ascx.cs">
       <DependentUpon>AbmeldungGrosskundeControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Auftragseingang\AbmeldungGrosskundeControl.ascx.designer.cs">
       <DependentUpon>AbmeldungGrosskundeControl.ascx</DependentUpon>
@@ -256,7 +260,6 @@
     </Compile>
     <Compile Include="Auftragseingang\AbmeldungLaufkundeControl.ascx.cs">
       <DependentUpon>AbmeldungLaufkundeControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Auftragseingang\AbmeldungLaufkundeControl.ascx.designer.cs">
       <DependentUpon>AbmeldungLaufkundeControl.ascx</DependentUpon>
@@ -274,12 +277,14 @@
     <Compile Include="Auftragseingang\CancellationOrderBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Auftragseingang\IncomingOrdersBase.cs">
+    <Compile Include="BasePages\BaseUserControl.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BasePages\IncomingOrdersBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Auftragseingang\NeuzulassungGrosskundeControl.ascx.cs">
       <DependentUpon>NeuzulassungGrosskundeControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Auftragseingang\NeuzulassungGrosskundeControl.ascx.designer.cs">
       <DependentUpon>NeuzulassungGrosskundeControl.ascx</DependentUpon>
@@ -293,7 +298,6 @@
     </Compile>
     <Compile Include="Auftragseingang\ZulassungLaufkundeControl.ascx.cs">
       <DependentUpon>ZulassungLaufkundeControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Auftragseingang\ZulassungLaufkundeControl.ascx.designer.cs">
       <DependentUpon>ZulassungLaufkundeControl.ascx</DependentUpon>
@@ -305,6 +309,7 @@
     <Compile Include="Auftragseingang\ZulassungLaufkunde.aspx.designer.cs">
       <DependentUpon>ZulassungLaufkunde.aspx</DependentUpon>
     </Compile>
+    <Compile Include="BasePages\OrderViewModel.cs" />
     <Compile Include="ChangeHistory\ChangeLog.aspx.cs">
       <DependentUpon>ChangeLog.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

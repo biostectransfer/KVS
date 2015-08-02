@@ -1,6 +1,7 @@
 ﻿using KVSCommon.Database;
 using KVSCommon.Enums;
 using KVSCommon.Managers;
+using KVSWebApplication.BasePages;
 using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
@@ -28,16 +29,6 @@ namespace KVSWebApplication.Auftragseingang
 
         protected override PermissionTypes PagePermission { get { return PermissionTypes.ZULASSUNGSAUFTRAG_ANLEGEN; } }
         protected override OrderTypes OrderType { get { return OrderTypes.Admission; } }
-
-        #endregion
-
-        #region Event Handlers
-
-
-        #endregion
-
-        #region Methods
-
 
         #endregion
     }
