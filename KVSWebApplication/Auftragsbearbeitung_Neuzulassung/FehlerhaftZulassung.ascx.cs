@@ -101,16 +101,13 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         {
             string begruendung = string.Empty;
             string newStatus = string.Empty;
-            int? locationId = null;
+
             //vorbereitung für update          
             var editButton = sender as Button;
             var item = editButton.NamingContainer as GridEditFormItem;
 
             var orderNumber = Int32.Parse(item.SavedOldValues["OrderNumber"].ToString());
-            if (RadComboBoxCustomer.SelectedValue == "2")
-            {
-                locationId = Int32.Parse(item.SavedOldValues["locationId"].ToString());
-            }
+
             var VINBox = item.FindControl("VINBox") as RadTextBox;
             var VariantBox = item.FindControl("VariantBox") as RadTextBox;
             var LicenceBox = item.FindControl("LicenceBox") as RadTextBox;
@@ -136,7 +133,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             var FreiTextBox = item.FindControl("Freitext") as RadTextBox;
             string selectedDate = InspectionDatePicker.SelectedDate.ToString();
 
-            UpdateOrderData(orderNumber, locationId, VINBox.Text, VariantBox.Text, LicenceBox.Text, PrevLicenceBox.Text, selectedDate,
+            UpdateOrderData(orderNumber, VINBox.Text, VariantBox.Text, LicenceBox.Text, PrevLicenceBox.Text, selectedDate,
                  TSNBox.Text, HSNBox.Text, InsuranceBox.Text, OwnerNameBox.Text, OwnerStreetBox.Text, OwnerFirstNameBox.Text, OwnerStreetNumberBox.Text,
                  OwnerZipCodeBox.Text, OwnerCityBox.Text, OwnerCountryBox.Text, OwnerPhoneBox.Text, OwnerFaxBox.Text, OwnerMobilePhoneBox.Text, OwnerEmailBox.Text,
                  BankNameBox.Text, AccountNumberBox.Text, BankCodeBox.Text, FreiTextBox.Text);
@@ -153,23 +150,14 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         /// <summary>
         /// aktualisiere alle Auftragsdaten
         /// </summary>
-        protected void UpdateOrderData(int orderNumber, int? locationId, string vin, string variant, string kennzeichen, string prevkennzeichen,
+        protected void UpdateOrderData(int orderNumber, string vin, string variant, string kennzeichen, string prevkennzeichen,
             string inspection, string tsn, string hsn, string insurance, string name, string street, string firstname, string streetnum,
             string zip, string city, string country, string phone, string fax, string mobile, string email, string bankname, string account, string bankcode, string freitext)
         {
             try
             {
                 FehlerhaftErrorMessage.Text = "";
-                Order orderToUpdate = null;
-
-                if (RadComboBoxCustomer.SelectedValue == "1")
-                {
-                    orderToUpdate = OrderManager.GetById(orderNumber);
-                }
-                else
-                {
-                    orderToUpdate = OrderManager.GetEntities(q => q.OrderNumber == orderNumber && q.LocationId == locationId).SingleOrDefault();
-                }
+                var orderToUpdate = OrderManager.GetById(orderNumber);
 
                 if (orderToUpdate != null)
                 {

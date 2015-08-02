@@ -43,5 +43,12 @@ namespace KVSCommon.Managers
         /// <param name="smtpServer">SMTP-Server für den Emailversand.</param>
         /// <returns>True, wenn eine Email versendet wurde, sonst false.</returns>
         void SendByEmail(PackingList packingList, MemoryStream ms, string fromAddress, string smtpServer);
+
+        /// <summary>
+        /// Merged PDFs
+        /// </summary>
+        /// <param name="OrderNumber">File Array</param>
+        /// <param name="return"> Gemerged PDF</param>
+        void MergePackingLists(string[] files, string mergedFileName);
     }
 }

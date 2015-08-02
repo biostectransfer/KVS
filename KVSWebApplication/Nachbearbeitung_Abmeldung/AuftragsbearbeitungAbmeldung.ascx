@@ -42,6 +42,7 @@
     <telerik:RadComboBox ID="RadComboBoxCustomerAbmeldungOffen" runat="server" OnSelectedIndexChanged="SmallLargeCustomerIndex_Changed"
         OnItemsRequested="SmallLargeCustomerIndex_Changed" AutoPostBack="true" Width="250px" EnableViewState="false">
         <Items>
+            <telerik:RadComboBoxItem runat="server" Value="0" Text="Alle" />
             <telerik:RadComboBoxItem runat="server" Value="2" Text="Großkunden" />
             <telerik:RadComboBoxItem runat="server" Value="1" Text="Sofortkunden" />
         </Items>
@@ -400,7 +401,7 @@
             </div>
         </ContentTemplate>
     </telerik:RadWindow>
-    <asp:LinqDataSource TableName="Customer" ID="LinqDataSourceAbmeldung" runat="server" OnSelecting="AbmeldungenLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext">
+    <asp:LinqDataSource TableName="Customer" ID="LinqDataSourceAbmeldung" runat="server" OnSelecting="OrderLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext">
     </asp:LinqDataSource>
     <asp:LinqDataSource ID="CustomerDataSource" runat="server" OnSelecting="CustomerLinq_Selected" ContextTypeName="KVSCommon.Database.DataClasses1DataContext">
     </asp:LinqDataSource>

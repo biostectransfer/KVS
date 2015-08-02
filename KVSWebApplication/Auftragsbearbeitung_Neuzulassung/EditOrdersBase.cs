@@ -234,10 +234,10 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     }
                 }
 
-                LargeCustomerOrdersFunctions();
-
                 e.Result = largeCustomerOrders.ToList();
             }
+
+            CheckOpenedOrders();
         }
 
         /// <summary>
@@ -304,7 +304,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         {
         }
 
-        protected virtual void LargeCustomerOrdersFunctions()
+        protected virtual void CheckOpenedOrders()
         {
         }
 

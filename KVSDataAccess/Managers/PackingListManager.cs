@@ -4,6 +4,8 @@ using KVSCommon.Enums;
 using KVSCommon.Managers;
 using KVSDataAccess.Managers.Base;
 using KVSDataAccess.PDF;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -167,6 +169,31 @@ namespace KVSDataAccess.Managers
                 sb.AppendLine("Ihr CASE-Team</p>");
                 KVSCommon.Utility.Email.SendMail(fromAddress, emails, "Lieferschein " + packingList.PackingListNumber.ToString(), sb.ToString(), null, null, smtpServer, attachments);
 
+            }
+        }
+
+        /// <summary>
+        /// Merged PDFs
+        /// </summary>
+        /// <param name="OrderNumber">File Array</param>
+        /// <param name="return"> Gemerged PDF</param>
+        public void MergePackingLists(string[] files, string mergedFileName)
+        {
+            if (files.Length > 0)
+            {
+                PdfDocument outputDocument = new PdfDocument();
+                foreach (string file in files)
+                {
+                    PdfDocument inputDocument = PdfReader.Open(file, PdfDocumentOpenMode.Import);
+                    int count = inputDocument.PageCount;
+                    for (int idx = 0; idx < count; idx++)
+                    {
+                        PdfPage page = inputDocument.Pages[idx];
+                        outputDocument.AddPage(page);
+                    }
+                }
+
+                outputDocument.Save(mergedFileName);
             }
         }
     }

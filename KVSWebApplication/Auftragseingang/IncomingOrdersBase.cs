@@ -760,7 +760,7 @@ namespace KVSWebApplication.Auftragseingang
 
             if (generateInvoice)
             {
-                MakeInvoiceForSmallCustomer(Int32.Parse(CustomerDropDown.SelectedValue), newRegistrationOrder.OrderNumber);
+                MakeInvoiceForSmallCustomer(newRegistrationOrder.OrderNumber);
             }
             else
             {
@@ -769,11 +769,11 @@ namespace KVSWebApplication.Auftragseingang
             }
         }
         
-        protected void MakeInvoiceForSmallCustomer(int customerId, int orderNumber)
+        protected void MakeInvoiceForSmallCustomer(int orderNumber)
         {
             try
             {
-                var newOrder = OrderManager.GetEntities(q => q.CustomerId == customerId && q.OrderNumber == orderNumber).Single();
+                var newOrder = OrderManager.GetById(orderNumber);
                 SmallCustomerOrder.Value = orderNumber.ToString();
 
                 //updating orderitems status                          

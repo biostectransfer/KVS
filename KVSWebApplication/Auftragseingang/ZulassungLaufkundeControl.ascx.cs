@@ -441,7 +441,7 @@ namespace KVSWebApplication.Auftragseingang
 
                             if (invoiceNow.Checked == true && invoiceNow.Enabled == true)
                             {
-                                MakeInvoiceForSmallCustomer(Int32.Parse(CustomerDropDownList.SelectedValue), newRegistrationOrder.OrderNumber);
+                                MakeInvoiceForSmallCustomer(newRegistrationOrder.OrderNumber);
                             }
                             else
                             {

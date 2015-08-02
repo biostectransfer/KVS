@@ -607,7 +607,7 @@ namespace KVSWebApplication.Auftragseingang
                                     if (newPrice == null)
                                         newPrice = PriceManager.GetEntities(q => q.ProductId == newProduct.Id && q.LocationId == null).SingleOrDefault();
 
-                                    var orderToUpdate = OrderManager.GetEntities(q => q.OrderNumber == deRegOrd.OrderNumber).SingleOrDefault();
+                                    var orderToUpdate = OrderManager.GetById(deRegOrd.OrderNumber);
 
                                     if (orderToUpdate != null)
                                     {

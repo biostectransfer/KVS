@@ -234,7 +234,6 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 hsn = string.Empty,
                 tsn = string.Empty;
 
-            int customerId = 0;
             var editButton = sender as Button;
             var item = editButton.Parent as Panel;
 
@@ -252,14 +251,6 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             VIN = vinBox.Text;
             var orderNumber = Int32.Parse(orderIdBox.Text);
 
-            if (!String.IsNullOrEmpty(CustomerDropDownListZulassungsstelle.SelectedValue.ToString()))
-                customerId = Int32.Parse(CustomerDropDownListZulassungsstelle.SelectedValue);
-            else
-            {
-                var customerid = item.FindControl("customerIdBox") as TextBox;
-                customerId = Int32.Parse(customerid.Text);
-            }
-
             tsn = TSNBox.Text;
             hsn = HSNBox.Text;
             ZulassungErfolgtLabel.Visible = false;
@@ -269,7 +260,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 string errorReason = errorReasonTextBox.Text;
                 try
                 {
-                    var orderToUpdate = OrderManager.GetEntities(q => q.OrderNumber == orderNumber && q.CustomerId == customerId).SingleOrDefault();
+                    var orderToUpdate = OrderManager.GetById(orderNumber);
                     orderToUpdate.HasError = true;
                     orderToUpdate.ErrorReason = errorReason;
                     OrderManager.SaveChanges();
@@ -287,7 +278,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             else  // falls normales Update 
             {
                 bool amtlGebVor = false;
-                var order = OrderManager.GetEntities(q => q.OrderNumber == orderNumber && q.CustomerId == customerId).SingleOrDefault();
+                var order = OrderManager.GetById(orderNumber);
 
                 foreach (var orderItem in order.OrderItem)
                 {
@@ -310,7 +301,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     ZulassungErrLabel.Visible = false;
                     try
                     {
-                        updateDataBase(kennzeichen, VIN, tsn, hsn, orderNumber, customerId);
+                        updateDataBase(kennzeichen, VIN, tsn, hsn, orderNumber);
                         UpdateOrderAndItemsStatus();
                         ZulassungErfolgtLabel.Visible = true;
                     }
@@ -373,7 +364,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
                 InvoiceIdHidden.Value = newInvoice.Id.ToString();
 
-                var order = OrderManager.GetEntities(q => q.OrderNumber == Int32.Parse(smallCustomerOrderHiddenField.Value)).Single();
+                var order = OrderManager.GetById(Int32.Parse(smallCustomerOrderHiddenField.Value));
                 foreach (var ordItem in order.OrderItem)
                 {
                     ProductName = ordItem.ProductName;
@@ -555,7 +546,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             }
         }
 
-        protected void CheckOpenedOrders()
+        protected override void CheckOpenedOrders()
         {
             var count = GetUnfineshedOrdersCount(OrderTypes.Admission, OrderStatusTypes.AdmissionPoint);
             ordersCount.Text = count.ToString();
@@ -573,7 +564,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         {
             RadGridNeuzulassung.Columns.FindByUniqueName("CustomerLocation").Visible = false;
         }
-
+        
         // Updating ausgewählten OrderItem
         protected void UpdatePosition(string itemId, string amount)
         {
@@ -642,7 +633,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
                     try
                     {
-                        var newOrder = OrderManager.GetEntities(q => q.CustomerId == customerID && q.OrderNumber == orderNumber).Single();
+                        var newOrder = OrderManager.GetById(orderNumber);
                         if (newOrder != null)
                         {
                             if (RadComboBoxCustomerZulassungsstelle.SelectedIndex == 1) // small
@@ -781,9 +772,9 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         }
         
         // Updating Order und setzen Status 600 - Fertig
-        protected void updateDataBase(string kennzeichen, string vin, string tsn, string hsn, int orderNumber, int customerId)
+        protected void updateDataBase(string kennzeichen, string vin, string tsn, string hsn, int orderNumber)
         {
-            var order = OrderManager.GetEntities(q => q.OrderNumber == orderNumber && q.CustomerId == customerId).Single();
+            var order = OrderManager.GetById(orderNumber);
             order.RegistrationOrder.Registration.Licencenumber = kennzeichen;
             order.RegistrationOrder.Vehicle.VIN = vin;
             order.RegistrationOrder.Vehicle.TSN = tsn;

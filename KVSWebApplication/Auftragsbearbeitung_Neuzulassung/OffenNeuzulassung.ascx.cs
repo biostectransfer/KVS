@@ -421,7 +421,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     if (laufzettel.Count > 1)
                     {
                         string myMergedFileName = EmptyStringIfNull.CheckIfFolderExistsAndReturnPathForPdf(Session["CurrentUserId"].ToString(), true);
-                        PackingList.MergePackingLists(laufzettel.ToArray(), myMergedFileName);
+                        PackingListManager.MergePackingLists(laufzettel.ToArray(), myMergedFileName);
 
                         myMergedFileName = myMergedFileName.Replace(ConfigurationManager.AppSettings["BasePath"], ConfigurationManager.AppSettings["BaseUrl"]);
                         myMergedFileName = myMergedFileName.Replace(@"\\", @"/");
@@ -487,27 +487,20 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     kennzeichen = string.Empty,
                     HSN = string.Empty,
                     TSN = string.Empty;
+                
+                var editButton = sender as Button;
+                var item = editButton.NamingContainer as GridEditFormItem;
 
-                int customerId = 0;
-
-                Button editButton = sender as Button;
-                GridEditFormItem item = editButton.NamingContainer as GridEditFormItem;
-
-                TextBox vinBox = item.FindControl("VINBox") as TextBox;
-                TextBox orderIdBox = item.FindControl("orderIdBox") as TextBox;
-                TextBox kennzeichenBox = item.FindControl("KennzeichenBox") as TextBox;
-                CheckBox errorCheckBox = item.FindControl("ErrorCheckBox") as CheckBox;
-                TextBox errorReasonTextBox = item.FindControl("ErrorReasonTextBox") as TextBox;
-                TextBox HSNBox = item.FindControl("HSNAbmBox") as TextBox;
-                TextBox TSNBox = item.FindControl("TSNAbmBox") as TextBox;
+                var vinBox = item.FindControl("VINBox") as TextBox;
+                var orderIdBox = item.FindControl("orderIdBox") as TextBox;
+                var kennzeichenBox = item.FindControl("KennzeichenBox") as TextBox;
+                var errorCheckBox = item.FindControl("ErrorCheckBox") as CheckBox;
+                var errorReasonTextBox = item.FindControl("ErrorReasonTextBox") as TextBox;
+                var HSNBox = item.FindControl("HSNAbmBox") as TextBox;
+                var TSNBox = item.FindControl("TSNAbmBox") as TextBox;
 
                 var orderNumber = Int32.Parse(orderIdBox.Text);
-
-                if (!String.IsNullOrEmpty(CustomerDropDownListOffenNeuzulassung.SelectedValue.ToString()))
-                    customerId = Int32.Parse(CustomerDropDownListOffenNeuzulassung.SelectedValue);
-                else
-                    customerId = Int32.Parse(item["customerID"].Text);
-
+                
                 ZulassungErrLabel.Visible = false;
 
                 if (errorCheckBox.Checked) // falls Auftrag als Fehler gemeldet sollte
@@ -516,7 +509,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
                     try
                     {
-                        var orderToUpdate = OrderManager.GetEntities(q => q.OrderNumber == orderNumber && q.CustomerId == customerId).Single();
+                        var orderToUpdate = OrderManager.GetById(orderNumber);
                         orderToUpdate.HasError = true;
                         orderToUpdate.ErrorReason = errorReason;
                         OrderManager.SaveChanges();
@@ -536,7 +529,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
                     try
                     {
-                        updateDataBase(VIN, TSN, HSN, orderNumber, customerId, kennzeichen);
+                        updateDataBase(VIN, TSN, HSN, orderNumber, kennzeichen);
                     }
                     catch (Exception ex)
                     {
@@ -618,8 +611,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         #endregion
 
         #region Methods
-
-        protected void CheckOpenedOrders()
+        
+        protected override void CheckOpenedOrders()
         {
             var count = GetUnfineshedOrdersCount(OrderTypes.Admission, OrderStatusTypes.Open);
             ordersCount.Text = count.ToString();
@@ -672,7 +665,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         {
             try
             {
-                var newOrder = OrderManager.GetEntities(q => q.CustomerId == customerIdToUpdate && q.OrderNumber == orderNumberToUpdate).Single();
+                var newOrder = OrderManager.GetById(orderNumberToUpdate);
 
                 if (newOrder != null)
                 {
@@ -710,18 +703,11 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
                 foreach (GridDataItem item in RadGridOffNeuzulassung.SelectedItems)
                 {
-                    // Vorbereitung für Update
-                    int customerID = 0;
-                    if (!String.IsNullOrEmpty(CustomerDropDownListOffenNeuzulassung.SelectedValue.ToString()))
-                        customerID = Int32.Parse(CustomerDropDownListOffenNeuzulassung.SelectedValue);
-                    else
-                        customerID = Int32.Parse(item["customerID"].Text);
-
                     var orderNumber = Int32.Parse(item["OrderNumber"].Text);
 
                     try
                     {
-                        var newOrder = OrderManager.GetEntities(q => q.CustomerId == customerID && q.OrderNumber == orderNumber).Single();
+                        var newOrder = OrderManager.GetById(orderNumber);
 
                         if (newOrder != null)
                         {
@@ -767,7 +753,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         /// <param name="OrderNumber">AuftragsID</param>
         /// <param name="customerId">KundeID</param>
         /// <param name="kennzeichen">Kennzeichen</param>
-        protected void updateDataBase(string vin, string tsn, string hsn, int orderNumber, int customerId, string kennzeichen)
+        protected void updateDataBase(string vin, string tsn, string hsn, int orderNumber, string kennzeichen)
         {
             var orderToUpdate = RegistrationOrderManager.GetById(orderNumber);
 

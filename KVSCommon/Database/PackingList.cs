@@ -95,50 +95,7 @@ namespace KVSCommon.Database
         }
 
 
-        /// <summary>
-        /// Merged PDFs
-        /// </summary>
-        /// <param name="OrderNumber">File Array</param>
-        /// <param name="return"> Gemerged PDF</param>
-        public static void MergePackingLists(string[] files, string mergedFileName)
-        {
-            if (files.Length > 0)
-            {
-                PdfDocument outputDocument = new PdfDocument();
-                foreach (string file in files)
-                {
-                    PdfDocument inputDocument = PdfReader.Open(file, PdfDocumentOpenMode.Import);
-                    int count = inputDocument.PageCount;
-                    for (int idx = 0; idx < count; idx++)
-                    {
-                        PdfPage page = inputDocument.Pages[idx];
-                        outputDocument.AddPage(page);
-                    }
-                }
-
-                outputDocument.Save(mergedFileName);
-            }
-        }
-
-
-
-        /// <summary>
-        /// Entfernt einen Auftrag aus dem Lieferschein.
-        /// </summary>
-        /// <param name="OrderNumber">Id des Auftrags, der entfernt werden soll.</param>
-        /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void RemoveOrderById(int orderNumber, KVSEntities dbContext)
-        {
-            if (this.IsPrinted.GetValueOrDefault(false))
-            {
-                throw new Exception("Der Auftrag kann nicht Lieferschein entfernt werden. Der Lieferschein wurde bereits gedruckt.");
-            }
-
-            Order order = dbContext.Order.Single(q => q.OrderNumber == orderNumber);
-            order.LogDBContext = dbContext;
-            order.PackingListNumber = null;
-            dbContext.WriteLogItem("Auftrag aus Lieferschein entfernt.", LogTypes.UPDATE, this.PackingListNumber, "PackingList", orderNumber);
-        }
+        
 
         /// <summary>
         /// Erstellt den Lieferschein als PDF und schreibt ihn in den übergebenen MemoryStream.
