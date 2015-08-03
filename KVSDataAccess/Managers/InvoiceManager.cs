@@ -295,5 +295,57 @@ namespace KVSDataAccess.Managers
             DataContext.AddObject(run);
             SaveChanges();
         }
+
+        /// <summary>
+        /// Gibt die initiale Rechnungsadresse anhand der Kundendaten und des Standorts der Aufträge in der Rechnung zurück.
+        /// </summary>
+        /// <param name="customerId">Id des Kunden.</param>
+        /// <param name="locationId">Id des Standorts, falls vorhanden.</param>
+        /// <returns>Die Rechnungsadresse.</returns>
+        public Adress GetInitialInvoiceAdress(int customerId, int? locationId)
+        {
+            var customer = DataContext.GetSet<Customer>().FirstOrDefault(q => q.Id == customerId);
+            LargeCustomer largeCustomer = customer.LargeCustomer;
+            if (largeCustomer != null)
+            {
+                if (largeCustomer.SendInvoiceToMainLocation && largeCustomer.MainLocationId.HasValue)
+                {
+                    var mainLocation = DataContext.GetSet<Location>().Single(q => q.Id == largeCustomer.MainLocationId.Value);
+
+                    if (mainLocation.InvoiceAdress != null)
+                    {
+                        return mainLocation.InvoiceAdress;
+                    }
+                }
+                else if (locationId.HasValue)
+                {
+                    var location = DataContext.GetSet<Location>().Single(q => q.Id == locationId.Value);
+                    if (location.InvoiceAdress != null)
+                    {
+                        return location.InvoiceAdress;
+                    }
+                }
+            }
+
+            return customer.InvoiceAdress;
+        }
+
+        /// <summary>
+        /// Gibt den Standard Rechnungstext zurück, abhaengig vom Kunden
+        /// </summary>
+        /// <param name="customerId">Kundenid</param>
+        /// <returns>Rechnungstext</returns>
+        public string GetDefaultInvoiceText(int customerId)
+        {
+            var customer = DataContext.GetSet<Customer>().Single(q => q.Id == customerId);
+
+            string defaultText = DataContext.GetSet<DocumentConfiguration>().Where(q => q.Id == "INVOICE_TEXT").Select(q => q.Text).SingleOrDefault();
+            if (!string.IsNullOrEmpty(defaultText))
+            {
+                return string.Format(defaultText, DateTime.Now.AddDays(customer.TermOfCredit.GetValueOrDefault(30)).ToShortDateString());
+            }
+
+            return string.Empty;
+        }
     }
 }

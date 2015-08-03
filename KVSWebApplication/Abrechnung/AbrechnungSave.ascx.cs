@@ -12,24 +12,43 @@ using System.IO;
 using System.Configuration;
 using System.Transactions;
 using KVSCommon.Enums;
+using KVSWebApplication.BasePages;
+using System.Collections;
+
 namespace KVSWebApplication.Abrechnung
 {
-    public partial class AbrechnungSave : System.Web.UI.UserControl
+    public class OrderItemViewModel
     {
-        Abrechnung abr;
+        public int OrderNumber { get; set; }
+        public int OrderItemId { get; set; }
+        public int? CostCenterId { get; set; }
+        public string Location { get; set; }
+        public int ItemCount { get; set; }
+        public decimal Amount { get; set; }
+        public string ProductName { get; set; }
+        public string ItemStatus { get; set; }
+        public DateTime? ExecutionDate { get; set; }
+        public int? OrderLocation { get; set; }
+        public DateTime? OrderDate { get; set; }
+        public int ItemStatusId { get; set; }
+        public int OrderStatusId { get; set; }
+    }
+
+    public partial class AbrechnungSave : BaseUserControl
+    {
         protected void Page_Load(object sender, EventArgs e)
         {
-            abr = Page as Abrechnung;
-            RadScriptManager script = abr.getScriptManager() as RadScriptManager;
+            var abr = Page as Abrechnung;
+            var script = abr.getScriptManager() as RadScriptManager;
             script.RegisterPostBackControl(btnPreviewInvoice);
             if (!Page.IsPostBack)
             {
                 Session["currentLocationIndex"] = 0;
             }
         }
-        #region Methods
-        #endregion
+
         #region Index Changed
+
         /// <summary>
         /// Event fuer die Kundenauswahl aenderung (Kundentyp)
         /// </summary>
@@ -50,6 +69,7 @@ namespace KVSWebApplication.Abrechnung
                 StandortDropDown.Enabled = true;
             }
         }
+
         /// <summary>
         /// Event fuer die Kundenauswahl
         /// </summary>
@@ -75,6 +95,7 @@ namespace KVSWebApplication.Abrechnung
             }
             StandortDropDown.DataBind();
         }
+
         /// <summary>
         /// Event fuer die Auswahl der Rechnungstypen
         /// </summary>
@@ -92,8 +113,11 @@ namespace KVSWebApplication.Abrechnung
             }
             RadGridAbrechnung.DataBind();
         }
+
         #endregion
+
         #region Linq Data Sources
+
         /// <summary>
         /// Datasource fuer die Kundenauswahl
         /// </summary>
@@ -101,28 +125,34 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
             if (RadComboBoxCustomer.SelectedValue == "1") //Small Customers
             {
-                var customerQuery = from cust in con.Customer
-                                    where cust.Id == cust.SmallCustomer.CustomerId
-                                    select new
-                                    {
-                                        Name = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
-                                        Value = cust.Id,
-                                        Matchcode = cust.MatchCode,
-                                        Kundennummer = cust.CustomerNumber
-                                    };
-                e.Result = customerQuery;
+                var customerQuery = CustomerManager.GetEntities(o => o.SmallCustomer != null).
+                    Select(cust => new
+                    {
+                        Name = cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
+                        Value = cust.Id,
+                        Matchcode = cust.MatchCode,
+                        Kundennummer = cust.CustomerNumber
+                    });
+
+                e.Result = customerQuery.ToList();
             }
             else if (RadComboBoxCustomer.SelectedValue == "2") //Large Customers
             {
-                var customerQuery = from cust in con.Customer
-                                    where cust.Id == cust.LargeCustomer.CustomerId
-                                    select new { Name = cust.Name, Value = cust.Id, Matchcode = cust.MatchCode, Kundennummer = cust.CustomerNumber };
-                e.Result = customerQuery;
+                var customerQuery = CustomerManager.GetEntities(o => o.LargeCustomer != null).
+                    Select(cust => new
+                    {
+                        Name = cust.Name,
+                        Value = cust.Id,
+                        Matchcode = cust.MatchCode,
+                        Kundennummer = cust.CustomerNumber
+                    });
+
+                e.Result = customerQuery.ToList();
             }
         }
+
         /// <summary>
         /// Datasource fuer die Abrechnungsgrid
         /// </summary>
@@ -135,255 +165,142 @@ namespace KVSWebApplication.Abrechnung
                 StandortDropDown.DataBind();
             }
 
-            var con = new KVSEntities();
+            var customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
 
             //select all values for small customers
             if (CustomerDropDownList.SelectedValue != null && RadComboBoxCustomer.SelectedValue == "1" && CustomerDropDownList.SelectedValue != "")
             {
-                var customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
-                var query = from cust in con.Customer
-                            join ord in con.Order on cust.Id equals ord.CustomerId
-                            join orditm in con.OrderItem on ord.OrderNumber equals orditm.OrderNumber
-                            join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
-                            join lrcust in con.SmallCustomer on cust.Id equals lrcust.CustomerId
-                            where cust.Id == customerId && orditm.Status == (int)OrderItemStatusTypes.Closed &&
-                            ord.Status == (int)OrderStatusTypes.Closed
-                            orderby ord.OrderNumber descending
-                            select new
-                            {
-                                OrderNumber = ord.OrderNumber,
-                                OrderItemId = orditm.Id,
-                                CostCenterId = orditm.CostCenterId,
-                                Location = "",
-                                ItemCount = orditm.Count,
-                                Amount = orditm.Amount,
-                                ProductName = orditm.ProductName,
-                                ItemStatus = orditmsts.Name,
-                                ExecutionDate = ord.ExecutionDate,
-                                OrderLocation = ord.LocationId,
-                                OrderDate = ord.ExecutionDate
-                            };
-                e.Result = query;
+                var orderItems = GetOrderItems(customerId).Where(o => o.ItemStatusId == (int)OrderItemStatusTypes.Closed);
+
+                e.Result = orderItems.OrderByDescending(o => o.OrderNumber).ToList();
             }
             //select all values for large customers
             else if (CustomerDropDownList.SelectedValue != null && CustomerDropDownList.SelectedValue != "" && RadComboBoxCustomer.SelectedValue == "2")
             {
-                var customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
                 if (RechnungsTypComboBox.SelectedValue != "Einzel")
                 {
                     RadGridAbrechnung.AllowMultiRowSelection = true;
                 }
+
                 if (RechnungsTypComboBox.SelectedValue == "Einzel")
                 {
-                    var query = from cust in con.Customer
-                                join ord in con.Order on cust.Id equals ord.CustomerId
-                                join orditm in con.OrderItem on ord.OrderNumber equals orditm.OrderNumber
-                                join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
-                                join lrcust in con.LargeCustomer on cust.Id equals lrcust.CustomerId
-                                where cust.Id == customerId && 
-                                (ord.Status == (int)OrderStatusTypes.Closed || ord.Status == (int)OrderStatusTypes.PartiallyPayed) &&
-                                orditm.Status == (int)OrderItemStatusTypes.Closed
-                                orderby ord.OrderNumber descending
-                                select new
-                                {
-                                    OrderNumber = ord.OrderNumber,
-                                    OrderItemId = orditm.Id,
-                                    Location = ord.Location.Name,
-                                    CostCenterId = orditm.CostCenterId,
-                                    CostCenterName = orditm.CostCenter.Name,
-                                    Amount = orditm.Amount,
-                                    ItemCount = orditm.Count,
-                                    ProductName = orditm.ProductName,
-                                    ItemStatus = orditmsts.Name,
-                                    ExecutionDate = ord.ExecutionDate,
-                                    OrderLocation = ord.LocationId,
-                                    OrderDate = ord.ExecutionDate
-                                };
+                    var orderItems = GetOrderItems(customerId).Where(o => o.ItemStatusId == (int)OrderItemStatusTypes.Closed &&
+                        (o.OrderStatusId == (int)OrderStatusTypes.Closed || o.OrderStatusId == (int)OrderStatusTypes.PartiallyPayed));
+
                     if (AllLocationsCheckBox.Checked == false)
                     {
                         if (!String.IsNullOrEmpty(StandortDropDown.SelectedValue.ToString()))
                         {
-                            query = query.Where(q => q.OrderLocation == Int32.Parse(StandortDropDown.SelectedValue));
+                            orderItems = orderItems.Where(q => q.OrderLocation == Int32.Parse(StandortDropDown.SelectedValue));
                         }
                     }
+
                     RadGridAbrechnung.AllowMultiRowSelection = false;
-                    e.Result = query;
+
+                    e.Result = orderItems.OrderByDescending(o => o.OrderNumber).ToList();
                 }
                 else if (RechnungsTypComboBox.SelectedValue == "Sammel")
                 {
-                    var query = from cust in con.Customer
-                                join ord in con.Order on cust.Id equals ord.CustomerId
-                                join orditm in con.OrderItem on ord.OrderNumber equals orditm.OrderNumber
-                                join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
-                                join lrcust in con.LargeCustomer on cust.Id equals lrcust.CustomerId
-                                where cust.Id == customerId && 
-                                (ord.Status == (int)OrderStatusTypes.Closed || ord.Status == (int)OrderStatusTypes.PartiallyPayed) &&
-                                orditm.Status == (int)OrderItemStatusTypes.Closed
-                                orderby ord.OrderNumber descending
-                                select new
-                                {
-                                    OrderNumber = ord.OrderNumber,
-                                    OrderItemId = orditm.Id,
-                                    Location = ord.Location.Name,
-                                    CostCenterId = orditm.CostCenterId,
-                                    CostCenterName = orditm.CostCenter.Name,
-                                    Amount = orditm.Amount,
-                                    ItemCount = orditm.Count,
-                                    ProductName = orditm.ProductName,
-                                    ItemStatus = orditmsts.Name,
-                                    ExecutionDate = ord.ExecutionDate,
-                                    OrderLocation = ord.LocationId,
-                                    OrderDate = ord.ExecutionDate
-                                };
+                    var orderItems = GetOrderItems(customerId).Where(o => o.ItemStatusId == (int)OrderItemStatusTypes.Closed &&
+                        (o.OrderStatusId == (int)OrderStatusTypes.Closed || o.OrderStatusId == (int)OrderStatusTypes.PartiallyPayed));
+
                     if (AllLocationsCheckBox.Checked == false)
                     {
                         if (!String.IsNullOrEmpty(StandortDropDown.SelectedValue.ToString()))
                         {
-                            query = query.Where(q => q.OrderLocation == Int32.Parse(StandortDropDown.SelectedValue));
+                            orderItems = orderItems.Where(q => q.OrderLocation == Int32.Parse(StandortDropDown.SelectedValue));
                         }
                     }
-                    e.Result = query;
+
+                    e.Result = orderItems.OrderByDescending(o => o.OrderNumber).ToList();
                 }
                 else if (RechnungsTypComboBox.SelectedValue == "Woche")
                 {
                     DayOfWeek weekStart = DayOfWeek.Monday;
                     DateTime startingDate = DateTime.Today;
+
                     while (startingDate.DayOfWeek != weekStart)
                         startingDate = startingDate.AddDays(-1);
+
                     DateTime endDate = startingDate.AddDays(7);
-                    var query = from cust in con.Customer
-                                join ord in con.Order on cust.Id equals ord.CustomerId
-                                join orditm in con.OrderItem on ord.OrderNumber equals orditm.OrderNumber
-                                join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
-                                join lrcust in con.LargeCustomer on cust.Id equals lrcust.CustomerId
-                                where
-                                cust.Id == customerId && 
-                                (ord.Status == (int)OrderStatusTypes.Closed || ord.Status == (int)OrderStatusTypes.PartiallyPayed) &&
-                                orditm.Status == (int)OrderItemStatusTypes.Closed
-                                && ord.ExecutionDate.Value > startingDate && ord.ExecutionDate < endDate
-                                orderby ord.OrderNumber descending
-                                select new
-                                {
-                                    OrderNumber = ord.OrderNumber,
-                                    OrderItemId = orditm.Id,
-                                    Location = ord.Location.Name,
-                                    CostCenterId = orditm.CostCenterId,
-                                    CostCenterName = orditm.CostCenter.Name,
-                                    Amount = orditm.Amount,
-                                    ItemCount = orditm.Count,
-                                    ProductName = orditm.ProductName,
-                                    ItemStatus = orditmsts.Name,
-                                    ExecutionDate = ord.ExecutionDate,
-                                    OrderLocation = ord.LocationId,
-                                    OrderDate = ord.ExecutionDate
-                                };
+
+                    var orderItems = GetOrderItems(customerId).Where(o => o.ItemStatusId == (int)OrderItemStatusTypes.Closed &&
+                        (o.OrderStatusId == (int)OrderStatusTypes.Closed || o.OrderStatusId == (int)OrderStatusTypes.PartiallyPayed) &&
+                        o.ExecutionDate.Value > startingDate && o.ExecutionDate < endDate);
+
                     if (AllLocationsCheckBox.Checked == false)
                     {
                         if (!String.IsNullOrEmpty(StandortDropDown.SelectedValue.ToString()))
                         {
-                            query = query.Where(q => q.OrderLocation == Int32.Parse(StandortDropDown.SelectedValue));
+                            orderItems = orderItems.Where(q => q.OrderLocation == Int32.Parse(StandortDropDown.SelectedValue));
                         }
                     }
-                    e.Result = query;
+
+                    e.Result = orderItems.OrderByDescending(o => o.OrderNumber).ToList();
                 }
                 else if (RechnungsTypComboBox.SelectedValue == "Monat")
                 {
-                    var query = from cust in con.Customer
-                                join ord in con.Order on cust.Id equals ord.CustomerId
-                                join orditm in con.OrderItem on ord.OrderNumber equals orditm.OrderNumber
-                                join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
-                                join lrcust in con.LargeCustomer on cust.Id equals lrcust.CustomerId
-                                where cust.Id == customerId && 
-                                (ord.Status == (int)OrderStatusTypes.Closed || ord.Status == (int)OrderStatusTypes.PartiallyPayed) && 
-                                    orditm.Status == (int)OrderItemStatusTypes.Closed
-                                && ord.ExecutionDate.Value.Month == DateTime.Now.Month
-                                orderby ord.OrderNumber descending
-                                select new
-                                {
-                                    OrderNumber = ord.OrderNumber,
-                                    OrderItemId = orditm.Id,
-                                    Location = ord.Location.Name,
-                                    CostCenterId = orditm.CostCenterId,
-                                    CostCenterName = orditm.CostCenter.Name,
-                                    Amount = orditm.Amount,
-                                    ItemCount = orditm.Count,
-                                    ProductName = orditm.ProductName,
-                                    ItemStatus = orditmsts.Name,
-                                    ExecutionDate = ord.ExecutionDate,
-                                    OrderLocation = ord.LocationId,
-                                    OrderDate = ord.ExecutionDate
-                                };
+                    var orderItems = GetOrderItems(customerId).Where(o => o.ItemStatusId == (int)OrderItemStatusTypes.Closed &&
+                        (o.OrderStatusId == (int)OrderStatusTypes.Closed || o.OrderStatusId == (int)OrderStatusTypes.PartiallyPayed) &&
+                        o.ExecutionDate.Value.Month == DateTime.Now.Month);
+
                     if (AllLocationsCheckBox.Checked == false)
                     {
                         if (!String.IsNullOrEmpty(StandortDropDown.SelectedValue.ToString()))
                         {
-                            query = query.Where(q => q.OrderLocation == Int32.Parse(StandortDropDown.SelectedValue));
+                            orderItems = orderItems.Where(q => q.OrderLocation == Int32.Parse(StandortDropDown.SelectedValue));
                         }
                     }
-                    e.Result = query;
+
+                    e.Result = orderItems.OrderByDescending(o => o.OrderNumber).ToList();
                 }
                 else
                 {
-                    var query = from cust in con.Customer
-                                join ord in con.Order on cust.Id equals ord.CustomerId
-                                join orditm in con.OrderItem on ord.OrderNumber equals orditm.OrderNumber
-                                join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
-                                where cust.Id == customerId
-                                orderby ord.OrderNumber descending
-                                select new
-                                {
-                                    OrderNumber = ord.OrderNumber,
-                                    OrderItemId = orditm.Id,
-                                    Location = ord.Location.Name,
-                                    CostCenterId = orditm.CostCenterId,
-                                    CostCenterName = orditm.CostCenter.Name,
-                                    Amount = orditm.Amount,
-                                    ItemCount = orditm.Count,
-                                    ProductName = orditm.ProductName,
-                                    ItemStatus = orditmsts.Name,
-                                    ExecutionDate = ord.ExecutionDate,
-                                    OrderLocation = ord.LocationId,
-                                    OrderDate = ord.ExecutionDate
-                                };
+                    var orderItems = GetOrderItems(customerId);
+
                     if (AllLocationsCheckBox.Checked == false)
                     {
-                        query = query.Where(q => q.OrderLocation == Int32.Parse(StandortDropDown.SelectedValue));
+                        orderItems = orderItems.Where(q => q.OrderLocation == Int32.Parse(StandortDropDown.SelectedValue));
                     }
-                    e.Result = query;
+
+                    e.Result = orderItems.OrderByDescending(o => o.OrderNumber).ToList();
                 }
             }
             else
             {
-                var query = from cust in con.Customer
-                            join ord in con.Order on cust.Id equals ord.CustomerId
-                            join orditm in con.OrderItem on ord.OrderNumber equals orditm.OrderNumber
-                            join orditmsts in con.OrderItemStatus on orditm.Status equals orditmsts.Id
-                            where cust.Id == 0 //TODO empty query
-                            orderby ord.OrderNumber descending
-                            select new
-                            {
-                                OrderNumber = ord.OrderNumber,
-                                OrderItemId = orditm.Id,
-                                Location = ord.Location.Name,
-                                CostCenterId = orditm.CostCenterId,
-                                CostCenterName = orditm.CostCenter.Name,
-                                Amount = orditm.Amount,
-                                ItemCount = orditm.Count,
-                                ProductName = orditm.ProductName,
-                                ItemStatus = orditmsts.Name,
-                                ExecutionDate = ord.ExecutionDate,
-                                OrderLocation = ord.LocationId,
-                                OrderDate = ord.ExecutionDate
-                            };
-
-                e.Result = query;
+                //empty query
+                e.Result = new List<OrderItemViewModel>();
             }
         }
+
+        protected IQueryable<OrderItemViewModel> GetOrderItems(int customerId)
+        {
+            return OrderManager.GetEntities(o => o.CustomerId == customerId).
+                    SelectMany(o => o.OrderItem).
+                    Select(ordItem => new OrderItemViewModel()
+                    {
+                        OrderNumber = ordItem.OrderNumber,
+                        OrderItemId = ordItem.Id,
+                        CostCenterId = ordItem.CostCenterId,
+                        Location = "",
+                        ItemCount = ordItem.Count,
+                        Amount = ordItem.Amount,
+                        ProductName = ordItem.ProductName,
+                        ItemStatus = ordItem.OrderItemStatus.Name,
+                        ExecutionDate = ordItem.Order.ExecutionDate,
+                        OrderLocation = ordItem.Order.LocationId,
+                        OrderDate = ordItem.Order.ExecutionDate,
+                        ItemStatusId = ordItem.Status,
+                        OrderStatusId = ordItem.Order.Status
+                    }).AsQueryable();
+        }
+
         #endregion
+
         #region Button Clicked
+
         protected bool SetValuesForAdressWindow()
         {
-            KVSEntities dbContext = new KVSEntities();
             Adress newAdress = null;
             AbrechnungSaveErrorLabel.Visible = false;
             if (String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
@@ -400,8 +317,8 @@ namespace KVSWebApplication.Abrechnung
             }
             try
             {
-                List<SelectedInvoiceItems> virtualItems = new List<SelectedInvoiceItems>();
-                SelectedInvoiceItems currItem = new SelectedInvoiceItems();
+                var virtualItems = new List<SelectedInvoiceItems>();
+                var currItem = new SelectedInvoiceItems();
                 foreach (GridDataItem item in RadGridAbrechnung.SelectedItems)
                 {
                     currItem = new SelectedInvoiceItems();
@@ -418,20 +335,28 @@ namespace KVSWebApplication.Abrechnung
                     currItem.OrderLocationId = String.IsNullOrEmpty(item["OrderLocation"].Text) ? (int?)null : Int32.Parse(item["OrderLocation"].Text);
                     virtualItems.Add(currItem);
                 }
+
                 var groupedInvoiceItems = virtualItems.GroupBy(q => q.OrderLocationId).ToList();
                 if (groupedInvoiceItems.Count > 0 && Session["currentLocationIndex"] != null && EmptyStringIfNull.IsNumber(Session["currentLocationIndex"].ToString()))
                 {
                     if (String.IsNullOrEmpty(groupedInvoiceItems[((int)Session["currentLocationIndex"])].Key.ToString()))
-                        newAdress = Invoice.GetInitialInvoiceAdress(Int32.Parse(CustomerDropDownList.SelectedValue),
-                            Int32.Parse(groupedInvoiceItems[((int)Session["currentLocationIndex"])].Key.ToString()), dbContext);
+                    {
+                        newAdress = InvoiceManager.GetInitialInvoiceAdress(Int32.Parse(CustomerDropDownList.SelectedValue),
+                            Int32.Parse(groupedInvoiceItems[((int)Session["currentLocationIndex"])].Key.ToString()));
+                    }
                     else
-                        newAdress = Invoice.GetInitialInvoiceAdress(Int32.Parse(CustomerDropDownList.SelectedValue), null, dbContext);
+                    {
+                        newAdress = InvoiceManager.GetInitialInvoiceAdress(Int32.Parse(CustomerDropDownList.SelectedValue), null);
+                    }
+
                     StreetTextBox.Text = newAdress.Street;
                     StreetNumberTextBox.Text = newAdress.StreetNumber;
                     ZipcodeTextBox.Text = newAdress.Zipcode;
                     CityTextBox.Text = newAdress.City;
                     CountryTextBox.Text = newAdress.Country;
-                    FooterTextBox.Text = Invoice.GetDefaultInvoiceText(dbContext, Int32.Parse(CustomerDropDownList.SelectedValue), Int32.Parse(Session["CurrentUserId"].ToString()));
+
+                    FooterTextBox.Text = InvoiceManager.GetDefaultInvoiceText(Int32.Parse(CustomerDropDownList.SelectedValue));
+
                     InvoiceRecipient.Text = groupedInvoiceItems[((int)Session["currentLocationIndex"])].First().OrderLocationName == "&nbsp;" ? "" :
                         groupedInvoiceItems[((int)Session["currentLocationIndex"])].First().OrderLocationName;
                     AllesIstOkeyLabel.Text = string.Empty;
@@ -451,6 +376,7 @@ namespace KVSWebApplication.Abrechnung
             LocationLabelWindow.Text = "Fügen Sie bitte die Adresse für " + InvoiceRecipient.Text + " hinzu";
             return false;
         }
+
         protected void AddAdressButton_Click(object sender, EventArgs e)
         {
             if (!SetValuesForAdressWindow())
@@ -459,48 +385,47 @@ namespace KVSWebApplication.Abrechnung
                 ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
             }
         }
-        private string getFullInvoiceName(string selectCase)
+
+        private InvoiceType getFullInvoiceName(string selectCase)
         {
-            string helpString = string.Empty;
+            InvoiceType result;
             switch (selectCase)
             {
                 case "Einzel":
-                    helpString = "Einzelrechnung";
+                    result = InvoiceType.Single;
                     break;
                 case "Sammel":
-                    helpString = "Sammelrechnung";
+                    result = InvoiceType.Collection;
                     break;
                 case "Monat":
-                    helpString = "Monatsrechnung";
+                    result = InvoiceType.Monthly;
                     break;
                 case "Woche":
-                    helpString = "Wochenrechnung";
+                    result = InvoiceType.Weekly;
                     break;
                 case "Frei":
-                    helpString = "freie Rechnung";
+                    result = InvoiceType.Single;//TODO?
                     break;
                 default:
-                    helpString = "";
-                    break;
+                    throw new NotImplementedException();
             }
-            return helpString;
+            return result;
         }
+
         // Create new Adress in der DatenBank
         protected void OnAddAdressButton_Clicked(object sender, EventArgs e)
         {
-            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
-            GenerateInvoice(dbContext, false);
-
+            GenerateInvoice(false);
         }
+
         protected void btnPreviewInvoice_Clicked(object sender, EventArgs e)
         {
-            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
-            GenerateInvoice(dbContext, true);
-
+            GenerateInvoice(true);
         }
+
         protected void Cell_Selected(object sender, EventArgs e)
         {
-            GridDataItem item = RadGridAbrechnung.SelectedItems[0] as GridDataItem;
+            var item = RadGridAbrechnung.SelectedItems[0] as GridDataItem;
             if (RechnungsTypComboBox.SelectedValue == "Einzel")
             {
                 RadGridAbrechnung.AllowMultiRowSelection = true;
@@ -513,7 +438,8 @@ namespace KVSWebApplication.Abrechnung
                 }
             }
         }
-        private void GenerateInvoice(KVSEntities dbContext, bool preview)
+
+        private void GenerateInvoice(bool preview)
         {
             //Adress Eigenschaften
             string street = string.Empty,
@@ -534,26 +460,27 @@ namespace KVSWebApplication.Abrechnung
             country = CountryTextBox.Text;
             invoiceRecipient = InvoiceRecipient.Text;
             footerText = FooterTextBox.Text;
-            Invoice newInvoice = null;
-            Adress newAdress = null;
+
             try
             {
-                newAdress = Adress.CreateAdress(street, streetNumber, zipcode, city, country, dbContext);
-                newInvoice = Invoice.CreateInvoice(dbContext, Int32.Parse(Session["CurrentUserId"].ToString()), invoiceRecipient,
+                var newAdress = AdressManager.CreateAdress(street, streetNumber, zipcode, city, country);
+                var newInvoice = InvoiceManager.CreateInvoice(invoiceRecipient,
                     newAdress, Int32.Parse(CustomerDropDownList.SelectedValue), null, getFullInvoiceName(RechnungsTypComboBox.SelectedValue));
                 newInvoice.InvoiceText = footerText;
+
                 //Submiting new Invoice and Adress
                 if (!preview)
                 {
-                    dbContext.SubmitChanges();
+                    InvoiceManager.SaveChanges();
                 }
                 else
                 {
                     newInvoice.Adress = newAdress;
-                    newInvoice.Customer = dbContext.Customer.SingleOrDefault(q => q.Id == Int32.Parse(CustomerDropDownList.SelectedValue));
+                    newInvoice.Customer = CustomerManager.GetById(Int32.Parse(CustomerDropDownList.SelectedValue));
                 }
-                List<SelectedInvoiceItems> virtualItems = new List<SelectedInvoiceItems>();
-                SelectedInvoiceItems currItem = new SelectedInvoiceItems();
+
+                var virtualItems = new List<SelectedInvoiceItems>();
+                var currItem = new SelectedInvoiceItems();
                 foreach (GridDataItem item in RadGridAbrechnung.SelectedItems)
                 {
                     currItem = new SelectedInvoiceItems();
@@ -573,57 +500,54 @@ namespace KVSWebApplication.Abrechnung
                     currItem.OrderLocationId = String.IsNullOrEmpty(item["OrderLocation"].Text) ? (int?)null : Int32.Parse(item["OrderLocation"].Text);
                     virtualItems.Add(currItem);
                 }
+
                 var groupedInvoiceItems = virtualItems.GroupBy(q => q.OrderLocationId.ToString()).ToList();
                 if (groupedInvoiceItems.Count > 0 && Session["currentLocationIndex"] != null && EmptyStringIfNull.IsNumber(Session["currentLocationIndex"].ToString()))
                 {
-                    var myCustomer = dbContext.Customer.FirstOrDefault(q => q.Id == customerId);
-                    using (TransactionScope scope = new TransactionScope())
+                    var customer = CustomerManager.GetById(customerId);
+
+                    foreach (var item in groupedInvoiceItems[((int)Session["currentLocationIndex"])])
                     {
-                        foreach (var item in groupedInvoiceItems[((int)Session["currentLocationIndex"])])
+                        CostCenter costCenter = null;
+                        if (item.CostCenterId.HasValue)
                         {
-                            CostCenter costCenter = null;
-                            if (item.CostCenterId.HasValue)
-                            {
-                                costCenter = dbContext.CostCenter.FirstOrDefault(o => o.Id == item.CostCenterId.Value);
-                            }
+                            costCenter = CostCenterManager.GetById(item.CostCenterId.Value);
+                        }
 
-                            var orderItem = dbContext.OrderItem.FirstOrDefault(o => o.Id == item.OrderItemId);
-                            InvoiceItem newInvoiceItem = newInvoice.AddInvoiceItem(item.ProductName, Convert.ToDecimal(item.Amount), item.ItemCount, orderItem, costCenter, dbContext);
-                            if (newInvoiceItem != null)
-                            {
-                                var OrderItemToUpdate = dbContext.OrderItem.SingleOrDefault(q => q.Id == item.OrderItemId);
-                                OrderItemToUpdate.LogDBContext = dbContext;
-                                OrderItemToUpdate.Status = (int)OrderItemStatusTypes.Payed;
-                                if (myCustomer.SmallCustomer != null)
-                                {
-                                    newInvoiceItem.VAT = myCustomer.VAT;
-                                }
-                                dbContext.SubmitChanges();
-                                UpdateOrderStatus(dbContext, item.OrderNumber);
-                            }
-                        }
-                        if (!preview)
-                        {
-                            dbContext.SubmitChanges();
-                            scope.Complete();
+                        var orderItem = OrderManager.GetOrderItems().FirstOrDefault(o => o.Id == item.OrderItemId);
 
-                        }
-                        else if (groupedInvoiceItems.Count > 0)
+                        var newInvoiceItem = InvoiceManager.AddInvoiceItem(newInvoice, item.ProductName, Convert.ToDecimal(item.Amount), item.ItemCount, orderItem, costCenter,
+                            customer, OrderItemStatusTypes.Payed);
+                        if (newInvoiceItem != null)
                         {
-                            using (MemoryStream memS = new MemoryStream())
-                            {
-                                string fileName = "RechnungsVorschau_" + DateTime.Now.Ticks.ToString() + ".pdf";
-                                string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
-                                newInvoice.PrintPreview(dbContext, memS, "");
-                                if (!Directory.Exists(serverPath)) Directory.CreateDirectory(serverPath);
-                                if (!Directory.Exists(serverPath + "\\" + Session["CurrentUserId"].ToString())) Directory.CreateDirectory(serverPath + "\\" + Session["CurrentUserId"].ToString());
-                                serverPath = serverPath + "\\" + Session["CurrentUserId"].ToString();
-                                File.WriteAllBytes(serverPath + "\\" + fileName, memS.ToArray());
-                                OpenPrintfile(fileName);
-                            }
+                            UpdateOrderStatus(item.OrderNumber);
                         }
-                        AllesIstOkeyLabel.Text = "Rechnung für " + myCustomer.Name + " wurde erfolgreich hinzugefügt";
                     }
+
+
+                    if (preview && groupedInvoiceItems.Count > 0)
+                    {
+                        using (MemoryStream memS = new MemoryStream())
+                        {
+                            string fileName = "RechnungsVorschau_" + DateTime.Now.Ticks.ToString() + ".pdf";
+                            string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
+
+                            InvoiceManager.PrintPreview(newInvoice, memS, "");
+
+                            if (!Directory.Exists(serverPath))
+                                Directory.CreateDirectory(serverPath);
+
+                            if (!Directory.Exists(serverPath + "\\" + Session["CurrentUserId"].ToString()))
+                                Directory.CreateDirectory(serverPath + "\\" + Session["CurrentUserId"].ToString());
+
+                            serverPath = serverPath + "\\" + Session["CurrentUserId"].ToString();
+                            File.WriteAllBytes(serverPath + "\\" + fileName, memS.ToArray());
+                            OpenPrintfile(fileName);
+                        }
+                    }
+
+                    AllesIstOkeyLabel.Text = "Rechnung für " + customer.Name + " wurde erfolgreich hinzugefügt";
+
                     if (Session["currentLocationIndex"] != null && ((int)Session["currentLocationIndex"]) < groupedInvoiceItems.Count() - 1)
                     {
                         Session["currentLocationIndex"] = ((int)Session["currentLocationIndex"]) + 1;
@@ -649,45 +573,49 @@ namespace KVSWebApplication.Abrechnung
             }
             catch (Exception ex)
             {
-                try
-                {
-                    if (newInvoice != null)
-                    {
+                //try
+                //{
+                //    if (newInvoice != null)
+                //    {
 
-                        dbContext.Invoice.DeleteOnSubmit(newInvoice);
-                        dbContext.SubmitChanges();
-                        if (newAdress != null)
-                            dbContext.Adress.DeleteOnSubmit(newAdress);
-                        dbContext.SubmitChanges();
-                    }
-                }
-                catch { AbrechnungSaveErrorLabel.Text = "Leider war es nicht möglich durch das System die defekte Rechnung zu löschen (Datenbankkonflikt), Sie können diese auch manuell  im Reiter 'Rechnung erstellen' stornieren"; }
+                //        dbContext.Invoice.DeleteOnSubmit(newInvoice);
+                //        dbContext.SubmitChanges();
+                //        if (newAdress != null)
+                //            dbContext.Adress.DeleteOnSubmit(newAdress);
+                //        dbContext.SubmitChanges();
+                //    }
+                //}
+                //catch { AbrechnungSaveErrorLabel.Text = "Leider war es nicht möglich durch das System die defekte Rechnung zu löschen (Datenbankkonflikt), Sie können diese auch manuell  im Reiter 'Rechnung erstellen' stornieren"; }
+
                 AbrechnungSaveErrorLabel.Visible = true;
                 AbrechnungSaveErrorLabel.Text += "Fehler:" + ex.Message;
-                // WindowManager1.RadAlert("Fehler:" + ex.Message, 380, 180, "Fehler", "");
             }
         }
+
         private void OpenPrintfile(string myFile)
         {
             string url = ConfigurationManager.AppSettings["BaseUrl"];
             string path = url + "UserData/" + Session["CurrentUserId"].ToString() + "/" + myFile;
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Invoice", "<script>openFile('" + path + "');</script>", false);
         }
+
         #endregion
+
+        #region Methods
+
         /// <summary>
         /// Orders werden nach OrderItemStatus geprüft
         /// Falls nicht alle Items abgerechnet sind - Status 700 (Teilabgerechnet)
-        ///Falls alle Items schon abgerechnet - Status 900 (Abgerechnet)
+        /// Falls alle Items schon abgerechnet - Status 900 (Abgerechnet)
         /// </summary>
-        /// <param name="con"></param>
         /// <param name="OrderNumber"></param>
-        protected void UpdateOrderStatus(KVSEntities con, int orderNumber)
+        protected void UpdateOrderStatus(int orderNumber)
         {
             bool shouldBeUpdated = false;
             bool hasAbgerechnetItem = false;
-            var orderQuery = con.Order.SingleOrDefault(q => q.OrderNumber == orderNumber);
-            orderQuery.LogDBContext = con;
-            foreach (OrderItem item in orderQuery.OrderItem)
+            var order = OrderManager.GetById(orderNumber);
+
+            foreach (OrderItem item in order.OrderItem)
             {
                 if (item.Status == (int)OrderItemStatusTypes.Closed)
                 {
@@ -699,16 +627,19 @@ namespace KVSWebApplication.Abrechnung
                     hasAbgerechnetItem = true;
                 }
             }
+
             if (shouldBeUpdated == true && hasAbgerechnetItem == true) // teil
             {
-                orderQuery.Status = (int)OrderStatusTypes.PartiallyPayed;
+                order.Status = (int)OrderStatusTypes.PartiallyPayed;
             }
             else if (shouldBeUpdated == false && hasAbgerechnetItem == true) //komplet abgerechnet
             {
-                orderQuery.Status = (int)OrderStatusTypes.Payed;
+                order.Status = (int)OrderStatusTypes.Payed;
             }
-            con.SubmitChanges();
+
+            OrderManager.SaveChanges();
         }
+
         /// <summary>
         /// Datasource fuer den Standort
         /// </summary>
@@ -716,22 +647,21 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void StandortLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
-            var myId = 0;
-            if (CustomerDropDownList.SelectedValue == "")
+            int? customerId = null;
+            if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
             {
+                customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
             }
-            else
-            {
-                myId = Int32.Parse(CustomerDropDownList.SelectedValue);
 
-            }
-            var standortQuery = from stand in con.Location
-                                join cust in con.Customer on stand.CustomerId equals cust.Id
-                                where cust.Id == myId
-                                select new { Name = stand.Name, Value = stand.Id };
-            e.Result = standortQuery;
+            var locations = LocationManager.GetEntities(loc => loc.CustomerId == customerId).Select(loc => new
+            {
+                Id = loc.Id,
+                Name = loc.Name
+            }).ToList();
+
+            e.Result = locations;
         }
+
         /// <summary>
         /// Event fuer den Standort
         /// </summary>
@@ -742,6 +672,7 @@ namespace KVSWebApplication.Abrechnung
             AddAdressButton.Enabled = true;
             RadGridAbrechnung.Rebind();
         }
+
         /// <summary>
         /// Event fuer die Checkbox die alle Standorte anzeigt
         /// </summary>
@@ -758,10 +689,8 @@ namespace KVSWebApplication.Abrechnung
                 if (existing == null) //field is not present
                 {
                     //Construct and add a new aggregate field
-                    GridGroupByField field = new GridGroupByField();
+                    var field = new GridGroupByField();
                     field.FieldName = "Location";
-                    //field.FieldAlias = "SubTotal";
-                    //field.Aggregate = GridAggregateFunction.Sum;
                     field.FormatString = "{0:C}";
                     expression1.SelectFields.Add(field);
                 }
@@ -780,5 +709,7 @@ namespace KVSWebApplication.Abrechnung
                 this.RadGridAbrechnung.Rebind();
             }
         }
+
+        #endregion
     }
 }

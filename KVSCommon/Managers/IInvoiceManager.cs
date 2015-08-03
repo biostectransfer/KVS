@@ -69,5 +69,20 @@ namespace KVSCommon.Managers
         /// <param name="customerId"></param>
         /// <param name="invoiceTypeId"></param>
         void AddRunReport(int? customerId, int? invoiceTypeId);
+
+        /// <summary>
+        /// Gibt die initiale Rechnungsadresse anhand der Kundendaten und des Standorts der Aufträge in der Rechnung zurück.
+        /// </summary>
+        /// <param name="customerId">Id des Kunden.</param>
+        /// <param name="locationId">Id des Standorts, falls vorhanden.</param>
+        /// <returns>Die Rechnungsadresse.</returns>
+        Adress GetInitialInvoiceAdress(int customerId, int? locationId);
+
+        /// <summary>
+        /// Gibt den Standard Rechnungstext zurück, abhaengig vom Kunden
+        /// </summary>
+        /// <param name="customerId">Kundenid</param>
+        /// <returns>Rechnungstext</returns>
+        string GetDefaultInvoiceText(int customerId);
     }
 }
