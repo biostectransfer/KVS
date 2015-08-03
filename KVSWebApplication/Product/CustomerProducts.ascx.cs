@@ -210,7 +210,7 @@ namespace KVSWebApplication.Product
             {
                 var locations = LocationManager.GetEntities(loc => loc.CustomerId != Int32.Parse(e.Value)).Select(loc => new
                 {
-                    Id = loc.Id,
+                    Value = loc.Id,
                     Name = loc.Name
                 }).ToList();
 
@@ -218,7 +218,7 @@ namespace KVSWebApplication.Product
 
                 foreach (var location in locations)
                 {
-                    cmbLocations.Items.Add(new RadComboBoxItem(location.Name, location.Id.ToString()));
+                    cmbLocations.Items.Add(new RadComboBoxItem(location.Name, location.Value.ToString()));
                 }
 
                 if (cmbLocations.Items.Count == 0)

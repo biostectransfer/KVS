@@ -80,18 +80,22 @@ namespace KVSDataAccess.Managers
                             LocationId = o.OrderItem.Order.LocationId
                         }).ToList();
 
-                    
-                    //TODO TODO
+
+                    //TODO TODO Make VIEWs
 
 
-                    //DataContext.GetSet<Price>().SelectMany(o => o.PriceAccount).s.
-                    //    Where(acc => pairs.Any(o => o.LocationId == acc..LocationId && o.ProductId == price.ProductId)).
+                    //DataContext.GetSet<Product>().Where(prod => pairs.Any(pair => pair.ProductId == prod.Id)).
+                    //    Select(o => new {
+                    //        Product = o,
+                    //        Prices = o.Price.Where(price => pairs.Any(pair => pair.LocationId == price.LocationId))
+                    //    }).
+                    //    SelectMany(o => o.Prices).
                     //    Select(o => new _Accounts
-                    //{
-                    //    InvoiceItemId = o..InvoiceItemId,
-                    //    AccountId = o.IIACCID,
-                    //    AccountNumber = o.pr.RevenueAccountText
-                    //});
+                    //    {
+                    //        InvoiceItemId = o.PriceAccount.FirstOrDefault()..InvoiceItemId,
+                    //        AccountId = o.IIACCID,
+                    //        AccountNumber = o.Product.RevenueAccountText
+                    //    });
 
                     //result = from inv in dbContext.Invoice
                     //            join invItem in dbContext.InvoiceItem on inv.Id equals invItem.InvoiceId

@@ -160,22 +160,25 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void AbrechnungLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            if (String.IsNullOrEmpty(StandortDropDown.SelectedValue.ToString()))
+            int customerId = 0;
+            if (String.IsNullOrEmpty(StandortDropDown.SelectedValue))
             {
                 StandortDropDown.DataBind();
             }
-
-            var customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
+            else
+            {
+                customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
+            }
 
             //select all values for small customers
-            if (CustomerDropDownList.SelectedValue != null && RadComboBoxCustomer.SelectedValue == "1" && CustomerDropDownList.SelectedValue != "")
+            if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue) && RadComboBoxCustomer.SelectedValue == "1")
             {
                 var orderItems = GetOrderItems(customerId).Where(o => o.ItemStatusId == (int)OrderItemStatusTypes.Closed);
 
                 e.Result = orderItems.OrderByDescending(o => o.OrderNumber).ToList();
             }
             //select all values for large customers
-            else if (CustomerDropDownList.SelectedValue != null && CustomerDropDownList.SelectedValue != "" && RadComboBoxCustomer.SelectedValue == "2")
+            else if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue) && RadComboBoxCustomer.SelectedValue == "2")
             {
                 if (RechnungsTypComboBox.SelectedValue != "Einzel")
                 {
@@ -655,7 +658,7 @@ namespace KVSWebApplication.Abrechnung
 
             var locations = LocationManager.GetEntities(loc => loc.CustomerId == customerId).Select(loc => new
             {
-                Id = loc.Id,
+                Value = loc.Id,
                 Name = loc.Name
             }).ToList();
 

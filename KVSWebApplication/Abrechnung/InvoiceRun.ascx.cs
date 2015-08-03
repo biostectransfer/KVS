@@ -18,8 +18,6 @@ namespace KVSWebApplication.Abrechnung
     /// </summary>
     public partial class InvoiceRun : BaseUserControl
     {
-        protected IInvoiceTypesManager InvoiceTypesManager { get; set; }
-
         protected void Page_Load(object sender, EventArgs e)
         {
             var abr = Page as Abrechnung;
@@ -36,8 +34,6 @@ namespace KVSWebApplication.Abrechnung
             {
                 invoiceRunPanel.Visible = false;
             }
-            
-            InvoiceTypesManager = (IInvoiceTypesManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceTypesManager));
         }
 
         /// <summary>
@@ -86,7 +82,7 @@ namespace KVSWebApplication.Abrechnung
                                 {
                                     InvoiceSection = run.Id,
                                     CustomerId = run.CustomerId.HasValue ? run.CustomerId : (int?)null,
-                                    CustomerName = run.CustomerId.HasValue ? CustomerManager.GetById(run.CustomerId.Value).Name : "Alle",
+                                    CustomerName = run.CustomerId.HasValue ? CustomerManager.GetEntities().FirstOrDefault(o => o.Id == run.CustomerId.Value).Name : "Alle",
                                     InvoiceTypeId = run.InvoiceTypeId.HasValue ? InvoiceTypesManager.GetEntities().FirstOrDefault(q => q.ID == run.InvoiceTypeId).ID.ToString() : "Alle",
                                     InvoiceTypeName = run.InvoiceTypeId.HasValue ? InvoiceTypesManager.GetEntities().FirstOrDefault(q => q.ID == run.InvoiceTypeId).InvoiceTypeName : "Alle",
                                     CreateDate = run.CreateDate,

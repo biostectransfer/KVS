@@ -59,6 +59,7 @@ namespace KVSWebApplication.BasePages
             DocketListManager = (IDocketListManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IDocketListManager));
             PackingListManager = (IPackingListManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IPackingListManager));
             ProductCategoryManager = (IProductCategoryManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IProductCategoryManager));
+            InvoiceTypesManager = (IInvoiceTypesManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceTypesManager));
 
             OrderStatuses = OrderStatusManager.GetEntities().ToList();
             OrderTypesCollection = OrderTypeManager.GetEntities().ToList();
@@ -97,6 +98,7 @@ namespace KVSWebApplication.BasePages
         public IDocketListManager DocketListManager { get; set; }
         public IPackingListManager PackingListManager { get; set; }
         public IProductCategoryManager ProductCategoryManager { get; set; }
+        public IInvoiceTypesManager InvoiceTypesManager { get; set; }
 
         #endregion
     }

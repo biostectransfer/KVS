@@ -355,7 +355,7 @@ namespace KVSWebApplication.Abrechnung
                                       customerNumber = inv.Customer.CustomerNumber,
                                       Matchcode = inv.Customer.MatchCode,
                                       createDate = inv.CreateDate,
-                                      isPrintedMEssage = (inv.IsPrinted) ? "Gedruckt/Gebucht" : "Offen",
+                                      isPrinted = (inv.IsPrinted) ? "Gedruckt/Gebucht" : "Offen",
                                       recipient = inv.InvoiceRecipient,
                                       invoiceNumber = inv.InvoiceNumber != null ? inv.InvoiceNumber.Number.ToString() : String.Empty,
                                       customerName =  inv.Customer.SmallCustomer != null && inv.Customer.SmallCustomer.Person != null ?
@@ -374,7 +374,7 @@ namespace KVSWebApplication.Abrechnung
                                       customerNumber = inv.Customer.CustomerNumber,
                                       Matchcode = inv.Customer.MatchCode,
                                       createDate = inv.CreateDate,
-                                      isPrintedMEssage = (inv.IsPrinted) ? "Gedruckt/Gebucht" : "Offen",
+                                      isPrinted = (inv.IsPrinted) ? "Gedruckt/Gebucht" : "Offen",
                                       recipient = inv.InvoiceRecipient,
                                       invoiceNumber = inv.InvoiceNumber != null ? inv.InvoiceNumber.Number.ToString() : String.Empty,
                                       customerName = inv.Customer.SmallCustomer != null && inv.Customer.SmallCustomer.Person != null ?
