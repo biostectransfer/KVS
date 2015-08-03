@@ -711,6 +711,9 @@
       <Column Name="ID" AutoSync="Never" Type="System.Int32" DbType="int NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="InvoiceTypeName" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
       <Column Name="contraction" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="InvoiceTypes_Invoice" Member="Invoice" ThisKey="ID" OtherKey="InvoiceType" Type="Invoice" />
       <Association Name="InvoiceTypes_LargeCustomer" Member="LargeCustomer" ThisKey="ID" OtherKey="InvoiceTypesID" Type="LargeCustomer" />
     </Type>

@@ -5,7 +5,7 @@ using System.Web;
 
 namespace KVSWebApplication.Abrechnung
 {
-    public class SelectedInvoiceItems 
+    public class SelectedInvoiceItems
     {
         private string productName;
 
@@ -26,7 +26,7 @@ namespace KVSWebApplication.Abrechnung
             get { return orderItemId; }
             set { orderItemId = value; }
         }
-     
+
         private int? costCenterId;
         public int? CostCenterId
         {

@@ -277,5 +277,23 @@ namespace KVSDataAccess.Managers
                 PDFSharpUtil.WriteWatermark("Kopie", readerStream, ms);
             }
         }
+
+        /// <summary>
+        /// Add run report
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="invoiceTypeId"></param>
+        public void AddRunReport(int? customerId, int? invoiceTypeId)
+        {
+            var run = new InvoiceRunReport()
+            {
+                CustomerId = customerId,
+                InvoiceTypeId = invoiceTypeId,
+                CreateDate = DateTime.Now
+            };
+
+            DataContext.AddObject(run);
+            SaveChanges();
+        }
     }
 }

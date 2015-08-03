@@ -70,6 +70,7 @@
     <Compile Include="Managers\DeregistrationOrderManager.cs" />
     <Compile Include="Managers\DocketListManager.cs" />
     <Compile Include="Managers\PackingListManager.cs" />
+    <Compile Include="Managers\InvoiceTypesManager.cs" />
     <Compile Include="Managers\ProductCategoryManager.cs" />
     <Compile Include="Managers\RegistrationOrderManager.cs" />
     <Compile Include="Managers\RegistrationOrderTypeManager.cs" />

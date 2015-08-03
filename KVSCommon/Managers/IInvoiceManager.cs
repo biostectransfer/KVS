@@ -62,5 +62,12 @@ namespace KVSCommon.Managers
         /// <param name="invoice">invoice</param>
         /// <param name="ms">MemoryStream, in den die PDF-Daten geschrieben werden.</param>
         void PrintCopy(Invoice invoice, MemoryStream ms);
+
+        /// <summary>
+        /// Add run report
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="invoiceTypeId"></param>
+        void AddRunReport(int? customerId, int? invoiceTypeId);
     }
 }

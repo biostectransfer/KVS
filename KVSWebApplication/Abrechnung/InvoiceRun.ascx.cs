@@ -6,18 +6,24 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
 using KVSCommon.Database;
+using KVSWebApplication.BasePages;
+using KVSCommon.Enums;
+using KVSCommon.Managers;
+using System.Web.Http;
 
 namespace KVSWebApplication.Abrechnung
 {
     /// <summary>
     /// Codebehind fuer die Rechnungslauf Maske
     /// </summary>
-    public partial class InvoiceRun : System.Web.UI.UserControl
+    public partial class InvoiceRun : BaseUserControl
     {
+        protected IInvoiceTypesManager InvoiceTypesManager { get; set; }
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            Abrechnung abr = Page as Abrechnung;
-            RadScriptManager script = abr.getScriptManager() as RadScriptManager;
+            var abr = Page as Abrechnung;
+            var script = abr.getScriptManager() as RadScriptManager;
             if (Session["CurrentUserId"] != null && CheckUserPermissions())
             {
                 if (!Page.IsPostBack)
@@ -30,31 +36,19 @@ namespace KVSWebApplication.Abrechnung
             {
                 invoiceRunPanel.Visible = false;
             }
+            
+            InvoiceTypesManager = (IInvoiceTypesManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceTypesManager));
         }
+
         /// <summary>
         /// Pruefe der Benutzerrechte
         /// </summary>
         /// <returns></returns>
         protected bool CheckUserPermissions()
         {
-            List<string> userPermissions = new List<string>();
-            userPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
-            if (userPermissions.Count > 0)
-            {
-                if (userPermissions.Contains("RECHNUNG_ERSTELLEN"))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
+            return UserManager.CheckPermissionsForUser(Session["UserPermissions"], PermissionTypes.RECHNUNG_ERSTELLEN);
         }
+
         /// <summary>
         /// Datasource fuer die Kundenliste
         /// </summary>
@@ -62,18 +56,24 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
+            var customerQuery = CustomerManager.GetEntities().
+                    Select(cust => new
+                    {
+                        Name = cust.SmallCustomer != null && cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
+                        Value = cust.Id,
+                        Matchcode = cust.MatchCode,
+                        Kundennummer = cust.CustomerNumber
+                    });
 
-            var customerQuery = from cust in con.Customer
-                                where cust.Id == cust.LargeCustomer.CustomerId
-                                select new { Name = cust.Name, Value = cust.Id, Matchcode = cust.MatchCode, Kundennummer = cust.CustomerNumber };
-            e.Result = customerQuery;
+            e.Result = customerQuery.ToList();
         }
+
         protected void clearButton_Click(object sender, EventArgs e)
         {
             CustomerDropDownList.ClearSelection();
             RechnungsTypComboBox.Enabled = true;
         }
+
         /// <summary>
         /// DataSource fuer die Rechnungslauf Tabelle
         /// </summary>
@@ -81,21 +81,21 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void InvoiceRunLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
-            var progressQUery = from run in con.InvoiceRunReport
-                                orderby run.CreateDate descending
-                                select new
+            var progressQUery = InvoiceManager.GetInvoiceRunReports().
+                                Select(run => new
                                 {
                                     InvoiceSection = run.Id,
                                     CustomerId = run.CustomerId.HasValue ? run.CustomerId : (int?)null,
-                                    CustomerName = (run.CustomerId.HasValue) ? con.Customer.FirstOrDefault(q => q.Id == run.CustomerId).Name : "Alle",
-                                    InvoiceTypeId = (run.InvoiceTypeId.HasValue) ? con.InvoiceTypes.FirstOrDefault(q => q.ID == run.InvoiceTypeId).ID.ToString() : "Alle",
-                                    InvoiceTypeName = (run.InvoiceTypeId.HasValue) ? con.InvoiceTypes.FirstOrDefault(q => q.ID == run.InvoiceTypeId).InvoiceTypeName : "Alle",
+                                    CustomerName = run.CustomerId.HasValue ? CustomerManager.GetById(run.CustomerId.Value).Name : "Alle",
+                                    InvoiceTypeId = run.InvoiceTypeId.HasValue ? InvoiceTypesManager.GetEntities().FirstOrDefault(q => q.ID == run.InvoiceTypeId).ID.ToString() : "Alle",
+                                    InvoiceTypeName = run.InvoiceTypeId.HasValue ? InvoiceTypesManager.GetEntities().FirstOrDefault(q => q.ID == run.InvoiceTypeId).InvoiceTypeName : "Alle",
                                     CreateDate = run.CreateDate,
                                     FinishedDate = run.FinishedDate,
-                                };
-            e.Result = progressQUery;
+                                });
+
+            e.Result = progressQUery.OrderByDescending(o => o.CreateDate).ToList();
         }
+
         /// <summary>
         /// DataSource fuer die Rechnungstypen Kombobox
         /// </summary>
@@ -103,21 +103,21 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void RechnungsTypComboBox_init(object sender, EventArgs e)
         {
-            RadComboBox combo = sender as RadComboBox;
-            IQueryable<InvoiceTypes> tp = null;
+            var combo = sender as RadComboBox;
             if (combo != null)
             {
-                KVSEntities dbContext = new KVSEntities();
-                tp = dbContext.InvoiceTypes;
                 combo.Items.Clear();
                 combo.Items.Add(new RadComboBoxItem("Alle", ""));
-                foreach (var items in tp)
+
+                foreach (var items in InvoiceTypesManager.GetEntities().ToList())
                 {
                     combo.Items.Add(new RadComboBoxItem(items.InvoiceTypeName, items.ID.ToString()));
                 }
+
                 combo.DataBind();
             }
         }
+
         /// <summary>
         /// Event fuer die Auswahl der Kunden
         /// </summary>
@@ -127,6 +127,7 @@ namespace KVSWebApplication.Abrechnung
         {
             RechnungsTypComboBox.Enabled = false;
         }
+
         /// <summary>
         /// Erstellt einen neuen Rechnungslauf Datensatz
         /// </summary>
@@ -135,37 +136,29 @@ namespace KVSWebApplication.Abrechnung
         protected void GenerateInvoiceRunButton_Click(object sender, EventArgs e)
         {
             InvoiceRunError.Text = "";
-            using (KVSEntities dbContext = new KVSEntities())
+
+            try
             {
-                try
-                {
-                    int? customerId = null;
-                    int? invoiceType = null;
-                    
-                    if (CustomerDropDownList.SelectedValue != string.Empty)
-                        customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
-                    
-                    if (RechnungsTypComboBox.SelectedValue != string.Empty && RechnungsTypComboBox.Enabled == true)
-                        invoiceType = Int32.Parse(RechnungsTypComboBox.SelectedValue);
-                    
-                    InvoiceRunReport run = new InvoiceRunReport()
-                    {
-                        CustomerId = customerId,
-                        InvoiceTypeId = invoiceType,
-                        CreateDate = DateTime.Now
-                    };
-                    dbContext.InvoiceRunReport.InsertOnSubmit(run);
-                    dbContext.SubmitChanges();
-                    RadGridInvoiceRun.MasterTableView.ClearChildEditItems();
-                    RadGridInvoiceRun.MasterTableView.ClearEditItems();
-                    RadGridInvoiceRun.Rebind();
-                }
-                catch (Exception ex)
-                {
-                    InvoiceRunError.Visible = true;
-                    InvoiceRunError.Text = "Rechnungslauf Fehler " + ex.Message;
-                    dbContext.WriteLogItem("Rechnungslauf Error " + ex.Message, LogTypes.ERROR, "Rechnungslauf");
-                }
+                int? customerId = null;
+                int? invoiceTypeId = null;
+
+                if (CustomerDropDownList.SelectedValue != string.Empty)
+                    customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
+
+                if (RechnungsTypComboBox.SelectedValue != string.Empty && RechnungsTypComboBox.Enabled == true)
+                    invoiceTypeId = Int32.Parse(RechnungsTypComboBox.SelectedValue);
+
+                InvoiceManager.AddRunReport(customerId, invoiceTypeId);
+
+                RadGridInvoiceRun.MasterTableView.ClearChildEditItems();
+                RadGridInvoiceRun.MasterTableView.ClearEditItems();
+                RadGridInvoiceRun.Rebind();
+            }
+            catch (Exception ex)
+            {
+                InvoiceRunError.Visible = true;
+                InvoiceRunError.Text = "Rechnungslauf Fehler " + ex.Message;
+                //TODO WriteLogItem("Rechnungslauf Error " + ex.Message, LogTypes.ERROR, "Rechnungslauf");
             }
         }
     }
