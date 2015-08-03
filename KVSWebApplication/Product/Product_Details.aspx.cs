@@ -1,4 +1,6 @@
-﻿using System;
+﻿using KVSCommon.Enums;
+using KVSWebApplication.BasePages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,27 +12,16 @@ namespace KVSWebApplication.Product
     /// <summary>
     /// Verwaltngsmaske fuer die Produkte
     /// </summary>
-    public partial class Product_Details : System.Web.UI.Page
+    public partial class Product_Details : BasePage
     {
-        PageStatePersister _pers;
-        protected override PageStatePersister PageStatePersister
-        {
-            get
-            {
-                if (_pers == null)
-                {
-                    _pers = new SessionPageStatePersister(Page);
-                }
-                return _pers;
-            }
-        }
-        List<string> thisUserPermissions = new List<string>();
         protected void Page_Load(object sender, System.EventArgs e)
         {
-            thisUserPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
             if (!Page.IsPostBack)
             {
-                if (thisUserPermissions.Contains("PRODUKTE_UEBERSICHT") || thisUserPermissions.Contains("PRODUKTE_SPERREN") || thisUserPermissions.Contains("PRODUKTE_ANLEGEN") || thisUserPermissions.Contains("PRODUKTE_BEARBEITEN"))
+                if (UserManager.CheckPermissionsForUser(Session["UserPermissions"], PermissionTypes.PRODUKTE_UEBERSICHT) ||
+                    UserManager.CheckPermissionsForUser(Session["UserPermissions"], PermissionTypes.PRODUKTE_SPERREN) ||
+                    UserManager.CheckPermissionsForUser(Session["UserPermissions"], PermissionTypes.PRODUKTE_ANLEGEN) ||
+                    UserManager.CheckPermissionsForUser(Session["UserPermissions"], PermissionTypes.PRODUKTE_BEARBEITEN))
                 {
                     AddTab("Produktübersicht", "AllProducts");
                     AddPageView(RadTabStrip1.FindTabByValue("AllProducts"));
@@ -39,6 +30,7 @@ namespace KVSWebApplication.Product
                 }
             }
         }
+
         private void AddTab(string tabName, string tabValue)
         {
             RadTab tab = new RadTab();
@@ -46,6 +38,7 @@ namespace KVSWebApplication.Product
             tab.Value = tabValue;
             RadTabStrip1.Tabs.Add(tab);
         }
+
         protected void RadMultiPage1_PageViewCreated(object sender, RadMultiPageEventArgs e)
         {
             string userControlName = e.PageView.ID + ".ascx";
@@ -53,6 +46,7 @@ namespace KVSWebApplication.Product
             userControl.ID = e.PageView.ID + "_userControl";
             e.PageView.Controls.Add(userControl);
         }
+
         private void AddPageView(RadTab tab)
         {
             RadPageView pageView = new RadPageView();
@@ -60,6 +54,7 @@ namespace KVSWebApplication.Product
             RadMultiPage1.PageViews.Add(pageView);
             tab.PageViewID = pageView.ID;
         }
+
         protected void RadTabStrip1_TabClick(object sender, RadTabStripEventArgs e)
         {
             AddPageView(e.Tab);

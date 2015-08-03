@@ -16,6 +16,13 @@ namespace KVSCommon.Managers
         void RemoveProduct(int productId);
 
         /// <summary>
+        /// Loescht Eintraege aus der Preisliste
+        /// </summary>
+        /// <param name="Price[]">Preisliste</param>
+        ///  <param name="callFromProduct"></param>
+        void RemovePrice(IEnumerable<Price> prices, bool callFromProduct = true);
+
+        /// <summary>
         /// Erstellt ein neues Produkt.
         /// </summary>
         /// <param name="name">Name des Produkts.</param>
