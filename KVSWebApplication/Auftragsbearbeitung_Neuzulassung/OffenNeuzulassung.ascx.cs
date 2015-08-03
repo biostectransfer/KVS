@@ -292,7 +292,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
                     RadGridOffNeuzulassung.Rebind();
                 }
-                else
+                else if (e.CommandName == "Edit")
                 {
                     if (e.Item is GridDataItem)
                     {
@@ -301,6 +301,10 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         dataItem.Selected = true;
                         itemIndexHiddenField.Value = dataItem.ItemIndex.ToString();
                     }
+                }
+                else if(e.CommandName == "PrintColumn")
+                {
+                    ///todo
                 }
 
                 CheckOpenedOrders();

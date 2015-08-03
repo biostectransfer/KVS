@@ -83,7 +83,7 @@ namespace KVSWebApplication.Product
                 return new
                 {
                     Id = prod.Id,
-                    CustomerId = price.Location.CustomerId,
+                    CustomerId = price.Location != null ? price.Location.CustomerId : (int?)null,
                     LocationIdCustomer = price.LocationId,
                     PriceId = price.Id,
                     OrderTypeId = prod.OrderTypeId,

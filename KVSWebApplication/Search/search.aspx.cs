@@ -154,7 +154,7 @@ namespace KVSWebApplication.Search
                 {
                     if (item["OrderTyp"].Text.Contains("Zulassung")) // *** ZULASSUNG ***
                     {
-                        if (item["HasError"].Text.Contains("Nein")) // falls kein Fehler
+                        if (item["HasErrorAsString"].Text.Contains("Nein")) // falls kein Fehler
                         {
                             if (status.Contains("Offen"))// || status.Contains("Zulassungsstelle"))
                             {
@@ -171,7 +171,7 @@ namespace KVSWebApplication.Search
                                 showErrorLabel = true;
                         }
 
-                        else if (item["HasError"].Text.Contains("Ja")) // soll zu Fehlerhaft redirect werden
+                        else if (item["HasErrorAsString"].Text.Contains("Ja")) // soll zu Fehlerhaft redirect werden
                         {
                             Session["customerIndexSearch"] = String.IsNullOrEmpty(item["CustomerLocation"].Text) ? 1 : 2;
                             Session["orderStatusSearch"] = "Error";
@@ -183,7 +183,7 @@ namespace KVSWebApplication.Search
 
                     else if (item["OrderTyp"].Text.Contains("Abmeldung")) // *** ABMELDUNG ***
                     {
-                        if (item["HasError"].Text.Contains("Nein")) // falls kein Fehler
+                        if (item["HasErrorAsString"].Text.Contains("Nein")) // falls kein Fehler
                         {
                             if (status.Contains("Offen"))//|| status.Contains("Zulassungsstelle"))
                             {
@@ -201,7 +201,7 @@ namespace KVSWebApplication.Search
                                 showErrorLabel = true;
                         }
 
-                        else if (item["HasError"].Text.Contains("Ja")) // soll zu Fehlerhaft redirect werden
+                        else if (item["HasErrorAsString"].Text.Contains("Ja")) // soll zu Fehlerhaft redirect werden
                         {
                             Session["customerIndexSearch"] = String.IsNullOrEmpty(item["CustomerLocation"].Text) ? 1 : 2;
                             Session["orderStatusSearch"] = "Error";

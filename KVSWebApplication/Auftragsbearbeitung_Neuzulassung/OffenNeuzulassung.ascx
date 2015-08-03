@@ -262,6 +262,7 @@
             <CommandItemSettings ShowAddNewRecordButton="false" ShowRefreshButton="true" />
             <Columns>
                 <telerik:GridEditCommandColumn ButtonType="PushButton" EditText="Ändern" UniqueName="EditOffenColumn" />
+                <telerik:GridButtonColumn CommandName="PrintColumn"  ButtonType="PushButton" Text="Feinstaubplaketten Druck" UniqueName="PrintColumn" />
 
                 <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderNumber" HeaderText="Auftragsnummer"
                     SortExpression="OrderNumber"   UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"

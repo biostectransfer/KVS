@@ -75,8 +75,9 @@ namespace KVSWebApplication.BasePages
             PackingListManager = (IPackingListManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IPackingListManager));
             ProductCategoryManager = (IProductCategoryManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IProductCategoryManager));
             InvoiceTypesManager = (IInvoiceTypesManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceTypesManager));
+            DocumentManager = (IDocumentManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IDocumentManager)); 
 
-            OrderStatuses = OrderStatusManager.GetEntities().ToList();
+             OrderStatuses = OrderStatusManager.GetEntities().ToList();
             OrderTypesCollection = OrderTypeManager.GetEntities().ToList();
             ProductCategoryCollection = ProductCategoryManager.GetEntities().ToList();
             RegistrationOrderTypeCollection = RegistrationOrderTypeManager.GetEntities().ToList();
@@ -114,7 +115,7 @@ namespace KVSWebApplication.BasePages
         public IPackingListManager PackingListManager { get; set; }
         public IProductCategoryManager ProductCategoryManager { get; set; }
         public IInvoiceTypesManager InvoiceTypesManager { get; set; }
-
+        public IDocumentManager DocumentManager { get; set; }
         #endregion
 
         #region Methods
@@ -245,6 +246,17 @@ namespace KVSWebApplication.BasePages
                         licenceNumber = registration.Licencenumber;
                     }
 
+                    var postBackUrl = String.Empty;
+                    if (ord.DocketList != null && ord.DocketList.DocumentId.HasValue)
+                    {
+                        var document = DocumentManager.GetEntities(o => o.Id == ord.DocketList.DocumentId.Value).FirstOrDefault();
+                        if (document != null)
+                        {
+                            postBackUrl = String.Format("<a href={0}{1}{0} target={0}_blank{0}> Laufzettel öffnen</a>",
+                                '\u0022', document.FileName);
+                        }
+                    }
+
                     return new OrderViewModel()
                     {
                         OrderNumber = ord.OrderNumber,
@@ -288,7 +300,8 @@ namespace KVSWebApplication.BasePages
                         Fax = registration.CarOwner.Contact.Fax,
                         Email = registration.CarOwner.Contact.Email,
 
-                        //PostBackUrl = (ord.DocketList != null) ? "<a href=" + '\u0022' + ord.DocketList..FileName + '\u0022' + " target=" + '\u0022' + "_blank" + '\u0022' + "> Laufzettel öffnen</a>" : "",
+                        PostBackUrl = postBackUrl,
+
                         VisibleWeiterleitung = (ord.Status == (int)OrderStatusTypes.Payed || ord.Status == (int)OrderStatusTypes.Cancelled || ord.Status == (int)OrderStatusTypes.AdmissionPoint) ? false : true,
                         ZumAuftragText = ord.Status == (int)OrderStatusTypes.Payed ? "Schon abgerechnet" : ord.Status == (int)OrderStatusTypes.Cancelled ? "Schon storniert" : "Zum Auftrag",
                         Haltername = registration.CarOwner.Name != String.Empty && registration.CarOwner.FirstName == String.Empty

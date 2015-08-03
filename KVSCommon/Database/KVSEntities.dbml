@@ -335,6 +335,9 @@
       <Column Name="FileName" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Data" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" />
       <Column Name="MimeType" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="Document_Invoice" Member="Invoice" ThisKey="Id" OtherKey="DocumentId" Type="Invoice" />
       <Association Name="Document_PackingList" Member="PackingList" ThisKey="Id" OtherKey="DocumentId" Type="PackingList" />
       <Association Name="DocumentType_Document" Member="DocumentType" ThisKey="DokumentTypeId" OtherKey="Id" Type="DocumentType" IsForeignKey="true" />

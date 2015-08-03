@@ -52,6 +52,7 @@ namespace KVSConfiguration
             container.RegisterType<IPackingListManager, PackingListManager>(new PerRequestLifetimeManager()); 
             container.RegisterType<IProductCategoryManager, ProductCategoryManager>(new PerRequestLifetimeManager()); 
             container.RegisterType<IInvoiceTypesManager, InvoiceTypesManager>(new PerRequestLifetimeManager()); 
+            container.RegisterType<IDocumentManager, DocumentManager>(new PerRequestLifetimeManager());
         }
     }
 }

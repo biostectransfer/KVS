@@ -61,6 +61,7 @@
     <Compile Include="Database\Accounts.cs" />
     <Compile Include="Database\Adress.cs" />
     <Compile Include="Database\BankAccount.cs" />
+    <Compile Include="Database\Document.cs" />
     <Compile Include="Database\InvoiceTypes.cs" />
     <Compile Include="Database\OrderStatus.cs" />
     <Compile Include="Database\RegistrationOrderType.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Managers\IDocketListManager.cs" />
     <Compile Include="Managers\IPackingListManager.cs" />
     <Compile Include="Managers\IInvoiceTypesManager.cs" />
+    <Compile Include="Managers\IDocumentManager.cs" />
     <Compile Include="Managers\IProductCategoryManager.cs" />
     <Compile Include="Managers\IRegistrationOrderManager.cs" />
     <Compile Include="Managers\IRegistrationOrderTypeManager.cs" />
