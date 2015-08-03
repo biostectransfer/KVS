@@ -17,7 +17,6 @@ namespace KVSDataAccess.Managers
         /// <summary>
         /// Erstelle zu der jeweiligen Rechnung ein neues Erlöskonto
         /// </summary>
-        /// <param name="dbContext">DB Kontext</param>
         /// <param name="invoice">Rechnungsobjekt</param>
         public void CreateAccounts(Invoice invoice)
         {
@@ -55,16 +54,15 @@ namespace KVSDataAccess.Managers
         /// <summary>
         /// Gibt Erloeskonten als Liste zurück
         /// </summary>
-        /// <param name="dbContext">Datenbank Kontext</param>
-        /// <param name="itemId">Rechnungspositionsid</param>
+        /// <param name="invoiceId">Rechnungspositionsid</param>
         /// <param name="isPrinted">Ist Gedruckt</param>
         /// <returns>IQueryable<_Accounts></returns>
-        public IQueryable<_Accounts> GetAccountNumbers(int itemId, bool isPrinted = false)
+        public IQueryable<_Accounts> GetAccountNumbers(int invoiceId, bool isPrinted = false)
         {
             IQueryable<_Accounts> result = null;
             if (isPrinted)
             {
-                result = DataContext.GetSet<InvoiceItemAccountItem>().Where(o => o.InvoiceItem.InvoiceId == itemId).Select(o => new _Accounts
+                result = DataContext.GetSet<InvoiceItemAccountItem>().Where(o => o.InvoiceItem.InvoiceId == invoiceId).Select(o => new _Accounts
                             {
                                 InvoiceItemId = o.InvoiceItemId,
                                 AccountId = o.IIACCID,
@@ -75,7 +73,7 @@ namespace KVSDataAccess.Managers
             {
                 if (!isPrinted)
                 {
-                    var pairs = DataContext.GetSet<Invoice>().FirstOrDefault(o => o.Id == itemId).InvoiceItem.Select(o =>
+                    var pairs = DataContext.GetSet<Invoice>().FirstOrDefault(o => o.Id == invoiceId).InvoiceItem.Select(o =>
                         new
                         {
                             ProductId = o.OrderItem.ProductId,

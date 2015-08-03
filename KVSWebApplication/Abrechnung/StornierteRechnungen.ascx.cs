@@ -8,31 +8,36 @@ using KVSCommon.Database;
 using Telerik.Web.UI;
 using System.IO;
 using System.Configuration;
+using KVSWebApplication.BasePages;
+using KVSCommon.Enums;
+
 namespace KVSWebApplication.Abrechnung
 {
     /// <summary>
     /// Codebehind fuer die stornierten Rechnungen
     /// </summary>
-    public partial class StornierteRechnungen : System.Web.UI.UserControl
-    {       
+    public partial class StornierteRechnungen : BaseUserControl
+    {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Abrechnung abr = Page as Abrechnung;
-            RadScriptManager script = abr.getScriptManager() as RadScriptManager;
-            script.RegisterPostBackControl(btnRechnungsvorschau);    
-                if (Session["CurrentUserId"] != null)
+            var abr = Page as Abrechnung;
+            var script = abr.getScriptManager() as RadScriptManager;
+            script.RegisterPostBackControl(btnRechnungsvorschau);
+
+            if (Session["CurrentUserId"] != null)
+            {
+                if (!String.IsNullOrEmpty(Session["CurrentUserId"].ToString()))
                 {
-                    if (!String.IsNullOrEmpty(Session["CurrentUserId"].ToString()))
-                    {
-                        CheckUserPermissions();
-                    }
-                    if (!Page.IsPostBack)
-                    {
-                        RadGridAbrechnungErstellen.Enabled = true;
-                        RadGridAbrechnungErstellen.DataBind();
-                    }
-                }  
+                    CheckUserPermissions();
+                }
+                if (!Page.IsPostBack)
+                {
+                    RadGridAbrechnungErstellen.Enabled = true;
+                    RadGridAbrechnungErstellen.DataBind();
+                }
+            }
         }
+
         /// <summary>
         /// Event fuer den Button zum leeren der Kundenauswahl
         /// </summary>
@@ -43,26 +48,24 @@ namespace KVSWebApplication.Abrechnung
             CustomerDropDownList.ClearSelection();
             RadGridAbrechnungErstellen.DataBind();
         }
+
         /// <summary>
         /// Prueft die Benutezerberechtigungen
         /// </summary>
         protected void CheckUserPermissions()
         {
-            List<string> userPermissions = new List<string>();
-            userPermissions.AddRange(KVSCommon.Database.User.GetAllPermissionsByID(Int32.Parse(Session["CurrentUserId"].ToString())));
-            if (userPermissions.Count > 0)
+            if (UserManager.CheckPermissionsForUser(Session["UserPermissions"], PermissionTypes.RECHNUNG_ERSTELLEN))
             {
-                if (!userPermissions.Contains("RECHNUNG_ERSTELLEN"))
-                {
-                    AllButtonsPanel.Visible = false;
-                }
-                else
-                {
-                    AllButtonsPanel.Visible = true;
-                }
+                AllButtonsPanel.Visible = true;
             }
-        }     
+            else
+            {
+                AllButtonsPanel.Visible = false;
+            }
+        }
+
         #region Methods
+
         /// <summary>
         /// Event fuer die Vorschau der Rechnung
         /// </summary>
@@ -78,23 +81,28 @@ namespace KVSWebApplication.Abrechnung
                     foreach (GridDataItem item in RadGridAbrechnungErstellen.SelectedItems)
                     {
                         var invoiceID = Int32.Parse(item["invoiceId"].Text);
-                        if (invoiceID != null)
+
+                        var newInvoice = InvoiceManager.GetById(invoiceID);
+
+                        if (newInvoice.InvoiceItem == null || newInvoice.InvoiceItem.Count == 0)
+                            throw new Exception("Diese Rechnung enthält keine Positionen");
+
+                        using (MemoryStream memS = new MemoryStream())
                         {
-                            KVSEntities dbContext = new KVSEntities();
-                            Invoice newInvoice = dbContext.Invoice.SingleOrDefault(q => q.Id == invoiceID);
-                            if (newInvoice.InvoiceItem == null || newInvoice.InvoiceItem.Count == 0)
-                                throw new Exception("Diese Rechnung enthält keine Positionen");
-                            using (MemoryStream memS = new MemoryStream())
-                            {
-                                string fileName = "RechnungsVorschau_" + DateTime.Now.Ticks.ToString() + ".pdf";
-                                string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
-                                newInvoice.PrintPreview(dbContext,memS, "");
-                                if (!Directory.Exists(serverPath)) Directory.CreateDirectory(serverPath);
-                                if (!Directory.Exists(serverPath + "\\" + Session["CurrentUserId"].ToString())) Directory.CreateDirectory(serverPath + "\\" + Session["CurrentUserId"].ToString());
-                                serverPath = serverPath + "\\" + Session["CurrentUserId"].ToString();
-                                File.WriteAllBytes(serverPath + "\\" + fileName, memS.ToArray());
-                                OpenPrintfile(fileName);
-                            }
+                            string fileName = "RechnungsVorschau_" + DateTime.Now.Ticks.ToString() + ".pdf";
+                            string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
+
+                            InvoiceManager.PrintPreview(newInvoice, memS, "");
+
+                            if (!Directory.Exists(serverPath))
+                                Directory.CreateDirectory(serverPath);
+
+                            if (!Directory.Exists(serverPath + "\\" + Session["CurrentUserId"].ToString()))
+                                Directory.CreateDirectory(serverPath + "\\" + Session["CurrentUserId"].ToString());
+
+                            serverPath = serverPath + "\\" + Session["CurrentUserId"].ToString();
+                            File.WriteAllBytes(serverPath + "\\" + fileName, memS.ToArray());
+                            OpenPrintfile(fileName);
                         }
                     }
                 }
@@ -110,6 +118,7 @@ namespace KVSWebApplication.Abrechnung
                 RechnungVorschauErrorLabel.Text = "Fehler: " + ex.Message;
             }
         }
+
         /// <summary>
         /// Oeffne das erstellte Dokument
         /// </summary>
@@ -119,23 +128,30 @@ namespace KVSWebApplication.Abrechnung
             string url = ConfigurationManager.AppSettings["BaseUrl"];
             string path = url + "/UserData/" + Session["CurrentUserId"].ToString() + "/" + myFile;
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Invoice", "<script>openFile('" + path + "');</script>", false);
-        }  
+        }
+
         #endregion
+
         #region Index Changed
+
         protected void Cell_Selected(object sender, EventArgs e)
-        {          
+        {
             if (RadGridAbrechnungErstellen.SelectedItems.Count == 0)
             {
                 btnRechnungsvorschau.Enabled = false;
-            }       
-        }   
+            }
+        }
+
         protected void CustomerIndex_Changed(object sender, EventArgs e)
         {
             RadGridAbrechnungErstellen.Enabled = true;
             RadGridAbrechnungErstellen.DataBind();
         }
+
         #endregion
+
         #region Linq Data Sources  
+
         /// <summary>
         /// Datasource fuer die Detailstabelle
         /// </summary>
@@ -143,40 +159,40 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void DetailTable_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities dbContext = new KVSEntities();
             var invoiceId = Int32.Parse(e.WhereParameters["InvoiceId"].ToString());
+            var invoiceAccounts = InvoiceItemAccountItemManager.GetAccountNumbers(invoiceId).ToList();
 
-            var invoiceAccounts = Accounts.generateAccountNumber(dbContext, invoiceId).ToList();
-                  var invoiceItemsQuery = (from invitem in dbContext.InvoiceItem
-                                     join inv in dbContext.Invoice on invitem.InvoiceId equals inv.Id
-                                           where invitem.InvoiceId == invoiceId && inv.canceled == true
-                                           select new InnerItems
-                                           {
-                                         ItemId = invitem.Id,
-                                         OrderItemId = invitem.OrderItemId,
-                                         InvoiceId = inv.Id,
-                                         Amount = invitem.Amount,
-                                         Count = invitem.Count,
-                                         Name = invitem.Name,
-                                         isPrinted = inv.IsPrinted,
-                                         AccountId = 0,
-                                         AccountNumber = "",
-                                         InvoiceItemId = invitem.Id, 
-                                     }).ToList();
-            foreach (var invItem in invoiceItemsQuery)
-           {
-               var thisItem = (from i in invoiceAccounts
-                                     where i.InvoiceItemId == invItem.ItemId
-                               select new _Accounts { InvoiceItemId = i.InvoiceItemId, AccountId = i.AccountId, AccountNumber = i.AccountNumber, }).SingleOrDefault();
-               if (thisItem != null)
-               {
-                   invItem.AccountId = thisItem.AccountId;
-                   invItem.AccountNumber = thisItem.AccountNumber;
-                   invItem.InvoiceItemId = thisItem.InvoiceItemId;
-               }
-           }
-            e.Result = invoiceItemsQuery;       
+            var invoiceItems = InvoiceManager.GetEntities(o => o.Id == invoiceId && o.canceled == true).
+                SelectMany(o => o.InvoiceItem).
+                Select(invitem => new InnerItems
+                {
+                    ItemId = invitem.Id,
+                    OrderItemId = invitem.OrderItemId,
+                    InvoiceId = invitem.InvoiceId,
+                    Amount = invitem.Amount,
+                    Count = invitem.Count,
+                    Name = invitem.Name,
+                    isPrinted = invitem.Invoice.IsPrinted,
+                    AccountId = 0,
+                    AccountNumber = "",
+                    InvoiceItemId = invitem.Id,
+                }).ToList();
+
+            foreach (var invItem in invoiceItems)
+            {
+                var account = invoiceAccounts.FirstOrDefault(o => o.InvoiceItemId == invItem.ItemId);
+
+                if (account != null)
+                {
+                    invItem.AccountId = account.AccountId;
+                    invItem.AccountNumber = account.AccountNumber;
+                    invItem.InvoiceItemId = account.InvoiceItemId;
+                }
+            }
+
+            e.Result = invoiceItems;
         }
+
         /// <summary>
         /// DataSource fuer den Kunden
         /// </summary>
@@ -184,73 +200,67 @@ namespace KVSWebApplication.Abrechnung
         /// <param name="e"></param>
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
-            var customerQuery = from cust in con.Customer
-                                select new
-                                {   Name = cust.SmallCustomer != null && cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name, 
-                                    Value = cust.Id, Matchcode = cust.MatchCode, Kundennummer = cust.CustomerNumber };
-            e.Result = customerQuery;
+            var customerQuery = CustomerManager.GetEntities().
+                    Select(cust => new
+                    {
+                        Name = cust.SmallCustomer != null && cust.SmallCustomer.Person != null ? cust.SmallCustomer.Person.FirstName + " " + cust.SmallCustomer.Person.Name : cust.Name,
+                        Value = cust.Id,
+                        Matchcode = cust.MatchCode,
+                        Kundennummer = cust.CustomerNumber
+                    });
+
+            e.Result = customerQuery.ToList();
         }
-       /// <summary>
-       /// Datasource fuer die Abrechnung
-       /// </summary>
-       /// <param name="sender"></param>
-       /// <param name="e"></param>
+
+        /// <summary>
+        /// Datasource fuer die Abrechnung
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void AbrechnungLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            KVSEntities con = new KVSEntities();
             var customerId = 0;
             if (CustomerDropDownList.SelectedValue != string.Empty)
                 customerId = Int32.Parse(CustomerDropDownList.SelectedValue);
+
             if (customerId != 0)
             {
-                var invoiceQuery = from inv in con.Invoice
-                                   where inv.CustomerId == customerId
-                                  && inv.IsPrinted == false && inv.canceled == true
-                                   orderby inv.CreateDate descending
-                                   select new
-                                   {
-                                       invoiceId = inv.Id,
-                                       //customerId = ord.CustomerId,
-                                       customerNumber = inv.Customer.CustomerNumber,
-                                       Matchcode = inv.Customer.MatchCode,
-                                       createDate = inv.CreateDate,
-                                       isPrinted = (inv.IsPrinted) ? "Gedruckt/Gebucht" : "Offen",
-                                       recipient = inv.InvoiceRecipient,
-                                       invoiceNumber = inv.InvoiceNumber != null ? inv.InvoiceNumber.Number.ToString() : String.Empty
-                                   };
-                e.Result = invoiceQuery;
+                var invoices = InvoiceManager.GetEntities(inv => inv.CustomerId == customerId
+                                  && inv.IsPrinted == false && inv.canceled == true).Select(inv => new
+                                  {
+                                      invoiceId = inv.Id,
+                                      customerNumber = inv.Customer.CustomerNumber,
+                                      Matchcode = inv.Customer.MatchCode,
+                                      createDate = inv.CreateDate,
+                                      isPrinted = (inv.IsPrinted) ? "Gedruckt/Gebucht" : "Offen",
+                                      recipient = inv.InvoiceRecipient,
+                                      invoiceNumber = inv.InvoiceNumber != null ? inv.InvoiceNumber.Number.ToString() : String.Empty
+                                  });
+
+                e.Result = invoices.OrderByDescending(o => o.createDate).ToList();
             }
             else
             {
-                var invoiceQuery = from inv in con.Invoice
-                                   where  inv.IsPrinted == false && inv.canceled == true
-                                   orderby inv.CreateDate descending
-                                   select new
-                                   {
-                                       invoiceId = inv.Id,
-                                       //customerId = ord.CustomerId,
-                                       customerNumber = inv.Customer.CustomerNumber,
-                                       Matchcode = inv.Customer.MatchCode,
-                                       customerName = //inv.Customer.Name,
-                                         inv.Customer.SmallCustomer != null &&
-                                        inv.Customer.SmallCustomer.Person != null ?
+                var invoices = InvoiceManager.GetEntities(inv => inv.IsPrinted == false && inv.canceled == true).
+                    Select(inv => new
+                    {
+                        invoiceId = inv.Id,
+                        customerNumber = inv.Customer.CustomerNumber,
+                        Matchcode = inv.Customer.MatchCode,
+                        createDate = inv.CreateDate,
+                        isPrinted = (inv.IsPrinted) ? "Gedruckt/Gebucht" : "Offen",
+                        recipient = inv.InvoiceRecipient,
+                        invoiceNumber = inv.InvoiceNumber != null ? inv.InvoiceNumber.Number.ToString() : String.Empty,
+                        customerName = inv.Customer.SmallCustomer != null && inv.Customer.SmallCustomer.Person != null ?
                                         inv.Customer.SmallCustomer.Person.FirstName + " " +
-                                        inv.Customer.SmallCustomer.Person.Name : inv.Customer.Name, 
-                                       createDate = inv.CreateDate,
-                                       isPrinted = (inv.IsPrinted) ? "Gedruckt/Gebucht" : "Offen",
-                                       recipient = inv.InvoiceRecipient,
-                                       invoiceNumber = inv.InvoiceNumber != null ? inv.InvoiceNumber.Number.ToString() : String.Empty
-                                   };
-                e.Result = invoiceQuery;
-            }           
-        }
-        #endregion   
-        #region Button Clicked
-        protected void AddButton_Clicked(object sender, EventArgs e)
-        {
+                                        inv.Customer.SmallCustomer.Person.Name : 
+                                        inv.Customer.Name,
+                    });
 
+                e.Result = invoices.OrderByDescending(o => o.createDate).ToList();
+            }
         }
-        #endregion    
+
+        #endregion   
     }
 }

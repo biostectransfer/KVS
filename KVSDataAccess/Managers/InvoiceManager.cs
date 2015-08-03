@@ -223,5 +223,59 @@ namespace KVSDataAccess.Managers
             DataContext.WriteLogItem("Rechnung wurde mit Auftrag " + order.OrderNumber + " verknüpft.", LogTypes.INSERT, order.OrderNumber, "OrderInvoice", invoice.Id);
             return item;
         }
+
+        /// <summary>
+        /// Get InvoiceRunReports
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable<InvoiceRunReport> GetInvoiceRunReports()
+        {
+            return DataContext.GetSet<InvoiceRunReport>();
+        }
+
+        /// <summary>
+        /// Erstellt eine Vorschau des Rechnungs-PDF.
+        /// </summary>
+        /// <param name="invoice">invoice</param>
+        /// <param name="ms">MemoryStream, in den die PDF-Daten geschrieben werden.</param>
+        /// <param name="logoFilePath">Dateipfad zum Logo für das PDF.</param>
+        public void PrintPreview(Invoice invoice, MemoryStream ms, string logoFilePath)
+        {
+            var pdf = new InvoicePDF(DataContext, invoice, logoFilePath);
+            using (MemoryStream tempStream = new MemoryStream())
+            {
+                pdf.Preview = true;
+                pdf.WritePDF(tempStream);
+                PDFSharpUtil.WriteWatermark("", tempStream, ms);
+            }
+        }
+
+        /// <summary>
+        /// Erstellt eine Kopie der Original-Rechnung, falls diese bereits gedruckt wurde.
+        /// </summary>
+        /// <param name="invoice">invoice</param>
+        /// <param name="ms">MemoryStream, in den die PDF-Daten geschrieben werden.</param>
+        public void PrintCopy(Invoice invoice, MemoryStream ms)
+        {
+            if (invoice.IsPrinted == false)
+            {
+                throw new Exception("Kopie kann nicht erstellt werden, da Original nicht gedruckt ist.");
+            }
+
+            //string watermarkText = "Kopie";
+            using (MemoryStream readerStream = new MemoryStream())
+            {
+                try
+                {
+                    readerStream.Write(invoice.Document.Data.ToArray(), 0, invoice.Document.Data.Length);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Fehler Erstellen der Kopie: Original-PDF konnte nicht gelesen werden.", ex);
+                }
+
+                PDFSharpUtil.WriteWatermark("Kopie", readerStream, ms);
+            }
+        }
     }
 }

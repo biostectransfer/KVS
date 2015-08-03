@@ -9,6 +9,18 @@ namespace KVSCommon.Managers
 {
     public interface IInvoiceItemAccountItemManager : IEntityManager<InvoiceItemAccountItem, int>
     {
+        /// <summary>
+        /// C
+        /// </summary>
+        /// <param name="invoice"></param>
         void CreateAccounts(Invoice invoice);
+
+        /// <summary>
+        /// Gibt Erloeskonten als Liste zurück
+        /// </summary>
+        /// <param name="invoiceId">Rechnungspositionsid</param>
+        /// <param name="isPrinted">Ist Gedruckt</param>
+        /// <returns>IQueryable<_Accounts></returns>
+        IQueryable<_Accounts> GetAccountNumbers(int invoiceId, bool isPrinted = false);
     }
 }

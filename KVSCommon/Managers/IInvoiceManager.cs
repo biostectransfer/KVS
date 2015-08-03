@@ -41,5 +41,26 @@ namespace KVSCommon.Managers
         /// <returns>Die neue Rechnungsposition.</returns>
         InvoiceItem AddInvoiceItem(Invoice invoice, string name, decimal amount, int count, OrderItem orderItem, CostCenter costCenter,
             Customer customer, OrderItemStatusTypes orderItemStatusType);
+
+        /// <summary>
+        /// Get InvoiceRunReports
+        /// </summary>
+        /// <returns></returns>
+        IQueryable<InvoiceRunReport> GetInvoiceRunReports();
+
+        /// <summary>
+        /// Erstellt eine Vorschau des Rechnungs-PDF.
+        /// </summary>
+        /// <param name="invoice">invoice</param>
+        /// <param name="ms">MemoryStream, in den die PDF-Daten geschrieben werden.</param>
+        /// <param name="logoFilePath">Dateipfad zum Logo für das PDF.</param>
+        void PrintPreview(Invoice invoice, MemoryStream ms, string logoFilePath);
+
+        /// <summary>
+        /// Erstellt eine Kopie der Original-Rechnung, falls diese bereits gedruckt wurde.
+        /// </summary>
+        /// <param name="invoice">invoice</param>
+        /// <param name="ms">MemoryStream, in den die PDF-Daten geschrieben werden.</param>
+        void PrintCopy(Invoice invoice, MemoryStream ms);
     }
 }

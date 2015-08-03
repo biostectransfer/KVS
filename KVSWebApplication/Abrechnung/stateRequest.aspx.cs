@@ -5,9 +5,11 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using KVSCommon.Database;
+using KVSWebApplication.BasePages;
+
 namespace KVSWebApplication.Abrechnung
 {
-    public partial class stateRequest : System.Web.UI.Page
+    public partial class stateRequest : BasePage
     {   
         /// <summary>
         /// Fragt den aktuellen Status zum Rechnungslauf
@@ -18,17 +20,16 @@ namespace KVSWebApplication.Abrechnung
         {
             string id = Request.Form["invoiceRunId"];
             int? write = 0;
+
             if (!String.IsNullOrEmpty(id))
             {
-                using (KVSEntities dbContext = new KVSEntities())
-                {
-                    write = dbContext.InvoiceRunReport.FirstOrDefault(q => q.Id == Int32.Parse(id)).InvoiceRunProgress;
-                    if (write == null)
-                        write = null;
-                    if (write > 100)
-                        write = 100;
-                }
+                write = InvoiceManager.GetInvoiceRunReports().FirstOrDefault(q => q.Id == Int32.Parse(id)).InvoiceRunProgress;
+                if (write == null)
+                    write = null;
+                if (write > 100)
+                    write = 100;
             }
+
             Response.Clear();
             Response.ClearHeaders();
             Response.ClearContent();
