@@ -84,5 +84,20 @@ namespace KVSCommon.Managers
         /// <param name="customerId">Kundenid</param>
         /// <returns>Rechnungstext</returns>
         string GetDefaultInvoiceText(int customerId);
+
+        /// <summary>
+        /// Storniert eine Rechnung.
+        /// </summary>
+        /// <param name="invoice">invoice</param>
+        void Cancel(Invoice invoice);
+
+        /// <summary>
+        /// Generiert und versendet die Rechnung per Email
+        /// </summary>
+        /// <param name="invoiceId">Rechnungsid</param>
+        /// <param name="smtpServer">SMTP</param>
+        /// <param name="fromAddress">Absender</param>
+        /// <param name="toAdresses">Empfaenger</param>
+        void SendByMail(int invoiceId, string smtpServer, string fromAddress, List<string> toAdresses = null);
     }
 }

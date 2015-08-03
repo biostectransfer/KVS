@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -346,6 +347,103 @@ namespace KVSDataAccess.Managers
             }
 
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Storniert eine Rechnung.
+        /// </summary>
+        /// <param name="invoice">invoice</param>
+        public void Cancel(Invoice invoice)
+        {
+            if (invoice.IsPrinted)
+            {
+                throw new Exception("Die Rechnung kann nicht storniert werden, da sie bereits gedruckt ist.");
+            }
+
+            foreach (var item in invoice.InvoiceItem)
+            {
+                if (item.OrderItem != null)
+                {
+                    item.OrderItem.Status = (int)OrderItemStatusTypes.Closed;
+                }
+            }
+
+            foreach (var item in invoice.OrderInvoice)
+            {
+                if (item.Order.OrderItem.All(q => q.Status == (int)OrderItemStatusTypes.Closed))
+                {
+                    item.Order.Status = (int)OrderStatusTypes.Closed;
+                }
+            }
+
+            foreach(var item in invoice.OrderInvoice)
+                DataContext.DeleteObject(item);
+
+            DataContext.SaveChanges();
+        }
+
+        /// <summary>
+        /// Generiert und versendet die Rechnung per Email
+        /// </summary>
+        /// <param name="invoiceId">Rechnungsid</param>
+        /// <param name="smtpServer">SMTP</param>
+        /// <param name="fromAddress">Absender</param>
+        /// <param name="toAdresses">Empfaenger</param>
+        public void SendByMail(int invoiceId, string smtpServer, string fromAddress, List<string> toAdresses = null)
+        {
+            var invoice = GetById(invoiceId);
+            if (invoice.Document != null)
+            {
+                var ms = new MemoryStream();
+                ms.Write(invoice.Document.Data.ToArray(), 0, invoice.Document.Data.Length);
+                ms.Position = 0;
+
+                var att = new Attachment(ms, invoice.Document.FileName, "application/pdf");
+                int? locationId = null;
+
+                if (invoice.OrderInvoice.Any())
+                {
+                    locationId = invoice.OrderInvoice.First().Order.LocationId;
+                }
+                if (toAdresses == null)
+                {
+                    toAdresses = GetMailinglistAdresses(invoice.Customer.LargeCustomer, locationId, MailingListTypes.Invoice);
+                }
+
+                var mailBody = DataContext.GetSet<DocumentConfiguration>().FirstOrDefault(q => q.Id == "MAILBODY");
+
+                KVSCommon.Utility.Email.SendMail(fromAddress, toAdresses, 
+                    "Rechnung #" + invoice.InvoiceNumber.Number, ((mailBody != null) ? mailBody.Text : "No Mailbody found"), 
+                    new List<string>(), new List<string>(), smtpServer, new List<Attachment>() { att });
+            }
+            else
+            {
+                throw new Exception("Zu der Rechnung ist kein Rechnungs-PDF gespeichert.");
+            }
+        }
+
+        /// <summary>
+        /// Gibt die Liste der Emailadressen aus dem angegebenen Verteiler zurück.
+        /// </summary>
+        /// <param name="locationId">Id des Standortes, falls gewünscht.</param>
+        /// <param name="type">Art des Verteilers.</param>
+        /// <returns>Liste mit Emailadressen.</returns>
+        /// <remarks>Wenn der Verteiler eines Standorts abgefragt wird, und dieser leer ist, werden die Adressen aus dem Verteiler des Kunden zurückgegeben.</remarks>
+        public List<string> GetMailinglistAdresses(LargeCustomer largeCustomer, int? locationId, MailingListTypes type)
+        {
+            if (locationId.HasValue)
+            {
+
+                var emails = DataContext.GetSet<Mailinglist>().Where(q => q.LocationId == locationId.Value &&
+                    q.MailinglistType.Id == (int)type).Select(q => q.Email);
+                if (emails.Count() > 0)
+                {
+                    return emails.ToList();
+                }
+
+            }
+
+            return largeCustomer.Mailinglist.Where(q => q.LocationId.HasValue == false && q.MailinglistType.Id == (int)type).Select(q => q.Email).ToList();
         }
     }
 }
