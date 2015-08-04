@@ -1,9 +1,0 @@
-G:\Escoda\KVSCommon\bin\Release\KVSCommon.dll.config
-G:\Escoda\KVSCommon\bin\Release\KVSCommon.dll
-G:\Escoda\KVSCommon\bin\Release\KVSCommon.pdb
-G:\Escoda\KVSCommon\bin\Release\MigraDoc.DocumentObjectModel-WPF.dll
-G:\Escoda\KVSCommon\bin\Release\MigraDoc.Rendering-WPF.dll
-G:\Escoda\KVSCommon\bin\Release\PdfSharp-WPF.dll
-G:\Escoda\KVSCommon\obj\Release\KVSCommon.csprojResolveAssemblyReference.cache
-G:\Escoda\KVSCommon\obj\Release\KVSCommon.dll
-G:\Escoda\KVSCommon\obj\Release\KVSCommon.pdb
