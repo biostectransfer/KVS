@@ -16,7 +16,7 @@
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <IISExpressSSLPort />
@@ -771,9 +771,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>56637</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:14655/</IISUrl>
-          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://localhost:14655/</IISAppRootUrl>
+          <IISUrl>http://localhost/KVSWebApplication</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
