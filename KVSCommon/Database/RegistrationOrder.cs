@@ -12,18 +12,6 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class RegistrationOrder : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
-        public int Id
-        {
-            get
-            {
-                return OrderNumber;
-            }
-            set
-            {
-                OrderNumber = value;
-            }
-        }
-
         public KVSEntities LogDBContext
         {
             get;
@@ -34,7 +22,7 @@ namespace KVSCommon.Database
         {
             get
             {
-                return this.OrderNumber;
+                return this.Id;
             }
         }
 
@@ -44,45 +32,7 @@ namespace KVSCommon.Database
             set;
         }
 
-        /// <summary>
-        /// Erstellt einen Zulassungsauftrag.
-        /// </summary>
-        /// <param name="userId">Id des Benutzers.</param>
-        /// <param name="customerId">Id des Kunden.</param>
-        /// <param name="licencenumber">Kennzeichen für die Zulassung.</param>
-        /// <param name="previousLicencenumber">Vorheriges Kennzeichen (nur bei Umkennzeichnung).</param>
-        /// <param name="evbNumber">eVB-Nummer der Fahrzeugversicherung.</param>
-        /// <param name="vehicleId">Id des Fahrzeugs.</param>
-        /// <param name="registrationId">Id der Zulassung.</param>
-        /// <param name="registrationOrderType">Id der Zulassungsart.</param>
-        /// <param name="locationId">Id des Standorts (Pflicht bei Grosskunden, sonst null).</param>
-        /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        /// <returns>Den neuen Zulassungsauftrag.</returns>
-        /// <remarks>Erstellt auch gleichzeitig den Order-Datensatz.</remarks>
-        public static RegistrationOrder CreateRegistrationOrder(int userId, int customerId, string licencenumber, string previousLicencenumber, string evbNumber, 
-            Vehicle vehicle, Registration registration, RegistrationOrderTypes registrationOrderType, int? locationId, int zulassungsstelleId, KVSEntities dbContext)
-        {
-            var orderTypeId = dbContext.OrderType.Single(q => q.Id == (int)OrderTypes.Admission).Id;
-            Order order = Order.CreateOrder(userId, customerId, orderTypeId, zulassungsstelleId, dbContext);
-            order.LocationId = locationId;
-
-            RegistrationOrder registrationOrder = new RegistrationOrder()
-            {
-                Order = order,
-                Licencenumber = licencenumber,
-                Vehicle = vehicle,
-                Registration = registration,
-                PreviousLicencenumber = previousLicencenumber,
-                RegistrationOrderTypeId = (int)registrationOrderType,
-                eVBNumber = evbNumber
-            };
-
-            dbContext.RegistrationOrder.InsertOnSubmit(registrationOrder);
-            dbContext.SubmitChanges();
-
-            dbContext.WriteLogItem("Zulassungsauftrag wurde angelegt.", LogTypes.INSERT, registrationOrder.OrderNumber, "RegistrationOrder", vehicle.Id);
-            return registrationOrder;
-        }
+        
         /// <summary>
         /// Aenderungsevents für die Historie
         /// </summary>

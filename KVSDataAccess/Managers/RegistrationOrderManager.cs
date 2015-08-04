@@ -47,7 +47,7 @@ namespace KVSDataAccess.Managers
 
             DataContext.AddObject(order);
             SaveChanges();
-            DataContext.WriteLogItem("Auftrag angelegt.", LogTypes.INSERT, order.OrderNumber, "Order");
+            DataContext.WriteLogItem("Auftrag angelegt.", LogTypes.INSERT, order.Id, "Order");
 
             var registrationOrder = new RegistrationOrder()
             {
@@ -63,7 +63,7 @@ namespace KVSDataAccess.Managers
             DataContext.AddObject(registrationOrder);
             SaveChanges();
 
-            DataContext.WriteLogItem("Zulassungsauftrag wurde angelegt.", LogTypes.INSERT, registrationOrder.OrderNumber, "RegistrationOrder", vehicle.Id);
+            DataContext.WriteLogItem("Zulassungsauftrag wurde angelegt.", LogTypes.INSERT, registrationOrder.Id, "RegistrationOrder", vehicle.Id);
             return registrationOrder;
         }
     }

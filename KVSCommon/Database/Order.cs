@@ -13,18 +13,6 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class Order : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
-        public int Id
-        {
-            get
-            {
-                return OrderNumber;
-            }
-            set 
-            {
-                OrderNumber = value;
-            }
-        }
-
         static void Main(string[] args)
         {
             if (args.Count() > 0)
@@ -43,7 +31,7 @@ namespace KVSCommon.Database
         {
             get
             {
-                return this.OrderNumber;
+                return this.Id;
             }
         }
 
@@ -81,37 +69,6 @@ namespace KVSCommon.Database
             }
         }
 
-        /// <summary>
-        /// Erstellt einen Auftrag.
-        /// </summary>
-        /// <param name="userId">Id des Benutzers.</param>
-        /// <param name="customerId">Id des Kunden.</param>
-        /// <param name="orderTypeId">Id der Auftragsart.</param>
-        /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        /// <returns>Den neuen Auftrag.</returns>
-        public static Order CreateOrder(int userId, int customerId, int orderTypeId, int zulassungsstelleId, KVSEntities dbContext)
-        {
-            if (userId == 0)
-            {
-                throw new Exception("Die BenutzerId ist nicht gesetzt.");
-            }
-
-            Order order = new Order()
-            {
-                CreateDate = DateTime.Now,
-                CustomerId = customerId,
-                Status = (int)OrderStatusTypes.Open,
-                OrderTypeId = orderTypeId,
-                UserId = userId,
-                Zulassungsstelle = zulassungsstelleId
-            };
-                        
-            dbContext.Order.InsertOnSubmit(order);
-            dbContext.SubmitChanges();
-            dbContext.WriteLogItem("Auftrag angelegt.", LogTypes.INSERT, order.OrderNumber, "Order");
-            return order;
-        }
-       
 
         /// <summary>
         /// Sendet eine Email mit einer Auflistung der in <paramref name="orders"/> übergebenen Aufträge.
@@ -141,12 +98,12 @@ namespace KVSCommon.Database
             sb.AppendLine("<th>Erledigungsdatum</th>");
             sb.AppendLine("<tr/>");
           
-            foreach (var order in orders.OrderBy(q => q.OrderNumber))
+            foreach (var order in orders.OrderBy(q => q.Id))
             {
                 var vehicle = order.RegistrationOrder != null ? order.RegistrationOrder.Vehicle : order.DeregistrationOrder.Vehicle;
                 var registration = order.RegistrationOrder != null ? order.RegistrationOrder.Registration : order.DeregistrationOrder.Registration;
                 sb.AppendLine("<tr>");
-                sb.AppendLine("<td>" + order.OrderNumber.ToString() + "</td>");
+                sb.AppendLine("<td>" + order.Id.ToString() + "</td>");
                 sb.AppendLine("<td>" + vehicle.VIN + "</td>");
                 sb.AppendLine("<td>" + registration.Licencenumber + "</td>");
                 sb.AppendLine("<td>" + (registration.CarOwner != null ? registration.CarOwner.FullName : string.Empty) + "</td>");
@@ -233,149 +190,7 @@ namespace KVSCommon.Database
                 }
             }
         }
-        /// <summary>
-        /// Gibt die Anzahl der noch Offenen Aufträge zurück
-        /// </summary>
-        /// <param name="dbContext"></param>
-        /// <param name="OrdertypeName">z. B Zulassung</param>
-        /// <returns>Int</returns>
-        public static int getUnfineshedOrdersCount(KVSEntities dbContext, OrderTypes orderType, OrderStatusTypes orderStatus)
-        {
-            return dbContext.Order.Count(q => q.Status == (int)orderStatus && 
-                q.OrderType.Id == (int)orderType && q.HasError.GetValueOrDefault(false) != true);
-        }
-        /// <summary>
-        /// Fügt dem Auftrag eine neue Position hinzu.
-        /// </summary>
-        /// <param name="productId">Id des Produkts.</param>
-        /// <param name="priceAmount">Preis für die Position.</param>
-        /// <param name="count">Anzahl für die Position.</param>
-        /// <param name="costCenterId">Id der Kostenstelle, falls benötigt.</param>
-        /// <param name="superOrderItemId">Id der übergeordneten Auftragsposition, falls benoetigt.</param>
-        /// <param name="isAuthorativeCharge">Gibt an, ob es sich um eine behoerdliche Gebühr handelt oder nicht.</param>
-        /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        /// <returns>Die neue Auftragsposition.</returns>
-        public OrderItem AddOrderItem(int productId, decimal priceAmount, int count, CostCenter costCenter, int? superOrderItemId, bool isAuthorativeCharge, KVSEntities dbContext)
-        {
-            var product = dbContext.Product.Where(q => q.Id == productId).Single();
-            OrderItem item = new OrderItem()
-            {
-                Amount = priceAmount,
-                CostCenter = costCenter,
-                ProductId = productId,
-                Status = (int)OrderItemStatusTypes.Open,
-                ProductName = product.Name,
-                SuperOrderItemId = superOrderItemId,
-                Count = count,
-                IsAuthorativeCharge = isAuthorativeCharge,
-                NeedsVAT = isAuthorativeCharge ? false : product.NeedsVAT
-            };
-
-            this.OrderItem.Add(item);
-            dbContext.SubmitChanges();
-            dbContext.WriteLogItem("Auftragsposition " + product.Name + " für Auftrag " + this.OrderNumber + " angelegt.", LogTypes.INSERT, item.Id, "OrderItem");
-            return item;
-        }
-        /// <summary>
-        /// Erstellt die amtlichen Gebuehren
-        /// </summary>
-        /// <param name="dbContext">DB Kontext</param>
-        /// <param name="authId">Amtliche Gebuehr ID</param>
-        /// <param name="itemId">Auftragspositionen Id</param>
-        /// <param name="amount">Betrag</param>
-        /// <returns>bool</returns>
-        public static bool GenerateAuthCharge(KVSEntities dbContext, int? authId, string itemId, string amount)
-        {
-            if (amount == string.Empty)
-                amount = "0";
-
-            if (amount != "kein Preis")
-            {
-                if (!EmptyStringIfNull.IsNumber(amount))
-                    throw new Exception("Achtung, Sie haben keinen gültigen Preis eingegeben");
-
-                string amoutToSave = amount;
-                if (amoutToSave.Contains("."))
-                    amoutToSave = amoutToSave.Replace(".", ",");
-
-
-                if (!authId.HasValue)
-                {
-                    var myOrder = (from order in dbContext.Order
-                                   join ordItem in dbContext.OrderItem on order.OrderNumber equals ordItem.OrderNumber
-                                   where ordItem.Id == Int32.Parse(itemId)
-                                   select new tempOrder
-                                   {
-                                       order = order,
-                                       orderItem = ordItem
-                                   }).First();
         
-                
-                    myOrder.order.AddOrderItem(myOrder.orderItem.ProductId, Convert.ToDecimal(amoutToSave), myOrder.orderItem.Count, myOrder.orderItem.CostCenter, 
-                        myOrder.orderItem.Id, true, dbContext);
-                }
-                else
-                {
-                    var orderItem = dbContext.OrderItem.FirstOrDefault(q => q.Id == authId);
-                    orderItem.LogDBContext = dbContext;
-                 
-                    orderItem.Amount = Convert.ToDecimal(amoutToSave);
-                }
-                return true;
-
-            }
-            else
-            {
-
-                return false;
-            }
-
-
-        }
-
-        /// <summary>
-        /// Entfernt die LieferscheinId und versetzt den Auftag in den Status Zulassungsstelle
-        ///</summary>
-        ///<param name="dbContext">DB Kontext</param>
-        ///<param name="packingListNumber">Lieferschein ID</param>
-        public static void TryToRemovePackingListIdAndSetStateToRegistration(KVSEntities dbContext, int packingListNumber)
-        {
-            var orders = dbContext.Order.Where(q => q.PackingListNumber == packingListNumber);
-            foreach(var order in orders)
-            {
-                if (order != null)
-                {
-                    order.LogDBContext = dbContext;
-                    int temp_packingListId = 0;
-
-                    if (order.PackingList != null)
-                    {
-                        order.PackingList.OldOrderNumber = order.OrderNumber;
-                        temp_packingListId = order.PackingList.PackingListNumber;
-
-                        dbContext.WriteLogItem("Lieferschein: " + temp_packingListId + " zum Auftrag: " + order.OrderNumber + "  wurde gelöscht. ", LogTypes.UPDATE, 
-                            order.PackingList.PackingListNumber, "PackingList");
-
-                    }
-                    order.PackingList = null;
-                    order.Status = (int)OrderStatusTypes.AdmissionPoint;
-                    order.ReadyToSend = false;
-                    order.FinishDate = null;
-
-                    foreach (var orIt in order.OrderItem)
-                    {
-                        orIt.LogDBContext = dbContext;
-                        orIt.Status = (int)OrderItemStatusTypes.InProgress;
-
-                    }
-
-                    dbContext.WriteLogItem("Auftrag: " + order.OrderNumber + "  wurde wieder in die Zulassungsstelle versetzt.", 
-                        LogTypes.UPDATE, order.OrderNumber, "Order");
-                }
-                dbContext.SubmitChanges();
-
-            }
-        }
         /// <summary>
         /// Aenderungsevents für die Historie
         /// </summary>

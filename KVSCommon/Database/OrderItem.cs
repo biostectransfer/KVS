@@ -150,42 +150,5 @@ namespace KVSCommon.Database
 
             this.WriteUpdateLogItem("Anzahl", this.Count, value);
         }
-        /// <summary>
-        /// Loescht eine Auftragsposition und ggf. die Amtlichen Gebuehren dazu
-        /// </summary>
-        /// <param name="dbContext">DB Kontext</param>
-        /// <param name="orderItemId">AuftragspositionID</param>
-        public static void RemoveOrderItem(KVSEntities dbContext, int orderItemId)
-        {
-            var orderItemToDelete = dbContext.OrderItem.FirstOrDefault(q => q.Id == orderItemId);
-            if (orderItemToDelete != null)
-            {
-
-                if (orderItemToDelete.Status > (int)OrderItemStatusTypes.Open)
-                    throw new Exception("Der Auftragsstatus ist nicht mehr Offen, löschen nicht möglich");
-                if (orderItemToDelete.Order.DocketList != null)
-                    throw new Exception("Laufzettel wurde bereits erstellt, löschen nicht möglich");
-                if (orderItemToDelete.Order.PackingList != null)
-                    throw new Exception("Lieferschein wurde bereits erstellt, löschen nicht möglich");
-
-                var itemsAnzahl = dbContext.OrderItem.Count(q => q.Id != orderItemId && q.SuperOrderItemId != orderItemId && q.OrderNumber == orderItemToDelete.OrderNumber);
-                if (itemsAnzahl == 0)
-                    throw new Exception("Mind. eine Position muss pro Auftrag verfügbar sein");
-
-                var hasChildItems = dbContext.OrderItem.FirstOrDefault(q => q.SuperOrderItemId == orderItemToDelete.Id);
-                dbContext.OrderItem.DeleteOnSubmit(hasChildItems);
-
-
-
-                if (orderItemToDelete.SuperOrderItemId.HasValue == true)
-                {
-                    RemoveOrderItem(dbContext, orderItemToDelete.SuperOrderItemId.Value);
-                }
-
-                dbContext.OrderItem.DeleteOnSubmit(orderItemToDelete);
-                dbContext.WriteLogItem("Auftragsposition " + orderItemToDelete.ProductName + " mit der Auftragsnummer " + orderItemToDelete.Order.OrderNumber + " wurde gelöscht.",
-                    LogTypes.DELETE, orderItemToDelete.Id, "OrderItem");
-            }
-        }
     }
 }

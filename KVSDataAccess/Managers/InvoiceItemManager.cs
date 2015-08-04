@@ -84,7 +84,7 @@ namespace KVSDataAccess.Managers
 
                 orderItem.Status = (int)OrderItemStatusTypes.Payed;
                 var order = orderItem.Order;
-                if (!DataContext.GetSet<OrderInvoice>().Any(q => q.OrderNumber == order.OrderNumber && q.InvoiceId == invoice.Id))
+                if (!DataContext.GetSet<OrderInvoice>().Any(q => q.OrderNumber == order.Id && q.InvoiceId == invoice.Id))
                 {
                     var orderInvoice = new OrderInvoice()
                     {
@@ -93,8 +93,7 @@ namespace KVSDataAccess.Managers
                     };
 
                     DataContext.AddObject(orderInvoice);
-                    var orderNumber = DataContext.GetSet<Order>().Where(q => q.OrderNumber == order.OrderNumber).Select(q => q.OrderNumber).Single();
-                    DataContext.WriteLogItem("Rechnung wurde mit Auftrag " + orderNumber + " verknüpft.", LogTypes.INSERT, order.OrderNumber, "OrderInvoice", invoice.Id);
+                    DataContext.WriteLogItem("Rechnung wurde mit Auftrag " + order.Id + " verknüpft.", LogTypes.INSERT, order.Id, "OrderInvoice", invoice.Id);
                 }
             }
             else

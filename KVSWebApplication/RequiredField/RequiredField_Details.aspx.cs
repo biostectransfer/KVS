@@ -35,7 +35,7 @@ namespace KVSWebApplication.RequiredField
         {
             KVSEntities dbContext = new KVSEntities();
             var query = from cust in dbContext.Customer
-                        join cost in dbContext.LargeCustomer on cust.Id equals cost.CustomerId
+                        join cost in dbContext.LargeCustomer on cust.Id equals cost.Id
                         orderby cust.Name
                         select new
                         {
@@ -50,7 +50,7 @@ namespace KVSWebApplication.RequiredField
                             cust.Adress.Zipcode,
                             cust.Adress.City,
                             cust.Adress.Country,
-                            Show = cust.Id.ToString() == cust.LargeCustomer.CustomerId.ToString() ? "true" : "false",                       
+                            Show = cust.Id.ToString() == cust.LargeCustomer.Id.ToString() ? "true" : "false",                       
                         };
             e.Result = query;
         }
@@ -60,7 +60,7 @@ namespace KVSWebApplication.RequiredField
             var query = from reqField in dbContext.RequiredField
                         join orType in dbContext.OrderType on reqField.OrderTypeId equals orType.Id
                         where !(from l in dbContext.LargeCustomerRequiredField where
-                                l.LargeCustomerId == Int32.Parse(e.WhereParameters["LargeCustomerId"].ToString())
+                                l.Id == Int32.Parse(e.WhereParameters["LargeCustomerId"].ToString())
                                 select l.RequiredFieldId).Contains(reqField.Id)
                         select new
                         {
@@ -79,7 +79,7 @@ namespace KVSWebApplication.RequiredField
                         join orType in dbContext.OrderType on reqField.OrderTypeId equals orType.Id
                         where (from l in dbContext.LargeCustomerRequiredField
                                 where
-                                    l.LargeCustomerId == Int32.Parse(e.WhereParameters["LargeCustomerId"].ToString())
+                                    l.Id == Int32.Parse(e.WhereParameters["LargeCustomerId"].ToString())
                                 select l.RequiredFieldId).Contains(reqField.Id)
                         select new
                         {
@@ -99,7 +99,7 @@ namespace KVSWebApplication.RequiredField
                 RadListBoxItemCollection AddedRequired = ((RadListBox)((RadButton)sender).Parent.FindControl("CustomerRequired")).Items;
                 RadListBoxItemCollection AllRequired = ((RadListBox)((RadButton)sender).Parent.FindControl("AllRequired")).Items;
                 var customerId = Int32.Parse(((RadButton)sender).CommandArgument.ToString());
-                var myCustomer = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId== customerId);
+                var myCustomer = dbContext.LargeCustomer.SingleOrDefault(q => q.Id == customerId);
                 if (myCustomer != null)
                 {
                     foreach (RadListBoxItem required in AllRequired)

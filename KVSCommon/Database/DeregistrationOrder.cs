@@ -12,18 +12,6 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class DeregistrationOrder : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
-        public int Id
-        {
-            get
-            {
-                return OrderNumber;
-            }
-            set
-            {
-                OrderNumber = value;
-            }
-        }
-
         public KVSEntities LogDBContext
         {
             get;
@@ -34,7 +22,7 @@ namespace KVSCommon.Database
         {
             get
             {
-                return this.OrderNumber;
+                return this.Id;
             }
         }
 
@@ -44,35 +32,6 @@ namespace KVSCommon.Database
             set;
         }
 
-        /// <summary>
-        /// Erstellt einen Abmeldeauftrag.
-        /// </summary>
-        /// <param name="userId">Id des Benutzers, der den Auftrag anlegt.</param>
-        /// <param name="customerId">Id des Kunden.</param>
-        /// <param name="vehicleId">Id des Fahrzeugs.</param>
-        /// <param name="registrationId">Id der Zulassung.</param>
-        /// <param name="locationId">Id des Kundenstandorts.</param>
-        /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        /// <returns>Den neuen Abmeldeauftrag.</returns>
-        /// <remarks>Erstellt auch gleichzeitig den Order-Datensatz.</remarks>
-        public static DeregistrationOrder CreateDeregistrationOrder(int userId, int customerId, Vehicle vehicle, Registration registration, int? locationId, 
-            int zulassungsstelleId, KVSEntities dbContext)
-        {
-            var orderTypeId = dbContext.OrderType.Single(q => q.Id == (int)OrderTypes.Cancellation).Id;
-            Order order = Order.CreateOrder(userId, customerId, orderTypeId, zulassungsstelleId, dbContext); 
-            order.LocationId = locationId;
-            DeregistrationOrder deregistrationOrder = new DeregistrationOrder()
-            {
-                Order = order,
-                Vehicle = vehicle,
-                Registration = registration
-            };
-
-            dbContext.DeregistrationOrder.InsertOnSubmit(deregistrationOrder);
-            dbContext.SubmitChanges();
-            dbContext.WriteLogItem("Abmeldeauftrag angelegt.", LogTypes.INSERT, deregistrationOrder.OrderNumber, "DeregistrationOrder", vehicle.Id);
-            return deregistrationOrder;
-        }
         /// <summary>
         /// Validierungs Methode um falsche Eingaben zu verhindern
         /// </summary>

@@ -41,7 +41,7 @@ namespace KVSDataAccess.Managers
 
             DataContext.AddObject(docketList);
             SaveChanges();
-            DataContext.WriteLogItem("Laufzettel erstellt.", LogTypes.INSERT, docketList.DocketListNumber, "DocketList");
+            DataContext.WriteLogItem("Laufzettel erstellt.", LogTypes.INSERT, docketList.Id, "DocketList");
             return docketList;
         }
 
@@ -57,13 +57,13 @@ namespace KVSDataAccess.Managers
                 throw new Exception("Der Auftrag kann zum Lieferschein nicht hinzugefügt werden. Der Lieferschein wurde bereits gedruckt.");
             }
 
-            var order = DataContext.GetSet<Order>().Single(q => q.OrderNumber == orderNumber);
-            order.DocketListNumber = docketList.DocketListNumber;
+            var order = DataContext.GetSet<Order>().Single(q => q.Id == orderNumber);
+            order.DocketListNumber = docketList.Id;
             docketList.Order.Add(order);
 
             SaveChanges();
 
-            DataContext.WriteLogItem("Auftrag zum Laufzettel hinzugefügt.", LogTypes.UPDATE, docketList.DocketListNumber, "DocketList", orderNumber);
+            DataContext.WriteLogItem("Auftrag zum Laufzettel hinzugefügt.", LogTypes.UPDATE, docketList.Id, "DocketList", orderNumber);
         }
 
         /// <summary>
@@ -78,12 +78,12 @@ namespace KVSDataAccess.Managers
                 throw new Exception("Der Auftrag kann zum Lieferschein nicht hinzugefügt werden. Der Lieferschein wurde bereits gedruckt.");
             }
 
-            order.DocketListNumber = docketList.DocketListNumber;
+            order.DocketListNumber = docketList.Id;
             docketList.Order.Add(order);
 
             SaveChanges();
 
-            DataContext.WriteLogItem("Auftrag zum Laufzettel hinzugefügt.", LogTypes.UPDATE, docketList.DocketListNumber, "DocketList", order.OrderNumber);
+            DataContext.WriteLogItem("Auftrag zum Laufzettel hinzugefügt.", LogTypes.UPDATE, docketList.Id, "DocketList", order.Id);
         }
 
         /// <summary>
@@ -126,8 +126,8 @@ namespace KVSDataAccess.Managers
             docketList.IsPrinted = true;
             SaveChanges();
 
-            DataContext.WriteLogItem("Laufzettel " + fileName + " wurde gedruckt.", LogTypes.UPDATE, docketList.DocketListNumber, "Versand", doc.Id);
-            DataContext.WriteLogItem("Laufzettel wurde gedruckt.", LogTypes.UPDATE, docketList.DocketListNumber, "PackingList");
+            DataContext.WriteLogItem("Laufzettel " + fileName + " wurde gedruckt.", LogTypes.UPDATE, docketList.Id, "Versand", doc.Id);
+            DataContext.WriteLogItem("Laufzettel wurde gedruckt.", LogTypes.UPDATE, docketList.Id, "PackingList");
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace KVSDataAccess.Managers
                 sb.AppendLine("<br/>");
                 sb.AppendLine("<p>Mit freundlichen Grüßen,<br/>");
                 sb.AppendLine("Ihr CASE-Team</p>");
-                KVSCommon.Utility.Email.SendMail(fromAddress, emails, "Laufzettel " + docketList.DocketListNumber.ToString(), sb.ToString(), null, null, smtpServer, attachments);
+                KVSCommon.Utility.Email.SendMail(fromAddress, emails, "Laufzettel " + docketList.Id.ToString(), sb.ToString(), null, null, smtpServer, attachments);
             }
         }
 

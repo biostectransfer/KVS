@@ -65,7 +65,7 @@ namespace KVSDataAccess.Managers
                 result = DataContext.GetSet<InvoiceItemAccountItem>().Where(o => o.InvoiceItem.InvoiceId == invoiceId).Select(o => new _Accounts
                             {
                                 InvoiceItemId = o.InvoiceItemId,
-                                AccountId = o.IIACCID,
+                                AccountId = o.Id,
                                 AccountNumber = o.RevenueAccountText
                             });
             }

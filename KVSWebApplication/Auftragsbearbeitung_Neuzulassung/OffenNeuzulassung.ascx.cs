@@ -306,8 +306,32 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 else if(e.CommandName == "PrintColumn")
                 {
                     //TODO
-                    var printServiceClient = new PrintServiceClient();
-                    printServiceClient.EmissionBadgePrint("lol");
+                    if (e.Item is GridDataItem)
+                    {
+                        var button = sender as RadButton;
+                        GridDataItem dataItem = e.Item as GridDataItem;
+                        var order = OrderManager.GetById(Int32.Parse(dataItem["OrderNumber"].Text));
+
+                        string licenceNumber = String.Empty;
+                        Vehicle vehicle = null;
+                        Registration registration = null;
+
+                        if (order.RegistrationOrder != null)
+                        {
+                            vehicle = order.RegistrationOrder.Vehicle;
+                            registration = order.RegistrationOrder.Registration;
+                            licenceNumber = order.RegistrationOrder.Licencenumber;
+                        }
+                        else
+                        {
+                            vehicle = order.DeregistrationOrder.Vehicle;
+                            registration = order.DeregistrationOrder.Registration;
+                            licenceNumber = registration.Licencenumber;
+                        }
+
+                        var printServiceClient = new PrintServiceClient();
+                        printServiceClient.EmissionBadgePrint(licenceNumber);
+                    }
                 }
 
                 CheckOpenedOrders();
@@ -316,7 +340,6 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             {
                 ZulassungErrLabel.Text = "Fehler: " + ex.Message;
                 ZulassungErrLabel.Visible = true;
-
             }
         }
 

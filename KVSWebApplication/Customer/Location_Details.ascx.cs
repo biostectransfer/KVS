@@ -371,7 +371,7 @@ namespace KVSWebApplication.Customer
         {
             KVSEntities dbContext = new KVSEntities();
             var query = from cust in dbContext.Customer
-                        join cost in dbContext.LargeCustomer on cust.Id equals cost.CustomerId
+                        join cost in dbContext.LargeCustomer on cust.Id equals cost.Id
                         orderby cust.Name
                         select new
                         {
@@ -400,7 +400,7 @@ namespace KVSWebApplication.Customer
                                 join location in dbContext.Location
                                 on customer.Id equals location.CustomerId
                                 join large in dbContext.LargeCustomer
-                                on customer.Id equals large.CustomerId
+                                on customer.Id equals large.Id
                                 where customer.Id == Int32.Parse(e.WhereParameters["Id"].ToString())
                                 orderby location.Name
                                 select new
@@ -465,7 +465,7 @@ namespace KVSWebApplication.Customer
         {
             KVSEntities dbContext = new KVSEntities();
             var query = from customer in dbContext.Customer
-                        join lCustomer in dbContext.LargeCustomer on customer.Id equals lCustomer.CustomerId
+                        join lCustomer in dbContext.LargeCustomer on customer.Id equals lCustomer.Id
                         select new
                         {
                             Name = customer.Name,
@@ -488,7 +488,7 @@ namespace KVSWebApplication.Customer
                     {
                         if (txbLocationName.Text != string.Empty && CustomerLocation.SelectedIndex != -1)
                         {
-                            var selCustomer = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == Int32.Parse(CustomerLocation.SelectedValue));
+                            var selCustomer = dbContext.LargeCustomer.SingleOrDefault(q => q.Id == Int32.Parse(CustomerLocation.SelectedValue));
                             selCustomer.Customer._dbContext = dbContext;
                             if (selCustomer != null)
                             {
@@ -579,7 +579,7 @@ namespace KVSWebApplication.Customer
             if (CustomerLocation.SelectedIndex != -1)
             {
                 var query = from customer in dbContext.Customer
-                            join largeCustomer in dbContext.LargeCustomer on customer.Id equals largeCustomer.CustomerId
+                            join largeCustomer in dbContext.LargeCustomer on customer.Id equals largeCustomer.Id
                             join _location in dbContext.Location on largeCustomer.MainLocationId equals _location.Id
                             where customer.Id == Int32.Parse(e.Value)
                             select new

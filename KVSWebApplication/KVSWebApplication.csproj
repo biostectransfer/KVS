@@ -412,13 +412,6 @@
       <DependentUpon>ImportExport.aspx</DependentUpon>
     </Compile>
     <Compile Include="ImportExport\Rechnungsexport.cs" />
-    <Compile Include="ImportExport\test.aspx.cs">
-      <DependentUpon>test.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ImportExport\test.aspx.designer.cs">
-      <DependentUpon>test.aspx</DependentUpon>
-    </Compile>
     <Compile Include="ImportExport\VirtualInvoice.cs" />
     <Compile Include="login.aspx.cs">
       <DependentUpon>login.aspx</DependentUpon>
@@ -655,7 +648,6 @@
     <Content Include="ImportExport\ExportInvoices.ascx" />
     <Content Include="ImportExport\ImportCustomers.ascx" />
     <Content Include="ImportExport\ImportExport.aspx" />
-    <Content Include="ImportExport\test.aspx" />
     <Content Include="index.html" />
     <Content Include="login.aspx" />
     <Content Include="images\background.jpg" />
@@ -724,18 +716,6 @@
     </Content>
     <Content Include="Default.Master" />
     <Content Include="packages.config" />
-    <None Include="ChangeHistory.cd" />
-    <None Include="DiagramImportExport.cd" />
-    <None Include="DiagrammCustomer.cd" />
-    <None Include="DiagrammMail.cd" />
-    <None Include="DiagrammOhneOrdner.cd" />
-    <None Include="DiagrammPermission.cd" />
-    <None Include="DiagrammProducts.cd" />
-    <None Include="DiagrammRequired_search_statistic_createuser.cd" />
-    <None Include="DiagrammWebseiteAuftragseingang.cd" />
-    <None Include="Diagramm_Auftragsbearbeitung_Neuzulassung.cd" />
-    <None Include="KlassenDiagrammAbrechnung.cd" />
-    <None Include="NachbearbeitungAbmeldung.cd" />
     <None Include="Properties\PublishProfiles\Profil1.pubxml" />
     <None Include="Service References\PrintServiceReference\PetService.wsdl" />
     <None Include="Service References\PrintServiceReference\PrintService.xsd">

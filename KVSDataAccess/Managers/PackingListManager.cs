@@ -41,7 +41,7 @@ namespace KVSDataAccess.Managers
 
             DataContext.AddObject(packingList);
             SaveChanges();
-            DataContext.WriteLogItem("Lieferschein erstellt.", LogTypes.INSERT, packingList.PackingListNumber, "PackingList");
+            DataContext.WriteLogItem("Lieferschein erstellt.", LogTypes.INSERT, packingList.Id, "PackingList");
 
             return packingList;
         }
@@ -58,11 +58,11 @@ namespace KVSDataAccess.Managers
                 throw new Exception("Der Auftrag kann zum Lieferschein nicht hinzugefügt werden. Der Lieferschein wurde bereits gedruckt.");
             }
 
-            var order = DataContext.GetSet<Order>().FirstOrDefault(q => q.OrderNumber == orderNumber);
-            order.PackingListNumber = packingList.PackingListNumber;
+            var order = DataContext.GetSet<Order>().FirstOrDefault(q => q.Id == orderNumber);
+            order.PackingListNumber = packingList.Id;
             order.ReadyToSend = true;
             SaveChanges();
-            DataContext.WriteLogItem("Auftrag zum Lieferschein hinzugefügt.", LogTypes.UPDATE, packingList.PackingListNumber, "PackingList", orderNumber);
+            DataContext.WriteLogItem("Auftrag zum Lieferschein hinzugefügt.", LogTypes.UPDATE, packingList.Id, "PackingList", orderNumber);
         }
 
         /// <summary>
@@ -114,8 +114,8 @@ namespace KVSDataAccess.Managers
             packingList.Document = doc;
             SaveChanges();
 
-            DataContext.WriteLogItem("Lieferschein " + fileName + " wurde gedruckt.", LogTypes.UPDATE, packingList.PackingListNumber, "Versand", doc.Id);
-            DataContext.WriteLogItem("Lieferschein wurde gedruckt.", LogTypes.UPDATE, packingList.PackingListNumber, "PackingList");
+            DataContext.WriteLogItem("Lieferschein " + fileName + " wurde gedruckt.", LogTypes.UPDATE, packingList.Id, "Versand", doc.Id);
+            DataContext.WriteLogItem("Lieferschein wurde gedruckt.", LogTypes.UPDATE, packingList.Id, "PackingList");
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace KVSDataAccess.Managers
                 sb.AppendLine("<br/>");
                 sb.AppendLine("<p>Mit freundlichen Grüßen,<br/>");
                 sb.AppendLine("Ihr CASE-Team</p>");
-                KVSCommon.Utility.Email.SendMail(fromAddress, emails, "Lieferschein " + packingList.PackingListNumber.ToString(), sb.ToString(), null, null, smtpServer, attachments);
+                KVSCommon.Utility.Email.SendMail(fromAddress, emails, "Lieferschein " + packingList.Id.ToString(), sb.ToString(), null, null, smtpServer, attachments);
 
             }
         }

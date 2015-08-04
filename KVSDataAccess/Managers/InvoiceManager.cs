@@ -82,11 +82,11 @@ namespace KVSDataAccess.Managers
             {
                 foreach (var atc in accountsToChange)
                 {
-                    var invItemAccountItem = DataContext.GetSet<InvoiceItemAccountItem>().SingleOrDefault(q => q.IIACCID == atc.InvoiceItemAccountItemId);
+                    var invItemAccountItem = DataContext.GetSet<InvoiceItemAccountItem>().SingleOrDefault(q => q.Id == atc.InvoiceItemAccountItemId);
                     invItemAccountItem.RevenueAccountText = newAccountNumber;
-                    DataContext.WriteLogItem("Rechnungsposition mit der ID: " + invItemAccountItem.IIACCID + " und der Rechnungsid: " + invoice.Id + " wurde auf das Standard Konto " + 
+                    DataContext.WriteLogItem("Rechnungsposition mit der ID: " + invItemAccountItem.Id + " und der Rechnungsid: " + invoice.Id + " wurde auf das Standard Konto " + 
                         newAccountNumber + " geändert.",
-                        LogTypes.UPDATE, invItemAccountItem.IIACCID, "InvoiceItemAccountItem", invItemAccountItem.IIACCID);
+                        LogTypes.UPDATE, invItemAccountItem.Id, "InvoiceItemAccountItem", invItemAccountItem.Id);
 
                     SaveChanges();
                 }
@@ -193,7 +193,7 @@ namespace KVSDataAccess.Managers
 
                 orderItem.Status = (int)orderItemStatusType;
                 var order = orderItem.Order;
-                if (!DataContext.GetSet<OrderInvoice>().Any(q => q.OrderNumber == order.OrderNumber && q.InvoiceId == invoice.Id))
+                if (!DataContext.GetSet<OrderInvoice>().Any(q => q.OrderNumber == order.Id && q.InvoiceId == invoice.Id))
                 {
                     CreateOrderInvoice(order, invoice);
                 }
@@ -221,7 +221,7 @@ namespace KVSDataAccess.Managers
             };
 
             DataContext.AddObject(item);
-            DataContext.WriteLogItem("Rechnung wurde mit Auftrag " + order.OrderNumber + " verknüpft.", LogTypes.INSERT, order.OrderNumber, "OrderInvoice", invoice.Id);
+            DataContext.WriteLogItem("Rechnung wurde mit Auftrag " + order.Id + " verknüpft.", LogTypes.INSERT, order.Id, "OrderInvoice", invoice.Id);
             return item;
         }
 

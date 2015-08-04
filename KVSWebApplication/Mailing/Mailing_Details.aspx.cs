@@ -85,7 +85,7 @@ namespace KVSWebApplication.Mailing
                 if (AllCustomer.SelectedValue != string.Empty)
                 {
                     var query = from customer in dbContext.Customer
-                                join largeCustomer in dbContext.LargeCustomer on customer.Id equals largeCustomer.CustomerId
+                                join largeCustomer in dbContext.LargeCustomer on customer.Id equals largeCustomer.Id
                                 join _location in dbContext.Location on customer.Id equals _location.CustomerId
                                 where customer.Id == Int32.Parse(AllCustomer.SelectedValue)
                                 orderby _location.Name
@@ -227,7 +227,7 @@ namespace KVSWebApplication.Mailing
                     {
                         if (rbtCustomerMail.Checked == true && AllCustomer.SelectedValue != string.Empty)
                         {
-                            var cust = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == Int32.Parse(AllCustomer.SelectedValue));
+                            var cust = dbContext.LargeCustomer.SingleOrDefault(q => q.Id == Int32.Parse(AllCustomer.SelectedValue));
                             if (cust != null)
                             {
                                 cust.AddNewMailinglistItem(EmptyStringIfNull.ReturnEmptyStringIfNull(email.Text), Int32.Parse(cmbSelectedType.SelectedValue), dbContext);
@@ -297,7 +297,7 @@ namespace KVSWebApplication.Mailing
                             {
                                 if (rbtCustomerMail.Checked == true && AllCustomer.SelectedValue != string.Empty)
                                 {
-                                    var cust = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == Int32.Parse(AllCustomer.SelectedValue));
+                                    var cust = dbContext.LargeCustomer.SingleOrDefault(q => q.Id == Int32.Parse(AllCustomer.SelectedValue));
                                     if (cust != null && deletedItem["Id"].Text != string.Empty)
                                     {
                                         cust.RemoveMailinglistItem(Int32.Parse(deletedItem["Id"].Text), dbContext);
@@ -368,7 +368,7 @@ namespace KVSWebApplication.Mailing
                 if (AllCustomer.SelectedValue != string.Empty)
                 {
                     var query = from customer in dbContext.Customer
-                                join largeCustomer in dbContext.LargeCustomer on customer.Id equals largeCustomer.CustomerId
+                                join largeCustomer in dbContext.LargeCustomer on customer.Id equals largeCustomer.Id
                                 join _location in dbContext.Location on customer.Id equals _location.CustomerId
                                 where customer.Id == Int32.Parse(e.Value)
                                 select new

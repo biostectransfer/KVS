@@ -11,18 +11,6 @@ namespace KVSCommon.Database
     /// </summary>
     partial class InvoiceItemAccountItem : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
-        public int Id
-        {
-            get
-            {
-                return IIACCID;
-            }
-            set
-            {
-                IIACCID = value;
-            }
-        }
-
         public KVSEntities LogDBContext
         {
             get;
@@ -33,7 +21,7 @@ namespace KVSCommon.Database
         {
             get
             {
-                return this.IIACCID;
+                return this.Id;
             }
         }
 
@@ -42,41 +30,14 @@ namespace KVSCommon.Database
             get;
             set;
         }
-
-        /// <summary>
-        /// Ändert das Erloeskonto für alle Amtlichen Gebühren
-        /// </summary>
-        /// <param name="dbContext">DB Kontext</param>
-        /// <param name="inv">Rechnungsobjekt</param>
-        /// <param name="newAccountNumber">neues Erloeskonto</param>
-        public static void UpdateAuthorativeAccounts(KVSEntities dbContext, Invoice inv, string newAccountNumber)
-        {
-            if (newAccountNumber == string.Empty)
-                throw new Exception("Es wurde kein Standard Erlös-Konto in der Konfiguration gefunden");
-
-            var accountsToChange = dbContext.AuthorativeChargeAccounts.Where(q => q.InvoiceId == inv.Id);
-            if (accountsToChange.Count() > 0)
-            {
-                foreach (var atc in accountsToChange)
-                {
-                    var invItemAccountItem = dbContext.InvoiceItemAccountItem.SingleOrDefault(q => q.IIACCID == atc.InvoiceItemAccountItemId);
-                    invItemAccountItem.RevenueAccountText = newAccountNumber;
-                    dbContext.WriteLogItem("Rechnungsposition mit der ID: " + invItemAccountItem.IIACCID + " und der Rechnungsid: " + inv.Id+ " wurde auf das Standard Konto " + newAccountNumber + " geändert.", 
-                        LogTypes.UPDATE, invItemAccountItem.IIACCID, "InvoiceItemAccountItem", invItemAccountItem.IIACCID);
-
-                    dbContext.SubmitChanges();
-                }
-
-            }
-          
-        }
+        
         /// <summary>
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>
-        partial void OnIIACCIDChanging(int value)
+        partial void OnIdChanging(int value)
         {
-            this.WriteUpdateLogItem("IIACCID", this.IIACCID, value);
+            this.WriteUpdateLogItem("IIACCID", this.Id, value);
         }
         /// <summary>
         /// Aenderungsevents für die Historie

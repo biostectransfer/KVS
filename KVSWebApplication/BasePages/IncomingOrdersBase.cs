@@ -223,7 +223,7 @@ namespace KVSWebApplication.BasePages
             e.Result = RegistrationLocationManager.GetEntities().Select(o => new
             {
                 Name = o.RegistrationLocationName,
-                Value = o.ID
+                Value = o.Id
             }).OrderBy(o => o.Name).ToList();
         }
 
@@ -708,7 +708,7 @@ namespace KVSWebApplication.BasePages
 
             if (generateInvoice)
             {
-                MakeInvoiceForSmallCustomer(newRegistrationOrder.OrderNumber);
+                MakeInvoiceForSmallCustomer(newRegistrationOrder.Id);
             }
             else
             {

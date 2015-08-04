@@ -201,7 +201,7 @@ namespace KVSWebApplication.Customer
         {
             KVSEntities dbContext = new KVSEntities();
             var query = from customer in dbContext.Customer
-                        join lCustomer in dbContext.LargeCustomer on customer.Id equals lCustomer.CustomerId
+                        join lCustomer in dbContext.LargeCustomer on customer.Id equals lCustomer.Id
                         select new
                         {
                             Name = customer.Name,
@@ -310,7 +310,7 @@ namespace KVSWebApplication.Customer
                         var contactUpdate = dbContext.Customer.SingleOrDefault(q => q.Id == Int32.Parse(CustomerCostCenter.SelectedValue));
                         if (contactUpdate != null)
                         {
-                            var newCostCenter = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == Int32.Parse(CustomerCostCenter.SelectedValue));
+                            var newCostCenter = dbContext.LargeCustomer.SingleOrDefault(q => q.Id == Int32.Parse(CustomerCostCenter.SelectedValue));
                             var createdCostCenter = newCostCenter.AddNewCostCenter(CostCenterName.Text, txbCostCenterNumber.Text, dbContext);
                             if (cmbBankNameCostCenter.Text != string.Empty || txbLargeCustomerIBAN.Text != string.Empty)
                             {

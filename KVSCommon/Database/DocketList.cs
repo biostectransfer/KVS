@@ -16,18 +16,6 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class DocketList : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
-        public int Id
-        {
-            get
-            {
-                return DocketListNumber;
-            }
-            set
-            {
-                DocketListNumber = value;
-            }
-        }
-
         public KVSEntities LogDBContext
         {
             get;
@@ -38,7 +26,7 @@ namespace KVSCommon.Database
         {
             get
             {
-                return this.DocketListNumber;
+                return this.Id;
             }
         }
 

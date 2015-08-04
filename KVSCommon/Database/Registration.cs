@@ -32,39 +32,6 @@ namespace KVSCommon.Database
         }
 
         /// <summary>
-        /// Erstellt eine neue Zulassung.
-        /// </summary>
-        /// <param name="carOwnerId">Id des Halters.</param>
-        /// <param name="vehicleId">Id des Fahrzeugs.</param>
-        /// <param name="licencenumber">Kennzeichen für die Zulassung.</param>
-        /// <param name="evbNumber">eVB-Nummer der Fahrzeugversicherung.</param>
-        /// <param name="generalInspectionDate">Datum der Hauptuntersuchung (HU).</param>
-        /// <param name="registrationDate">Zulassungsdatum.</param>
-        /// <param name="registrationDocumentNumber">Fahrzeugbriefnummer, falls vorhanden.</param>
-        /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        /// <returns>Die neue Zulassung.</returns>
-        public static Registration CreateRegistration(CarOwner carOwner, Vehicle vehicle, string licencenumber, string evbNumber, DateTime? generalInspectionDate, 
-            DateTime? registrationDate, string registrationDocumentNumber, string emissionCode, KVSEntities dbContext)
-        {
-            Registration registration = new Registration()
-            {
-                Vehicle = vehicle,
-                CarOwner = carOwner,
-                Licencenumber = licencenumber,
-                GeneralInspectionDate = generalInspectionDate,
-                RegistrationDate = registrationDate,
-                RegistrationDocumentNumber = registrationDocumentNumber,
-                eVBNumber = evbNumber,
-                EmissionCode = emissionCode
-            };
-
-            dbContext.Registration.InsertOnSubmit(registration);
-            dbContext.SubmitChanges();
-            dbContext.WriteLogItem("Zulassung wurde angelegt.", LogTypes.INSERT, registration.Id, "Registration", vehicle.Id);
-
-            return registration;
-        }
-        /// <summary>
         /// Aenderungsevents für die Historie
         /// </summary>
         /// <param name="value"></param>

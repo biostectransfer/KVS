@@ -262,7 +262,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         // für alle, die selected sind - ins package list hinzufügen
                         foreach (var orders in gr)
                         {
-                            PackingListManager.AddOrderById(packingList, orders.Order.OrderNumber);
+                            PackingListManager.AddOrderById(packingList, orders.Order.Id);
                         }
 
                         RadGridLieferscheine.DataBind();

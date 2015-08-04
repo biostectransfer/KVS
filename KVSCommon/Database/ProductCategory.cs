@@ -30,26 +30,7 @@ namespace KVSCommon.Database
             get;
             set;
         }
-
-        /// <summary>
-        /// Erstellt eine neue Produktkategorie mit uebergebenem Namen.
-        /// </summary>
-        /// <param name="name">Name der Kategorie.</param>
-        /// <param name="dbContext">Datenbankkontext, mit dem die Kategorie erstellt wird.</param>
-        /// <returns>Die neu erstellte Produktkategorie.</returns>
-        public static ProductCategory CreateProductCategory(string name, KVSEntities dbContext)
-        {
-            var item = new ProductCategory()
-            {
-                LogDBContext = dbContext,
-                Name = name
-            };
-
-            dbContext.ProductCategory.InsertOnSubmit(item);
-            dbContext.SubmitChanges();
-            dbContext.WriteLogItem("Produktkategorie " + item.Name + " angelegt.", LogTypes.INSERT, item.Id, "ProductCategory");
-            return item;
-        }
+        
         /// <summary>
         /// Aenderungsevents für die Historie
         /// </summary>

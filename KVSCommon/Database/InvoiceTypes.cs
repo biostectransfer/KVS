@@ -9,16 +9,6 @@ namespace KVSCommon.Database
 {
     public partial class InvoiceTypes : IHasId<int>, IRemovable, ISystemFields
     {
-        public int Id
-        {
-            get
-            {
-                return ID;
-            }
-            set
-            {
-                ID = value;
-            }
-        }
+
     }
 }

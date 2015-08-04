@@ -2106,7 +2106,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_CostCenter", Storage="_LargeCustomer", ThisKey="CustomerId", OtherKey="CustomerId", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_CostCenter", Storage="_LargeCustomer", ThisKey="CustomerId", OtherKey="Id", IsForeignKey=true)]
 		public LargeCustomer LargeCustomer
 		{
 			get
@@ -2129,7 +2129,7 @@ namespace KVSCommon.Database
 					if ((value != null))
 					{
 						value.CostCenter.Add(this);
-						this._CustomerId = value.CustomerId;
+						this._CustomerId = value.Id;
 					}
 					else
 					{
@@ -2700,7 +2700,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Customer_LargeCustomer", Storage="_LargeCustomer", ThisKey="Id", OtherKey="CustomerId", IsUnique=true, IsForeignKey=false)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Customer_LargeCustomer", Storage="_LargeCustomer", ThisKey="Id", OtherKey="Id", IsUnique=true, IsForeignKey=false)]
 		public LargeCustomer LargeCustomer
 		{
 			get
@@ -2975,8 +2975,8 @@ namespace KVSCommon.Database
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnOrderNumberChanging(int value);
-    partial void OnOrderNumberChanged();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
     partial void OnVehicleIdChanging(int value);
     partial void OnVehicleIdChanged();
     partial void OnRegistrationIdChanging(int value);
@@ -2997,8 +2997,8 @@ namespace KVSCommon.Database
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OrderNumber", DbType="int NOT NULL", IsPrimaryKey=true)]
-		public int OrderNumber
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="OrderNumber", Storage="_OrderNumber", DbType="int NOT NULL", IsPrimaryKey=true)]
+		public int Id
 		{
 			get
 			{
@@ -3008,15 +3008,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._OrderNumber != value))
 				{
-					if (this._Order.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnOrderNumberChanging(value);
+					this.OnIdChanging(value);
 					this.SendPropertyChanging();
 					this._OrderNumber = value;
-					this.SendPropertyChanged("OrderNumber");
-					this.OnOrderNumberChanged();
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
 				}
 			}
 		}
@@ -3197,7 +3193,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_DeregistrationOrder", Storage="_Order", ThisKey="OrderNumber", OtherKey="OrderNumber", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_DeregistrationOrder", Storage="_Order", ThisKey="Id", OtherKey="Id", IsForeignKey=true)]
 		public Order Order
 		{
 			get
@@ -3220,7 +3216,7 @@ namespace KVSCommon.Database
 					if ((value != null))
 					{
 						value.DeregistrationOrder = this;
-						this._OrderNumber = value.OrderNumber;
+						this._OrderNumber = value.Id;
 					}
 					else
 					{
@@ -3792,7 +3788,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_Location", Storage="_LargeCustomer", ThisKey="CustomerId", OtherKey="CustomerId", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_Location", Storage="_LargeCustomer", ThisKey="CustomerId", OtherKey="Id", IsForeignKey=true)]
 		public LargeCustomer LargeCustomer
 		{
 			get
@@ -3815,7 +3811,7 @@ namespace KVSCommon.Database
 					if ((value != null))
 					{
 						value.Location.Add(this);
-						this._CustomerId = value.CustomerId;
+						this._CustomerId = value.Id;
 					}
 					else
 					{
@@ -4122,7 +4118,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_OrderInvoice", Storage="_Order", ThisKey="OrderNumber", OtherKey="OrderNumber", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_OrderInvoice", Storage="_Order", ThisKey="OrderNumber", OtherKey="Id", IsForeignKey=true)]
 		public Order Order
 		{
 			get
@@ -4145,7 +4141,7 @@ namespace KVSCommon.Database
 					if ((value != null))
 					{
 						value.OrderInvoice.Add(this);
-						this._OrderNumber = value.OrderNumber;
+						this._OrderNumber = value.Id;
 					}
 					else
 					{
@@ -7627,7 +7623,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_OrderItem", Storage="_Order", ThisKey="OrderNumber", OtherKey="OrderNumber", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_OrderItem", Storage="_Order", ThisKey="OrderNumber", OtherKey="Id", IsForeignKey=true)]
 		public Order Order
 		{
 			get
@@ -7650,7 +7646,7 @@ namespace KVSCommon.Database
 					if ((value != null))
 					{
 						value.OrderItem.Add(this);
-						this._OrderNumber = value.OrderNumber;
+						this._OrderNumber = value.Id;
 					}
 					else
 					{
@@ -8609,7 +8605,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_Mailinglist", Storage="_LargeCustomer", ThisKey="CustomerId", OtherKey="CustomerId", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_Mailinglist", Storage="_LargeCustomer", ThisKey="CustomerId", OtherKey="Id", IsForeignKey=true)]
 		public LargeCustomer LargeCustomer
 		{
 			get
@@ -8632,7 +8628,7 @@ namespace KVSCommon.Database
 					if ((value != null))
 					{
 						value.Mailinglist.Add(this);
-						this._CustomerId = value.CustomerId;
+						this._CustomerId = value.Id;
 					}
 					else
 					{
@@ -9166,8 +9162,8 @@ namespace KVSCommon.Database
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnOrderNumberChanging(int value);
-    partial void OnOrderNumberChanged();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
     partial void OnVehicleIdChanging(int value);
     partial void OnVehicleIdChanged();
     partial void OnRegistrationIdChanging(int value);
@@ -9197,8 +9193,8 @@ namespace KVSCommon.Database
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OrderNumber", DbType="int NOT NULL", IsPrimaryKey=true)]
-		public int OrderNumber
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="OrderNumber", Storage="_OrderNumber", DbType="int NOT NULL", IsPrimaryKey=true)]
+		public int Id
 		{
 			get
 			{
@@ -9208,15 +9204,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._OrderNumber != value))
 				{
-					if (this._Order.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnOrderNumberChanging(value);
+					this.OnIdChanging(value);
 					this.SendPropertyChanging();
 					this._OrderNumber = value;
-					this.SendPropertyChanged("OrderNumber");
-					this.OnOrderNumberChanged();
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
 				}
 			}
 		}
@@ -9515,7 +9507,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_RegistrationOrder", Storage="_Order", ThisKey="OrderNumber", OtherKey="OrderNumber", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_RegistrationOrder", Storage="_Order", ThisKey="Id", OtherKey="Id", IsForeignKey=true)]
 		public Order Order
 		{
 			get
@@ -9538,7 +9530,7 @@ namespace KVSCommon.Database
 					if ((value != null))
 					{
 						value.RegistrationOrder = this;
-						this._OrderNumber = value.OrderNumber;
+						this._OrderNumber = value.Id;
 					}
 					else
 					{
@@ -10678,7 +10670,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="InvoiceTypes_Invoice", Storage="_InvoiceTypes", ThisKey="InvoiceType", OtherKey="ID", IsForeignKey=true, DeleteRule="CASCADE")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="InvoiceTypes_Invoice", Storage="_InvoiceTypes", ThisKey="InvoiceType", OtherKey="Id", IsForeignKey=true, DeleteRule="CASCADE")]
 		public InvoiceTypes InvoiceTypes
 		{
 			get
@@ -10701,7 +10693,7 @@ namespace KVSCommon.Database
 					if ((value != null))
 					{
 						value.Invoice.Add(this);
-						this._InvoiceType = value.ID;
+						this._InvoiceType = value.Id;
 					}
 					else
 					{
@@ -10908,8 +10900,8 @@ namespace KVSCommon.Database
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnLargeCustomerIdChanging(int value);
-    partial void OnLargeCustomerIdChanged();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
     partial void OnRequiredFieldIdChanging(int value);
     partial void OnRequiredFieldIdChanged();
     partial void OnCreateDateChanging(System.DateTime value);
@@ -10927,8 +10919,8 @@ namespace KVSCommon.Database
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LargeCustomerId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		public int LargeCustomerId
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="LargeCustomerId", Storage="_LargeCustomerId", DbType="int NOT NULL", IsPrimaryKey=true)]
+		public int Id
 		{
 			get
 			{
@@ -10938,15 +10930,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._LargeCustomerId != value))
 				{
-					if (this._LargeCustomer.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnLargeCustomerIdChanging(value);
+					this.OnIdChanging(value);
 					this.SendPropertyChanging();
 					this._LargeCustomerId = value;
-					this.SendPropertyChanged("LargeCustomerId");
-					this.OnLargeCustomerIdChanged();
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
 				}
 			}
 		}
@@ -11069,7 +11057,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_LargeCustomerRequiredField", Storage="_LargeCustomer", ThisKey="LargeCustomerId", OtherKey="CustomerId", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_LargeCustomerRequiredField", Storage="_LargeCustomer", ThisKey="Id", OtherKey="Id", IsForeignKey=true)]
 		public LargeCustomer LargeCustomer
 		{
 			get
@@ -11092,7 +11080,7 @@ namespace KVSCommon.Database
 					if ((value != null))
 					{
 						value.LargeCustomerRequiredField.Add(this);
-						this._LargeCustomerId = value.CustomerId;
+						this._LargeCustomerId = value.Id;
 					}
 					else
 					{
@@ -11382,8 +11370,8 @@ namespace KVSCommon.Database
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnPackingListNumberChanging(int value);
-    partial void OnPackingListNumberChanged();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
     partial void OnDispatchOrderNumberChanging(string value);
     partial void OnDispatchOrderNumberChanged();
     partial void OnIsSelfDispatchChanging(System.Nullable<bool> value);
@@ -11414,8 +11402,8 @@ namespace KVSCommon.Database
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PackingListNumber", DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int PackingListNumber
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="PackingListNumber", Storage="_PackingListNumber", DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
 		{
 			get
 			{
@@ -11425,11 +11413,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._PackingListNumber != value))
 				{
-					this.OnPackingListNumberChanging(value);
+					this.OnIdChanging(value);
 					this.SendPropertyChanging();
 					this._PackingListNumber = value;
-					this.SendPropertyChanged("PackingListNumber");
-					this.OnPackingListNumberChanged();
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
 				}
 			}
 		}
@@ -11642,7 +11630,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PackingList_Order", Storage="_Order", ThisKey="PackingListNumber", OtherKey="PackingListNumber")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PackingList_Order", Storage="_Order", ThisKey="Id", OtherKey="PackingListNumber")]
 		public EntitySet<Order> Order
 		{
 			get
@@ -11836,8 +11824,8 @@ namespace KVSCommon.Database
     partial void OnLocationIdChanged();
     partial void OnOrderTypeIdChanging(int value);
     partial void OnOrderTypeIdChanged();
-    partial void OnOrderNumberChanging(int value);
-    partial void OnOrderNumberChanged();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
     partial void OnStatusChanging(int value);
     partial void OnStatusChanged();
     partial void OnCreateDateChanging(System.DateTime value);
@@ -11961,8 +11949,8 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Ordernumber", DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int OrderNumber
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="OrderNumber", Storage="_Ordernumber", DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
 		{
 			get
 			{
@@ -11972,11 +11960,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._Ordernumber != value))
 				{
-					this.OnOrderNumberChanging(value);
+					this.OnIdChanging(value);
 					this.SendPropertyChanging();
 					this._Ordernumber = value;
-					this.SendPropertyChanged("OrderNumber");
-					this.OnOrderNumberChanged();
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
 				}
 			}
 		}
@@ -12321,7 +12309,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_DeregistrationOrder", Storage="_DeregistrationOrder", ThisKey="OrderNumber", OtherKey="OrderNumber", IsUnique=true, IsForeignKey=false)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_DeregistrationOrder", Storage="_DeregistrationOrder", ThisKey="Id", OtherKey="Id", IsUnique=true, IsForeignKey=false)]
 		public DeregistrationOrder DeregistrationOrder
 		{
 			get
@@ -12350,7 +12338,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_OrderInvoice", Storage="_OrderInvoice", ThisKey="OrderNumber", OtherKey="OrderNumber")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_OrderInvoice", Storage="_OrderInvoice", ThisKey="Id", OtherKey="OrderNumber")]
 		public EntitySet<OrderInvoice> OrderInvoice
 		{
 			get
@@ -12363,7 +12351,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_OrderItem", Storage="_OrderItem", ThisKey="OrderNumber", OtherKey="OrderNumber")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_OrderItem", Storage="_OrderItem", ThisKey="Id", OtherKey="OrderNumber")]
 		public EntitySet<OrderItem> OrderItem
 		{
 			get
@@ -12376,7 +12364,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_RegistrationOrder", Storage="_RegistrationOrder", ThisKey="OrderNumber", OtherKey="OrderNumber", IsUnique=true, IsForeignKey=false)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Order_RegistrationOrder", Storage="_RegistrationOrder", ThisKey="Id", OtherKey="Id", IsUnique=true, IsForeignKey=false)]
 		public RegistrationOrder RegistrationOrder
 		{
 			get
@@ -12405,7 +12393,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PackingList_Order", Storage="_PackingList", ThisKey="PackingListNumber", OtherKey="PackingListNumber", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PackingList_Order", Storage="_PackingList", ThisKey="PackingListNumber", OtherKey="Id", IsForeignKey=true)]
 		public PackingList PackingList
 		{
 			get
@@ -12428,7 +12416,7 @@ namespace KVSCommon.Database
 					if ((value != null))
 					{
 						value.Order.Add(this);
-						this._PackingListId = value.PackingListNumber;
+						this._PackingListId = value.Id;
 					}
 					else
 					{
@@ -12439,7 +12427,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="RegistrationLocation_Order", Storage="_RegistrationLocation", ThisKey="Zulassungsstelle", OtherKey="ID", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="RegistrationLocation_Order", Storage="_RegistrationLocation", ThisKey="Zulassungsstelle", OtherKey="Id", IsForeignKey=true)]
 		public RegistrationLocation RegistrationLocation
 		{
 			get
@@ -12462,7 +12450,7 @@ namespace KVSCommon.Database
 					if ((value != null))
 					{
 						value.Order.Add(this);
-						this._Zulassungsstelle = value.ID;
+						this._Zulassungsstelle = value.Id;
 					}
 					else
 					{
@@ -12473,7 +12461,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DocketList_Order", Storage="_DocketList", ThisKey="DocketListNumber", OtherKey="DocketListNumber", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DocketList_Order", Storage="_DocketList", ThisKey="DocketListNumber", OtherKey="Id", IsForeignKey=true)]
 		public DocketList DocketList
 		{
 			get
@@ -12496,7 +12484,7 @@ namespace KVSCommon.Database
 					if ((value != null))
 					{
 						value.Order.Add(this);
-						this._DocketListId = value.DocketListNumber;
+						this._DocketListId = value.Id;
 					}
 					else
 					{
@@ -14261,8 +14249,8 @@ namespace KVSCommon.Database
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnIIACCIDChanging(int value);
-    partial void OnIIACCIDChanged();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
     partial void OnInvoiceItemIdChanging(int value);
     partial void OnInvoiceItemIdChanged();
     partial void OnRevenueAccountTextChanging(string value);
@@ -14281,8 +14269,8 @@ namespace KVSCommon.Database
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IIACCID", DbType="int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int IIACCID
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="IIACCID", Storage="_IIACCID", DbType="int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
 		{
 			get
 			{
@@ -14292,11 +14280,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._IIACCID != value))
 				{
-					this.OnIIACCIDChanging(value);
+					this.OnIdChanging(value);
 					this.SendPropertyChanging();
 					this._IIACCID = value;
-					this.SendPropertyChanged("IIACCID");
-					this.OnIIACCIDChanged();
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
 				}
 			}
 		}
@@ -15946,8 +15934,8 @@ namespace KVSCommon.Database
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnCustomerIdChanging(int value);
-    partial void OnCustomerIdChanged();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
     partial void OnMainLocationIdChanging(System.Nullable<int> value);
     partial void OnMainLocationIdChanged();
     partial void OnSendInvoiceToMainLocationChanging(bool value);
@@ -15983,8 +15971,8 @@ namespace KVSCommon.Database
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CustomerId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		public int CustomerId
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="CustomerId", Storage="_CustomerId", DbType="int NOT NULL", IsPrimaryKey=true)]
+		public int Id
 		{
 			get
 			{
@@ -15994,15 +15982,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._CustomerId != value))
 				{
-					if (this._Customer.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnCustomerIdChanging(value);
+					this.OnIdChanging(value);
 					this.SendPropertyChanging();
 					this._CustomerId = value;
-					this.SendPropertyChanged("CustomerId");
-					this.OnCustomerIdChanged();
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
 				}
 			}
 		}
@@ -16219,7 +16203,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_CostCenter", Storage="_CostCenter", ThisKey="CustomerId", OtherKey="CustomerId")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_CostCenter", Storage="_CostCenter", ThisKey="Id", OtherKey="CustomerId")]
 		public EntitySet<CostCenter> CostCenter
 		{
 			get
@@ -16232,7 +16216,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_Location", Storage="_Location", ThisKey="CustomerId", OtherKey="CustomerId")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_Location", Storage="_Location", ThisKey="Id", OtherKey="CustomerId")]
 		public EntitySet<Location> Location
 		{
 			get
@@ -16245,7 +16229,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_Mailinglist", Storage="_Mailinglist", ThisKey="CustomerId", OtherKey="CustomerId")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_Mailinglist", Storage="_Mailinglist", ThisKey="Id", OtherKey="CustomerId")]
 		public EntitySet<Mailinglist> Mailinglist
 		{
 			get
@@ -16258,7 +16242,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_LargeCustomerRequiredField", Storage="_LargeCustomerRequiredField", ThisKey="CustomerId", OtherKey="LargeCustomerId")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="LargeCustomer_LargeCustomerRequiredField", Storage="_LargeCustomerRequiredField", ThisKey="Id", OtherKey="Id")]
 		public EntitySet<LargeCustomerRequiredField> LargeCustomerRequiredField
 		{
 			get
@@ -16271,7 +16255,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Customer_LargeCustomer", Storage="_Customer", ThisKey="CustomerId", OtherKey="Id", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Customer_LargeCustomer", Storage="_Customer", ThisKey="Id", OtherKey="Id", IsForeignKey=true)]
 		public Customer Customer
 		{
 			get
@@ -16373,7 +16357,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="InvoiceTypes_LargeCustomer", Storage="_InvoiceTypes", ThisKey="InvoiceTypesID", OtherKey="ID", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="InvoiceTypes_LargeCustomer", Storage="_InvoiceTypes", ThisKey="InvoiceTypesID", OtherKey="Id", IsForeignKey=true)]
 		public InvoiceTypes InvoiceTypes
 		{
 			get
@@ -16396,7 +16380,7 @@ namespace KVSCommon.Database
 					if ((value != null))
 					{
 						value.LargeCustomer.Add(this);
-						this._InvoiceTypesID = value.ID;
+						this._InvoiceTypesID = value.Id;
 					}
 					else
 					{
@@ -16502,8 +16486,8 @@ namespace KVSCommon.Database
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnIDChanging(int value);
-    partial void OnIDChanged();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
     partial void OnInvoiceTypeNameChanging(string value);
     partial void OnInvoiceTypeNameChanged();
     partial void OncontractionChanging(string value);
@@ -16523,8 +16507,8 @@ namespace KVSCommon.Database
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", DbType="int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int ID
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="ID", Storage="_ID", DbType="int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
 		{
 			get
 			{
@@ -16534,11 +16518,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._ID != value))
 				{
-					this.OnIDChanging(value);
+					this.OnIdChanging(value);
 					this.SendPropertyChanging();
 					this._ID = value;
-					this.SendPropertyChanged("ID");
-					this.OnIDChanged();
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
 				}
 			}
 		}
@@ -16643,7 +16627,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="InvoiceTypes_Invoice", Storage="_Invoice", ThisKey="ID", OtherKey="InvoiceType")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="InvoiceTypes_Invoice", Storage="_Invoice", ThisKey="Id", OtherKey="InvoiceType")]
 		public EntitySet<Invoice> Invoice
 		{
 			get
@@ -16656,7 +16640,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="InvoiceTypes_LargeCustomer", Storage="_LargeCustomer", ThisKey="ID", OtherKey="InvoiceTypesID")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="InvoiceTypes_LargeCustomer", Storage="_LargeCustomer", ThisKey="Id", OtherKey="InvoiceTypesID")]
 		public EntitySet<LargeCustomer> LargeCustomer
 		{
 			get
@@ -16857,8 +16841,8 @@ namespace KVSCommon.Database
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnIDChanging(int value);
-    partial void OnIDChanged();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
     partial void OnRegistrationLocationNameChanging(string value);
     partial void OnRegistrationLocationNameChanged();
     partial void OnRegistrationLocationAdressIdChanging(System.Nullable<int> value);
@@ -16878,8 +16862,8 @@ namespace KVSCommon.Database
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", DbType="int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int ID
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="ID", Storage="_ID", DbType="int NOT NULL", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
 		{
 			get
 			{
@@ -16889,11 +16873,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._ID != value))
 				{
-					this.OnIDChanging(value);
+					this.OnIdChanging(value);
 					this.SendPropertyChanging();
 					this._ID = value;
-					this.SendPropertyChanged("ID");
-					this.OnIDChanged();
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
 				}
 			}
 		}
@@ -17002,7 +16986,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="RegistrationLocation_Order", Storage="_Order", ThisKey="ID", OtherKey="Zulassungsstelle")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="RegistrationLocation_Order", Storage="_Order", ThisKey="Id", OtherKey="Zulassungsstelle")]
 		public EntitySet<Order> Order
 		{
 			get
@@ -18563,8 +18547,8 @@ namespace KVSCommon.Database
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
-    partial void OnDocketListNumberChanging(int value);
-    partial void OnDocketListNumberChanged();
+    partial void OnIdChanging(int value);
+    partial void OnIdChanged();
     partial void OnDispatchOrderNumberChanging(string value);
     partial void OnDispatchOrderNumberChanged();
     partial void OnIsSelfDispatchChanging(System.Nullable<bool> value);
@@ -18592,8 +18576,8 @@ namespace KVSCommon.Database
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DocketListNumber", DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int DocketListNumber
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="DocketListNumber", Storage="_DocketListNumber", DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
 		{
 			get
 			{
@@ -18603,11 +18587,11 @@ namespace KVSCommon.Database
 			{
 				if ((this._DocketListNumber != value))
 				{
-					this.OnDocketListNumberChanging(value);
+					this.OnIdChanging(value);
 					this.SendPropertyChanging();
 					this._DocketListNumber = value;
-					this.SendPropertyChanged("DocketListNumber");
-					this.OnDocketListNumberChanged();
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
 				}
 			}
 		}
@@ -18796,7 +18780,7 @@ namespace KVSCommon.Database
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DocketList_Order", Storage="_Order", ThisKey="DocketListNumber", OtherKey="DocketListNumber")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DocketList_Order", Storage="_Order", ThisKey="Id", OtherKey="DocketListNumber")]
 		public EntitySet<Order> Order
 		{
 			get

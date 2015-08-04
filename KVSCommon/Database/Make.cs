@@ -30,31 +30,6 @@ namespace KVSCommon.Database
             set;
         }
 
-        /// <summary>
-        /// Erstellt einen neuen Fahrzeughersteller.
-        /// </summary>
-        /// <param name="name">Name des Herstellers.</param>
-        /// <param name="hsn">HSN des Herstellers.</param>
-        /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        /// <returns>Den neuen Hersteller.</returns>
-        public static Make CreateMake(string name, string hsn, KVSEntities dbContext)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new Exception("Der Name des Fahrzeugherstellers darf nicht leer sein.");
-            }
-
-            Make make = new Make()
-            {
-                Name = name,
-                HSN = hsn
-            };
-
-            dbContext.Make.InsertOnSubmit(make);
-            dbContext.SubmitChanges();
-            dbContext.WriteLogItem("Fahrzeughersteller " + name + " wurde angelegt.", LogTypes.INSERT, make.Id, "Make");
-            return make;
-        }
 
         /// <summary>
         /// Gibt alle Herstellern by HSN zurück

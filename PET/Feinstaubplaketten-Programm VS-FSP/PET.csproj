@@ -204,6 +204,7 @@
     <Content Include="gelb.png" />
     <Content Include="gruen.png" />
     <Content Include="index.png" />
+    <Content Include="Resources\kfz-voll-mit-raste-.jpg" />
     <Content Include="rot.png" />
     <Content Include="vs-fsp.ico" />
     <Content Include="WebService\PetService.svc" />

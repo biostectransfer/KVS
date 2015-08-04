@@ -53,7 +53,7 @@ namespace KVSDataAccess.Managers
 
             DataContext.AddObject(deregistrationOrder);
             SaveChanges();
-            DataContext.WriteLogItem("Abmeldeauftrag angelegt.", LogTypes.INSERT, deregistrationOrder.OrderNumber, "DeregistrationOrder", vehicle.Id);
+            DataContext.WriteLogItem("Abmeldeauftrag angelegt.", LogTypes.INSERT, deregistrationOrder.Id, "DeregistrationOrder", vehicle.Id);
             return deregistrationOrder;
         }
     }

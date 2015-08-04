@@ -255,7 +255,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         // für alle, die selected sind - daten zu packing list
                         foreach (var orders in gr)
                         {
-                            PackingListManager.AddOrderById(packingList, orders.Order.OrderNumber);
+                            PackingListManager.AddOrderById(packingList, orders.Order.Id);
                         }
                     }
 

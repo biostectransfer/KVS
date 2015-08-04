@@ -45,7 +45,7 @@ namespace KVSDataAccess.Managers
 
             order.OrderItem.Add(item);
             SaveChanges();
-            DataContext.WriteLogItem("Auftragsposition " + product.Name + " für Auftrag " + order.OrderNumber + " angelegt.", LogTypes.INSERT, item.Id, "OrderItem");
+            DataContext.WriteLogItem("Auftragsposition " + product.Name + " für Auftrag " + order.Id + " angelegt.", LogTypes.INSERT, item.Id, "OrderItem");
 
             return item;
         }
@@ -155,7 +155,7 @@ namespace KVSDataAccess.Managers
                 }
 
                 DataContext.DeleteObject(orderItemToDelete);
-                DataContext.WriteLogItem("Auftragsposition " + orderItemToDelete.ProductName + " mit der Auftragsnummer " + orderItemToDelete.Order.OrderNumber + " wurde gelöscht.",
+                DataContext.WriteLogItem("Auftragsposition " + orderItemToDelete.ProductName + " mit der Auftragsnummer " + orderItemToDelete.Order.Id + " wurde gelöscht.",
                     LogTypes.DELETE, orderItemToDelete.Id, "OrderItem");
             }
         }
@@ -223,12 +223,12 @@ namespace KVSDataAccess.Managers
             sb.AppendLine("<th>Erledigungsdatum</th>");
             sb.AppendLine("<tr/>");
 
-            foreach (var order in orders.OrderBy(q => q.OrderNumber))
+            foreach (var order in orders.OrderBy(q => q.Id))
             {
                 var vehicle = order.RegistrationOrder != null ? order.RegistrationOrder.Vehicle : order.DeregistrationOrder.Vehicle;
                 var registration = order.RegistrationOrder != null ? order.RegistrationOrder.Registration : order.DeregistrationOrder.Registration;
                 sb.AppendLine("<tr>");
-                sb.AppendLine("<td>" + order.OrderNumber.ToString() + "</td>");
+                sb.AppendLine("<td>" + order.Id.ToString() + "</td>");
                 sb.AppendLine("<td>" + vehicle.VIN + "</td>");
                 sb.AppendLine("<td>" + registration.Licencenumber + "</td>");
                 sb.AppendLine("<td>" + (registration.CarOwner != null ? registration.CarOwner.FullName : string.Empty) + "</td>");
@@ -258,11 +258,11 @@ namespace KVSDataAccess.Managers
 
                     if (order.PackingList != null)
                     {
-                        order.PackingList.OldOrderNumber = order.OrderNumber;
-                        temp_packingListId = order.PackingList.PackingListNumber;
+                        order.PackingList.OldOrderNumber = order.Id;
+                        temp_packingListId = order.PackingList.Id;
 
-                        DataContext.WriteLogItem("Lieferschein: " + temp_packingListId + " zum Auftrag: " + order.OrderNumber + "  wurde gelöscht. ", LogTypes.UPDATE,
-                            order.PackingList.PackingListNumber, "PackingList");
+                        DataContext.WriteLogItem("Lieferschein: " + temp_packingListId + " zum Auftrag: " + order.Id + "  wurde gelöscht. ", LogTypes.UPDATE,
+                            order.PackingList.Id, "PackingList");
 
                     }
 
@@ -276,8 +276,8 @@ namespace KVSDataAccess.Managers
                         orIt.Status = (int)OrderItemStatusTypes.InProgress;
                     }
 
-                    DataContext.WriteLogItem("Auftrag: " + order.OrderNumber + "  wurde wieder in die Zulassungsstelle versetzt.",
-                        LogTypes.UPDATE, order.OrderNumber, "Order");
+                    DataContext.WriteLogItem("Auftrag: " + order.Id + "  wurde wieder in die Zulassungsstelle versetzt.",
+                        LogTypes.UPDATE, order.Id, "Order");
                 }
 
                 SaveChanges();

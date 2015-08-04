@@ -92,36 +92,6 @@ namespace KVSCommon.Database
         }
         
         /// <summary>
-        /// Aendert das Passwort des Benutzers.
-        /// </summary>
-        /// <param name="newPassword">Neues Passwort.</param>
-        /// <param name="oldPassword">Altes Passwort.</param>
-        /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public void ChangePassword(string newPassword, string oldPassword, KVSEntities dbContext)
-        {
-            CheckPassword(newPassword);
-
-            SaltedHash sh = new SaltedHash();
-            if (sh.VerifyHashString(oldPassword, this.Password, this.Salt))
-            {
-                if (this.LogDBContext == null)
-                {
-                    this.LogDBContext = dbContext;
-                }
-
-                string passwordHash = string.Empty;
-                string salt = string.Empty;
-                sh.GetHashAndSaltString(newPassword, out passwordHash, out salt);
-                this.Password = passwordHash;
-                this.Salt = salt;
-            }
-            else
-            {
-                throw new Exception("Das alte Passwort konnte nicht verifiziert werden.");
-            }
-        }
-
-        /// <summary>
         /// Ermoeglicht es, das Passwort eines Benutzers zu setzen. Der im dbContext uebergebene Benutzer muss dafür das Administratorrecht "ADMIN_PASSWORT_AENDERN" besitzen.
         /// </summary>
         /// <param name="newPassword">Das neue Passwort.</param>

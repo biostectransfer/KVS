@@ -33,7 +33,7 @@ namespace KVSDataAccess.PDF
             : base(dbContext, logoFilePath)
         {
             this.DocketList = docketList;
-            this.Headline = "Laufzettel " + docketList.DocketListNumber.ToString();
+            this.Headline = "Laufzettel " + docketList.Id.ToString();
             this.Letterhead = new LetterHead(dbContext)
             {
                 Lines = new List<string>(){

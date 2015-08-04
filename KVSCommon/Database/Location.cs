@@ -135,7 +135,7 @@ namespace KVSCommon.Database
       
 
 
-            var changeCustomer = dbContext.LargeCustomer.FirstOrDefault(q => q.CustomerId == lc.CustomerId && q.MainLocationId == lc.Id);
+            var changeCustomer = dbContext.LargeCustomer.FirstOrDefault(q => q.Id == lc.Id && q.MainLocationId == lc.Id);
             
            // tempId = lc.CustomerId.Value;
          

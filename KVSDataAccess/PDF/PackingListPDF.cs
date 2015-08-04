@@ -32,7 +32,7 @@ namespace KVSDataAccess.PDF
             : base(dbContext, logoFilePath)
         {
             this.PackingList = packingList;
-            this.Headline = "Lieferschein " + packingList.PackingListNumber.ToString();
+            this.Headline = "Lieferschein " + packingList.Id.ToString();
             this.Headline2 = (packingList.IsSelfDispatch.HasValue && packingList.IsSelfDispatch.Value == true) ? "Eigenverbringung" : "Paketnummer: " + this.PackingList.DispatchOrderNumber;
 
             var city = this.PackingList.Adress.City;

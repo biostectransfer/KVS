@@ -78,7 +78,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     listNumber = ord.PackingListNumber,
                     isPrinted = ord.PackingList.IsPrinted == true ? "Ja" : "Nein",
                     PostBackUrl = ord.PackingList.Document.FileName == null ? "" : "<a href=" + '\u0022' + ord.PackingList.Document.FileName + '\u0022' + " target=" + '\u0022' + "_blank" + 
-                        '\u0022' + "> Lieferschein " + ord.PackingList.PackingListNumber + " öffnen</a>",
+                        '\u0022' + "> Lieferschein " + ord.PackingList.Id + " öffnen</a>",
                     DispatchOrderNumber = ord.PackingList.DispatchOrderNumber,
                     IsSelf = ord.PackingList.IsSelfDispatch.HasValue ? ord.PackingList.IsSelfDispatch.Value : false,
                 });
@@ -137,7 +137,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                   o.Status == (int)OrderStatusTypes.Closed &&
                   o.HasError.GetValueOrDefault(false) != true).Select(ord => new
                   {
-                      OrderNumber = ord.OrderNumber,
+                      OrderNumber = ord.Id,
                       CustomerName = ord.Customer.SmallCustomer != null &&
                           ord.Customer.SmallCustomer.Person != null ? ord.Customer.SmallCustomer.Person.FirstName + " " + ord.Customer.SmallCustomer.Person.Name :
                           ord.Customer.Name,

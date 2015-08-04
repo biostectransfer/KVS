@@ -74,7 +74,6 @@
     <Compile Include="Database\Customer.cs" />
     <Compile Include="Database\DocketList.cs" />
     <Compile Include="Database\EmptyStringIfNull.cs" />
-    <Compile Include="Database\InvoiceHelper.cs" />
     <Compile Include="Database\InvoiceItemAccountItem.cs" />
     <Compile Include="Database\InvoiceRunReport.cs" />
     <Compile Include="Database\KVSEntities1.designer.cs">
@@ -162,13 +161,6 @@
     <Compile Include="Managers\IOrderManager.cs" />
     <Compile Include="Managers\IUserManager.cs" />
     <Compile Include="Managers\IBicManager.cs" />
-    <Compile Include="PDF\AbstractPDFCreator.cs" />
-    <Compile Include="PDF\GroupedAppendix.cs" />
-    <Compile Include="PDF\InvoicePDF.cs" />
-    <Compile Include="PDF\PackingListPDF.cs" />
-    <Compile Include="PDF\PackingListPDF_Zulassungsstelle.cs" />
-    <Compile Include="PDF\PDFCreatorExtension.cs" />
-    <Compile Include="PDF\PDFSharpUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -192,9 +184,6 @@
       <SubType>Designer</SubType>
       <LastGenOutput>KVSEntities1.designer.cs</LastGenOutput>
     </None>
-    <None Include="KlassenDiagrammCommon_Utility.cd" />
-    <None Include="KlassenDiagrammDatabase.cd" />
-    <None Include="KlassenDiagramm_PDF.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -205,9 +194,7 @@
       <DependentUpon>KVSEntities.dbml</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

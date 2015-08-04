@@ -12,16 +12,5 @@ namespace KVSCommon.Database
     /// </summary>
     public partial class RegistrationLocation : IHasId<int>, IRemovable, ISystemFields
     {
-        public int Id
-        {
-            get
-            {
-                return ID;
-            }
-            set
-            {
-                ID = value;
-            }
-        }
     }
 }

@@ -315,7 +315,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         {
                             if (order != null)
                             {
-                                DocketListManager.AddOrderById(docketList, order.OrderNumber);
+                                DocketListManager.AddOrderById(docketList, order.Id);
                                 //updating order status
                                 order.Status = (int)OrderStatusTypes.AdmissionPoint;
 

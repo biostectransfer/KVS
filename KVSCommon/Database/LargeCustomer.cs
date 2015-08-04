@@ -21,7 +21,7 @@ namespace KVSCommon.Database
         {
             get
             {
-                return this.CustomerId;
+                return this.Id;
             }
         }
 
@@ -37,7 +37,7 @@ namespace KVSCommon.Database
         /// <param name="smallCustomerId">Laufkundenid</param>
         public static void RemoveLargeCutomer(KVSEntities dbContext, int smallCustomerId)
         {
-            var lmCustomer = dbContext.LargeCustomer.FirstOrDefault(q => q.CustomerId == smallCustomerId);
+            var lmCustomer = dbContext.LargeCustomer.FirstOrDefault(q => q.Id == smallCustomerId);
             if (lmCustomer == null)
                 throw new Exception("Der Kunde wurde in der Datenbank nicht gefunden");
             if (lmCustomer.Customer.Order != null && lmCustomer.Customer.Order.Count > 0)
@@ -93,7 +93,7 @@ namespace KVSCommon.Database
             dbContext.LargeCustomer.DeleteOnSubmit(lmCustomer);
             dbContext.Customer.DeleteOnSubmit(lmCustomer.Customer);
 
-            dbContext.WriteLogItem("Kunde " + lmCustomer.CustomerId + " mit dem Namen: " + lmCustomer.Customer.Name + " wurde gelöscht.", LogTypes.DELETE, lmCustomer.CustomerId, "LargeCustomer");
+            dbContext.WriteLogItem("Kunde " + lmCustomer.Id + " mit dem Namen: " + lmCustomer.Customer.Name + " wurde gelöscht.", LogTypes.DELETE, lmCustomer.Id, "LargeCustomer");
 
 
         }
@@ -211,7 +211,7 @@ namespace KVSCommon.Database
             this.Location.Add(location);
             
             dbContext.SubmitChanges();
-            dbContext.WriteLogItem("Neuer Standort " + name + " angelegt.", LogTypes.INSERT, this.CustomerId, "Customer", location.Id);
+            dbContext.WriteLogItem("Neuer Standort " + name + " angelegt.", LogTypes.INSERT, this.Id, "Customer", location.Id);
             return location;
         }
 
@@ -247,7 +247,7 @@ namespace KVSCommon.Database
             costcenter._dbContext = dbContext;
             this.CostCenter.Add(costcenter);
             dbContext.SubmitChanges();
-            dbContext.WriteLogItem("Neue Kostenstelle " + name + " angelegt.", LogTypes.INSERT, this.CustomerId, "Customer", costcenter.Id);
+            dbContext.WriteLogItem("Neue Kostenstelle " + name + " angelegt.", LogTypes.INSERT, this.Id, "Customer", costcenter.Id);
             return costcenter;
         }
 
@@ -266,9 +266,9 @@ namespace KVSCommon.Database
                 throw new Exception("Die Emailadresse " + email + " ist bereits im Verteiler " + type.Name + ".");
             }
 
-            var ml = Database.Mailinglist.CreateMailinglistItem(email, typeId, this.CustomerId, null, dbContext);
+            var ml = Database.Mailinglist.CreateMailinglistItem(email, typeId, this.Id, null, dbContext);
             dbContext.SubmitChanges();
-            dbContext.WriteLogItem("Neue Email " + email + " in den Verteiler " + type + " des Kunden " + this.Customer.Name + " aufgenommen.", LogTypes.INSERT, this.CustomerId, "LargeCustomer", ml.Id);
+            dbContext.WriteLogItem("Neue Email " + email + " in den Verteiler " + type + " des Kunden " + this.Customer.Name + " aufgenommen.", LogTypes.INSERT, this.Id, "LargeCustomer", ml.Id);
             return ml;
         }
 
@@ -285,7 +285,7 @@ namespace KVSCommon.Database
                 throw new Exception("Eintrag im Mailverteiler des Kunden " + this.Customer.Name + " mit der Id " + mailinglistId + " ist nicht vorhanden.");
             }
 
-            dbContext.WriteLogItem("Email " + ml.Email + " aus dem Verteiler " + ml.MailinglistType.Name + " des Kunden entfernt.", LogTypes.DELETE, this.CustomerId, "LargeCustomer");
+            dbContext.WriteLogItem("Email " + ml.Email + " aus dem Verteiler " + ml.MailinglistType.Name + " des Kunden entfernt.", LogTypes.DELETE, this.Id, "LargeCustomer");
             dbContext.Mailinglist.DeleteOnSubmit(ml);
         }
 
@@ -299,7 +299,7 @@ namespace KVSCommon.Database
             var requiredField = dbContext.RequiredField.Single(q => q.Id == requiredFieldId);
             if (!this.LargeCustomerRequiredField.Any(q => q.RequiredFieldId == requiredFieldId))
             {
-                dbContext.WriteLogItem("Feld " + requiredField.Name + " beim Kunden " + this.Customer.Name + " als Pflichtfeld festgelegt.", LogTypes.INSERT, this.CustomerId, "LargeCustomer", requiredFieldId);
+                dbContext.WriteLogItem("Feld " + requiredField.Name + " beim Kunden " + this.Customer.Name + " als Pflichtfeld festgelegt.", LogTypes.INSERT, this.Id, "LargeCustomer", requiredFieldId);
                 this.LargeCustomerRequiredField.Add(new LargeCustomerRequiredField()
                 {
                     RequiredFieldId = requiredFieldId
@@ -321,7 +321,7 @@ namespace KVSCommon.Database
                 throw new Exception("Das Feld " + requiredField.Name + " ist beim Kunden " + this.Customer.Name + " nicht als Pflichtfeld definiert.");
             }
 
-            dbContext.WriteLogItem("Feld " + requiredField.Name + " beim Kunden " + this.Customer.Name + " als Pflichtfeld entfernt.", LogTypes.DELETE, this.CustomerId, "LargeCustomer", requiredFieldId);
+            dbContext.WriteLogItem("Feld " + requiredField.Name + " beim Kunden " + this.Customer.Name + " als Pflichtfeld entfernt.", LogTypes.DELETE, this.Id, "LargeCustomer", requiredFieldId);
             dbContext.LargeCustomerRequiredField.DeleteOnSubmit(largeCustomerRequiredField);
         }
 

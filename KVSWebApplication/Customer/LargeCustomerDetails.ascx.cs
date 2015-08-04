@@ -76,7 +76,7 @@ namespace KVSWebApplication.Customer
             RadComboBox rcbInvoiceType = ((RadComboBox)sender);
             rcbInvoiceType.Items.Clear();
             var types = from tp in dbContext.InvoiceTypes
-                        select new { Key = tp.ID, Value = tp.InvoiceTypeName };
+                        select new { Key = tp.Id, Value = tp.InvoiceTypeName };
             rcbInvoiceType.DataSource = types;
             rcbInvoiceType.DataBind();
         }
@@ -89,7 +89,7 @@ namespace KVSWebApplication.Customer
         {
             KVSEntities dbContext = new KVSEntities();
             var query = from cust in dbContext.Customer
-                        join cost in dbContext.LargeCustomer on cust.Id equals cost.CustomerId
+                        join cost in dbContext.LargeCustomer on cust.Id equals cost.Id
                         orderby cust.Name
                         select new
                         {
@@ -104,7 +104,7 @@ namespace KVSWebApplication.Customer
                             cust.Adress.City,
                             cust.Adress.Country,
                             PersonId = EmptyStringIfNull.ReturnEmptyStringIfNull(cost.PersonId),
-                            Show = cust.Id.ToString() == cust.LargeCustomer.CustomerId.ToString() ? "true" : "false",
+                            Show = cust.Id.ToString() == cust.LargeCustomer.Id.ToString() ? "true" : "false",
                             SameAsAdress = cust.AdressId == cust.InvoiceAdressId ? "true" : "false",
                             SameAsInvoice = cust.InvoiceAdressId == cust.InvoiceDispatchAdressId ? "true" : "false",
                             Zahlungsziel = cust.TermOfCredit,
@@ -204,7 +204,7 @@ namespace KVSWebApplication.Customer
                     if (myItem != null && myItem["Id"].Text != string.Empty && !String.IsNullOrEmpty(myItem["Id"].Text) && cmbSelectedType != null
                         && cmbSelectedType.SelectedValue != string.Empty && !String.IsNullOrEmpty(cmbSelectedType.SelectedValue))
                     {
-                        var customer = dbContext.LargeCustomer.FirstOrDefault(q => q.CustomerId == Int32.Parse(myItem["Id"].Text));
+                        var customer = dbContext.LargeCustomer.FirstOrDefault(q => q.Id == Int32.Parse(myItem["Id"].Text));
                         if (customer != null)
                         {
                             customer.InvoiceTypesID = Int32.Parse(cmbSelectedType.SelectedValue);
@@ -291,7 +291,7 @@ namespace KVSWebApplication.Customer
             }
             var query = from contact in dbContext.Contact
                         from person in dbContext.LargeCustomer.Where(p => p.PersonId == myPersonId
-                           && p.CustomerId == Int32.Parse(
+                           && p.Id == Int32.Parse(
                             (e.WhereParameters["CustomerId"].ToString()))).DefaultIfEmpty()
                         select new
                         {
@@ -510,7 +510,7 @@ namespace KVSWebApplication.Customer
                                 var myTempPerson = Person.CreatePerson(dbContext, EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Vorname"]),
                                      EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Name"]), EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Title"]),
                                       EmptyStringIfNull.ReturnEmptyStringIfNull(newValues["Extension"]));
-                                var myTempCustomer = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == Int32.Parse(newValues["CustomerId"].ToString()));
+                                var myTempCustomer = dbContext.LargeCustomer.SingleOrDefault(q => q.Id == Int32.Parse(newValues["CustomerId"].ToString()));
                                 myTempCustomer.PersonId = myTempPerson.Id;
                             }
                         }
@@ -586,7 +586,7 @@ namespace KVSWebApplication.Customer
                 CheckBox chbLieferscheinStandort = saveButton.Parent.FindControl("chbLieferscheinStandort") as CheckBox;
                 using (KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString())))
                 {
-                    var customer = dbContext.LargeCustomer.SingleOrDefault(q => q.CustomerId == Int32.Parse(lblIdkonfig.Text));
+                    var customer = dbContext.LargeCustomer.SingleOrDefault(q => q.Id == Int32.Parse(lblIdkonfig.Text));
                     if (customer != null)
                     {
                         customer.LogDBContext = dbContext;

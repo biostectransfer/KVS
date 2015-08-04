@@ -441,7 +441,7 @@ namespace KVSWebApplication.Auftragseingang
 
                             if (invoiceNow.Checked == true && invoiceNow.Enabled == true)
                             {
-                                MakeInvoiceForSmallCustomer(newRegistrationOrder.OrderNumber);
+                                MakeInvoiceForSmallCustomer(newRegistrationOrder.Id);
                             }
                             else
                             {
@@ -516,7 +516,7 @@ namespace KVSWebApplication.Auftragseingang
                             newPrice = PriceManager.GetEntities(q => q.ProductId == newProduct.Id && q.LocationId == null).SingleOrDefault();
                         }
 
-                        var orderToUpdate = OrderManager.GetById(regOrd.OrderNumber);
+                        var orderToUpdate = OrderManager.GetById(regOrd.Id);
 
                         if (orderToUpdate != null)
                         {

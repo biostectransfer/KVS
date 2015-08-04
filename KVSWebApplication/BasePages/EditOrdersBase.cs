@@ -208,7 +208,7 @@ namespace KVSWebApplication.BasePages
 
                     return new OrderViewModel()
                     {
-                        OrderNumber = ord.OrderNumber,
+                        OrderNumber = ord.Id,
                         customerId = ord.CustomerId,
                         CreateDate = ord.CreateDate,
                         Status = OrderStatuses.FirstOrDefault(o => o.Id == ord.Status).Name,
@@ -283,7 +283,7 @@ namespace KVSWebApplication.BasePages
 
                     return new OrderViewModel()
                     {
-                        OrderNumber = ord.OrderNumber,
+                        OrderNumber = ord.Id,
                         locationId = ord.LocationId.HasValue ? ord.LocationId.Value : 0,
                         customerId = ord.CustomerId,
                         CreateDate = ord.CreateDate,

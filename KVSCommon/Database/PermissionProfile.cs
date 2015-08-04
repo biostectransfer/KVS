@@ -60,30 +60,7 @@ namespace KVSCommon.Database
             dbContext.WriteLogItem("Rechteprofil " + name + " angelegt.", LogTypes.INSERT, profile.Id, "PermissionProfile");
             return profile;
         }
-
-        /// <summary>
-        /// Loescht das Rechteprofil mit der uebergebenen Id.
-        /// </summary>
-        /// <param name="id">Id des Rechteprofils.</param>
-        /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
-        public static void DeletePermissionProfileById(int id, KVSEntities dbContext)
-        {
-            var item = dbContext.PermissionProfile.SingleOrDefault(q => q.Id == id);
-            if (item == null)
-            {
-                throw new Exception("Es ist kein Rechteprofil mit der id " + id.ToString() + " vorhanden.");
-            }
-
-            foreach (var userProfile in item.UserPermissionProfile)
-            {
-                dbContext.WriteLogItem("Rechteprofil " + item.Name + " wurde dem Benutzer " + userProfile.User.Login + " entzogen, da das Rechteprofil gelöscht wurde.", LogTypes.UPDATE, userProfile.User.Id, "User");
-                item.UserPermissionProfile.Remove(userProfile);
-            }
-
-            dbContext.WriteLogItem("Rechteprofil " + item.Name + " wurde gelöscht.", LogTypes.DELETE, "PermissionProfile");
-            dbContext.PermissionProfile.DeleteOnSubmit(item);
-        }
-
+        
         /// <summary>
         /// Fuegt dem Rechteprofil das uebergebene Recht hinzu.
         /// </summary>

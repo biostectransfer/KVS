@@ -45,37 +45,7 @@ namespace KVSCommon.Database
                 return this.Name;
             }
         }
-        /// <summary>
-        /// Erstelle einen neuen Fahrzeughalter
-        /// </summary>
-        /// <param name="name">Nachname</param>
-        /// <param name="firstName">Vorname</param>
-        /// <param name="bankAccountId">ID der Bankverbindung</param>
-        /// <param name="contactId">ID des Kontaktdatensatzes</param>
-        /// <param name="adressId">ID der Adresse</param>
-        /// <param name="dbContext">DB Kontext</param>
-        /// <returns>CarOwner</returns>
-        public static CarOwner CreateCarOwner(string name, string firstName, BankAccount bankAccount, Contact contact, Adress adress, KVSEntities dbContext)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                ////throw new Exception("Der Name des Halters darf nicht leer sein.");
-            }
 
-            CarOwner owner = new CarOwner()
-            {
-                Name = name,
-                FirstName = firstName,
-                BankAccount = bankAccount,
-                Contact = contact,
-                Adress = adress
-            };
-
-            dbContext.CarOwner.InsertOnSubmit(owner);
-            dbContext.SubmitChanges();
-            dbContext.WriteLogItem("Halter " + name + " wurde angelegt.", LogTypes.INSERT, owner.Id, "CarOwner");
-            return owner;
-        }
         /// <summary>
         /// Aenderungsevents für die Historie
         /// </summary>

@@ -238,7 +238,7 @@ namespace KVSDataAccess.PDF
             }
 
             int i = 1;
-            var itemQuery = this.Invoice.InvoiceItem.Where(q => q.OrderItem != null).OrderBy(q => q.OrderItem.Order.OrderNumber).ThenBy(q => q.Name).ThenBy(q => q.OrderItem.IsAuthorativeCharge)
+            var itemQuery = this.Invoice.InvoiceItem.Where(q => q.OrderItem != null).OrderBy(q => q.OrderItem.Order.Id).ThenBy(q => q.Name).ThenBy(q => q.OrderItem.IsAuthorativeCharge)
                 .Union(this.Invoice.InvoiceItem.Where(q => q.OrderItem == null).OrderBy(q => q.Name));
 
             List<GroupedAppendix> grAppendixLine = new List<GroupedAppendix>();
@@ -255,7 +255,7 @@ namespace KVSDataAccess.PDF
                 if (item.OrderItem != null)
                 {
                     Order order = item.OrderItem.Order;
-                    ordernumber = order.OrderNumber.ToString();
+                    ordernumber = order.Id.ToString();
                     if (order.DeregistrationOrder != null)
                     {
                         vin = order.DeregistrationOrder.Vehicle.VIN;

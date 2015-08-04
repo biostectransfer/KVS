@@ -82,7 +82,7 @@ namespace KVSWebApplication.Customer
             RadComboBox rcbInvoiceType = ((RadComboBox)sender);
             rcbInvoiceType.Items.Clear();
             var types = from tp in dbContext.InvoiceTypes
-                        select new { Key = tp.ID, Value = tp.InvoiceTypeName };
+                        select new { Key = tp.Id, Value = tp.InvoiceTypeName };
             rcbInvoiceType.DataSource = types;
             rcbInvoiceType.DataBind();
             rcbInvoiceType.Items[0].Selected = true;

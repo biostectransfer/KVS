@@ -83,8 +83,8 @@ namespace KVSWebApplication.Abrechnung
                                     InvoiceSection = run.Id,
                                     CustomerId = run.CustomerId.HasValue ? run.CustomerId : (int?)null,
                                     CustomerName = run.CustomerId.HasValue ? CustomerManager.GetEntities().FirstOrDefault(o => o.Id == run.CustomerId.Value).Name : "Alle",
-                                    InvoiceTypeId = run.InvoiceTypeId.HasValue ? InvoiceTypesManager.GetEntities().FirstOrDefault(q => q.ID == run.InvoiceTypeId).ID.ToString() : "Alle",
-                                    InvoiceTypeName = run.InvoiceTypeId.HasValue ? InvoiceTypesManager.GetEntities().FirstOrDefault(q => q.ID == run.InvoiceTypeId).InvoiceTypeName : "Alle",
+                                    InvoiceTypeId = run.InvoiceTypeId.HasValue ? InvoiceTypesManager.GetEntities().FirstOrDefault(q => q.Id == run.InvoiceTypeId).Id.ToString() : "Alle",
+                                    InvoiceTypeName = run.InvoiceTypeId.HasValue ? InvoiceTypesManager.GetEntities().FirstOrDefault(q => q.Id == run.InvoiceTypeId).InvoiceTypeName : "Alle",
                                     CreateDate = run.CreateDate,
                                     FinishedDate = run.FinishedDate,
                                 });
@@ -107,7 +107,7 @@ namespace KVSWebApplication.Abrechnung
 
                 foreach (var items in InvoiceTypesManager.GetEntities().ToList())
                 {
-                    combo.Items.Add(new RadComboBoxItem(items.InvoiceTypeName, items.ID.ToString()));
+                    combo.Items.Add(new RadComboBoxItem(items.InvoiceTypeName, items.Id.ToString()));
                 }
 
                 combo.DataBind();
