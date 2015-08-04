@@ -13,6 +13,7 @@ using PdfSharp.Pdf.IO;
 using System.Transactions;
 using KVSCommon.Enums;
 using KVSWebApplication.BasePages;
+using KVSWebApplication.PrintServiceReference;
 
 namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 {
@@ -304,7 +305,9 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 }
                 else if(e.CommandName == "PrintColumn")
                 {
-                    ///todo
+                    //TODO
+                    var printServiceClient = new PrintServiceClient();
+                    printServiceClient.EmissionBadgePrint("lol");
                 }
 
                 CheckOpenedOrders();

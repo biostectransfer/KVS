@@ -9,7 +9,7 @@ using Unity.WebApi;
 
 namespace KVSWebApplication
 {
-    public class KVSWebApplication : HttpApplication
+    public class KVSWebApplicationInstance : HttpApplication
     {
         protected void Application_Start()
         {

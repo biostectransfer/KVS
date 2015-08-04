@@ -1,0 +1,3 @@
+@echo Lade "PET_Setup.msi"...
+@start PET_Setup.msi
+@exit

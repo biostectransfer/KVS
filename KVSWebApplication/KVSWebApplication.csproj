@@ -93,6 +93,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -154,7 +156,6 @@
     </Compile>
     <Compile Include="Abrechnung\AbrechnungSave.ascx.cs">
       <DependentUpon>AbrechnungSave.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Abrechnung\AbrechnungSave.ascx.designer.cs">
       <DependentUpon>AbrechnungSave.ascx</DependentUpon>
@@ -247,6 +248,7 @@
     </Compile>
     <Compile Include="Auftragseingang\AbmeldungGrosskundeControl.ascx.cs">
       <DependentUpon>AbmeldungGrosskundeControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Auftragseingang\AbmeldungGrosskundeControl.ascx.designer.cs">
       <DependentUpon>AbmeldungGrosskundeControl.ascx</DependentUpon>
@@ -260,6 +262,7 @@
     </Compile>
     <Compile Include="Auftragseingang\AbmeldungLaufkundeControl.ascx.cs">
       <DependentUpon>AbmeldungLaufkundeControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Auftragseingang\AbmeldungLaufkundeControl.ascx.designer.cs">
       <DependentUpon>AbmeldungLaufkundeControl.ascx</DependentUpon>
@@ -285,6 +288,7 @@
     </Compile>
     <Compile Include="Auftragseingang\NeuzulassungGrosskundeControl.ascx.cs">
       <DependentUpon>NeuzulassungGrosskundeControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Auftragseingang\NeuzulassungGrosskundeControl.ascx.designer.cs">
       <DependentUpon>NeuzulassungGrosskundeControl.ascx</DependentUpon>
@@ -298,6 +302,7 @@
     </Compile>
     <Compile Include="Auftragseingang\ZulassungLaufkundeControl.ascx.cs">
       <DependentUpon>ZulassungLaufkundeControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Auftragseingang\ZulassungLaufkundeControl.ascx.designer.cs">
       <DependentUpon>ZulassungLaufkundeControl.ascx</DependentUpon>
@@ -529,6 +534,11 @@
       <DependentUpon>Product_Details.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="RequiredField\RequiredField_Details.aspx.cs">
       <DependentUpon>RequiredField_Details.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -542,6 +552,11 @@
     </Compile>
     <Compile Include="Search\search.aspx.designer.cs">
       <DependentUpon>search.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\PrintServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Statistic\statistic.aspx.cs">
       <DependentUpon>statistic.aspx</DependentUpon>
@@ -682,6 +697,13 @@
     <Content Include="Scripts\lieferscheine_zul.js" />
     <Content Include="Scripts\scripts.js" />
     <Content Include="Search\search.aspx" />
+    <None Include="Service References\PrintServiceReference\PrintService.disco" />
+    <None Include="Service References\PrintServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\PrintServiceReference\configuration.svcinfo" />
+    <None Include="Service References\PrintServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
     <Content Include="Statistic\statistic.aspx" />
     <Content Include="Styles\auftragseingang.css" />
     <Content Include="Styles\CustomerStyle.css" />
@@ -693,6 +715,10 @@
     <Content Include="Styles\styles_old.css" />
     <Content Include="Styles\zulassungstelle.css" />
     <Content Include="User\CreateUser.aspx" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <Content Include="web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -711,6 +737,13 @@
     <None Include="KlassenDiagrammAbrechnung.cd" />
     <None Include="NachbearbeitungAbmeldung.cd" />
     <None Include="Properties\PublishProfiles\Profil1.pubxml" />
+    <None Include="Service References\PrintServiceReference\PetService.wsdl" />
+    <None Include="Service References\PrintServiceReference\PrintService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\PrintServiceReference\PrintService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -724,10 +757,17 @@
       <Project>{dcaf74f7-2c84-4021-9d0f-69b51cc5124e}</Project>
       <Name>KVSConfiguration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\KVSContracts\KVSContracts.csproj">
+      <Project>{2baeb4bd-df06-41e3-a541-af6d2e806f44}</Project>
+      <Name>KVSContracts</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_GlobalResources\" />
     <Folder Include="UserData\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\PrintServiceReference\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -751,9 +791,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>56637</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:14652/</IISUrl>
+          <IISUrl>http://localhost:14655/</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://localhost:14652/</IISAppRootUrl>
+          <IISAppRootUrl>http://localhost:14655/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -761,7 +801,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties UseAjaxifiedTemplates="True" UseJQuerySupport="True" />
+      <UserProperties UseJQuerySupport="True" UseAjaxifiedTemplates="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

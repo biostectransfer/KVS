@@ -1,1 +1,1 @@
-﻿<%@ Application Codebehind="Global.asax.cs" Inherits="KVSWebApplication.KVSWebApplication" Language="C#" %>
+﻿<%@ Application Codebehind="Global.asax.cs" Inherits="KVSWebApplication.KVSWebApplicationInstance" Language="C#" %>

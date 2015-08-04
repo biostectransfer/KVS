@@ -1,0 +1,15 @@
+PET Version 1.1.0
+
+Wichtige Info:
+Führen Sie unbedingt die VS-FSP_Setup.msi als Administrator aus.
+Die VS-FSP.exe wird später auch Adminrechte verlangen, sonst ist es nicht möglich die LogDatenbank.csv zu schreiben. 
+
+Changelog:
+- Die Auswertung der Feinstaubplaketten wird jetzt anhand einer CSV-Datei (Emissionsschluessel.csv) als Datenbank durchgeführt
+- Die Log Datenbank ist jetzt eine CSV-Datei (LogDatenbank.csv) statt einer SQLExpress
+	- Daher SQLExpress installation nicht mehr nötig
+	- Der Pfad zur LogDatenbank.csv kann in der "Feinstaubplaketten-Programm VS-FSP.exe.config" geändert werden
+- Die Eingabe der Emissionsschlüssel wird jetzt in einer Textbox getätigt, das Dropdown-Menü wurde entfernt
+	- Maximal 2 Zeichen möglich
+- Der Excel-Export-Button wurde aus der Datenansicht entfernt, da csv-Dateien in Excel aufrufbar sind
+- Diverse kleine Bugfixes im Layout bei verschiedenen Aktionen...
