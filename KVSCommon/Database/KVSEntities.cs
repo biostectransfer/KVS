@@ -44,7 +44,7 @@ namespace KVSCommon.Database
                 throw new Exception("Der Tabellenname darf nicht leer sein.");
             }
 
-            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, null, tableName, null, null));
+            //TODO this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, null, tableName, null, null));
         }
 
         partial void OnCreated()
@@ -66,7 +66,7 @@ namespace KVSCommon.Database
         /// <param name="type">Typ des Logeintrages.</param>
         public void WriteLogItem(string logText, LogTypes type)
         {
-            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, null, null, null, null));
+            //TODO this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, null, null, null, null));
         }
 
         /// <summary>
@@ -80,9 +80,9 @@ namespace KVSCommon.Database
         /// <param name="childReferenceId">Id des untergeordneten Datensatzes.</param>
         public void WriteLogItem(string logText, LogTypes type, int referenceId, string tableName, string propertyName, int childReferenceId)
         {
-            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, propertyName, childReferenceId));
+            //TODO this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, propertyName, childReferenceId));
         }
-        
+
         /// <summary>
         /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
         /// </summary>
@@ -102,7 +102,7 @@ namespace KVSCommon.Database
                 throw new Exception("Der Tabellenname darf nicht leer sein.");
             }
 
-            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, null, null));
+            //TODO this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, null, null));
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace KVSCommon.Database
                 throw new Exception("Die ChildReferenceId darf nicht leer sein.");
             }
 
-            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, null, childReferenceId));
+            //TODO this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, null, childReferenceId));
         }
 
         /// <summary>
@@ -158,9 +158,9 @@ namespace KVSCommon.Database
                 throw new Exception("Der Feldname darf nicht leer sein.");
             }
 
-            this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, propertyName, null));
+            //TODO this.Systemlog.InsertOnSubmit(this.GetLogItem(logText, type, referenceId, tableName, propertyName, null));
         }
-        
+
         /// <summary>
         /// Erstellt einen neuen Logeintrag.
         /// </summary>
@@ -173,15 +173,16 @@ namespace KVSCommon.Database
         /// <returns>Den Logeintrag.</returns>
         internal Systemlog GetLogItem(string logText, LogTypes type, int? referenceId, string tableName, string propertyName, int? childReferenceId)
         {
-            if (this.LogUserId.HasValue == false)
-            {
-                throw new Exception("LogUserId wurde nicht gesetzt.");
-            }
+            //TODO
+            //if (this.LogUserId.HasValue == false)
+            //{
+            //    throw new Exception("LogUserId wurde nicht gesetzt.");
+            //}
 
-            if (string.IsNullOrEmpty(logText))
-            {
-                throw new Exception("Der LogText darf nicht leer sein.");
-            }
+            //if (string.IsNullOrEmpty(logText))
+            //{
+            //    throw new Exception("Der LogText darf nicht leer sein.");
+            //}
 
             return new Systemlog()
             {

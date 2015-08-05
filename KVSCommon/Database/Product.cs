@@ -59,23 +59,23 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnValidate(System.Data.Linq.ChangeAction action)
         {
-            if (action == System.Data.Linq.ChangeAction.Insert)
-            {
-                KVSEntities dbContext;
-                if (_dbContext != null)
-                {
-                    dbContext = _dbContext;
-                }
-                else
-                {
-                    dbContext = new KVSEntities();
-                }
+            //if (action == System.Data.Linq.ChangeAction.Insert)
+            //{
+            //    KVSEntities dbContext;
+            //    if (_dbContext != null)
+            //    {
+            //        dbContext = _dbContext;
+            //    }
+            //    else
+            //    {
+            //        dbContext = new KVSEntities();
+            //    }
              
-                    if (dbContext.Product.Any(q => q.Name == this.Name && q.ItemNumber == this.ItemNumber))
-                    {
-                        throw new Exception("Es existiert bereits ein Produkt mit Namen " + this.Name + " und der Artikelnummer " + this.ItemNumber + " . ");
-                    }
-            }
+            //        if (dbContext.Product.Any(q => q.Name == this.Name && q.ItemNumber == this.ItemNumber))
+            //        {
+            //            throw new Exception("Es existiert bereits ein Produkt mit Namen " + this.Name + " und der Artikelnummer " + this.ItemNumber + " . ");
+            //        }
+            //}
         }
         /// <summary>
         /// Aenderungsevents für die Historie
@@ -83,7 +83,7 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnNameChanging(string value)
         {
-            this.WriteUpdateLogItem("Name", this.Name, value);
+            this.WriteUpdateLogItem("Name", this.Name, value);            
         }
         /// <summary>
         /// Aenderungsevents für die Historie
@@ -91,26 +91,26 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnProductCategoryIdChanging(int? value)
         {
-            if (this.EntityState != Database.EntityState.New)
-            {
-                this.CheckLoggingPossible();
-                if (this.ProductCategoryId.HasValue)
-                {
-                    if (value.HasValue)
-                    {
-                        this.LogDBContext.WriteLogItem("Zuordnung des Produkts " + this.Name + " von Kategorie " + this.ProductCategory.Name + " zu  " + this.LogDBContext.ProductCategory.Single(q => q.Id == value.Value).Name + " geändert.", LogTypes.UPDATE, this.Id, "Product", value.Value);
-                    }
-                    else
-                    {
-                        this.LogDBContext.WriteLogItem("Zuordnung des Produkts " + this.Name + " zu Kategorie " + this.ProductCategory.Name + " aufgehoben.", LogTypes.UPDATE, this.Id, "Product", this.ProductCategoryId.Value);
-                    }
-                }
-                else
-                {
-                    ProductCategory category = this.LogDBContext.ProductCategory.Single(q => q.Id == value.Value);
-                    this.LogDBContext.WriteLogItem("Produkt wurde der Kategorie " + category.Name + " zugeordnet.", LogTypes.UPDATE, this.Id, "Product", category.Id);
-                }
-            }
+            //if (this.EntityState != Database.EntityState.New)
+            //{
+            //    this.CheckLoggingPossible();
+            //    if (this.ProductCategoryId.HasValue)
+            //    {
+            //        if (value.HasValue)
+            //        {
+            //            this.LogDBContext.WriteLogItem("Zuordnung des Produkts " + this.Name + " von Kategorie " + this.ProductCategory.Name + " zu  " + this.LogDBContext.ProductCategory.Single(q => q.Id == value.Value).Name + " geändert.", LogTypes.UPDATE, this.Id, "Product", value.Value);
+            //        }
+            //        else
+            //        {
+            //            this.LogDBContext.WriteLogItem("Zuordnung des Produkts " + this.Name + " zu Kategorie " + this.ProductCategory.Name + " aufgehoben.", LogTypes.UPDATE, this.Id, "Product", this.ProductCategoryId.Value);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        ProductCategory category = this.LogDBContext.ProductCategory.Single(q => q.Id == value.Value);
+            //        this.LogDBContext.WriteLogItem("Produkt wurde der Kategorie " + category.Name + " zugeordnet.", LogTypes.UPDATE, this.Id, "Product", category.Id);
+            //    }
+            //}
         }
         /// <summary>
         /// Aenderungsevents für die Historie
@@ -126,7 +126,7 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnOrderTypeIdChanging(int value)
         {
-            this.WriteUpdateLogItem("Auftragsart", this.OrderTypeId, value);
+            //this.WriteUpdateLogItem("Auftragsart", this.OrderTypeId, value);
         }
         /// <summary>
         /// Aenderungsevents für die Historie
@@ -134,7 +134,7 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnRegistrationOrderTypeIdChanging(int? value)
         {
-            this.WriteUpdateLogItem("Zulassungsauftragsart", this.RegistrationOrderTypeId, value);
+            //this.WriteUpdateLogItem("Zulassungsauftragsart", this.RegistrationOrderTypeId, value);
         }
         /// <summary>
         /// Aenderungsevents für die Historie
@@ -142,7 +142,7 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnNeedsVATChanging(bool value)
         {
-            this.WriteUpdateLogItem("Mehrwertsteuerpflicht", this.NeedsVAT, value);
+            //this.WriteUpdateLogItem("Mehrwertsteuerpflicht", this.NeedsVAT, value);
         }
         /// <summary>
         /// Aenderungsevents für die Historie
@@ -150,7 +150,7 @@ namespace KVSCommon.Database
         /// <param name="value"></param>
         partial void OnIsLockedChanging(bool value)
         {
-            this.WriteUpdateLogItem("Gesperrt", this.IsLocked, value);
+            //this.WriteUpdateLogItem("Gesperrt", this.IsLocked, value);
         }
    
     }

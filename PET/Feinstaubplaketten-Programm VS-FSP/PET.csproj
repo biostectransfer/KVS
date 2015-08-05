@@ -92,6 +92,10 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="vsmacrohierarchylib">
+      <HintPath>..\..\packages\vsmacrohierarchylib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Feinstaubplaketten Datenbestand.cs">
@@ -153,7 +157,10 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="app.manifest" />
+    <None Include="autorun.bat" />
     <None Include="Emissionsschluessel.csv" />
+    <None Include="LogDatenbank.csv" />
     <None Include="PET.manifest">
       <SubType>Designer</SubType>
     </None>
@@ -166,6 +173,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="schema.ini" />
     <None Include="Service References\CAB\cabPrinterWebService.wsdl" />
   </ItemGroup>
   <ItemGroup>
@@ -187,27 +195,21 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-    <COMReference Include="VsMacroHierarchyLib">
-      <Guid>{7E3345DA-F4A0-11DD-ADC8-255356D89593}</Guid>
-      <VersionMajor>10</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Plaketten\" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="autorun.inf" />
     <Content Include="gelb.png" />
     <Content Include="gruen.png" />
     <Content Include="index.png" />
+    <Content Include="Plaketten\gelb.png" />
+    <Content Include="Plaketten\gruen.png" />
+    <Content Include="Plaketten\rot.png" />
     <Content Include="Resources\kfz-voll-mit-raste-.jpg" />
     <Content Include="rot.png" />
     <Content Include="vs-fsp.ico" />
     <Content Include="WebService\PetService.svc" />
+    <Content Include="Wichtige Info &amp; Changelog - PET Version 1.1.0.txt" />
     <None Include="Service References\CAB\PET.CAB.format.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

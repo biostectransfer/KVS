@@ -35,6 +35,16 @@ namespace KVSCommon.Entities
         void WriteLogItem(string logText, LogTypes type, int referenceId, string tableName, int childReferenceId);
 
         /// <summary>
+        /// Fügt dem Datenbankkontext einen Logeintrag hinzu.
+        /// </summary>
+        /// <param name="logText">Text fьr den Logeintrag.</param>
+        /// <param name="type">Typ des Logeintrages.</param>
+        /// <param name="referenceId">Id des betroffenen Datensatzes.</param>
+        /// <param name="tableName">Tabellenname des betroffenen Datensatzes.</param>
+        /// <param name="propertyName">Name des betroffenen Feldes des Datensatzes.</param>
+        void WriteLogItem(string logText, LogTypes type, int referenceId, string tableName, string propertyName);
+
+        /// <summary>
         ///     Gets set of entities
         /// </summary>
         /// <typeparam name="TEntity">type of entities</typeparam>

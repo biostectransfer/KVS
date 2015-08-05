@@ -212,19 +212,19 @@ indem Sie diese MSBuild-Datei bearbeiten. Besuchen Sie "http://go.microsoft.com/
       <publishTime>07/24/2015 19:33:24</publishTime>
     </File>
     <File Include="bin/KVSCommon.dll">
-      <publishTime>08/04/2015 18:14:52</publishTime>
+      <publishTime>08/05/2015 08:39:50</publishTime>
     </File>
     <File Include="bin/KVSConfiguration.dll">
-      <publishTime>08/04/2015 18:14:53</publishTime>
+      <publishTime>08/05/2015 08:39:51</publishTime>
     </File>
     <File Include="bin/KVSContracts.dll">
-      <publishTime>08/04/2015 18:14:51</publishTime>
+      <publishTime>08/05/2015 08:39:50</publishTime>
     </File>
     <File Include="bin/KVSDataAccess.dll">
-      <publishTime>08/04/2015 18:14:53</publishTime>
+      <publishTime>08/05/2015 08:39:51</publishTime>
     </File>
     <File Include="bin/KVSWebApplication.dll">
-      <publishTime>08/04/2015 18:14:55</publishTime>
+      <publishTime>08/05/2015 08:39:52</publishTime>
     </File>
     <File Include="bin/Microsoft.Practices.ServiceLocation.dll">
       <publishTime>07/24/2015 19:54:40</publishTime>
@@ -518,7 +518,7 @@ indem Sie diese MSBuild-Datei bearbeiten. Besuchen Sie "http://go.microsoft.com/
       <publishTime>05/06/2014 11:17:24</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>08/04/2015 11:39:15</publishTime>
+      <publishTime>08/05/2015 08:10:09</publishTime>
     </File>
   </ItemGroup>
 </Project>

@@ -29,7 +29,7 @@ namespace KVSWebApplication.BasePages
         protected IEnumerable<OrderType> OrderTypesCollection { get; set; }
         protected IEnumerable<ProductCategory> ProductCategoryCollection { get; set; }
         protected IEnumerable<RegistrationOrderType> RegistrationOrderTypeCollection { get; set; }
-        
+
 
         PageStatePersister _pers;
         protected override PageStatePersister PageStatePersister
@@ -44,7 +44,13 @@ namespace KVSWebApplication.BasePages
             }
         }
 
-        public BasePage()
+        protected override void OnInit(EventArgs e)
+        {
+            InitializeManagers();
+            base.OnInit(e);
+        }
+
+        protected void InitializeManagers()
         {
             BicManager = (IBicManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IBicManager));
             UserManager = (IUserManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IUserManager));
@@ -75,9 +81,9 @@ namespace KVSWebApplication.BasePages
             PackingListManager = (IPackingListManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IPackingListManager));
             ProductCategoryManager = (IProductCategoryManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IProductCategoryManager));
             InvoiceTypesManager = (IInvoiceTypesManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IInvoiceTypesManager));
-            DocumentManager = (IDocumentManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IDocumentManager)); 
+            DocumentManager = (IDocumentManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IDocumentManager));
 
-             OrderStatuses = OrderStatusManager.GetEntities().ToList();
+            OrderStatuses = OrderStatusManager.GetEntities().ToList();
             OrderTypesCollection = OrderTypeManager.GetEntities().ToList();
             ProductCategoryCollection = ProductCategoryManager.GetEntities().ToList();
             RegistrationOrderTypeCollection = RegistrationOrderTypeManager.GetEntities().ToList();

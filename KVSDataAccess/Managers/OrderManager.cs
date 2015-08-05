@@ -76,7 +76,8 @@ namespace KVSDataAccess.Managers
 
             if (amount != "kein Preis")
             {
-                if (!EmptyStringIfNull.IsNumber(amount))
+                decimal temp;
+                if (!decimal.TryParse(amount, out temp))
                     throw new Exception("Achtung, Sie haben keinen gültigen Preis eingegeben");
 
                 string amoutToSave = amount;

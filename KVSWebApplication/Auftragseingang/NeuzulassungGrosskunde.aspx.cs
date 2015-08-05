@@ -8,29 +8,21 @@ using KVSCommon.Database;
 using Telerik.Web.UI;
 using System.IO;
 using System.Configuration;
+using KVSWebApplication.BasePages;
+using System.Web.Http;
+using KVSCommon.Managers;
+
 namespace KVSWebApplication.Auftragseingang
 {
     /// <summary>
     /// Hauptmaske Neuzulassung Grosskunde
     /// </summary>
-    public partial class NeuzulassungGrosskunde : System.Web.UI.Page
+    public partial class NeuzulassungGrosskunde : BasePage
     {
-        PageStatePersister _pers;
-        List<Control> controls = new List<Control>();
-        protected override PageStatePersister PageStatePersister
-        {
-            get
-            {
-                if (_pers == null)
-                {
-                    _pers = new SessionPageStatePersister(Page);
-                }
-                return _pers;
-            }
-        }
         protected void Page_Load(object sender, EventArgs e)
         {
         }
+
         public RadScriptManager getScriptManager()
         {
             return RadScriptManager1;

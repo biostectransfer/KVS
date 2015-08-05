@@ -141,7 +141,7 @@ namespace KVSDataAccess.Managers
         /// <param name="isChecked"></param>
         public void UpdateCustomerProducts(int customerId, int productId, bool isChecked)
         {
-            var customerProducts = GetCustomerProducts(customerId, productId);
+            var customerProducts = GetCustomerProducts(customerId, productId).FirstOrDefault();
 
             if (customerProducts != null) // exists
             {
