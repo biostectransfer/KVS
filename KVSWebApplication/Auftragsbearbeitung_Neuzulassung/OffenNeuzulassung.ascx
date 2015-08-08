@@ -1,6 +1,11 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="OffenNeuzulassung.ascx.cs" Inherits="KVSWebApplication.Auftragsbearbeitung_Neuzulassung.OffenNeuzulassung" %>
 <%@ Register TagPrefix="telerik" Namespace="Telerik.Web.UI" Assembly="Telerik.Web.UI" %>
 
+
+<%-- Register the WebClientPrint script code --%>
+<%=Neodynamic.SDK.Web.WebClientPrint.CreateScript("http://localhost/KVSWebApplication/Auftragsbearbeitung_Neuzulassung/Print.ashx")%>
+
+
 <telerik:RadCodeBlock ID="RadCodeBlock1" runat="server">
     <script type="text/javascript">
 
@@ -262,8 +267,17 @@
             <CommandItemSettings ShowAddNewRecordButton="false" ShowRefreshButton="true" />
             <Columns>
                 <telerik:GridEditCommandColumn ButtonType="PushButton" EditText="Ändern" UniqueName="EditOffenColumn" />
-                <telerik:GridButtonColumn CommandName="PrintColumn"  ButtonType="PushButton" Text="Feinstaubplaketten Druck" UniqueName="PrintColumn" />
-
+                
+                <telerik:GridTemplateColumn HeaderText="" HeaderButtonType="None" AllowFiltering="false"
+                    HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center"
+                    AutoPostBackOnFilter="false">
+                    <ItemTemplate>
+                        <a class="rfdSkinnedButton">
+                            <input tabindex="-1" class="rfdDecorated" onclick="javascript:jsWebClientPrint.print('licenceNumber=<%#  DataBinder.Eval(Container, "DataItem.Kennzeichen").ToString() %>');" type="button" value="Feinstaubplaketten Druck">
+                        </a>
+                    </ItemTemplate>
+                </telerik:GridTemplateColumn>
+                
                 <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderNumber" HeaderText="Auftragsnummer"
                     SortExpression="OrderNumber"   UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">

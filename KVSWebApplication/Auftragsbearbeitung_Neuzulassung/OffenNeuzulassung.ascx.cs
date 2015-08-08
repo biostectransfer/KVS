@@ -14,6 +14,7 @@ using System.Transactions;
 using KVSCommon.Enums;
 using KVSWebApplication.BasePages;
 using KVSWebApplication.PrintServiceReference;
+using Neodynamic.SDK.Web;
 
 namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 {
@@ -303,9 +304,9 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         itemIndexHiddenField.Value = dataItem.ItemIndex.ToString();
                     }
                 }
-                else if(e.CommandName == "PrintColumn")
+                else if (e.CommandName == "PrintColumn")
                 {
-                    //TODO
+                    //TODO delete whole case because it is printed with printing component WebClientPrint
                     if (e.Item is GridDataItem)
                     {
                         var button = sender as RadButton;
@@ -518,7 +519,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     kennzeichen = string.Empty,
                     HSN = string.Empty,
                     TSN = string.Empty;
-                
+
                 var editButton = sender as Button;
                 var item = editButton.NamingContainer as GridEditFormItem;
 
@@ -531,7 +532,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 var TSNBox = item.FindControl("TSNAbmBox") as TextBox;
 
                 var orderNumber = Int32.Parse(orderIdBox.Text);
-                
+
                 ZulassungErrLabel.Visible = false;
 
                 if (errorCheckBox.Checked) // falls Auftrag als Fehler gemeldet sollte
@@ -642,7 +643,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         #endregion
 
         #region Methods
-        
+
         protected override void CheckOpenedOrders()
         {
             var count = GetUnfineshedOrdersCount(OrderTypes.Admission, OrderStatusTypes.Open);
