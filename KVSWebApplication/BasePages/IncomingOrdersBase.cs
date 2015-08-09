@@ -23,7 +23,7 @@ namespace KVSWebApplication.BasePages
     public abstract class IncomingOrdersBase : BaseUserControl
     {
         #region Members
-        
+
         #region Common
 
         //TODO protected abstract HiddenField SessionId { get; }
@@ -66,7 +66,7 @@ namespace KVSWebApplication.BasePages
 
         protected abstract RadTextBox AccountNumberTextBox { get; }
         protected abstract RadTextBox BankCodeTextBox { get; }
-        protected abstract RadTextBox BankNameTextBox { get;  }
+        protected abstract RadTextBox BankNameTextBox { get; }
         protected abstract RadTextBox IBANTextBox { get; }
         protected abstract RadTextBox BICTextBox { get; }
         protected abstract RadTextBox Adress_Street_TextBox { get; }
@@ -141,7 +141,7 @@ namespace KVSWebApplication.BasePages
         protected abstract Label AdditionalInfoCaption { get; }
         protected abstract Label LocationWindowCaption { get; }
         #endregion
-        
+
         #endregion
 
         #region Event Handlers
@@ -174,7 +174,7 @@ namespace KVSWebApplication.BasePages
         // Create new Adress in der DatenBank
         protected void OnAddAdressButton_Clicked(object sender, EventArgs e)
         {
-            if(InvoiceValidator != null)
+            if (InvoiceValidator != null)
                 InvoiceValidator.Enabled = false;
 
             var street = Street_TextBox.Text;
@@ -186,7 +186,7 @@ namespace KVSWebApplication.BasePages
 
             try
             {
-                var newAdress = AdressManager.CreateAdress(street, streetNumber, zipcode, city, country);                
+                var newAdress = AdressManager.CreateAdress(street, streetNumber, zipcode, city, country);
                 var newInvoice = InvoiceManager.CreateInvoice(invoiceRecipient, newAdress,
                     Int32.Parse(CustomerDropDown.SelectedValue), Discount.Value, InvoiceType.Single);
 
@@ -264,7 +264,7 @@ namespace KVSWebApplication.BasePages
                 newPrice = PriceManager.GetEntities(q => q.ProductId == productId && q.LocationId == locationId).FirstOrDefault();
             }
 
-            if (LocationDropDown == null || 
+            if (LocationDropDown == null ||
                (LocationDropDown != null && String.IsNullOrEmpty(this.LocationDropDown.SelectedValue)) || newPrice == null)
             {
                 newPrice = PriceManager.GetEntities(q => q.ProductId == productId && q.LocationId == null).FirstOrDefault();
@@ -420,7 +420,7 @@ namespace KVSWebApplication.BasePages
 
             return fields;
         }
-        
+
         protected void ShowControls()
         {
             foreach (Control control in GetAllControls())
@@ -515,13 +515,13 @@ namespace KVSWebApplication.BasePages
             CustomerDropDown.ClearSelection();
             ProductDropDown.ClearSelection();
 
-            if(LocationDropDown != null)
+            if (LocationDropDown != null)
                 LocationDropDown.ClearSelection();
 
-            if(CostCenterDropDown != null)
+            if (CostCenterDropDown != null)
                 CostCenterDropDown.ClearSelection();
-            
-            if(RegistrationOrderDropDown != null)
+
+            if (RegistrationOrderDropDown != null)
                 RegistrationOrderDropDown.ClearSelection();
 
             AdmissionPointDropDown.ClearSelection();
@@ -550,7 +550,7 @@ namespace KVSWebApplication.BasePages
         {
 
         }
-        
+
         // find all showed checkboxes and check are they empty or not
         protected virtual bool CheckIfBoxenEmpty()
         {
@@ -637,8 +637,43 @@ namespace KVSWebApplication.BasePages
 
         protected CarOwner GetCarOwner()
         {
-            var newAdress = AdressManager.CreateAdress(Adress_Street_TextBox.Text, Adress_StreetNumber_TextBox.Text, Adress_Zipcode_TextBox.Text,
+            Adress newAdress = null;
+
+            if (LocationDropDown != null && 
+                !String.IsNullOrEmpty(LocationDropDown.SelectedValue) && 
+                !String.IsNullOrEmpty(CustomerDropDown.SelectedValue))
+            {
+                var location = LocationManager.GetEntities(q => q.Id == Int32.Parse(LocationDropDown.SelectedValue) &&
+                    q.CustomerId == Int32.Parse(CustomerDropDown.SelectedValue)).FirstOrDefault();
+
+                if (location != null && location.LargeCustomer != null && location.Adress != null)
+                {
+                    //adress should contains anything not empty and shouldnt be equal location adress
+                    if (String.IsNullOrEmpty(Adress_Street_TextBox.Text) &&
+                       String.IsNullOrEmpty(Adress_StreetNumber_TextBox.Text) &&
+                       String.IsNullOrEmpty(Adress_Zipcode_TextBox.Text) &&
+                       String.IsNullOrEmpty(Adress_City_TextBox.Text) &&
+                       String.IsNullOrEmpty(Adress_Country_TextBox.Text))
+                    {
+                        newAdress = location.Adress;
+                    }
+                    else if (Adress_Street_TextBox.Text.ToLower() == location.Adress.Street.ToLower() &&
+                             Adress_StreetNumber_TextBox.Text.ToLower() == location.Adress.StreetNumber.ToLower() &&
+                             Adress_Zipcode_TextBox.Text.ToLower() == location.Adress.Zipcode.ToLower() &&
+                             Adress_City_TextBox.Text.ToLower() == location.Adress.City.ToLower() &&
+                             Adress_Country_TextBox.Text.ToLower() == location.Adress.Country.ToLower())
+                    {
+                        newAdress = location.Adress;
+                    }
+                }
+            }
+
+            if (newAdress == null)
+            {
+                newAdress = AdressManager.CreateAdress(Adress_Street_TextBox.Text, Adress_StreetNumber_TextBox.Text, Adress_Zipcode_TextBox.Text,
                                     Adress_City_TextBox.Text, Adress_Country_TextBox.Text);
+            }
+
             // another logic after new/existing Vehicle
             var newContact = ContactManager.CreateContact(Contact_Phone_TextBox.Text, Contact_Fax_TextBox.Text, Contact_MobilePhone_TextBox.Text, Contact_Email_TextBox.Text);
             var newBankAccount = BankAccountManager.CreateBankAccount(BankNameTextBox.Text, AccountNumberTextBox.Text,
@@ -695,7 +730,7 @@ namespace KVSWebApplication.BasePages
             ScriptManager.RegisterStartupScript(Page, Page.GetType(), "finishedMessage", "alert('Auftrag wurde erfolgreich angelegt.');", true);
         }
 
-        protected void ProcessRegistrationOrderForSmallCustomer(RegistrationOrder newRegistrationOrder, Registration newRegistration, Vehicle newVehicle, 
+        protected void ProcessRegistrationOrderForSmallCustomer(RegistrationOrder newRegistrationOrder, Registration newRegistration, Vehicle newVehicle,
             RegistrationOrderTypes registrationOrderType, bool generateInvoice)
         {
             AddAnotherProducts(newRegistrationOrder, null);
@@ -716,7 +751,7 @@ namespace KVSWebApplication.BasePages
                 ScriptManager.RegisterStartupScript(Page, Page.GetType(), "finishedMessage", "alert('Auftrag wurde erfolgreich angelegt.');", true);
             }
         }
-        
+
         protected void MakeInvoiceForSmallCustomer(int orderNumber)
         {
             try
@@ -749,7 +784,7 @@ namespace KVSWebApplication.BasePages
                 ErrorLeereTextBoxenCaption.Visible = true;
             }
         }
-        
+
         // getting adress from small customer
         protected void SetValuesForAdressWindow()
         {
@@ -819,7 +854,7 @@ namespace KVSWebApplication.BasePages
                 InvoiceItemAccountItemManager.CreateAccounts(newInvoice);
                 InvoiceManager.Print(newInvoice, stream, "", Convert.ToString(ConfigurationManager.AppSettings["DefaultAccountNumber"]));
 
-                string fileName = "Rechnung_" + newInvoice.InvoiceNumber.Number + "_" + 
+                string fileName = "Rechnung_" + newInvoice.InvoiceNumber.Number + "_" +
                     newInvoice.CreateDate.Day + "_" + newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + ".pdf";
                 string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
 
@@ -834,7 +869,7 @@ namespace KVSWebApplication.BasePages
                 OpenPrintfile(fileName);
             }
         }
-        
+
         #endregion
 
         #region Private Methods
