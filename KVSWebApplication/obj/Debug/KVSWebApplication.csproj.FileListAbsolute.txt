@@ -40,6 +40,7 @@ E:\CASE Komplett\KVSWebApplication\bin\System.Web.Optimization.xml
 E:\CASE Komplett\KVSWebApplication\obj\Debug\KVSWebApplication.csprojResolveAssemblyReference.cache
 E:\CASE Komplett\KVSWebApplication\obj\Debug\KVSWebApplication.dll
 E:\CASE Komplett\KVSWebApplication\obj\Debug\KVSWebApplication.pdb
+G:\Escoda\KVSWebApplication\bin\license.elic.xml
 G:\Escoda\KVSWebApplication\bin\KVSWebApplication.dll.config
 G:\Escoda\KVSWebApplication\bin\KVSWebApplication.dll
 G:\Escoda\KVSWebApplication\bin\KVSWebApplication.pdb
@@ -53,8 +54,13 @@ G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.RegistrationByConventi
 G:\Escoda\KVSWebApplication\bin\Microsoft.Web.Infrastructure.dll
 G:\Escoda\KVSWebApplication\bin\MigraDoc.DocumentObjectModel-WPF.dll
 G:\Escoda\KVSWebApplication\bin\MigraDoc.Rendering-WPF.dll
+G:\Escoda\KVSWebApplication\bin\Neodynamic.SDK.WebClientPrint.dll
 G:\Escoda\KVSWebApplication\bin\Newtonsoft.Json.dll
 G:\Escoda\KVSWebApplication\bin\PdfSharp-WPF.dll
+G:\Escoda\KVSWebApplication\bin\Spire.Barcode.dll
+G:\Escoda\KVSWebApplication\bin\Spire.Doc.dll
+G:\Escoda\KVSWebApplication\bin\Spire.License.dll
+G:\Escoda\KVSWebApplication\bin\Spire.Pdf.dll
 G:\Escoda\KVSWebApplication\bin\System.Net.Http.Formatting.dll
 G:\Escoda\KVSWebApplication\bin\System.Web.Http.dll
 G:\Escoda\KVSWebApplication\bin\System.Web.Http.WebHost.dll
@@ -65,6 +71,7 @@ G:\Escoda\KVSWebApplication\bin\WebActivatorEx.dll
 G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.Mvc.dll
 G:\Escoda\KVSWebApplication\bin\KVSDataAccess.dll
 G:\Escoda\KVSWebApplication\bin\System.Web.Mvc.dll
+G:\Escoda\KVSWebApplication\bin\Microsoft.mshtml.dll
 G:\Escoda\KVSWebApplication\bin\System.Web.Razor.dll
 G:\Escoda\KVSWebApplication\bin\System.Web.WebPages.Razor.dll
 G:\Escoda\KVSWebApplication\bin\System.Web.WebPages.dll
@@ -77,6 +84,8 @@ G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.xml
 G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.Configuration.xml
 G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.RegistrationByConvention.xml
 G:\Escoda\KVSWebApplication\bin\Newtonsoft.Json.xml
+G:\Escoda\KVSWebApplication\bin\Spire.Doc.xml
+G:\Escoda\KVSWebApplication\bin\Spire.License.xml
 G:\Escoda\KVSWebApplication\bin\System.Net.Http.Formatting.xml
 G:\Escoda\KVSWebApplication\bin\System.Web.Http.xml
 G:\Escoda\KVSWebApplication\bin\System.Web.Http.WebHost.xml
@@ -92,4 +101,3 @@ G:\Escoda\KVSWebApplication\obj\Debug\KVSWebApplication.csprojResolveAssemblyRef
 G:\Escoda\KVSWebApplication\obj\Debug\KVSWebApplication.dll
 G:\Escoda\KVSWebApplication\obj\Debug\KVSWebApplication.pdb
 G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.ServiceLocation.dll
-G:\Escoda\KVSWebApplication\bin\Neodynamic.SDK.WebClientPrint.dll

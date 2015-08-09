@@ -68,19 +68,23 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             var orders = OrderManager.GetEntities(o => 
                 o.OrderTypeId == (int)OrderTypes.Admission && 
                 o.Status == (int)OrderStatusTypes.Closed &&
-                o.PackingListNumber.HasValue).OrderByDescending(o => o.PackingListNumber).Select(ord => new
+                o.PackingListNumber.HasValue).OrderByDescending(o => o.PackingListNumber).Select(ord =>
                 {
-                    listId = ord.PackingListNumber,
-                    CustomerName = ord.Customer.SmallCustomer != null &&
-                        ord.Customer.SmallCustomer.Person != null ? ord.Customer.SmallCustomer.Person.FirstName + " " + ord.Customer.SmallCustomer.Person.Name : 
-                        ord.Customer.Name,
-                    Order = ord,
-                    listNumber = ord.PackingListNumber,
-                    isPrinted = ord.PackingList.IsPrinted == true ? "Ja" : "Nein",
-                    PostBackUrl = ord.PackingList.Document.FileName == null ? "" : "<a href=" + '\u0022' + ord.PackingList.Document.FileName + '\u0022' + " target=" + '\u0022' + "_blank" + 
-                        '\u0022' + "> Lieferschein " + ord.PackingList.Id + " öffnen</a>",
-                    DispatchOrderNumber = ord.PackingList.DispatchOrderNumber,
-                    IsSelf = ord.PackingList.IsSelfDispatch.HasValue ? ord.PackingList.IsSelfDispatch.Value : false,
+                    return new
+                    {
+                        listId = ord.PackingListNumber,
+                        CustomerName = ord.Customer.SmallCustomer != null &&
+                            ord.Customer.SmallCustomer.Person != null ? ord.Customer.SmallCustomer.Person.FirstName + " " + ord.Customer.SmallCustomer.Person.Name :
+                            ord.Customer.Name,
+                        Order = ord,
+                        listNumber = ord.PackingListNumber,
+                        isPrinted = ord.PackingList.IsPrinted == true ? "Ja" : "Nein",
+                        PostBackUrl = ord.PackingList.Document != null && ord.PackingList.Document.FileName != null ?
+                            "<a href=" + '\u0022' + ord.PackingList.Document.FileName + '\u0022' + " target=" + '\u0022' + "_blank" +
+                            '\u0022' + "> Lieferschein " + ord.PackingList.Id + " öffnen</a>" : String.Empty,
+                        DispatchOrderNumber = ord.PackingList.DispatchOrderNumber,
+                        IsSelf = ord.PackingList.IsSelfDispatch.HasValue ? ord.PackingList.IsSelfDispatch.Value : false,
+                    };
                 });
 
             e.Result = orders;

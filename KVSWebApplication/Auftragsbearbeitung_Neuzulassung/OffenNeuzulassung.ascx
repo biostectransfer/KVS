@@ -273,7 +273,17 @@
                     AutoPostBackOnFilter="false">
                     <ItemTemplate>
                         <a class="rfdSkinnedButton">
-                            <input tabindex="-1" class="rfdDecorated" onclick="javascript:jsWebClientPrint.print('licenceNumber=<%#  DataBinder.Eval(Container, "DataItem.Kennzeichen").ToString() %>');" type="button" value="Feinstaubplaketten Druck">
+                            <input tabindex="-1" class="rfdDecorated" onclick="javascript:jsWebClientPrint.print('printType=0&licenceNumber=<%#  DataBinder.Eval(Container, "DataItem.Kennzeichen").ToString() %>');" type="button" value="Feinstaubplakette">
+                        </a>
+                    </ItemTemplate>
+                </telerik:GridTemplateColumn>
+
+                <telerik:GridTemplateColumn HeaderText="" HeaderButtonType="None" AllowFiltering="false"
+                    HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center"
+                    AutoPostBackOnFilter="false">
+                    <ItemTemplate>
+                        <a class="rfdSkinnedButton">
+                            <input tabindex="-1" class="rfdDecorated" onclick="javascript:jsWebClientPrint.print('printType=1&licenceNumber=<%#  DataBinder.Eval(Container, "DataItem.Kennzeichen").ToString() %>');" type="button" value="Etikette">
                         </a>
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>

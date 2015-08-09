@@ -16,7 +16,7 @@
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <IISExpressSSLPort />
@@ -86,6 +86,18 @@
     <Reference Include="PdfSharp-WPF, Version=1.31.1789.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\KVSCommon\bin\PdfSharp-WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Barcode">
+      <HintPath>..\packages\Spire.Barcode.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Doc">
+      <HintPath>..\packages\Spire.Doc.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.License">
+      <HintPath>..\packages\Spire.License.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Pdf">
+      <HintPath>..\packages\Spire.Pdf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -657,6 +669,9 @@
     <Content Include="ImportExport\ImportCustomers.ascx" />
     <Content Include="ImportExport\ImportExport.aspx" />
     <Content Include="index.html" />
+    <Content Include="license.elic.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="login.aspx" />
     <Content Include="images\background.jpg" />
     <Content Include="images\button.gif" />
@@ -780,7 +795,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>56637</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/KVSWebApplication</IISUrl>
+          <IISUrl>http://localhost:56637/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

@@ -25,16 +25,54 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         public void ProcessRequest(HttpContext context)
         {
             var cpj = new ClientPrintJob();
-            var dataDirectory = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data");
-            var path = Path.Combine(dataDirectory, ConfigurationManager.AppSettings["EmissionBadgeFileName"]);
-            
-            var stream = GenerateExportReport(path, context.Request["LicenceNumber"]);
 
-            var file = new PrintFile(GetBytesFromStream(stream), "Print.docx");            
-            cpj.PrintFile = file;
-            cpj.ClientPrinter = new InstalledPrinter(ConfigurationManager.AppSettings["PrinterName"]);
+            int printType = 0;
+            if (Int32.TryParse(context.Request["printType"], out printType))
+            {
+                if (printType == 0)
+                {
+                    var dataDirectory = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data");
+                    var path = Path.Combine(dataDirectory, ConfigurationManager.AppSettings["EmissionBadgeFileName"]);
 
-            cpj.SendToClient(context.Response);
+                    var stream = GenerateExportReport(path, context.Request["LicenceNumber"]);
+
+                    var file = new PrintFile(GetBytesFromStream(stream), "Print.docx");
+                    cpj.PrintFile = file;
+                    cpj.ClientPrinter = new InstalledPrinter(ConfigurationManager.AppSettings["PrinterName"]);
+
+                    cpj.SendToClient(context.Response);
+                }
+                else if (printType == 1)
+                {
+                    try
+                    {
+                        var barsetting = new Spire.Barcode.BarcodeSettings();
+                        barsetting.UseChecksum = Spire.Barcode.CheckSumMode.Auto;
+                        barsetting.Type = Spire.Barcode.BarCodeType.EAN128;
+                        barsetting.ShowText = true;
+
+                        var bargenerator = new Spire.Barcode.BarCodeGenerator(barsetting);
+                        
+                        barsetting.Data = context.Request["LicenceNumber"];
+                        //barsetting.Data2D = barsetting.Data;
+
+                        var image = bargenerator.GenerateImage();
+
+                        var stream = new MemoryStream();
+                        image.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+
+                        var file = new PrintFile(GetBytesFromStream(stream), "Barcode.jpg");
+                        cpj.PrintFile = file;
+                        cpj.ClientPrinter = new InstalledPrinter(ConfigurationManager.AppSettings["PrinterName"]);
+
+                        cpj.SendToClient(context.Response);
+                    }
+                    catch (Exception ex)
+                    {
+                        //skip errors
+                    }
+                }
+            }
         }
 
         private Stream GenerateExportReport(string fullPath, string licenceNumber)

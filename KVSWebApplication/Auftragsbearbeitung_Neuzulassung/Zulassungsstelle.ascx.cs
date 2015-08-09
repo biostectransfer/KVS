@@ -183,24 +183,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 ZulassungErrLabel.Visible = false;
                 if (e.CommandName == "AmtGebuhrSetzen")
                 {
-                    var editedItem = e.Item as GridEditableItem;
-                    var tbEditPrice = editedItem["ColumnPrice"].FindControl("tbEditPrice") as RadTextBox;
-                    string itemId = editedItem["ItemIdColumn"].Text;
-                    var tbAuthPrice = editedItem["AuthCharge"].FindControl("tbAuthChargePrice") as RadTextBox;
-
-                    int? authChargeId = null;
-                    if (!String.IsNullOrEmpty(editedItem["AuthChargeId"].Text))
-                    {
-                        authChargeId = Int32.Parse(editedItem["AuthChargeId"].Text);
-                    }
-
-                    if (OrderManager.GenerateAuthCharge(authChargeId, Int32.Parse(itemId), tbAuthPrice.Text))
-                    {
-                        tbAuthPrice.ForeColor = System.Drawing.Color.Green;
-                    }
-
-                    UpdatePosition(itemId, tbEditPrice.Text);
-                    tbEditPrice.ForeColor = System.Drawing.Color.Green;
+                    SaveOrderItemPrices(e.Item as GridEditableItem);
                 }
                 else
                 {
@@ -220,6 +203,27 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             }
         }
 
+        protected void SaveOrderItemPrices(GridEditableItem editedItem)
+        {
+            var tbEditPrice = editedItem["ColumnPrice"].FindControl("tbEditPrice") as RadTextBox;
+            string itemId = editedItem["ItemIdColumn"].Text;
+            var tbAuthPrice = editedItem["AuthCharge"].FindControl("tbAuthChargePrice") as RadTextBox;
+
+            int? authChargeId = null;
+            if (!String.IsNullOrEmpty(editedItem["AuthChargeId"].Text))
+            {
+                authChargeId = Int32.Parse(editedItem["AuthChargeId"].Text);
+            }
+
+            if (OrderManager.GenerateAuthCharge(authChargeId, Int32.Parse(itemId), tbAuthPrice.Text))
+            {
+                tbAuthPrice.ForeColor = System.Drawing.Color.Green;
+            }
+
+            UpdatePosition(itemId, tbEditPrice.Text);
+            tbEditPrice.ForeColor = System.Drawing.Color.Green;
+        }
+
         protected void RadGridNeuzulassung_DetailTableDataBind(object source, GridDetailTableDataBindEventArgs e)
         {
             var item = (GridDataItem)e.DetailTableView.ParentItem;
@@ -227,6 +231,14 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             var radGrdEnquiriesVarients = (RadGrid)nestedItem.FindControl("RadGridNeuzulassungDetails");
             radGrdEnquiriesVarients.DataSource = GetOrderPositions(item["OrderNumber"].Text);
             radGrdEnquiriesVarients.DataBind();
+        }
+
+        protected void UpdateAllOrderItems(GridTableView pricesGrid)
+        {
+            foreach(var item in pricesGrid.Items)
+            {
+                SaveOrderItemPrices(item as GridEditableItem);
+            }
         }
 
         protected void AuftragFertigStellen_Command(object sender, EventArgs e)
@@ -239,6 +251,11 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             var editButton = sender as Button;
             var item = editButton.Parent as Panel;
 
+            //update prices
+            UpdateAllOrderItems(((RadGrid)item.FindControl("RadGridNeuzulassungDetails")).MasterTableView);
+
+
+            //update order data
             ((GridNestedViewItem)((GridTableCell)item.Parent.Parent).Parent).ParentItem.Selected = true;
 
             var kennzeichenBox = item.FindControl("KennzeichenBox") as TextBox;
