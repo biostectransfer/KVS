@@ -17,7 +17,13 @@ namespace KVSWebApplication.Search
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (!IsPostBack)
+            {
+                GridSortExpression sortExpr = new GridSortExpression();
+                sortExpr.FieldName = "CreateDate";
+                sortExpr.SortOrder = GridSortOrder.Descending;
+                RadGridSearch.MasterTableView.SortExpressions.AddSortExpression(sortExpr);
+            }
         }
 
         protected void RadGridSearch_NeedDataSource_Linq(object sender, LinqDataSourceSelectEventArgs e)

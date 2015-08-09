@@ -18,6 +18,13 @@ namespace KVSWebApplication
     {        
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                GridSortExpression sortExpr = new GridSortExpression();
+                sortExpr.FieldName = "CreateDate";
+                sortExpr.SortOrder = GridSortOrder.Descending;
+                RadGridAllOrders.MasterTableView.SortExpressions.AddSortExpression(sortExpr);
+            }
         }
 
         protected void ShowAllButton1_Click(object sender, EventArgs e)
