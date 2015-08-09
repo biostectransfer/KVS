@@ -82,7 +82,7 @@ namespace KVSDataAccess.Managers
 
 
                     //TODO TODO Make VIEWs
-
+                    result = new List<_Accounts>().AsQueryable();
 
                     //DataContext.GetSet<Product>().Where(prod => pairs.Any(pair => pair.ProductId == prod.Id)).
                     //    Select(o => new {

@@ -103,7 +103,10 @@
             </td>
             <td>
                 <asp:Button runat="server" ClientIDMode="static" OnClick="AddAdressButton_Click" ID="AddAdressButton"
-                    Text="Adresse hinzufügen" Width="250px"></asp:Button>
+                    Text="Adresse hinzufügen" Width="140"></asp:Button>
+                &nbsp;
+                <asp:Button runat="server" ClientIDMode="static" OnClick="CreateInvoiceButton_Click" ID="CreateInvoiceButton"
+                    Text="Rechnung" Width="90"></asp:Button>
             </td>
         </tr>
         <tr>

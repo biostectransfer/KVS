@@ -389,6 +389,14 @@ namespace KVSWebApplication.Abrechnung
             }
         }
 
+        protected void CreateInvoiceButton_Click(object sender, EventArgs e)
+        {
+            if (!SetValuesForAdressWindow())
+            {
+                GenerateInvoice(false, false);
+            }
+        }
+
         private InvoiceType getFullInvoiceName(string selectCase)
         {
             InvoiceType result;
@@ -442,7 +450,7 @@ namespace KVSWebApplication.Abrechnung
             }
         }
 
-        private void GenerateInvoice(bool preview)
+        private void GenerateInvoice(bool preview, bool withAdressPopup = true)
         {
             //Adress Eigenschaften
             string street = string.Empty,
@@ -563,8 +571,12 @@ namespace KVSWebApplication.Abrechnung
                             RadGridAbrechnung.MasterTableView.ClearChildEditItems();
                             RadGridAbrechnung.MasterTableView.ClearEditItems();
                             RadGridAbrechnung.Rebind();
-                            string script = "function f(){$find(\"" + AddAdressRadWindow.ClientID + "\").close(); Sys.Application.remove_load(f);}Sys.Application.add_load(f); $find(\"" + RadGridAbrechnung.ClientID + "\").get_masterTableView().rebind();";
-                            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
+
+                            if (withAdressPopup)
+                            {
+                                string script = "function f(){$find(\"" + AddAdressRadWindow.ClientID + "\").close(); Sys.Application.remove_load(f);}Sys.Application.add_load(f); $find(\"" + RadGridAbrechnung.ClientID + "\").get_masterTableView().rebind();";
+                                ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
+                            }                            
                         }
                         Session["currentLocationIndex"] = 0;
                     }

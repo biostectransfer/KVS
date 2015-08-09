@@ -20,7 +20,7 @@ namespace KVSWebApplication
         {
             if (!IsPostBack)
             {
-                GridSortExpression sortExpr = new GridSortExpression();
+                var sortExpr = new GridSortExpression();
                 sortExpr.FieldName = "CreateDate";
                 sortExpr.SortOrder = GridSortOrder.Descending;
                 RadGridAllOrders.MasterTableView.SortExpressions.AddSortExpression(sortExpr);
