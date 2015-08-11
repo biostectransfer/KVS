@@ -22,7 +22,7 @@ namespace KVSCommon.Database
 	using System;
 	
 	
-	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="test_fullservice")]
+	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="Test")]
 	public partial class KVSEntities : KVSCommon.Entities.move_to_DataAccess.EntitiesBase
 	{
 		
@@ -728,6 +728,14 @@ namespace KVSCommon.Database
 			get
 			{
 				return this.GetTable<AuthorativeChargeAccounts>();
+			}
+		}
+		
+		public System.Data.Linq.Table<GetAccountNumber> GetAccountNumbers
+		{
+			get
+			{
+				return this.GetTable<GetAccountNumber>();
 			}
 		}
 	}
@@ -18972,6 +18980,105 @@ namespace KVSCommon.Database
 				if ((this._IsAuthorativeCharge != value))
 				{
 					this._IsAuthorativeCharge = value;
+				}
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.GetAccountNumbers")]
+	public partial class GetAccountNumber
+	{
+		
+		private int _InvoiceId;
+		
+		private int _Id;
+		
+		private int _AccountId;
+		
+		private string _AccountNumber;
+		
+		private System.Nullable<int> _LocationId;
+		
+		public GetAccountNumber()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InvoiceId", DbType="Int NOT NULL")]
+		public int InvoiceId
+		{
+			get
+			{
+				return this._InvoiceId;
+			}
+			set
+			{
+				if ((this._InvoiceId != value))
+				{
+					this._InvoiceId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", DbType="Int NOT NULL")]
+		public int Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this._Id = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AccountId", DbType="Int NOT NULL")]
+		public int AccountId
+		{
+			get
+			{
+				return this._AccountId;
+			}
+			set
+			{
+				if ((this._AccountId != value))
+				{
+					this._AccountId = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AccountNumber", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		public string AccountNumber
+		{
+			get
+			{
+				return this._AccountNumber;
+			}
+			set
+			{
+				if ((this._AccountNumber != value))
+				{
+					this._AccountNumber = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocationId", DbType="Int")]
+		public System.Nullable<int> LocationId
+		{
+			get
+			{
+				return this._LocationId;
+			}
+			set
+			{
+				if ((this._LocationId != value))
+				{
+					this._LocationId = value;
 				}
 			}
 		}

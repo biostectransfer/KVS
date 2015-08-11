@@ -16,7 +16,7 @@
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <IISExpressSSLPort />
@@ -431,7 +431,7 @@
     <Compile Include="ImportExport\ImportExport.aspx.designer.cs">
       <DependentUpon>ImportExport.aspx</DependentUpon>
     </Compile>
-    <Compile Include="ImportExport\Rechnungsexport.cs" />
+    <Compile Include="ImportExport\DateVExport.cs" />
     <Compile Include="ImportExport\VirtualInvoice.cs" />
     <Compile Include="login.aspx.cs">
       <DependentUpon>login.aspx</DependentUpon>
@@ -634,6 +634,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Browsers\browsers.browser" />
+    <Content Include="App_Data\EmissionBadgeFile.docx" />
     <None Include="App_Data\RadSpell\de-DE.tdf" />
     <None Include="App_Data\RadSpell\en-US.tdf" />
     <None Include="App_Data\RadSpell\fr-FR.tdf" />
@@ -795,7 +796,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>56637</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/KVSWebApplication</IISUrl>
+          <IISUrl>http://localhost:56637/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -803,7 +804,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties UseAjaxifiedTemplates="True" UseJQuerySupport="True" />
+      <UserProperties UseJQuerySupport="True" UseAjaxifiedTemplates="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

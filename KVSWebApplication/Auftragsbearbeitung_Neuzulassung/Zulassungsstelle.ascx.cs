@@ -734,7 +734,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             {
                 string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
                 InvoiceItemAccountItemManager.CreateAccounts(newInvoice);
-                InvoiceManager.Print(newInvoice, memS, "", ""/*TODO check last para, */);
+                InvoiceManager.Print(newInvoice, memS, "", ConfigurationManager.AppSettings["DefaultAccountNumber"]);
 
                 string fileName = "Rechnung_" + newInvoice.InvoiceNumber.Number + "_" + newInvoice.CreateDate.Day + "_" + newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + ".pdf";
                 if (!Directory.Exists(serverPath))

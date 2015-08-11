@@ -122,13 +122,13 @@
     <PagerStyle Mode="NextPrevAndNumeric"></PagerStyle>
     <GroupingSettings CaseSensitive="false"></GroupingSettings>
     <HeaderStyle Width="150px" />
-    <MasterTableView AutoGenerateColumns="false" Width="1000px" DataKeyNames="InvoiceId,isPrintedValue" AllowFilteringByColumn="True" CommandItemDisplay="Top"
+    <MasterTableView AutoGenerateColumns="false" Width="1000px" DataKeyNames="InvoiceId,isPrinted" AllowFilteringByColumn="True" CommandItemDisplay="Top"
         ShowHeader="true" ShowFooter="True" TableLayout="Auto" Name="Invoices">
         <DetailTables>
             <telerik:GridTableView Name="OrderItems" AllowFilteringByColumn="false" EditMode="PopUp" DataSourceID="detailGridSource">
                 <ParentTableRelation>
                     <telerik:GridRelationFields DetailKeyField="InvoiceId" MasterKeyField="InvoiceId" />
-                    <telerik:GridRelationFields DetailKeyField="isPrintedValue" MasterKeyField="isPrintedValue" />
+                    <telerik:GridRelationFields DetailKeyField="isPrinted" MasterKeyField="isPrinted" />
                 </ParentTableRelation>
                 <Columns>
                     <telerik:GridBoundColumn ReadOnly="true" UniqueName="ItemId" SortExpression="ItemId" HeaderText="ItemId" HeaderButtonType="TextButton"
@@ -145,7 +145,6 @@
                         SortExpression="isPrinted" UniqueName="isPrinted" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                         ShowFilterIcon="false">
                     </telerik:GridBoundColumn>
-                    <telerik:GridBoundColumn Visible="false" Display="false" ForceExtractValue="always" DataField="isPrintedValue" UniqueName="isPrintedValue"></telerik:GridBoundColumn>
                     <telerik:GridBoundColumn SortExpression="Amount" HeaderText="Preis" DataFormatString="{0:C2}" HeaderButtonType="TextButton"
                         DataField="Amount">
                     </telerik:GridBoundColumn>
@@ -210,7 +209,6 @@
                 SortExpression="isPrinted" UniqueName="isPrinted" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                 ShowFilterIcon="false">
             </telerik:GridBoundColumn>
-            <telerik:GridBoundColumn Visible="false" Display="false" ForceExtractValue="always" DataField="isPrintedValue" UniqueName="isPrintedValue"></telerik:GridBoundColumn>
         </Columns>
     </MasterTableView>
     <ClientSettings ReorderColumnsOnClient="true" EnablePostBackOnRowClick="true" AllowDragToGroup="false">
@@ -253,7 +251,7 @@
     Where="InvoiceId.ToString() == @InvoiceId">
     <WhereParameters>
         <asp:Parameter Name="InvoiceId" />
-        <asp:Parameter Name="isPrintedValue" />
+        <asp:Parameter Name="isPrinted" />
     </WhereParameters>
 </asp:LinqDataSource>
 <telerik:RadAjaxLoadingPanel runat="server" ID="VersandLoadingPanel"></telerik:RadAjaxLoadingPanel>

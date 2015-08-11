@@ -208,7 +208,7 @@ namespace KVSWebApplication.Product
         {
             if (AllCustomer.SelectedValue != string.Empty)
             {
-                var locations = LocationManager.GetEntities(loc => loc.CustomerId != Int32.Parse(e.Value)).Select(loc => new
+                var locations = LocationManager.GetEntities(loc => loc.CustomerId == Int32.Parse(e.Value)).Select(loc => new
                 {
                     Value = loc.Id,
                     Name = loc.Name

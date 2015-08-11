@@ -554,7 +554,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
 
                 InvoiceItemAccountItemManager.CreateAccounts(newInvoice);
-                InvoiceManager.Print(newInvoice, memS, "", "");
+                InvoiceManager.Print(newInvoice, memS, "", ConfigurationManager.AppSettings["DefaultAccountNumber"]);
 
                 string fileName = "Rechnung_" + newInvoice.InvoiceNumber.Number + "_" + newInvoice.CreateDate.Day + "_" + newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + ".pdf";
 

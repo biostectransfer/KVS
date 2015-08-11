@@ -852,7 +852,7 @@ namespace KVSWebApplication.BasePages
             using (var stream = new MemoryStream())
             {
                 InvoiceItemAccountItemManager.CreateAccounts(newInvoice);
-                InvoiceManager.Print(newInvoice, stream, "", Convert.ToString(ConfigurationManager.AppSettings["DefaultAccountNumber"]));
+                InvoiceManager.Print(newInvoice, stream, "", ConfigurationManager.AppSettings["DefaultAccountNumber"]);
 
                 string fileName = "Rechnung_" + newInvoice.InvoiceNumber.Number + "_" +
                     newInvoice.CreateDate.Day + "_" + newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + ".pdf";

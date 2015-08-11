@@ -19,6 +19,8 @@ namespace KVSWebApplication.Abrechnung
     /// </summary>
     public partial class AbrechnungErstellen : BaseUserControl
     {
+        private const string OpenInvoice = "Offen";
+
         protected void Page_Load(object sender, EventArgs e)
         {
             string target = Request["__EVENTTARGET"];
@@ -194,7 +196,7 @@ namespace KVSWebApplication.Abrechnung
                 {
                     var item = RadGridAbrechnungErstellen.SelectedItems[0] as GridDataItem;
                     AddButton.Enabled = true;
-                    if (Convert.ToBoolean(item["isPrinted"].Text))
+                    if (item["isPrinted"].Text != OpenInvoice)
                     {
                         PrintCopyButton.Enabled = true;
                         RechnungErstellenButton.Enabled = false;
@@ -220,7 +222,7 @@ namespace KVSWebApplication.Abrechnung
         protected void PrintCopyButton_Clicked(object sender, EventArgs e)
         {
             var item = RadGridAbrechnungErstellen.SelectedItems[0] as GridDataItem;
-            if (Convert.ToBoolean(item["isPrintedValue"].Text))
+            if (item["isPrinted"].Text != OpenInvoice)
             {
                 PrintCopyErrorLabel.Visible = false;
                 try
@@ -277,9 +279,9 @@ namespace KVSWebApplication.Abrechnung
             bool isPrinted = false;
             var invoiceId = Int32.Parse(e.WhereParameters["InvoiceId"].ToString());
 
-            if (e.WhereParameters["isPrintedValue"] != null)
+            if (e.WhereParameters["isPrinted"] != null)
             {
-                isPrinted = Convert.ToBoolean(e.WhereParameters["isPrintedValue"].ToString());
+                isPrinted = e.WhereParameters["isPrinted"].ToString() != OpenInvoice;
             }
 
             var invoiceAccounts = InvoiceItemAccountItemManager.GetAccountNumbers(invoiceId).ToList();
@@ -355,8 +357,7 @@ namespace KVSWebApplication.Abrechnung
                                       customerNumber = inv.Customer.CustomerNumber,
                                       Matchcode = inv.Customer.MatchCode,
                                       createDate = inv.CreateDate,
-                                      isPrinted = (inv.IsPrinted) ? "Gedruckt/Gebucht" : "Offen",
-                                      isPrintedValue = inv.IsPrinted,
+                                      isPrinted = (inv.IsPrinted) ? "Gedruckt/Gebucht" : OpenInvoice,
                                       recipient = inv.InvoiceRecipient,
                                       invoiceNumber = inv.InvoiceNumber != null ? inv.InvoiceNumber.Number.ToString() : String.Empty,
                                       customerName =  inv.Customer.SmallCustomer != null && inv.Customer.SmallCustomer.Person != null ?
@@ -375,8 +376,7 @@ namespace KVSWebApplication.Abrechnung
                                       customerNumber = inv.Customer.CustomerNumber,
                                       Matchcode = inv.Customer.MatchCode,
                                       createDate = inv.CreateDate,
-                                      isPrinted = (inv.IsPrinted) ? "Gedruckt/Gebucht" : "Offen",
-                                      isPrintedValue = inv.IsPrinted,
+                                      isPrinted = (inv.IsPrinted) ? "Gedruckt/Gebucht" : OpenInvoice,
                                       recipient = inv.InvoiceRecipient,
                                       invoiceNumber = inv.InvoiceNumber != null ? inv.InvoiceNumber.Number.ToString() : String.Empty,
                                       customerName = inv.Customer.SmallCustomer != null && inv.Customer.SmallCustomer.Person != null ?
@@ -493,7 +493,7 @@ namespace KVSWebApplication.Abrechnung
                             {
                                 string serverPath = ConfigurationManager.AppSettings["DataPath"] + "\\UserData";
 
-                                InvoiceManager.Print(newInvoice, memS, "", "", defaultAccountNumber.Checked);
+                                InvoiceManager.Print(newInvoice, memS, "", ConfigurationManager.AppSettings["DefaultAccountNumber"], defaultAccountNumber.Checked);
 
                                 string fileName = "Rechnung_" + newInvoice.InvoiceNumber.Number + "_" + newInvoice.CreateDate.Day + "_" +
                                     newInvoice.CreateDate.Month + "_" + newInvoice.CreateDate.Year + ".pdf";
@@ -617,7 +617,7 @@ namespace KVSWebApplication.Abrechnung
                 var s = ((GridDataItem)cmbErloeskonten.Parent.Parent);
                 if (s != null)
                 {
-                    printed = bool.Parse(s["IsPrintedValue"].Text);
+                    printed = s["IsPrinted"].Text != OpenInvoice;
                 }
             }
 

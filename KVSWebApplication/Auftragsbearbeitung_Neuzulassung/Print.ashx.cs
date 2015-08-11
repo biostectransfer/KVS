@@ -27,6 +27,12 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             var cpj = new ClientPrintJob();
 
             int printType = 0;
+
+            if(String.IsNullOrEmpty(context.Request["LicenceNumber"]))
+            {
+                throw new Exception("Kennzeichnen ist nicht eigetragen.");
+            }
+
             if (Int32.TryParse(context.Request["printType"], out printType))
             {
                 if (printType == 0)
@@ -60,6 +66,10 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
                         var stream = new MemoryStream();
                         image.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+
+                        var dataDirectory = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data");
+                        var path = Path.Combine(dataDirectory, "test.jpg");
+                        image.Save(path);
 
                         var file = new PrintFile(GetBytesFromStream(stream), "Barcode.jpg");
                         cpj.PrintFile = file;

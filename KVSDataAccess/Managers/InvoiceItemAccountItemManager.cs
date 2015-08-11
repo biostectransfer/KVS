@@ -57,9 +57,9 @@ namespace KVSDataAccess.Managers
         /// <param name="invoiceId">Rechnungspositionsid</param>
         /// <param name="isPrinted">Ist Gedruckt</param>
         /// <returns>IQueryable<_Accounts></returns>
-        public IQueryable<_Accounts> GetAccountNumbers(int invoiceId, bool isPrinted = false)
+        public IEnumerable<_Accounts> GetAccountNumbers(int invoiceId, bool isPrinted = false)
         {
-            IQueryable<_Accounts> result = null;
+            IEnumerable<_Accounts> result = null;
             if (isPrinted)
             {
                 result = DataContext.GetSet<InvoiceItemAccountItem>().Where(o => o.InvoiceItem.InvoiceId == invoiceId).Select(o => new _Accounts
@@ -73,66 +73,24 @@ namespace KVSDataAccess.Managers
             {
                 if (!isPrinted)
                 {
-                    var pairs = DataContext.GetSet<Invoice>().FirstOrDefault(o => o.Id == invoiceId).InvoiceItem.Select(o =>
-                        new
-                        {
-                            ProductId = o.OrderItem.ProductId,
-                            LocationId = o.OrderItem.Order.LocationId
-                        }).ToList();
-
-
-                    //TODO TODO Make VIEWs
-                    result = new List<_Accounts>().AsQueryable();
-
-                    //DataContext.GetSet<Product>().Where(prod => pairs.Any(pair => pair.ProductId == prod.Id)).
-                    //    Select(o => new {
-                    //        Product = o,
-                    //        Prices = o.Price.Where(price => pairs.Any(pair => pair.LocationId == price.LocationId))
-                    //    }).
-                    //    SelectMany(o => o.Prices).
-                    //    Select(o => new _Accounts
-                    //    {
-                    //        InvoiceItemId = o.PriceAccount.FirstOrDefault()..InvoiceItemId,
-                    //        AccountId = o.IIACCID,
-                    //        AccountNumber = o.Product.RevenueAccountText
-                    //    });
-
-                    //result = from inv in dbContext.Invoice
-                    //            join invItem in dbContext.InvoiceItem on inv.Id equals invItem.InvoiceId
-                    //            join ordItem in dbContext.OrderItem on invItem.OrderItemId equals ordItem.Id
-                    //            join order in dbContext.Order on ordItem.OrderNumber equals order.OrderNumber
-                    //            join pr in dbContext.Price on new { ordItem.ProductId, order.LocationId } equals new { pr.ProductId, pr.LocationId }
-                    //            join priceAccount in dbContext.PriceAccount on pr.Id equals priceAccount.PriceId
-                    //            join Account in dbContext.Accounts on priceAccount.AccountId equals Account.AccountId
-                    //            where invItem.InvoiceId == itemId
-                    //            select new _Accounts
-                    //            {
-                    //                InvoiceItemId = invItem.Id,
-                    //                AccountId = Account.AccountId,
-                    //                AccountNumber = Account.AccountNumber
-
-                    //            };
+                    result = DataContext.GetSet<GetAccountNumber>().Where(o => o.InvoiceId == invoiceId).
+                      Select(o => new _Accounts
+                      {
+                          InvoiceItemId = o.Id,
+                          AccountId = o.AccountId,
+                          AccountNumber = o.AccountNumber
+                      }).ToList();
                 }
 
                 if (result.Count() == 0)
                 {
-                    //TODO TODO
-
-                    //result = from inv in dbContext.Invoice
-                    //            join invItem in dbContext.InvoiceItem on inv.Id equals invItem.InvoiceId
-                    //            join ordItem in dbContext.OrderItem on invItem.OrderItemId equals ordItem.Id
-                    //            join order in dbContext.Order on ordItem.OrderNumber equals order.OrderNumber
-                    //            join pr in dbContext.Price on new { ordItem.ProductId } equals new { pr.ProductId }
-                    //            join priceAccount in dbContext.PriceAccount on pr.Id equals priceAccount.PriceId
-                    //            join Account in dbContext.Accounts on priceAccount.AccountId equals Account.AccountId
-                    //            where invItem.InvoiceId == itemId && pr.LocationId == null
-                    //            select new _Accounts
-                    //            {
-                    //                InvoiceItemId = invItem.Id,
-                    //                AccountId = Account.AccountId,
-                    //                AccountNumber = Account.AccountNumber,
-
-                    //            };
+                    result = DataContext.GetSet<GetAccountNumber>().Where(o => o.InvoiceId == invoiceId && !o.LocationId.HasValue).
+                      Select(o => new _Accounts
+                      {
+                          InvoiceItemId = o.Id,
+                          AccountId = o.AccountId,
+                          AccountNumber = o.AccountNumber
+                      }).ToList();
                 }
             }
             return result;

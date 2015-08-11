@@ -3,7 +3,7 @@
 
 
 <%-- Register the WebClientPrint script code --%>
-<%=Neodynamic.SDK.Web.WebClientPrint.CreateScript("http://localhost/KVSWebApplication/Auftragsbearbeitung_Neuzulassung/Print.ashx")%>
+<%=Neodynamic.SDK.Web.WebClientPrint.CreateScript(ResolveClientUrl(ConfigurationManager.AppSettings["BaseUrl"] +"Auftragsbearbeitung_Neuzulassung/Print.ashx"))%>
 
 
 <telerik:RadCodeBlock ID="RadCodeBlock1" runat="server">

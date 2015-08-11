@@ -39,7 +39,7 @@ namespace KVSDataAccess.Managers
                 {
                     InvoiceId = invoice.Id
                 };
-                DataContext.AddObject(invoice);
+                DataContext.AddObject(invoiceNumber);
                 SaveChanges();
                 invoice.InvoiceNumber = invoiceNumber;
             }
