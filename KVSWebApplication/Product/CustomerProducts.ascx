@@ -73,7 +73,8 @@
                 <CommandItemSettings ShowAddNewRecordButton="false" ShowRefreshButton="true" />
                 <Columns>
                     <telerik:GridEditCommandColumn ButtonType="ImageButton" />
-                    <telerik:GridBoundColumn DataField="Id" ReadOnly="true" Visible="false" ForceExtractValue="InEditMode" />
+                    <telerik:GridBoundColumn DataField="Id" ReadOnly="true" UniqueName="Id"
+                        Display="false" ForceExtractValue="Always" />
                     <telerik:GridBoundColumn DataField="PriceId" HeaderText="Id" ReadOnly="true" Display="false" ForceExtractValue="Always" />
                     <telerik:GridBoundColumn DataField="LocationIdCustomer" ReadOnly="true" Visible="false" ForceExtractValue="Always" />
                     <telerik:GridBoundColumn DataField="OrderTypeId" ReadOnly="true" Visible="false" ForceExtractValue="Always" />

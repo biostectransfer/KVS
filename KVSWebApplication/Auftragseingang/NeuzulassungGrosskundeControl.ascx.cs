@@ -20,7 +20,7 @@ namespace KVSWebApplication.Auftragseingang
     public partial class NeuzulassungGrosskundeControl : AdmissionOrderBase
     {
         #region Members
-       
+
         protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
         protected override RadTreeView ProductTree { get { return DienstleistungTreeView; } }
         protected override RadScriptManager RadScriptManager { get { return ((NeuzulassungGrosskunde)Page).getScriptManager(); } }
@@ -112,6 +112,7 @@ namespace KVSWebApplication.Auftragseingang
         protected override Panel Vehicle_FirstRegistrationDate_Panel { get { return this.Vehicle_FirstRegistrationDate; } }
         protected override Panel Vehicle_Color_Panel { get { return this.Vehicle_Color; } }
         protected override Panel IBANPanel_Panel { get { return this.IBANPanel; } }
+        protected override Panel FreeText_Panel { get { return this.Order_Freitext; } }
 
         #endregion
 
@@ -368,63 +369,74 @@ namespace KVSWebApplication.Auftragseingang
 
         protected void ProductDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            var selectedCustomer = 0;
-            var location = 0;
             if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
-                selectedCustomer = Int32.Parse(CustomerDropDownList.SelectedValue);
-            if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
-                location = Int32.Parse(LocationDropDownList.SelectedValue);
-            IEnumerable<object> products = null;
-
-            if (!String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue))
             {
-                products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 && o.Location == null &&
-                    (o.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) ||
-                        o.Product.OrderType.Id == (int)OrderTypes.Common)).
-                    Select(o => new
-                    {
-                        ItemNumber = o.Product.ItemNumber,
-                        Name = o.Product.Name,
-                        Value = o.Product.Id,
-                        Category = o.Product.ProductCategory.Name,
-                    }).OrderBy(o => o.Name).ToList();               
+                var productQuery = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 &&
+                (o.Product.OrderType.Id == (int)OrderTypes.Admission || o.Product.OrderType.Id == (int)OrderTypes.Common));
+
+                if (!String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue))
+                {
+                    productQuery = productQuery.Where(o => !o.Product.RegistrationOrderTypeId.HasValue ||
+                        o.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue));
+                }
+
+                if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
+                {
+                    //TODO delete ? productQuery = productQuery.Where(o => !o.LocationId.HasValue ||  o.LocationId == Int32.Parse(LocationDropDownList.SelectedValue));
+                    productQuery = productQuery.Where(o => o.LocationId == Int32.Parse(LocationDropDownList.SelectedValue));
+                }
+
+                productQuery = productQuery.Where(o => o.Location != null && o.Location.CustomerId == Int32.Parse(CustomerDropDownList.SelectedValue));
+                
+                var products = productQuery.
+                   Select(o => new
+                   {
+                       ItemNumber = Int32.Parse(o.Product.ItemNumber),
+                       Name = o.Product.Name,
+                       Value = o.Product.Id,
+                       Category = o.Product.ProductCategory.Name,
+                   }).OrderBy(o => o.ItemNumber).ToList();
+
+
+                //TODO
+                //werden die vordefinierte Kundenprodukte in TreeNode geladen
+                //if (products.Count() != 0 && !String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
+                //{
+                //    LoadCustomerProductsInTreeView(productQuery);
+                //}
+
+                e.Result = products;
             }
             else
             {
-                products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 && o.Location != null &&  !o.Location.CustomerId.HasValue).
-                       Select(o => new
-                       {
-                           ItemNumber = o.Product.ItemNumber,
-                           Name = o.Product.Name,
-                           Value = o.Product.Id,
-                           Category = o.Product.ProductCategory.Name,
-                       }).OrderBy(o => o.Name).ToList();
+                e.Result = new List<string>();
             }
-
-            //werden die vordefinierte Kundenprodukte in TreeNode geladen
-            if (products.Count() != 0 && location != 0 && selectedCustomer != 0 && !String.IsNullOrEmpty(RegistrationOrderDropDownList.SelectedValue))
-            {
-                LoadCustomerProductsInTreeView(selectedCustomer, location);
-            }
-
-            e.Result = products;
         }
 
-        private void LoadCustomerProductsInTreeView(int selectedCustomer, int location)
+        private void LoadCustomerProductsInTreeView(IEnumerable<Price> productQuery)
         {
-            var products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 &&
-                o.Product.CustomerProduct.Any() &&
-                o.Location != null && o.LocationId == location && o.Location.CustomerId == selectedCustomer &&
-                (o.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) ||
-                 o.Product.OrderType.Id == (int)OrderTypes.Common)).
-                Select(o => new
-                {
-                    ItemNumber = o.Product.ItemNumber,
-                    Name = o.Product.Name,
-                    Value = o.Product.Id,
-                    Category = o.Product.ProductCategory.Name,
-                    //CustomerProduct = o.Product.CustomerProduct.FirstOrDefault().Product.Name
-                }).OrderBy(o => o.Name).ToList();
+            //var products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 &&
+            //    o.Product.CustomerProduct.Any() &&
+            //    o.Location != null && o.LocationId == location && o.Location.CustomerId == selectedCustomer &&
+            //    (o.Product.RegistrationOrderTypeId == Int32.Parse(RegistrationOrderDropDownList.SelectedValue) ||
+            //     o.Product.OrderType.Id == (int)OrderTypes.Common)).
+            //    Select(o => new
+            //    {
+            //        ItemNumber = o.Product.ItemNumber,
+            //        Name = o.Product.Name,
+            //        Value = o.Product.Id,
+            //        Category = o.Product.ProductCategory.Name,
+            //        //CustomerProduct = o.Product.CustomerProduct.FirstOrDefault().Product.Name
+            //    }).OrderBy(o => o.Name).ToList();
+
+            var products = productQuery.
+                   Select(o => new
+                   {
+                       ItemNumber = o.Product.ItemNumber,
+                       Name = o.Product.Name,
+                       Value = o.Product.Id,
+                       Category = o.Product.ProductCategory.Name,
+                   }).OrderBy(o => o.Name).ToList();
 
             foreach (var product in products)
             {
@@ -517,14 +529,14 @@ namespace KVSWebApplication.Auftragseingang
                         SubmitChangesErrorLabel.Visible = false;
                         string licenceNumber = String.Empty,
                         oldLicenceNumber = String.Empty;
-                        
+
                         RegistrationOrder newRegistrationOrder = null;
-   
+
                         if (!String.IsNullOrEmpty(LicenceBox1.Text))
                             licenceNumber = LicenceBox1.Text + "-" + LicenceBox2.Text + "-" + LicenceBox3.Text;
                         if (!String.IsNullOrEmpty(PreviousLicenceBox1.Text))
                             oldLicenceNumber = PreviousLicenceBox1.Text + "-" + PreviousLicenceBox2.Text + "-" + PreviousLicenceBox3.Text;
-                        
+
                         CostCenter costCenter = null;
                         if (!String.IsNullOrEmpty(costCenterId))
                         {
@@ -661,7 +673,7 @@ namespace KVSWebApplication.Auftragseingang
             }
             return result;
         }
-        
+
         // findet alle angezeigte textboxen und überprüft ob die nicht leer sind
         protected override bool CheckIfBoxenEmpty()
         {
@@ -732,7 +744,7 @@ namespace KVSWebApplication.Auftragseingang
                 gibtsBoxenDieLeerSind = true;
             return gibtsBoxenDieLeerSind;
         }
-        
+
         #endregion
     }
 }

@@ -111,7 +111,7 @@ namespace KVSWebApplication.Auftragseingang
         protected override Panel Vehicle_FirstRegistrationDate_Panel { get { return this.Vehicle_FirstRegistrationDate; } }
         protected override Panel Vehicle_Color_Panel { get { return this.Vehicle_Color; } }
         protected override Panel IBANPanel_Panel { get { return this.IBANPanel; } }
-
+        protected override Panel FreeText_Panel { get { return this.Order_Freitext; } }
         #endregion
 
         #region Labels
@@ -532,37 +532,78 @@ namespace KVSWebApplication.Auftragseingang
 
         #region Linq Data Sources
 
+        //TODO delete
+        //protected void ProductAbmDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
+        //{
+        //    var selectedCustomer = 0;
+        //    var location = 0;
+        //    if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
+        //        selectedCustomer = Int32.Parse(CustomerDropDownList.SelectedValue);
+        //    if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
+        //        location = Int32.Parse(LocationDropDownList.SelectedValue);
+
+        //    var products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 &&
+        //     (o.Product.OrderTypeId == (int)OrderTypes.Cancellation || 
+        //        o.Product.OrderType.Id == (int)OrderTypes.Common)).
+        //            Select(o => new
+        //            {
+        //                ItemNumber = o.Product.ItemNumber,
+        //                Name = o.Product.Name,
+        //                Value = o.Product.Id,
+        //                Category = o.Product.ProductCategory.Name
+        //            }).OrderBy(o => o.Name).ToList();
+
+        //    if (products.Count != 0 && location != 0 && selectedCustomer != 0)
+        //    {
+        //        LoadCustomerProductsInTreeView(selectedCustomer, location);
+        //    }
+
+        //    e.Result = products;
+        //}
+
         protected void ProductAbmDataSourceLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            var selectedCustomer = 0;
-            var location = 0;
             if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
-                selectedCustomer = Int32.Parse(CustomerDropDownList.SelectedValue);
-            if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
-                location = Int32.Parse(LocationDropDownList.SelectedValue);
-
-            var products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 &&
-             (o.Product.OrderTypeId == (int)OrderTypes.Cancellation || 
-                o.Product.OrderType.Id == (int)OrderTypes.Common)).
-                    Select(o => new
-                    {
-                        ItemNumber = o.Product.ItemNumber,
-                        Name = o.Product.Name,
-                        Value = o.Product.Id,
-                        Category = o.Product.ProductCategory.Name
-                    }).OrderBy(o => o.Name).ToList();
-
-            if (products.Count != 0 && location != 0 && selectedCustomer != 0)
             {
-                LoadCustomerProductsInTreeView(selectedCustomer, location);
-            }
+                var productQuery = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 &&
+                (o.Product.OrderType.Id == (int)OrderTypes.Cancellation));
 
-            e.Result = products;
+                if (!String.IsNullOrEmpty(LocationDropDownList.SelectedValue))
+                {
+                    //TODO delete ? productQuery = productQuery.Where(o => !o.LocationId.HasValue ||  o.LocationId == Int32.Parse(LocationDropDownList.SelectedValue));
+                    productQuery = productQuery.Where(o => o.LocationId == Int32.Parse(LocationDropDownList.SelectedValue));
+                }
+
+                productQuery = productQuery.Where(o => o.Location != null && o.Location.CustomerId == Int32.Parse(CustomerDropDownList.SelectedValue));
+
+                var products = productQuery.
+                   Select(o => new
+                   {
+                       ItemNumber = Int32.Parse(o.Product.ItemNumber),
+                       Name = o.Product.Name,
+                       Value = o.Product.Id,
+                       Category = o.Product.ProductCategory.Name,
+                   }).OrderBy(o => o.ItemNumber).ToList();
+
+
+                //TODO
+                //werden die vordefinierte Kundenprodukte in TreeNode geladen
+                //if (products.Count() != 0 && !String.IsNullOrEmpty(CustomerDropDownList.SelectedValue))
+                //{
+                //    LoadCustomerProductsInTreeView(productQuery);
+                //}
+
+                e.Result = products;
+            }
+            else
+            {
+                e.Result = new List<string>();
+            }
         }
-                
+
         protected void CustomerLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            e.Result = GetAllSmallCustomers();
+            e.Result = GetAllLargeCustomers();
         }
 
         #endregion

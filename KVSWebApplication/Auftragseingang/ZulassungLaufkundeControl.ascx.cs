@@ -110,9 +110,9 @@ namespace KVSWebApplication.Auftragseingang
         protected override Panel Vehicle_FirstRegistrationDate_Panel { get { return this.Vehicle_FirstRegistrationDate; } }
         protected override Panel Vehicle_Color_Panel { get { return this.Vehicle_Color; } }
         protected override Panel IBANPanel_Panel { get { return this.IBANPanel; } }
-
+        protected override Panel FreeText_Panel { get { return this.Order_Freitext; } }
         #endregion
-        
+
         #region Labels
 
         protected override Label FahrzeugCaption { get { return this.FahrzeugLabel; } }

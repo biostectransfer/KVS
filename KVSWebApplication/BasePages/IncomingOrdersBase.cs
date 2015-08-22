@@ -127,6 +127,7 @@ namespace KVSWebApplication.BasePages
         protected abstract Panel Vehicle_FirstRegistrationDate_Panel { get; }
         protected abstract Panel Vehicle_Color_Panel { get; }
         protected abstract Panel IBANPanel_Panel { get; }
+        protected abstract Panel FreeText_Panel { get; }
 
         #endregion
 
@@ -391,6 +392,7 @@ namespace KVSWebApplication.BasePages
                 controls.Add(Vehicle_FirstRegistrationDate_Panel);
                 controls.Add(Vehicle_Color_Panel);
                 controls.Add(IBANPanel_Panel);
+                controls.Add(FreeText_Panel);
             }
             return controls;
         }
@@ -399,26 +401,32 @@ namespace KVSWebApplication.BasePages
         {
             var controlsToHide = GetAllControls();
 
-            var fields = LargeCustomerRequiredFieldManager.GetEntities(o => o.RequiredField.OrderTypeId == (int)OrderType).
-                Select(o => o.RequiredField.Name).ToList();
+            var fields = LargeCustomerRequiredFieldManager.GetEntities(o => o.RequiredField.OrderTypeId == (int)OrderType);
 
-            foreach (var field in fields)
+            if(!String.IsNullOrEmpty(CustomerDropDown.SelectedValue))
             {
+                fields = fields.Where(o => o.LargeCustomer.Id == Int32.Parse(CustomerDropDown.SelectedValue));
+            }
+
+            var result = fields.Select(o => o.RequiredField.Name).ToList();
+
+            //foreach (var field in result)
+            //{
                 foreach (var control in controlsToHide)
                 {
-                    if (control.ID == field)
-                    {
+                    //if (control.ID == field)
+                    //{
                         control.Visible = false;
                         FahrzeugCaption.Visible = false;
                         HalterCaption.Visible = false;
                         HalterdatenCaption.Visible = false;
                         KontaktdatenCaption.Visible = false;
                         IBANPanel_Panel.Visible = false;
-                    }
+                    //}
                 }
-            }
+            //}
 
-            return fields;
+            return result;
         }
 
         protected void ShowControls()
@@ -446,6 +454,7 @@ namespace KVSWebApplication.BasePages
                     if (control.ID == field)
                     {
                         control.Visible = true;
+
                         if (control.ID == "Vehicle_VIN" || control.ID == "Vehicle_Variant" || control.ID == "Vehicle_Color" || control.ID == "Registration_Licencenumber" ||
                             control.ID == "RegistrationOrder_PreviousLicencenumber" || control.ID == "Registration_GeneralInspectionDate" || control.ID == "Vehicle_FirstRegistrationDate" ||
                             control.ID == "Vehicle_TSN" || control.ID == "Vehicle_HSN" || control.ID == "Registration_eVBNumber" ||

@@ -304,12 +304,12 @@ namespace KVSWebApplication.Product
                         AccountId = o.AccountId,
                         AccountNumber = o.AccountNumber,
                         AccountSelected = o.PriceAccount.Any(p => p.PriceId == Int32.Parse(lblPriceId)) ? false : true
-                    }).ToList();
+                    }).Distinct().ToList();
 
                     cmbErloeskonten.DataSource = accounts;
                     cmbErloeskonten.Text = "";
                     cmbErloeskonten.DataBind();
-                    var selectedItem = accounts.SingleOrDefault(q => q.AccountSelected == true);
+                    var selectedItem = accounts.FirstOrDefault(q => q.AccountSelected == true);
                     if (selectedItem != null)
                         cmbErloeskonten.FindItemByValue(Convert.ToString(selectedItem.AccountId)).Selected = true;
                 }
