@@ -283,7 +283,7 @@
                     AutoPostBackOnFilter="false">
                     <ItemTemplate>
                         <a class="rfdSkinnedButton">
-                            <input tabindex="-1" class="rfdDecorated" onclick="javascript:jsWebClientPrint.print('printType=1&licenceNumber=<%#  DataBinder.Eval(Container, "DataItem.Kennzeichen").ToString() %>');" type="button" value="Etikette">
+                            <input tabindex="-1" class="rfdDecorated" onclick="javascript:jsWebClientPrint.print('printType=1&licenceNumber=<%#  DataBinder.Eval(Container, "DataItem.Kennzeichen").ToString() %>');" type="button" value="Etikett">
                         </a>
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>

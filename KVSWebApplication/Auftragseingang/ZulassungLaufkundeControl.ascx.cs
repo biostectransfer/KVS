@@ -333,26 +333,26 @@ namespace KVSWebApplication.Auftragseingang
                         o.Product.OrderType.Id == (int)OrderTypes.Common)).
                     Select(o => new
                     {
-                        ItemNumber = o.Product.ItemNumber,
+                        ItemNumber = Int32.Parse(o.Product.ItemNumber),
                         Name = o.Product.Name,
                         Value = o.Product.Id,
                         Category = o.Product.ProductCategory.Name,
                         Price = Math.Round(o.Amount, 2, MidpointRounding.AwayFromZero).ToString(),
                         AuthCharge = o.AuthorativeCharge.HasValue ? Math.Round(o.AuthorativeCharge.Value, 2, MidpointRounding.AwayFromZero).ToString().Trim() : ""
-                    }).OrderBy(o => o.Name).ToList();
+                    }).OrderBy(o => o.ItemNumber).ToList();
             }
             else
             {
                 products = PriceManager.GetEntities(o => o.PriceAccount.Count != 0 && o.Location != null && !o.Location.CustomerId.HasValue).
                     Select(o => new
                     {
-                        ItemNumber = o.Product.ItemNumber,
+                        ItemNumber = Int32.Parse(o.Product.ItemNumber),
                         Name = o.Product.Name,
                         Value = o.Product.Id,
                         Category = o.Product.ProductCategory.Name,
                         Price = Math.Round(o.Amount, 2, MidpointRounding.AwayFromZero).ToString(),
                         AuthCharge = o.AuthorativeCharge.HasValue ? Math.Round(o.AuthorativeCharge.Value, 2, MidpointRounding.AwayFromZero).ToString().Trim() : ""
-                    }).OrderBy(o => o.Name).ToList();
+                    }).OrderBy(o => o.ItemNumber).ToList();
             }
 
             e.Result = products;

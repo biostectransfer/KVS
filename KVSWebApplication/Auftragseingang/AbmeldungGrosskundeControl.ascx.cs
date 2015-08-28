@@ -412,6 +412,11 @@ namespace KVSWebApplication.Auftragseingang
                                 }
                                 continue;
                             }
+                            else if (box.ID == "FreiTextBox")
+                            {
+                                continue;
+                            }
+
                             if (box.Enabled == true && String.IsNullOrEmpty(box.Text))
                             {
                                 box.BorderColor = System.Drawing.Color.Red;

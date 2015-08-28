@@ -106,7 +106,7 @@
                             </telerik:RadMenuItem>
                             <telerik:RadMenuItem BorderWidth="5px" BorderColor="White" Font-Size="Larger" Text="Abrechnung" NavigateUrl="Abrechnung/Abrechnung.aspx">
                             </telerik:RadMenuItem>
-                            <telerik:RadMenuItem BorderWidth="5px" BorderColor="White" Font-Size="Larger" Text="DateV Export" NavigateUrl="ImportExport/ImportExport.aspx">
+                            <telerik:RadMenuItem BorderWidth="5px" BorderColor="White" Font-Size="Larger" Text="DATEV Export" NavigateUrl="ImportExport/ImportExport.aspx">
                             </telerik:RadMenuItem>
                             <telerik:RadMenuItem BorderWidth="5px" BorderColor="White" Font-Size="Larger" Text="Suche" NavigateUrl="Search/search.aspx">
                             </telerik:RadMenuItem>

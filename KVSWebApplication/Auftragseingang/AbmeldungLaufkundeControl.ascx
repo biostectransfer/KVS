@@ -717,22 +717,38 @@
             </telerik:RadTextBox>
         </asp:Panel>
         <asp:Panel runat="server" Visible="false" ID="Registration_GeneralInspectionDate">
-            <telerik:RadTextBox ID="InspectionLabel" runat="server" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="Inspektionsdatum: " Visible="True" Width="240px">
-            </telerik:RadTextBox>
-            <telerik:RadMonthYearPicker Width="250px" MinDate="1/1/1900" Visible="true" ID="Registration_GeneralInspectionDateBox" runat="server"></telerik:RadMonthYearPicker>
+            <table style="padding: 0px; text-align: left; margin: 0px; border-spacing: 0px;" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td style="width: 240px; text-align: left;">
+                        <telerik:RadTextBox ID="InspectionLabel" runat="server" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="Inspektionsdatum: " Visible="True" Width="240px">
+                        </telerik:RadTextBox>
+                    </td>
+                    <td style="width: 200px; text-align: left; padding-left: 4px;">
+                        <telerik:RadMonthYearPicker Width="250px" MinDate="1/1/1900" Visible="true" ID="Registration_GeneralInspectionDateBox" runat="server"></telerik:RadMonthYearPicker>
+                    </td>
+                </tr>
+            </table>
         </asp:Panel>
         <asp:Panel runat="server" Visible="false" ID="Vehicle_FirstRegistrationDate">
-            <telerik:RadTextBox ID="FirstRegistrationDateLabel" runat="server" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="Erstzulassungsdatum: " Visible="True" Width="240px">
-            </telerik:RadTextBox>
-            <telerik:RadDatePicker Width="250px" ID="FirstRegistrationDateBox" MinDate="1/1/1900" runat="server">
-                <Calendar ID="Calendar1" runat="server">
-                    <FooterTemplate>
-                        <div style="width: 100%; text-align: center; background-color: Gray;">
-                            <input id="Button12" type="button" value="Heute" onclick="GoToTodayAbm()" />
-                        </div>
-                    </FooterTemplate>
-                </Calendar>
-            </telerik:RadDatePicker>
+            <table style="padding: 0px; text-align: left; margin: 0px; border-spacing: 0px;" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td style="width: 240px; text-align: left;">
+                        <telerik:RadTextBox ID="FirstRegistrationDateLabel" runat="server" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="Erstzulassungsdatum: " Visible="True" Width="240px">
+                        </telerik:RadTextBox>
+                    </td>
+                    <td style="width: 200px; text-align: left; padding-left: 4px;">
+                        <telerik:RadDatePicker Width="250px" ID="FirstRegistrationDateBox" MinDate="1/1/1900" runat="server">
+                            <Calendar ID="Calendar1" runat="server">
+                                <FooterTemplate>
+                                    <div style="width: 100%; text-align: center; background-color: Gray;">
+                                        <input id="Button12" type="button" value="Heute" onclick="GoToTodayAbm()" />
+                                    </div>
+                                </FooterTemplate>
+                            </Calendar>
+                        </telerik:RadDatePicker>
+                    </td>
+                </tr>
+            </table>
         </asp:Panel>
         <asp:Panel runat="server" Visible="false" ID="Order_Freitext">
             <telerik:RadTextBox ID="FreiTextLabel" runat="server" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="Freitext: " Visible="True" Width="240px">
