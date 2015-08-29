@@ -20,8 +20,11 @@
         function openFile(path) {
             window.open(path, "_blank", "left=0,top=0,scrollbars=yes,menubar=yes,toolbar=yes,resizable=yes");
         }
+
     </script>
-</telerik:RadCodeBlock>
+
+</telerik:RadCodeBlock>             
+
 <link type="text/css" rel="stylesheet" href="../Styles/zulassungstelle.css" />
 <style type="text/css">
     .uppercase {
@@ -163,6 +166,8 @@
         </Columns>
         <NestedViewTemplate>
             <asp:Panel runat="server" ID="InnerContainer" CssClass="nestedTemplate" Visible="true">
+
+
                 <br />
                 <asp:Label runat="server" ID="WellcomeNeuzulassungLabel" Font-Bold="true" Font-Size="Larger" Text="Hier können Sie die Daten überprüfen und den Auftrag fertigstellen oder als Fehler markieren."></asp:Label>
                 <asp:TextBox ID="orderIdBox" Visible="false" Text='<%# Bind( "OrderNumber") %>' runat="server">
@@ -224,10 +229,24 @@
                         <td align="right" colspan="4">                                
                             
                             <a class="rfdSkinnedButton">
-                                <input tabindex="-1" class="rfdDecorated" onclick="javascript:jsWebClientPrint.print('printType=0&licenceNumber=<%#  DataBinder.Eval(Container, "DataItem.Kennzeichen").ToString() %>');" type="button" value="Feinstaubplakette">
+                                
+                                <input tabindex="-1" class="rfdDecorated" onclick="var licenceNumber = $(event.currentTarget).closest('table').find('.licenceNumber').val();
+                                        if (licenceNumber != undefined && licenceNumber != '' && licenceNumber != null) {
+                                            jsWebClientPrint.print('printType=0&licenceNumber=' + licenceNumber);
+                                        }
+                                        else {
+                                            alert('Geben Sie bitte Kennzeichen ein!');}" type="button" value="Feinstaubplakette">
+                                <%--<input tabindex="-1" class="rfdDecorated" onclick="javascript:jsWebClientPrint.print('printType=0&licenceNumber=<%#  DataBinder.Eval(Container, "DataItem.Kennzeichen").ToString() %>');" type="button" value="Feinstaubplakette">--%>
                             </a>
-                                <a class="rfdSkinnedButton">
-                                <input tabindex="-1" class="rfdDecorated" onclick="javascript:jsWebClientPrint.print('printType=1&licenceNumber=<%#  DataBinder.Eval(Container, "DataItem.Kennzeichen").ToString() %>');" type="button" value="Etikett">
+                                <a class="rfdSkinnedButton">                                
+                                <input tabindex="-1" class="rfdDecorated" onclick="var licenceNumber = $(event.currentTarget).closest('table').find('.licenceNumber').val();
+                                    if (licenceNumber != undefined && licenceNumber != '' && licenceNumber != null) {
+                                        jsWebClientPrint.print('printType=1&licenceNumber=' + licenceNumber);
+                                    }
+                                    else {
+                                        alert('Geben Sie bitte Kennzeichen ein!');
+                                    }" type="button" value="Etikett">
+                                <%--<input tabindex="-1" class="rfdDecorated" onclick="javascript:jsWebClientPrint.print('printType=1&licenceNumber=<%#  DataBinder.Eval(Container, "DataItem.Kennzeichen").ToString() %>');" type="button" value="Etikett">--%>
                             </a>               
                         </td>
                         <td style="width: 100%; text-align: right;">
@@ -245,7 +264,7 @@
                         </td>
                         <td>
 
-                            <asp:TextBox CssClass="uppercase" ID="KennzeichenBox" Text='<%# Bind( "Kennzeichen") %>' runat="server">
+                            <asp:TextBox CssClass="uppercase licenceNumber" ID="KennzeichenBox" Text='<%# Bind( "Kennzeichen") %>' runat="server">
                                    <ClientEvents OnValueChanging="MyValueChanging" />
                             </asp:TextBox>
                         </td>
