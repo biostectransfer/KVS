@@ -122,6 +122,7 @@ namespace KVSDataAccess.Managers
             };
 
             DataContext.AddObject(doc);
+            SaveChanges();
             docketList.DocumentId = doc.Id;
             docketList.IsPrinted = true;
             SaveChanges();

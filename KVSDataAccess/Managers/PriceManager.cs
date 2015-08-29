@@ -89,8 +89,8 @@ namespace KVSDataAccess.Managers
                     foreach(var account in accounts)
                         DataContext.DeleteObject(account);
                 }
-                else
-                {
+                //TODO check else
+                //{
                     var newAccount = new PriceAccount
                     {
                         PriceId = price.Id,
@@ -98,7 +98,7 @@ namespace KVSDataAccess.Managers
                     };
 
                     DataContext.AddObject(newAccount);
-                }
+                //}
 
                 SaveChanges();
             }

@@ -13,6 +13,9 @@ using System.Xml;
 using System.IO.Packaging;
 using System.Text.RegularExpressions;
 using Neodynamic.SDK.Web;
+using Spire.Barcode;
+using System.Drawing.Imaging;
+using System.Drawing;
 
 namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 {
@@ -42,9 +45,13 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
                     var stream = GenerateExportReport(path, context.Request["LicenceNumber"]);
 
-                    var file = new PrintFile(GetBytesFromStream(stream), "Print.docx");
-                    cpj.PrintFile = file;
-                    cpj.ClientPrinter = new InstalledPrinter(ConfigurationManager.AppSettings["PrinterName"]);
+                    //var file = new PrintFile(GetBytesFromStream(stream), "Print.docx");
+                    //cpj.PrintFile = file;
+
+                    cpj.PrinterCommands = String.Format("m m\r\nJ\r\nH 50\r\nO T5\r\nD 0,3\r\nS l2;0,4,99,99,103\r\nT 23,65,0,5,9.85,q88;[J:c57]{0}\r\nT 23,69,0,5,2.85;[J:c57]{1}\r\nA 1\r\n",
+                        context.Request["LicenceNumber"],
+                        ConfigurationManager.AppSettings["EmissionBadgeAdditionalInfo"]);
+                    cpj.ClientPrinter = new InstalledPrinter(ConfigurationManager.AppSettings["EmissionBadgePrinterName"]);
 
                     cpj.SendToClient(context.Response);
                 }
@@ -52,9 +59,19 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 {
                     try
                     {
-                        var barsetting = new Spire.Barcode.BarcodeSettings();
-                        barsetting.UseChecksum = Spire.Barcode.CheckSumMode.Auto;
-                        barsetting.Type = Spire.Barcode.BarCodeType.EAN128;
+                        var barsetting = new BarcodeSettings();
+                        barsetting.UseChecksum = CheckSumMode.Auto;
+
+                        var barcodeTypeString = ConfigurationManager.AppSettings["BarcodeType"];
+                        int barcodeTypeValue = 0;
+                        var barcodeType = BarCodeType.EAN128;
+
+                        if (!String.IsNullOrEmpty(barcodeTypeString) && Int32.TryParse(barcodeTypeString, out barcodeTypeValue))
+                        {
+                            barcodeType = (BarCodeType)barcodeTypeValue;
+                        }
+
+                        barsetting.Type = barcodeType;
                         barsetting.ShowText = true;
 
                         var bargenerator = new Spire.Barcode.BarCodeGenerator(barsetting);
@@ -65,15 +82,18 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         var image = bargenerator.GenerateImage();
 
                         var stream = new MemoryStream();
-                        image.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                        image.Save(stream, ImageFormat.Jpeg);
 
-                        var dataDirectory = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data");
-                        var path = Path.Combine(dataDirectory, "test.jpg");
-                        image.Save(path);
+                        //todo delete - for test only
+                        //var dataDirectory = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data");
+                        //var path = Path.Combine(dataDirectory, "test.jpg");
+                        //image.Save(path);
+
+                        image = new Bitmap(image, new Size(160, 45));
 
                         var file = new PrintFile(GetBytesFromStream(stream), "Barcode.jpg");
                         cpj.PrintFile = file;
-                        cpj.ClientPrinter = new InstalledPrinter(ConfigurationManager.AppSettings["PrinterName"]);
+                        cpj.ClientPrinter = new InstalledPrinter(ConfigurationManager.AppSettings["LabelPrinterName"]);
 
                         cpj.SendToClient(context.Response);
                     }

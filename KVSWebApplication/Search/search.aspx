@@ -99,7 +99,7 @@
                                             Laufzettel          
                                         </HeaderTemplate>
                                         <ItemTemplate>
-                                            <asp:Label ForeColor="Green" Font-Bold="true" runat="server" ID="Laufzettel" Text='<%# Bind( "PostBackUrl") %>'></asp:Label>
+                                            <asp:Label ForeColor="Green" Font-Bold="true" runat="server" ID="Laufzettel" Text='<%# Bind("PostBackUrl") %>'></asp:Label>
                                         </ItemTemplate>
                                     </telerik:GridTemplateColumn>
                                     <telerik:GridBoundColumn FilterControlWidth="105px" DataField="CustomerId" HeaderText="CustomerId"

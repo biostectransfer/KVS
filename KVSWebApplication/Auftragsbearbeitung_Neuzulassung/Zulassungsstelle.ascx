@@ -168,7 +168,7 @@
                 <asp:TextBox ID="orderIdBox" Visible="false" Text='<%# Bind( "OrderNumber") %>' runat="server">
                 </asp:TextBox>
                 <asp:TextBox ID="customerIdBox" Visible="false" Text='<%# Bind( "customerID") %>' runat="server">   </asp:TextBox>
-                <table id="Table1" cellspacing="10" cellpadding="1" width="250" border="0">
+                <table id="Table1" cellspacing="10" cellpadding="1" width="100%" border="0">
                     <tr>
                         <td>Kundenname 
                         </td>
@@ -181,12 +181,14 @@
                         <td>
                             <telerik:RadDateTimePicker Calendar-Enabled="false" TimePopupButton-Enabled="false" ReadOnly="true" Enabled="false" ID="CreateDateBox" runat="server" SelectedDate='<%# Bind( "CreateDate") %>'></telerik:RadDateTimePicker>
                         </td>
-                        <td>FIN
+                        <td style="white-space: nowrap;">FIN *
                         </td>
-                        <td>
+                        <td>                            
+                            
                             <asp:TextBox ID="VINBox" CssClass="uppercase" Text='<%# Bind( "VIN") %>' runat="server">
                                    <ClientEvents OnValueChanging="MyValueChanging" />
-                            </asp:TextBox>
+                            </asp:TextBox>                            
+                            
                         </td>
                         <td>Fehler
                         </td>
@@ -198,6 +200,7 @@
                         <td>
                             <asp:TextBox runat="server" ID="ErrorReasonZulTextBox"></asp:TextBox>
                         </td>
+                        <td style="width: 100%;"></td>
                     </tr>
                     <tr>
                         <td>Auftragsnummer
@@ -218,8 +221,17 @@
                             <asp:TextBox Text='<%# Bind( "HSN") %>' AutoPostBack="true" OnTextChanged="HSNBox_TextChanged" runat="server" ID="HSNAbmBox"></asp:TextBox>
                             <asp:Label runat="server" Enabled="true" Visible="false" Text="" ID="HSNSearchLabel"></asp:Label>
                         </td>
-                        <td align="right" colspan="4">
-                            <asp:Button ID="FertigStellenButton" Text="Fertigstellen" runat="server" OnClick="AuftragFertigStellen_Command"></asp:Button>&nbsp;                     
+                        <td align="right" colspan="4">                                
+                            
+                            <a class="rfdSkinnedButton">
+                                <input tabindex="-1" class="rfdDecorated" onclick="javascript:jsWebClientPrint.print('printType=0&licenceNumber=<%#  DataBinder.Eval(Container, "DataItem.Kennzeichen").ToString() %>');" type="button" value="Feinstaubplakette">
+                            </a>
+                                <a class="rfdSkinnedButton">
+                                <input tabindex="-1" class="rfdDecorated" onclick="javascript:jsWebClientPrint.print('printType=1&licenceNumber=<%#  DataBinder.Eval(Container, "DataItem.Kennzeichen").ToString() %>');" type="button" value="Etikett">
+                            </a>               
+                        </td>
+                        <td style="width: 100%; text-align: right;">
+                            <asp:Button ID="FertigStellenButton" Text="Fertigstellen" runat="server" OnClick="AuftragFertigStellen_Command"></asp:Button>&nbsp; 
                         </td>
                     </tr>
                     <tr>
@@ -229,19 +241,20 @@
                             <asp:TextBox ID="StatusBox" ReadOnly="true" Enabled="true" Text='<%# Bind( "Status") %>' runat="server">
                             </asp:TextBox>
                         </td>
-                        <td>Kennzeichen*
+                        <td style="white-space: nowrap;">Kennzeichen *
                         </td>
                         <td>
+
                             <asp:TextBox CssClass="uppercase" ID="KennzeichenBox" Text='<%# Bind( "Kennzeichen") %>' runat="server">
                                    <ClientEvents OnValueChanging="MyValueChanging" />
                             </asp:TextBox>
-                            </asp:RequiredFieldValidator>
                         </td>
                         <td>TSN
                         </td>
                         <td>
                             <asp:TextBox Text='<%# Bind( "TSN") %>' MaxLength="4" runat="server" ID="TSNAbmBox"></asp:TextBox>
                         </td>
+                        <td style="width: 100%;" colspan="5">
                     </tr>
                     <br />
                     <tr>
@@ -262,13 +275,13 @@
                             <telerik:GridBoundColumn HeaderStyle-Width="100px" ItemStyle-Width="200px" SortExpression="ProductName" HeaderText="Produktname" HeaderButtonType="TextButton"
                                 DataField="ProductName">
                             </telerik:GridBoundColumn>
-                            <telerik:GridTemplateColumn UniqueName="ColumnPrice" SortExpression="Amount" HeaderText="Preis" HeaderStyle-Width="95px">
+                            <telerik:GridTemplateColumn UniqueName="ColumnPrice" SortExpression="Amount" HeaderText="Preis" HeaderStyle-Width="95px" ItemStyle-HorizontalAlign="Right">
                                 <ItemTemplate>
                                     <telerik:RadTextBox Width="75px" ID="tbEditPrice" Text='<%# Bind( "Amount") %>' runat="server">
                                     </telerik:RadTextBox>
                                 </ItemTemplate>
                             </telerik:GridTemplateColumn>
-                            <telerik:GridTemplateColumn UniqueName="AuthCharge" SortExpression="AuthCharge" HeaderText="Amtliche Gebühren" HeaderStyle-Width="95px">
+                            <telerik:GridTemplateColumn UniqueName="AuthCharge" SortExpression="AuthCharge" HeaderText="Amtliche Gebühren" HeaderStyle-Width="95px" ItemStyle-HorizontalAlign="Right">
                                 <ItemTemplate>
                                     <telerik:RadTextBox Width="75px" ID="tbAuthChargePrice" Text='<%# Bind("AuthCharge") %>' Visible='<%# Bind("AmtGebuhr") %>' runat="server">
                                     </telerik:RadTextBox>
@@ -277,7 +290,7 @@
                             <telerik:GridBoundColumn HeaderStyle-Width="100px" Display="false" Visible="true" ForceExtractValue="Always"
                                 DataField="AuthChargeId" UniqueName="AuthChargeId">
                             </telerik:GridBoundColumn>
-                            <telerik:GridButtonColumn HeaderStyle-Width="100px" ButtonType="PushButton" Text="Preis setzen" UniqueName="AmtGebSetzenButton" Visible="true" CommandName="AmtGebuhrSetzen">
+                            <telerik:GridButtonColumn HeaderStyle-Width="100px" ButtonType="PushButton" Text="Preis setzen" UniqueName="AmtGebSetzenButton" Visible="true" CommandName="AmtGebuhrSetzen" ItemStyle-HorizontalAlign="Right">
                             </telerik:GridButtonColumn>
                             <telerik:GridBoundColumn Display="false" SortExpression="AmtGebuhr" HeaderText="Amtliche Gebühr" HeaderButtonType="TextButton"
                                 DataField="AmtGebuhr">

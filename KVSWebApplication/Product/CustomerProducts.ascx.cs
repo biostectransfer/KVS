@@ -331,20 +331,13 @@ namespace KVSWebApplication.Product
 
                 var cmbSelectedProduct = ((RadComboBox)senderButton.FindControl("cmdProductNames"));
                 decimal? autCharge = null;
-                if (txtACharge.Text == string.Empty)
+                if (EmptyStringIfNull.IsNumber(txtACharge.Text))
                 {
-                    autCharge = null;
+                    autCharge = EmptyStringIfNull.ReturnZeroDecimalIfNullEditVat(txtACharge.Text);
                 }
                 else
                 {
-                    if (EmptyStringIfNull.IsNumber(txtACharge.Text))
-                    {
-                        autCharge = EmptyStringIfNull.ReturnZeroDecimalIfNullEditVat(txtACharge.Text);
-                    }
-                    else
-                    {
-                        throw new Exception("Die amtlichen Gebühren müssen eine Dezimalzahl darstellen!");
-                    }
+                    throw new Exception("Die amtlichen Gebühren müssen eine Dezimalzahl darstellen!");
                 }
 
 
@@ -372,7 +365,7 @@ namespace KVSWebApplication.Product
                     {
                         newPrice.Amount = price;
                         newPrice.AuthorativeCharge = autCharge;
-                        PriceManager.CreateAccount(erloesKonto, newPrice);
+                        PriceManager.CreateAccount(erloesKonto, newPrice, true);
                     }
 
                     Session["selectedProductId"] = null;

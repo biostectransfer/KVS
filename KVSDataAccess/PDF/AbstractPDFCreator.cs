@@ -45,7 +45,7 @@ namespace KVSDataAccess.PDF
     {
         public HeaderFooter()
         {
-            this.LogoHeight = new Unit(30, UnitType.Millimeter);
+            this.LogoHeight = new Unit(19, UnitType.Millimeter);
             this.FontSize = 8;
             this.WritePageCount = false;
         }
@@ -134,7 +134,7 @@ namespace KVSDataAccess.PDF
                 image.WrapFormat.Style = MigraDoc.DocumentObjectModel.Shapes.WrapStyle.Through;
                 image.RelativeHorizontal = RelativeHorizontal.Margin;
                 image.RelativeVertical = RelativeVertical.Page;
-                image.Top = hf.Document.LastSection.PageSetup.TopMargin - this.LogoHeight;
+                image.Top = new Unit(8, UnitType.Millimeter);//TODOhf.Document.LastSection.PageSetup.TopMargin - this.LogoHeight;
                 image.Left = ShapePosition.Right;
                 image.LockAspectRatio = true;
                 image.Height = this.LogoHeight;
@@ -204,7 +204,7 @@ namespace KVSDataAccess.PDF
         {
             get
             {
-                return new Unit(30, UnitType.Millimeter);
+                return new Unit(19, UnitType.Millimeter);
             }
         }
 

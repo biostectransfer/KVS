@@ -203,7 +203,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             }
         }
 
-        protected void SaveOrderItemPrices(GridEditableItem editedItem)
+        protected bool SaveOrderItemPrices(GridEditableItem editedItem)
         {
             var tbEditPrice = editedItem["ColumnPrice"].FindControl("tbEditPrice") as RadTextBox;
             string itemId = editedItem["ItemIdColumn"].Text;
@@ -220,8 +220,14 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 tbAuthPrice.ForeColor = System.Drawing.Color.Green;
             }
 
-            UpdatePosition(itemId, tbEditPrice.Text);
-            tbEditPrice.ForeColor = System.Drawing.Color.Green;
+            var result = UpdatePosition(itemId, tbEditPrice.Text);
+
+            if (result)
+            {
+                tbEditPrice.ForeColor = System.Drawing.Color.Green;
+            }
+
+            return result;
         }
 
         protected void RadGridNeuzulassung_DetailTableDataBind(object source, GridDetailTableDataBindEventArgs e)
@@ -233,12 +239,18 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             radGrdEnquiriesVarients.DataBind();
         }
 
-        protected void UpdateAllOrderItems(GridTableView pricesGrid)
+        protected bool UpdateAllOrderItems(GridTableView pricesGrid)
         {
+            var result = true;
             foreach(var item in pricesGrid.Items)
             {
-                SaveOrderItemPrices(item as GridEditableItem);
+                if(!SaveOrderItemPrices(item as GridEditableItem))
+                {
+                    result = false;
+                }
             }
+
+            return result;
         }
 
         protected void AuftragFertigStellen_Command(object sender, EventArgs e)
@@ -252,82 +264,87 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             var item = editButton.Parent as Panel;
 
             //update prices
-            UpdateAllOrderItems(((RadGrid)item.FindControl("RadGridNeuzulassungDetails")).MasterTableView);
-
-
-            //update order data
-            ((GridNestedViewItem)((GridTableCell)item.Parent.Parent).Parent).ParentItem.Selected = true;
-
-            var kennzeichenBox = item.FindControl("KennzeichenBox") as TextBox;
-            var vinBox = item.FindControl("VINBox") as TextBox;
-            var orderIdBox = item.FindControl("orderIdBox") as TextBox;
-            var TSNBox = item.FindControl("TSNAbmBox") as TextBox;
-            var HSNBox = item.FindControl("HSNAbmBox") as TextBox;
-            var errorCheckBox = item.FindControl("ErrorZulCheckBox") as CheckBox;
-            var errorReasonTextBox = item.FindControl("ErrorReasonZulTextBox") as TextBox;
-            var amtGebBox = item.FindControl("AmtGebTextBox") as TextBox;
-            kennzeichen = kennzeichenBox.Text.ToUpper();
-            VIN = vinBox.Text;
-            var orderNumber = Int32.Parse(orderIdBox.Text);
-
-            tsn = TSNBox.Text;
-            hsn = HSNBox.Text;
-            ZulassungErfolgtLabel.Visible = false;
-
-            if (errorCheckBox.Checked) // falls Auftrag als Fehler gemeldet sollte
+            if (UpdateAllOrderItems(((RadGrid)item.FindControl("RadGridNeuzulassungDetails")).MasterTableView))
             {
-                string errorReason = errorReasonTextBox.Text;
-                try
-                {
-                    var orderToUpdate = OrderManager.GetById(orderNumber);
-                    orderToUpdate.HasError = true;
-                    orderToUpdate.ErrorReason = errorReason;
-                    OrderManager.SaveChanges();
+                //update order data
+                ((GridNestedViewItem)((GridTableCell)item.Parent.Parent).Parent).ParentItem.Selected = true;
 
-                    RadGridNeuzulassung.MasterTableView.ClearChildEditItems();
-                    RadGridNeuzulassung.MasterTableView.ClearEditItems();
-                    RadGridNeuzulassung.Rebind();
-                }
-                catch (Exception ex)
-                {
-                    ZulassungErrLabel.Text = "Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator <br /> Error:" + ex.Message;
-                    ZulassungErfolgtLabel.Visible = true;
-                }
-            }
-            else  // falls normales Update 
-            {
-                bool amtlGebVor = false;
-                var order = OrderManager.GetById(orderNumber);
+                var kennzeichenBox = item.FindControl("KennzeichenBox") as TextBox;
+                var vinBox = item.FindControl("VINBox") as TextBox;
+                var orderIdBox = item.FindControl("orderIdBox") as TextBox;
+                var TSNBox = item.FindControl("TSNAbmBox") as TextBox;
+                var HSNBox = item.FindControl("HSNAbmBox") as TextBox;
+                var errorCheckBox = item.FindControl("ErrorZulCheckBox") as CheckBox;
+                var errorReasonTextBox = item.FindControl("ErrorReasonZulTextBox") as TextBox;
+                var amtGebBox = item.FindControl("AmtGebTextBox") as TextBox;
+                kennzeichen = kennzeichenBox.Text.ToUpper();
+                VIN = vinBox.Text;
+                var orderNumber = Int32.Parse(orderIdBox.Text);
 
-                foreach (var orderItem in order.OrderItem)
-                {
-                    if (orderItem.IsAuthorativeCharge)
-                        amtlGebVor = true;
-                }
+                tsn = TSNBox.Text;
+                hsn = HSNBox.Text;
+                ZulassungErfolgtLabel.Visible = false;
 
-                if (String.IsNullOrEmpty(kennzeichen))
+                if (errorCheckBox.Checked) // falls Auftrag als Fehler gemeldet sollte
                 {
-                    ZulassungErrLabel.Text = "Bitte geben Sie die Kennzeichen ein!";
-                    ZulassungErrLabel.Visible = true;
-                }
-                else if (!amtlGebVor)
-                {
-                    ZulassungErrLabel.Text = "Bitte fügen Sie eine Amtl.Gebühr hinzu!";
-                    ZulassungErrLabel.Visible = true;
-                }
-                else
-                {
-                    ZulassungErrLabel.Visible = false;
+                    string errorReason = errorReasonTextBox.Text;
                     try
                     {
-                        updateDataBase(kennzeichen, VIN, tsn, hsn, orderNumber);
-                        UpdateOrderAndItemsStatus();
-                        ZulassungErfolgtLabel.Visible = true;
+                        var orderToUpdate = OrderManager.GetById(orderNumber);
+                        orderToUpdate.HasError = true;
+                        orderToUpdate.ErrorReason = errorReason;
+                        OrderManager.SaveChanges();
+
+                        RadGridNeuzulassung.MasterTableView.ClearChildEditItems();
+                        RadGridNeuzulassung.MasterTableView.ClearEditItems();
+                        RadGridNeuzulassung.Rebind();
                     }
                     catch (Exception ex)
                     {
-                        ZulassungErrLabel.Text = "Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator <br /> Error: " + ex.Message;
+                        ZulassungErrLabel.Text = "Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator <br /> Error:" + ex.Message;
                         ZulassungErfolgtLabel.Visible = true;
+                    }
+                }
+                else  // falls normales Update 
+                {
+                    bool amtlGebVor = false;
+                    var order = OrderManager.GetById(orderNumber);
+
+                    foreach (var orderItem in order.OrderItem)
+                    {
+                        if (orderItem.IsAuthorativeCharge)
+                            amtlGebVor = true;
+                    }
+
+                    if (String.IsNullOrEmpty(kennzeichen))
+                    {
+                        ZulassungErrLabel.Text = "Bitte geben Sie die Kennzeichen ein!";
+                        ZulassungErrLabel.Visible = true;
+                    }
+                    else if (String.IsNullOrEmpty(VIN))
+                    {
+                        ZulassungErrLabel.Text = "Bitte geben Sie die FIN ein!";
+                        ZulassungErrLabel.Visible = true;
+                    }
+                    else if (!amtlGebVor)
+                    {
+                        ZulassungErrLabel.Text = "Bitte fügen Sie eine Amtl.Gebühr hinzu!";
+                        ZulassungErrLabel.Visible = true;
+                    }
+                    else
+                    {
+                        ZulassungErrLabel.Visible = false;
+                        try
+                        {
+                            updateDataBase(kennzeichen, VIN, tsn, hsn, orderNumber);
+                            UpdateOrderAndItemsStatus();
+                            ZulassungErfolgtLabel.Visible = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            ZulassungErrLabel.Text = "Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Wenn das Problem weiterhin auftritt, wenden Sie sich an den Systemadministrator <br /> Error: " + ex.Message;
+                            ZulassungErfolgtLabel.Visible = true;
+                        }
                     }
                 }
             }
@@ -584,27 +601,35 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         }
         
         // Updating ausgewählten OrderItem
-        protected void UpdatePosition(string itemId, string amount)
+        protected bool UpdatePosition(string itemId, string amount)
         {
+            var result = false;
+
             string amoutToSave = amount;
 
             if (amoutToSave.Contains("."))
                 amoutToSave = amoutToSave.Replace(".", ",");
 
             if (!EmptyStringIfNull.IsNumber(amount))
-                throw new Exception("Achtung, Sie haben keinen gültigen Preis eingegeben");
-
-            if (!String.IsNullOrEmpty(itemId))
+            {
+                ZulassungErrLabel.Text = "Achtung, Sie haben keinen gültigen Preis eingegeben";
+                ZulassungErrLabel.Visible = true;
+            }
+            else if (!String.IsNullOrEmpty(itemId))
             {
                 try
                 {
                     OrderManager.UpdateOrderItemAmount(Int32.Parse(itemId), Convert.ToDecimal(amoutToSave));
+                    result = true;
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Die ausgewählte Position kann nicht updatet werden <br /> Error: " + ex.Message);
+                    ZulassungErrLabel.Text = "Die ausgewählte Position kann nicht updatet werden <br /> Error: " + ex.Message;
+                    ZulassungErrLabel.Visible = true;
                 }
             }
+
+            return result;
         }
 
         //falls benötigt, wird der Status per Email gesendet

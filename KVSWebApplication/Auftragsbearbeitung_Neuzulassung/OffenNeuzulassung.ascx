@@ -268,7 +268,7 @@
             <Columns>
                 <telerik:GridEditCommandColumn ButtonType="PushButton" EditText="Ändern" UniqueName="EditOffenColumn" />
                 
-                <telerik:GridTemplateColumn HeaderText="" HeaderButtonType="None" AllowFiltering="false"
+                <%--<telerik:GridTemplateColumn HeaderText="" HeaderButtonType="None" AllowFiltering="false"
                     HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center"
                     AutoPostBackOnFilter="false">
                     <ItemTemplate>
@@ -286,7 +286,7 @@
                             <input tabindex="-1" class="rfdDecorated" onclick="javascript:jsWebClientPrint.print('printType=1&licenceNumber=<%#  DataBinder.Eval(Container, "DataItem.Kennzeichen").ToString() %>');" type="button" value="Etikett">
                         </a>
                     </ItemTemplate>
-                </telerik:GridTemplateColumn>
+                </telerik:GridTemplateColumn>--%>
                 
                 <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderNumber" HeaderText="Auftragsnummer"
                     SortExpression="OrderNumber"   UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
