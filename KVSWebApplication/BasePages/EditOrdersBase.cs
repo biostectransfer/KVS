@@ -319,6 +319,8 @@ namespace KVSWebApplication.BasePages
                         Mobile = registration.CarOwner.Contact.MobilePhone,
                         Fax = registration.CarOwner.Contact.Fax,
                         Email = registration.CarOwner.Contact.Email,
+
+                        PackingListNumber = ord.PackingListNumber,
                     };
                 });
         }

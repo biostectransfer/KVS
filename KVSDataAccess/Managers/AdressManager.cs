@@ -23,7 +23,7 @@ namespace KVSDataAccess.Managers
         /// <param name="city">Ort.</param>
         /// <param name="country">Land.</param>
         /// <returns>Die neue Adresse.</returns>
-        public Adress CreateAdress(string street, string streetNumber, string zipcode, string city, string country)
+        public Adress CreateAdress(string street, string streetNumber, string zipcode, string city, string country, bool saveChanges = true)
         {
             var adress = new Adress()
             {
@@ -34,9 +34,13 @@ namespace KVSDataAccess.Managers
                 Country = country
             };
 
-            DataContext.AddObject(adress);
-            SaveChanges();
-            DataContext.WriteLogItem("Adresse angelegt.", LogTypes.INSERT, adress.Id, "Adress");
+            if (saveChanges)
+            {
+                DataContext.AddObject(adress);
+                SaveChanges();
+                DataContext.WriteLogItem("Adresse angelegt.", LogTypes.INSERT, adress.Id, "Adress");
+            }
+
             return adress;
         }
     }

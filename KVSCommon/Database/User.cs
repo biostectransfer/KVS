@@ -85,6 +85,8 @@ namespace KVSCommon.Database
                 }
             };
 
+            user.CreateDate = DateTime.Now;
+            user.ChangeDate = DateTime.Now;
             dbContext.User.InsertOnSubmit(user);
             dbContext.SubmitChanges();
             dbContext.WriteLogItem("Benutzer " + login + " wurde angelegt.", LogTypes.INSERT, user.Id, "User", user.PersonId);

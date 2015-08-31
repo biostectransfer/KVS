@@ -19,6 +19,6 @@ namespace KVSCommon.Managers
         /// <param name="city">Ort.</param>
         /// <param name="country">Land.</param>
         /// <returns>Die neue Adresse.</returns>
-        Adress CreateAdress(string street, string streetNumber, string zipcode, string city, string country);
+        Adress CreateAdress(string street, string streetNumber, string zipcode, string city, string country, bool saveChanges = true);
     }
 }

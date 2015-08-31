@@ -70,7 +70,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         /// <param name="e"></param>
         protected void LieferscheineLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            e.Result = GetLargeCustomerOrders();
+            e.Result = GetLargeCustomerOrders().Where(o => !o.PackingListNumber.HasValue).ToList();
         }
 
         /// <summary>

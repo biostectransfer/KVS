@@ -119,6 +119,8 @@ namespace KVSWebApplication.User
                     if (hasContactData() == true)
                     {
                         var createContact = Contact.CreateContact(txbUserPhone.Text, txbUserFax.Text, txbUserMobile.Text, txbUserEmail.Text, dbContext);
+                        createContact.CreateDate = DateTime.Now;
+                        createContact.ChangeDate = DateTime.Now;
                         createUser.Contact = createContact;
                     }
                     dbContext.SubmitChanges();

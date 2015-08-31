@@ -71,7 +71,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         '\u0022' + "> Lieferschein " + ord.PackingList.Id + " öffnen</a>" : String.Empty,
                     DispatchOrderNumber = ord.PackingList.DispatchOrderNumber,
                     IsSelf = ord.PackingList.IsSelfDispatch.HasValue ? ord.PackingList.IsSelfDispatch.Value : false,
-                });
+                }).DistinctBy(o => o.listId);
 
             e.Result = orders;
         }

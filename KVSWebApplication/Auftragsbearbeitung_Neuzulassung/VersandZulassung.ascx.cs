@@ -85,7 +85,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         DispatchOrderNumber = ord.PackingList.DispatchOrderNumber,
                         IsSelf = ord.PackingList.IsSelfDispatch.HasValue ? ord.PackingList.IsSelfDispatch.Value : false,
                     };
-                });
+                }).DistinctBy(o => o.listId);
 
             e.Result = orders;
         }

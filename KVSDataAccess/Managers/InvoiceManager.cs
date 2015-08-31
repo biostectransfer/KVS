@@ -100,7 +100,7 @@ namespace KVSDataAccess.Managers
         /// <param name="invoiceRecipientAdressId">Adresse des Rechnungsempfängers.</param>
         /// <param name="customerId">Id des Kunden.</param>
         /// <returns>Die neue Rechnung.</returns>
-        public Invoice CreateInvoice(string invoiceRecipient, Adress invoiceRecipientAdress, int customerId, double? discount, InvoiceType invType)
+        public Invoice CreateInvoice(string invoiceRecipient, Adress invoiceRecipientAdress, int customerId, double? discount, InvoiceType invType, bool saveChanges = true)
         {
             //if (string.IsNullOrEmpty(invoiceRecipient))
             //{
@@ -120,9 +120,13 @@ namespace KVSDataAccess.Managers
                 InvoiceType = (int)invType
             };
 
-            DataContext.AddObject(invoice);
-            SaveChanges();
-            DataContext.WriteLogItem("Rechnung wurde angelegt.", LogTypes.INSERT, invoice.Id, "Invoice");
+            if (saveChanges)
+            {
+                DataContext.AddObject(invoice);
+                SaveChanges();
+                DataContext.WriteLogItem("Rechnung wurde angelegt.", LogTypes.INSERT, invoice.Id, "Invoice");
+            }
+
             return invoice;
         }
 
@@ -197,6 +201,77 @@ namespace KVSDataAccess.Managers
                 {
                     CreateOrderInvoice(order, invoice);
                 }
+            }
+            else
+            {
+                item.VAT = customer.VAT;
+            }
+
+            return item;
+        }
+
+        /// <summary>
+        /// Fügt der Rechnung eine neue Rechnungsposition hinzu.
+        /// </summary>
+        /// <param name="name">Bezeichnung für die Rechnungsposition.</param>
+        /// <param name="amount">Betrag der Rechnungsposition.</param>
+        /// <param name="count">Anzahl für die Position.</param>
+        /// <param name="orderItemId">Id der Auftragsposition, falls vorhande.</param>
+        /// <param name="costCenterId">Id der Kostenstelle, falls benötigt.</param>
+        /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
+        /// <returns>Die neue Rechnungsposition.</returns>
+        public InvoiceItem AddInvoiceItemForPrintPreview(Invoice invoice, string name, decimal amount, int count, OrderItem orderItem, CostCenter costCenter,
+            Customer customer, OrderItemStatusTypes orderItemStatusType)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new Exception("Die Bezeichnung der Rechnungsposition darf nicht leer sein.");
+            }
+
+            if (invoice.IsPrinted)
+            {
+                throw new Exception("Die Rechnungsposition kann nicht hinzugefügt werden: Die Rechnung ist bereits gedruckt.");
+            }
+
+            var item = new InvoiceItem()
+            {
+                Amount = amount,
+                Count = count,
+                Name = name,
+                OrderItem = orderItem,
+                CostCenter = costCenter
+            };
+
+            invoice.InvoiceItem.Add(item);
+
+            if (orderItem != null)
+            {
+                if (orderItem.Status == (int)OrderItemStatusTypes.Payed)
+                {
+                    throw new Exception("Die Auftragsposition ist bereits abgerechnet.");
+                }
+
+                if (orderItem.Status != (int)OrderItemStatusTypes.Closed)
+                {
+                    throw new Exception("Die Auftragsposition ist nicht abgeschlossen.");
+                }
+
+                if (orderItem.Order.LocationId.HasValue && invoice.OrderInvoice.Any(q => q.Order.LocationId != orderItem.Order.LocationId))
+                {
+                    throw new Exception("Die Auftragsposition kann nicht zur Rechnung hinzugefügt werden, da der Standort des Auftrags nicht mit dem Standort der bisherigen Aufträge in der Rechnung übereinstimmt.");
+                }
+
+                if (orderItem.NeedsVAT)
+                {
+                    if (orderItem.Order.Location != null && orderItem.Order.Location.VAT.HasValue) //Großkunde
+                    {
+                        item.VAT = orderItem.Order.Location.VAT.Value;
+                    }
+                    else //SofortKunde
+                    {
+                        item.VAT = customer.VAT;
+                    }
+                }                
             }
             else
             {

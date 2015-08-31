@@ -235,6 +235,7 @@
     <Compile Include="BasePages\BasePage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="BasePages\Compare.cs" />
     <Compile Include="BasePages\EditOrdersBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -804,7 +805,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties UseJQuerySupport="True" UseAjaxifiedTemplates="True" />
+      <UserProperties UseAjaxifiedTemplates="True" UseJQuerySupport="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

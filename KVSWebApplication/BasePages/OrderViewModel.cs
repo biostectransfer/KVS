@@ -61,6 +61,7 @@ namespace KVSWebApplication.BasePages
         public string ZumAuftragText { get; set; }
         public string Haltername { get; set; }
 
+        public int? PackingListNumber { get; set; }
 
         #endregion
     }

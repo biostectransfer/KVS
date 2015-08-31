@@ -474,9 +474,10 @@ namespace KVSWebApplication.Abrechnung
 
             try
             {
-                var newAdress = AdressManager.CreateAdress(street, streetNumber, zipcode, city, country);
+
+                var newAdress = AdressManager.CreateAdress(street, streetNumber, zipcode, city, country, !preview);
                 var newInvoice = InvoiceManager.CreateInvoice(invoiceRecipient,
-                    newAdress, Int32.Parse(CustomerDropDownList.SelectedValue), null, getFullInvoiceName(RechnungsTypComboBox.SelectedValue));
+                    newAdress, Int32.Parse(CustomerDropDownList.SelectedValue), null, getFullInvoiceName(RechnungsTypComboBox.SelectedValue), !preview);
                 newInvoice.InvoiceText = footerText;
 
                 //Submiting new Invoice and Adress
@@ -489,6 +490,7 @@ namespace KVSWebApplication.Abrechnung
                     newInvoice.Adress = newAdress;
                     newInvoice.Customer = CustomerManager.GetById(Int32.Parse(CustomerDropDownList.SelectedValue));
                 }
+
 
                 var virtualItems = new List<SelectedInvoiceItems>();
                 var currItem = new SelectedInvoiceItems();
@@ -527,11 +529,19 @@ namespace KVSWebApplication.Abrechnung
 
                         var orderItem = OrderManager.GetOrderItems().FirstOrDefault(o => o.Id == item.OrderItemId);
 
-                        var newInvoiceItem = InvoiceManager.AddInvoiceItem(newInvoice, item.ProductName, Convert.ToDecimal(item.Amount), item.ItemCount, orderItem, costCenter,
-                            customer, OrderItemStatusTypes.Payed);
-                        if (newInvoiceItem != null)
+                        if (!preview)
                         {
-                            UpdateOrderStatus(item.OrderNumber);
+                            var newInvoiceItem = InvoiceManager.AddInvoiceItem(newInvoice, item.ProductName, Convert.ToDecimal(item.Amount), item.ItemCount, orderItem, costCenter,
+                                customer, OrderItemStatusTypes.Payed);
+                            if (newInvoiceItem != null)
+                            {
+                                UpdateOrderStatus(item.OrderNumber);
+                            }
+                        }
+                        else
+                        {
+                            InvoiceManager.AddInvoiceItemForPrintPreview(newInvoice, item.ProductName, Convert.ToDecimal(item.Amount), item.ItemCount, orderItem, costCenter,
+                                customer, OrderItemStatusTypes.Payed);
                         }
                     }
 
@@ -576,7 +586,7 @@ namespace KVSWebApplication.Abrechnung
                             {
                                 string script = "function f(){$find(\"" + AddAdressRadWindow.ClientID + "\").close(); Sys.Application.remove_load(f);}Sys.Application.add_load(f); $find(\"" + RadGridAbrechnung.ClientID + "\").get_masterTableView().rebind();";
                                 ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
-                            }                            
+                            }
                         }
                         Session["currentLocationIndex"] = 0;
                     }

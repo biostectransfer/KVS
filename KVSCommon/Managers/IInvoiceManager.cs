@@ -28,7 +28,7 @@ namespace KVSCommon.Managers
         /// <param name="invoiceRecipientAdressId">Adresse des Rechnungsempfängers.</param>
         /// <param name="customerId">Id des Kunden.</param>
         /// <returns>Die neue Rechnung.</returns>
-        Invoice CreateInvoice(string invoiceRecipient, Adress invoiceRecipientAdress, int customerId, double? discount, InvoiceType invType);
+        Invoice CreateInvoice(string invoiceRecipient, Adress invoiceRecipientAdress, int customerId, double? discount, InvoiceType invType, bool saveChanges = true);
 
         /// <summary>
         /// Fügt der Rechnung eine neue Rechnungsposition hinzu.
@@ -40,6 +40,18 @@ namespace KVSCommon.Managers
         /// <param name="costCenterId">Id der Kostenstelle, falls benötigt.</param>
         /// <returns>Die neue Rechnungsposition.</returns>
         InvoiceItem AddInvoiceItem(Invoice invoice, string name, decimal amount, int count, OrderItem orderItem, CostCenter costCenter,
+            Customer customer, OrderItemStatusTypes orderItemStatusType);
+
+        /// <summary>
+        /// Fügt der Rechnung eine neue Rechnungsposition Temporaer hinzu.
+        /// </summary>
+        /// <param name="name">Bezeichnung für die Rechnungsposition.</param>
+        /// <param name="amount">Betrag der Rechnungsposition.</param>
+        /// <param name="count">Anzahl für die Position.</param>
+        /// <param name="orderItemId">Id der Auftragsposition, falls vorhande.</param>
+        /// <param name="costCenterId">Id der Kostenstelle, falls benötigt.</param>
+        /// <returns>Die neue Rechnungsposition.</returns>
+        InvoiceItem AddInvoiceItemForPrintPreview(Invoice invoice, string name, decimal amount, int count, OrderItem orderItem, CostCenter costCenter,
             Customer customer, OrderItemStatusTypes orderItemStatusType);
 
         /// <summary>

@@ -294,8 +294,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                            o.Status == (int)OrderStatusTypes.Open &&
                            o.OrderTypeId == (int)OrderTypes.Cancellation &&
                            o.HasError.GetValueOrDefault(false) != true &&
-                           o.RegistrationOrder != null &&
-                           o.RegistrationOrder.Registration.RegistrationDate <= ZulassungsDatumPicker.SelectedDate).ToList();
+                           o.DeregistrationOrder != null &&
+                           o.DeregistrationOrder.Registration.RegistrationDate <= ZulassungsDatumPicker.SelectedDate).ToList();
 
                     var grouptedOrders = orders.GroupBy(q => q.Zulassungsstelle.Value);
                     foreach (var location in grouptedOrders)
