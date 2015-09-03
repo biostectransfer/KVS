@@ -62,7 +62,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 
         protected void LieferscheineLinq_Selected(object sender, LinqDataSourceSelectEventArgs e)
         {
-            e.Result = GetLargeCustomerOrders();
+            e.Result = GetLargeCustomerOrders().Where(o => !o.PackingListNumber.HasValue).ToList();
         }
 
         protected void LieferItems_Selected(object sender, EventArgs e)

@@ -218,19 +218,19 @@ indem Sie diese MSBuild-Datei bearbeiten. Besuchen Sie "http://go.microsoft.com/
       <publishTime>07/24/2015 19:33:24</publishTime>
     </File>
     <File Include="bin/KVSCommon.dll">
-      <publishTime>08/31/2015 14:22:59</publishTime>
+      <publishTime>09/03/2015 14:59:37</publishTime>
     </File>
     <File Include="bin/KVSConfiguration.dll">
-      <publishTime>08/31/2015 14:23:00</publishTime>
+      <publishTime>09/03/2015 14:59:38</publishTime>
     </File>
     <File Include="bin/KVSContracts.dll">
-      <publishTime>08/31/2015 14:22:59</publishTime>
+      <publishTime>09/03/2015 14:59:36</publishTime>
     </File>
     <File Include="bin/KVSDataAccess.dll">
-      <publishTime>08/31/2015 14:23:00</publishTime>
+      <publishTime>09/03/2015 14:59:37</publishTime>
     </File>
     <File Include="bin/KVSWebApplication.dll">
-      <publishTime>08/31/2015 14:23:01</publishTime>
+      <publishTime>09/03/2015 14:59:39</publishTime>
     </File>
     <File Include="bin/license.elic.xml">
       <publishTime>07/13/2015 14:55:14</publishTime>
@@ -548,7 +548,7 @@ indem Sie diese MSBuild-Datei bearbeiten. Besuchen Sie "http://go.microsoft.com/
       <publishTime>05/06/2014 11:17:24</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>08/29/2015 10:59:20</publishTime>
+      <publishTime>08/31/2015 15:04:37</publishTime>
     </File>
   </ItemGroup>
 </Project>
