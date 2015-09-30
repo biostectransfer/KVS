@@ -24,6 +24,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <TargetFrameworkProfile />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -266,26 +267,11 @@
     <Compile Include="Auftragseingang\AbmeldungLaufkunde.aspx.designer.cs">
       <DependentUpon>AbmeldungLaufkunde.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Auftragseingang\Auftragseingang.aspx.cs">
-      <DependentUpon>Auftragseingang.aspx</DependentUpon>
+    <Compile Include="Auftragseingang\AdmissionOrderBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Auftragseingang\Auftragseingang.aspx.designer.cs">
-      <DependentUpon>Auftragseingang.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Auftragseingang\AuftragseingangAbmeldung.ascx.cs">
-      <DependentUpon>AuftragseingangAbmeldung.ascx</DependentUpon>
+    <Compile Include="Auftragseingang\CancellationOrderBase.cs">
       <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Auftragseingang\AuftragseingangAbmeldung.ascx.designer.cs">
-      <DependentUpon>AuftragseingangAbmeldung.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Auftragseingang\AuftragseingangZulassung.ascx.cs">
-      <DependentUpon>AuftragseingangZulassung.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Auftragseingang\AuftragseingangZulassung.ascx.designer.cs">
-      <DependentUpon>AuftragseingangZulassung.ascx</DependentUpon>
     </Compile>
     <Compile Include="Auftragseingang\IncomingOrdersBase.cs">
       <SubType>ASPXCodeBehind</SubType>
@@ -627,9 +613,6 @@
     <Content Include="Auftragseingang\AbmeldungGrosskunde.aspx" />
     <Content Include="Auftragseingang\AbmeldungLaufkundeControl.ascx" />
     <Content Include="Auftragseingang\AbmeldungLaufkunde.aspx" />
-    <Content Include="Auftragseingang\Auftragseingang.aspx" />
-    <Content Include="Auftragseingang\AuftragseingangAbmeldung.ascx" />
-    <Content Include="Auftragseingang\AuftragseingangZulassung.ascx" />
     <Content Include="Auftragseingang\NeuzulassungGrosskundeControl.ascx" />
     <Content Include="Auftragseingang\NeuzulassungGrosskunde.aspx" />
     <Content Include="Auftragseingang\ZulassungLaufkundeControl.ascx" />
@@ -772,7 +755,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties UseAjaxifiedTemplates="True" UseJQuerySupport="True" />
+      <UserProperties UseJQuerySupport="True" UseAjaxifiedTemplates="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

@@ -126,7 +126,7 @@ namespace KVSWebApplication.Product
                             EnableDropDown = products.OrderType.Id == (int)OrderTypes.Admission ? "true" : "false",
                             Amount = EmptyStringIfNull.ReturnEmptyStringIfNull(products.Price.SingleOrDefault(q => q.ProductId == products.Id && q.LocationId == null).Amount.ToString()),
                             AutoCharge = EmptyStringIfNull.ReturnEmptyStringIfNull(products.Price.SingleOrDefault(q => q.ProductId == products.Id && q.LocationId == null).AuthorativeCharge.ToString()),
-                            Vat = products.NeedsVAT != null && products.NeedsVAT == true ? "true" : "false",
+                            Vat = products.NeedsVAT == true ? "true" : "false",
                             AccountNumber = (from price_ in dbContext.Price
                                              join _priceAccounts in dbContext.PriceAccount on price_.Id equals _priceAccounts.PriceId
                                              where price_.Id == price && price_.LocationId == null
@@ -167,7 +167,7 @@ namespace KVSWebApplication.Product
                 {
                     if (RegistrationOrderTypeName.Id.ToString() != string.Empty)
                     {
-                        if (myOrderTypeNames.ContainsKey(RegistrationOrderTypeName.Id) == false)
+                        if (myRegistrationOrderTypeNames.ContainsKey(RegistrationOrderTypeName.Id) == false)
                             myRegistrationOrderTypeNames.Add(RegistrationOrderTypeName.Id, RegistrationOrderTypeName.Name);
                     }
                 }

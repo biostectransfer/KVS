@@ -15,7 +15,7 @@ namespace KVSWebApplication.Auftragseingang
     /// <summary>
     ///  Abmeldung Großkunde
     /// </summary>
-    public partial class AbmeldungGrosskundeControl : IncomingOrdersBase
+    public partial class AbmeldungGrosskundeControl : CancellationOrderBase
     {
         #region Members
 
@@ -30,20 +30,19 @@ namespace KVSWebApplication.Auftragseingang
         protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
         protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
         protected override RadComboBox LocationDropDown { get { return this.LocationDropDownList; } }
-        
+        protected override RadTreeView ProductTree { get { return DienstleistungTreeView; } }
+        protected override RadScriptManager RadScriptManager { get { return ((AbmeldungGrosskunde)Page).getScriptManager(); } }
         #endregion
 
         #region Methods
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            AbmeldungGrosskunde auftragsEingang = Page as AbmeldungGrosskunde;
-            RadScriptManager script = auftragsEingang.getScriptManager() as RadScriptManager;
-            script.RegisterPostBackControl(AddAdressButton);
+            RadScriptManager.RegisterPostBackControl(AddAdressButton);
             LicenceBox1.Enabled = true;
             LicenceBox2.Enabled = true;
             LicenceBox3.Enabled = true;
-            //first registration bekommt immer heutige Datum by default
+            //first registration get today date by default
             FirstRegistrationDateBox.SelectedDate = DateTime.Now;
             if (Session["CurrentUserId"] != null)
             {
@@ -134,51 +133,6 @@ namespace KVSWebApplication.Auftragseingang
                     }
                 }
             }
-        }
-        protected string CheckIfAllProduktsHavingPrice(int? locationId)
-        {
-            string allesHatGutGelaufen = "";
-            string ProduktId = "";
-            string CostCenterId = "";
-            foreach (RadTreeNode node in DienstleistungTreeView.Nodes)
-            {
-                if (!String.IsNullOrEmpty(node.Value))
-                {
-                    string[] splited = node.Value.Split(';');
-                    if (splited.Length == 2)
-                    {
-                        try
-                        {
-                            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
-                            Price newPrice;
-                            ProduktId = splited[0];
-                            CostCenterId = splited[1];
-                            if (!String.IsNullOrEmpty(ProduktId))
-                            {
-                                var productId = Int32.Parse(ProduktId);
-                                int costCenterId = 0;
-                                KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == productId);
-                                costCenterId = Int32.Parse(CostCenterId);
-                                newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == locationId);
-                                if (newPrice == null)
-                                    newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == null);
-                                if (newPrice == null)
-                                {
-                                    allesHatGutGelaufen += " " + node.Text + " ";
-                                }
-                                else
-                                {
-                                }
-                            }
-                        }
-                        catch
-                        {
-                            return "";
-                        }
-                    }
-                }
-            }
-            return allesHatGutGelaufen;
         }
         #region Button Clicked
         //Fahrzeug abmelden
@@ -901,65 +855,7 @@ namespace KVSWebApplication.Auftragseingang
                 }
             }
         }
-        protected void MakeInvoiceForSmallCustomer(int customerId, DeregistrationOrder regOrder)
-        {
-            try
-            {
-                KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
-                var newOrder = dbContext.Order.Single(q => q.CustomerId == customerId && q.OrderNumber == regOrder.OrderNumber);
-                smallCustomerOrderHiddenField.Value = regOrder.OrderNumber.ToString();
-                //updating order status
-                newOrder.LogDBContext = dbContext;
-                newOrder.Status = (int)OrderStatusTypes.Closed;
-                //updating orderitems status                          
-                foreach (OrderItem ordItem in newOrder.OrderItem)
-                {
-                    ordItem.LogDBContext = dbContext;
-                    if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
-                    {
-                        ordItem.Status = (int)OrderItemStatusTypes.Closed;
-                    }
-                }
-                dbContext.SubmitChanges();
-                //updating order und items status one more time to make it abgerechnet
-                newOrder.LogDBContext = dbContext;
-                newOrder.Status = (int)OrderStatusTypes.Payed;
-                dbContext.SubmitChanges();
-                //opening window for adress
-                string script = "function f(){$find(\"" + AddAdressRadWindow.ClientID + "\").show(); Sys.Application.remove_load(f);}Sys.Application.add_load(f);";
-                ScriptManager.RegisterStartupScript(Page, Page.GetType(), "key", script, true);
-                SetValuesForAdressWindow();
-            }
-            catch (Exception ex)
-            {
-                ErrorLeereTextBoxenLabel.Text = "Error: " + ex.Message;
-                ErrorLeereTextBoxenLabel.Visible = true;
-            }
-        }
-        // getting adress from small customer
-        protected void SetValuesForAdressWindow()
-        {
-            KVSEntities dbContext = new KVSEntities();
-            var locationQuery = (from adr in dbContext.Adress
-                                 join cust in dbContext.Customer on adr.Id equals cust.InvoiceAdressId
-                                 where cust.Id == Int32.Parse(CustomerDropDownList.SelectedValue)
-                                 select adr).SingleOrDefault();
-            if (locationQuery != null)
-            {
-                StreetTextBox.Text = locationQuery.Street;
-                StreetNumberTextBox.Text = locationQuery.StreetNumber;
-                ZipcodeTextBox.Text = locationQuery.Zipcode;
-                CityTextBox.Text = locationQuery.City;
-                CountryTextBox.Text = locationQuery.Country;
-                LocationLabelWindow.Text = "Fügen Sie bitte die Adresse für " + CustomerDropDownList.Text + " hinzu";
-                ZusatzlicheInfoLabel.Visible = false;
-                InvoiceRecValidator.Enabled = true;
-                if (CustomerDropDownList.SelectedIndex == 1) // small
-                {
-                    ZusatzlicheInfoLabel.Visible = true;
-                }
-            }
-        }
+
         // Create new Adress in der DatenBank
         protected void OnAddAdressButton_Clicked(object sender, EventArgs e)
         {

@@ -30,6 +30,8 @@ namespace KVSWebApplication.Auftragseingang
         protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
         protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
         protected override RadComboBox LocationDropDown { get { return null; } }
+        protected override RadTreeView ProductTree { get { return DienstleistungTreeView; } }
+        protected override RadScriptManager RadScriptManager { get { return ((ZulassungLaufkunde)Page).getScriptManager(); } }
 
         #endregion
 
@@ -37,10 +39,8 @@ namespace KVSWebApplication.Auftragseingang
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            ZulassungLaufkunde auftrag = Page as ZulassungLaufkunde;
-            RadScriptManager script = auftrag.getScriptManager() as RadScriptManager;
-            script.RegisterPostBackControl(AddAdressButton);
-            //first registration bekommt immer heutige Datum by default
+            RadScriptManager.RegisterPostBackControl(AddAdressButton);
+            //first registration get today date by default
             FirstRegistrationDateBox.SelectedDate = DateTime.Now;
             SaveState();
             string target = Request["__EVENTARGUMENT"];
@@ -49,27 +49,15 @@ namespace KVSWebApplication.Auftragseingang
             {
                 AuftragZulassenButton_Clicked(sender, e);
             }
-            if (Session["CurrentUserId"] != null)
+            if (Session["CurrentUserId"] != null && !String.IsNullOrEmpty(Session["CurrentUserId"].ToString()))
             {
-                if (!String.IsNullOrEmpty(Session["CurrentUserId"].ToString()))
+                CheckUserPermissions();
+                if (!Page.IsPostBack)
                 {
-                    CheckUserPermissions();
-                    if (!Page.IsPostBack)
-                    {
-                        CheckFields(getAllControls());
-                        btnClearSelection_Click(this, null);
-                    }
+                    CheckFields(getAllControls());
+                    btnClearSelection_Click(this, null);
                 }
             }
-        }
-
-        // Suche nach Price. Falls keine gibt - stand.Price nehmen
-        private Price findPrice(string productId)
-        {
-            KVSEntities dbContext = new KVSEntities();
-            Price newPrice = null;
-            newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == Int32.Parse(productId) && q.LocationId == null);
-            return newPrice;
         }
 
         #region Index Changed

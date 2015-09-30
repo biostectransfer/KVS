@@ -16,7 +16,7 @@ namespace KVSWebApplication.Auftragseingang
     /// <summary>
     /// Abmeldung Laufkunde
     /// </summary>
-    public partial class AbmeldungLaufkundeControl : IncomingOrdersBase
+    public partial class AbmeldungLaufkundeControl : CancellationOrderBase
     {
         #region Members
 
@@ -31,32 +31,29 @@ namespace KVSWebApplication.Auftragseingang
         protected override Label CustomerHistoryLabel { get { return this.SmallCustomerHistorie; } }
         protected override RadComboBox CustomerDropDown { get { return this.CustomerDropDownList; } }
         protected override RadComboBox LocationDropDown { get { return null; } }
-
+        protected override RadTreeView ProductTree { get { return DienstleistungTreeView; } }
+        protected override RadScriptManager RadScriptManager { get { return ((AbmeldungLaufkunde)Page).getScriptManager(); } }
         #endregion
 
         #region Methods
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            AbmeldungLaufkunde auftragsEingang = Page as AbmeldungLaufkunde;
-            RadScriptManager script = auftragsEingang.getScriptManager() as RadScriptManager;
-            script.RegisterPostBackControl(AddAdressButton);
+            RadScriptManager.RegisterPostBackControl(AddAdressButton);
             LicenceBox1.Enabled = true;
             LicenceBox2.Enabled = true;
             LicenceBox3.Enabled = true;
-            //first registration bekommt immer heutige Datum by default
+            //first registration get today date by default
             FirstRegistrationDateBox.SelectedDate = DateTime.Now;
             string target = Request["__EVENTARGUMENT"];
             if (target != null && target == "CreateOrder")
             {
                 AbmeldenButton_Clicked(sender, e);
             }
-            if (Session["CurrentUserId"] != null)
+            if (Session["CurrentUserId"] != null && !String.IsNullOrEmpty(Session["CurrentUserId"].ToString()))
             {
-                if (!String.IsNullOrEmpty(Session["CurrentUserId"].ToString()))
-                {
-                    CheckUserPermissions();
-                }
+                CheckUserPermissions();
+
                 if (!Page.IsPostBack)
                 {
                     CheckFields(getAllControls());
@@ -65,51 +62,6 @@ namespace KVSWebApplication.Auftragseingang
             }
         }
 
-        protected string CheckIfAllProduktsHavingPrice(int? locationId)
-        {
-            string allesHatGutGelaufen = "";
-            string ProduktId = "";
-            string CostCenterId = "";
-            foreach (RadTreeNode node in DienstleistungTreeView.Nodes)
-            {
-                if (!String.IsNullOrEmpty(node.Value))
-                {
-                    string[] splited = node.Value.Split(';');
-                    if (splited.Length == 2)
-                    {
-                        try
-                        {
-                            KVSEntities dbContext = new KVSEntities(Int32.Parse(Session["CurrentUserId"].ToString()));
-                            Price newPrice;
-                            ProduktId = splited[0];
-                            CostCenterId = splited[1];
-                            if (!String.IsNullOrEmpty(ProduktId))
-                            {
-                                var productId = Int32.Parse(ProduktId);
-
-                                KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == productId);
-                                if (locationId == null) //small
-                                {
-                                    newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == null);
-                                    if (newPrice == null)
-                                    {
-                                        allesHatGutGelaufen += " " + node.Text + " ";
-                                    }
-                                    else
-                                    {
-                                    }
-                                }
-                            }
-                        }
-                        catch
-                        {
-                            return "";
-                        }
-                    }
-                }
-            }
-            return allesHatGutGelaufen;
-        }
         #region Button Clicked
         //Fahrzeug abmelden
         protected void AbmeldenButton_Clicked(object sender, EventArgs e)

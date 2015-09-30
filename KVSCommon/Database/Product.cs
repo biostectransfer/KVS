@@ -1,11 +1,12 @@
-﻿using System;
+﻿using KVSCommon.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace KVSCommon.Database
 {
-    public partial class Product : ILogging
+    public partial class Product : ILogging, IHasId<int>, IRemovable, ISystemFields
     {
         public KVSEntities LogDBContext
         {

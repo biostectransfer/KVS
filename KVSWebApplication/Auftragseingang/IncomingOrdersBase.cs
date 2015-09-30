@@ -28,6 +28,7 @@ namespace KVSWebApplication.Auftragseingang
             UserManager = (IUserManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IUserManager));
             OrderManager = (IOrderManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IOrderManager));
             PriceManager = (IPriceManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IPriceManager));
+            ProductManager = (IProductManager)GlobalConfiguration.Configuration.DependencyResolver.GetService(typeof(IProductManager));
         }
 
         protected abstract PermissionTypes PagePermission { get; }
@@ -42,6 +43,9 @@ namespace KVSWebApplication.Auftragseingang
         protected abstract Label CustomerHistoryLabel { get; }
         protected abstract RadComboBox CustomerDropDown { get; }
         protected abstract RadComboBox LocationDropDown { get; }
+        protected abstract RadTreeView ProductTree { get; }
+        protected abstract RadScriptManager RadScriptManager { get; }
+
         //TODO protected abstract HiddenField SessionId { get; }
         //protected abstract RadPersistenceManager RadPersistenceManager { get; }
 
@@ -49,11 +53,12 @@ namespace KVSWebApplication.Auftragseingang
         public IUserManager UserManager { get; set; }
         public IOrderManager OrderManager { get; set; }
         public IPriceManager PriceManager { get; set; }
+        public IProductManager ProductManager { get; set; }
 
         #endregion
 
         #region Event Handlers
-        
+
         protected void genIban_Click(object sender, EventArgs e)
         {
             if (EmptyStringIfNull.IsNumber(AccountNumberTextBox.Text) &&
@@ -77,37 +82,6 @@ namespace KVSWebApplication.Auftragseingang
                     }
                 }
             }
-        }
-
-        protected void CheckUmsatzForSmallCustomer()
-        {
-            CustomerHistoryLabel.Visible = true;
-
-            var orders = OrderManager.GetEntities(o => o.Status == (int)OrderStatusTypes.Payed);
-            
-            if (!String.IsNullOrEmpty(CustomerDropDown.SelectedValue))
-            {
-                orders = orders.Where(q => q.CustomerId == Int32.Parse(CustomerDropDown.SelectedValue));
-            }
-
-            orders = orders.ToList();
-            
-            decimal gebuehren = 0;
-            decimal umsatz = 0;
-            //Amtliche Gebühr
-            foreach (var order in orders)
-            {
-                foreach (OrderItem orderItem in order.OrderItem)
-                {
-                    if (orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
-                        gebuehren = gebuehren + orderItem.Amount;
-                    else if (!orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
-                        umsatz = umsatz + orderItem.Amount;
-                }
-            }
-
-            CustomerHistoryLabel.Text = String.Format("Historie: <br/> Gesamt: {0} <br/> Umsatz: {1}<br/> Gebühren: {2}",
-                orders.Count(), umsatz.ToString("C2"), gebuehren.ToString("C2"));
         }
 
         // Suche nach Price. Falls keine gibt - stand.Price nehmen
@@ -139,6 +113,84 @@ namespace KVSWebApplication.Auftragseingang
             {
                 Panel.Enabled = true;
             }
+        }
+        protected void CheckUmsatzForSmallCustomer()
+        {
+            CustomerHistoryLabel.Visible = true;
+
+            var orders = OrderManager.GetEntities(o => o.Status == (int)OrderStatusTypes.Payed);
+
+            if (!String.IsNullOrEmpty(CustomerDropDown.SelectedValue))
+            {
+                orders = orders.Where(q => q.CustomerId == Int32.Parse(CustomerDropDown.SelectedValue));
+            }
+
+            orders = orders.ToList();
+
+            decimal gebuehren = 0;
+            decimal umsatz = 0;
+            //Amtliche Gebühr
+            foreach (var order in orders)
+            {
+                foreach (OrderItem orderItem in order.OrderItem)
+                {
+                    if (orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
+                        gebuehren = gebuehren + orderItem.Amount;
+                    else if (!orderItem.IsAuthorativeCharge && orderItem.Status == (int)OrderItemStatusTypes.Payed)
+                        umsatz = umsatz + orderItem.Amount;
+                }
+            }
+
+            CustomerHistoryLabel.Text = String.Format("Historie: <br/> Gesamt: {0} <br/> Umsatz: {1}<br/> Gebühren: {2}",
+                orders.Count(), umsatz.ToString("C2"), gebuehren.ToString("C2"));
+        }
+
+        protected string CheckIfAllProduktsHavingPrice(int? locationId)
+        {
+            string result = "";
+
+            foreach (RadTreeNode node in ProductTree.Nodes)
+            {
+                if (!String.IsNullOrEmpty(node.Value))
+                {
+                    string[] splited = node.Value.Split(';');
+                    if (splited.Length == 2)
+                    {
+                        try
+                        {
+                            if (!String.IsNullOrEmpty(splited[0]))
+                            {
+                                var product = ProductManager.GetById(Int32.Parse(splited[0]));
+                                if (!locationId.HasValue) //small customer
+                                {
+                                    var price = PriceManager.GetEntities(q => q.ProductId == product.Id && q.LocationId == null).FirstOrDefault();
+                                    if (price == null)
+                                    {
+                                        result += " " + node.Text + " ";
+                                    }
+                                }
+                                else //large customer
+                                {
+                                    var newPrice = PriceManager.GetEntities(q => q.ProductId == product.Id && q.LocationId == locationId.Value).FirstOrDefault();
+
+                                    if (newPrice == null)
+                                        newPrice = PriceManager.GetEntities(q => q.ProductId == product.Id && q.LocationId == null).FirstOrDefault();
+
+                                    if (newPrice == null)
+                                    {
+                                        result += " " + node.Text + " ";
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            return "";
+                        }
+                    }
+                }
+            }
+            return result;
         }
 
         #endregion

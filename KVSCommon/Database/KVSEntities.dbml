@@ -578,6 +578,9 @@
       <Column Name="RegistrationOrderTypeId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="NeedsVAT" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="IsLocked" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
+      <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
       <Association Name="Product_OrderItem" Member="OrderItem" ThisKey="Id" OtherKey="ProductId" Type="OrderItem" />
       <Association Name="Product_Price" Member="Price" ThisKey="Id" OtherKey="ProductId" Type="Price" />
       <Association Name="Product_CustomerProduct" Member="CustomerProduct" ThisKey="Id" OtherKey="ProductId" Type="CustomerProduct" />
