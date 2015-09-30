@@ -63,6 +63,11 @@ G:\Escoda\KVSWebApplication\bin\WebGrease.dll
 G:\Escoda\KVSWebApplication\bin\WebActivatorEx.dll
 G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.Mvc.dll
 G:\Escoda\KVSWebApplication\bin\KVSDataAccess.dll
+G:\Escoda\KVSWebApplication\bin\System.Web.Mvc.dll
+G:\Escoda\KVSWebApplication\bin\System.Web.Razor.dll
+G:\Escoda\KVSWebApplication\bin\System.Web.WebPages.Razor.dll
+G:\Escoda\KVSWebApplication\bin\System.Web.WebPages.dll
+G:\Escoda\KVSWebApplication\bin\System.Web.WebPages.Deployment.dll
 G:\Escoda\KVSWebApplication\bin\KVSCommon.pdb
 G:\Escoda\KVSWebApplication\bin\KVSConfiguration.pdb
 G:\Escoda\KVSWebApplication\bin\Antlr3.Runtime.pdb
@@ -76,7 +81,11 @@ G:\Escoda\KVSWebApplication\bin\System.Web.Http.WebHost.xml
 G:\Escoda\KVSWebApplication\bin\System.Web.Optimization.xml
 G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.Unity.Mvc.xml
 G:\Escoda\KVSWebApplication\bin\KVSDataAccess.pdb
+G:\Escoda\KVSWebApplication\bin\System.Web.Mvc.xml
+G:\Escoda\KVSWebApplication\bin\System.Web.Razor.xml
+G:\Escoda\KVSWebApplication\bin\System.Web.WebPages.Razor.xml
+G:\Escoda\KVSWebApplication\bin\System.Web.WebPages.xml
+G:\Escoda\KVSWebApplication\bin\System.Web.WebPages.Deployment.xml
 G:\Escoda\KVSWebApplication\obj\Debug\KVSWebApplication.csprojResolveAssemblyReference.cache
 G:\Escoda\KVSWebApplication\obj\Debug\KVSWebApplication.dll
 G:\Escoda\KVSWebApplication\obj\Debug\KVSWebApplication.pdb
-G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.ServiceLocation.dll
