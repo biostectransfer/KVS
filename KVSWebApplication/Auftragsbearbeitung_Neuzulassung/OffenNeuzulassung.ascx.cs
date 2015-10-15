@@ -15,6 +15,7 @@ using KVSCommon.Enums;
 using KVSWebApplication.BasePages;
 using KVSWebApplication.PrintServiceReference;
 using Neodynamic.SDK.Web;
+using FlexCel.XlsAdapter;
 
 namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 {
@@ -37,6 +38,33 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         #endregion
 
         #region Event handlers
+
+        protected void AsyncUpload1_FileUploaded(object sender, FileUploadedEventArgs e)
+        {
+            using (Stream stream = e.File.InputStream)
+            {
+                byte[] data = new byte[stream.Length];
+
+                stream.Read(data, 0, data.Length);
+                stream.Position = 0;
+
+                var xlsFile = new XlsFile();
+                try
+                {
+                    xlsFile.Open(stream);
+                    
+                    for (int rowIndex = 1; rowIndex < 10; rowIndex++)
+                    {
+                        var cellValue = xlsFile.GetCellValue(rowIndex, 1);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+        }
+
 
         protected void Page_Load(object sender, EventArgs e)
         {

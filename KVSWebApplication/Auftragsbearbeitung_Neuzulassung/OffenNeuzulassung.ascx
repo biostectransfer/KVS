@@ -40,6 +40,12 @@
         datepicker.hidePopup();
     }
 
+        function OnClientFilesUploaded(sender, args) {
+
+            $find("<%=UploadRadAjaxManager.ClientID%>").ajaxRequest();
+
+        }
+
     </script>
 </telerik:RadCodeBlock>
 
@@ -161,6 +167,30 @@
     <asp:Label runat="server" ID="ZulassungErrLabel" Text="Sie haben keinen Auftrag ausgewählt!" ForeColor="Red" Visible="false"></asp:Label>
     <asp:Label Visible="false" ID="ZulassungOkLabel" Text="Ausgewählter Auftrag ist erfolgreich bearbeitet!" ForeColor="Green" runat="server" />
     <br />
+
+    
+    <div>
+        <telerik:RadAjaxManager ID="UploadRadAjaxManager" runat="server" EnablePageHeadUpdate="false">
+            <AjaxSettings>
+                <telerik:AjaxSetting AjaxControlID="UploadRadAjaxManager">
+                    <UpdatedControls>                        
+                        <telerik:AjaxUpdatedControl ControlID="AsyncUpload1" />
+                    </UpdatedControls>
+                </telerik:AjaxSetting>
+            </AjaxSettings>
+        </telerik:RadAjaxManager>
+
+        <div id="dwndWrapper">
+            <telerik:RadAsyncUpload ID="AsyncUpload1" runat="server"
+                                    OnClientFilesUploaded="OnClientFilesUploaded" OnFileUploaded="AsyncUpload1_FileUploaded"
+                                    MaxFileSize="2097152" AllowedFileExtensions="xls,xlsx,csv,txt"
+                                    AutoAddFileInputs="false" Localization-Select="Upload" />
+
+            <%--<asp:Label ID="Label1" Text="*Size limit: 2MB" runat="server" Style="font-size: 10px;"></asp:Label>--%>
+        </div>
+    </div>    
+
+
     <telerik:RadFormDecorator runat="server" ID="Zulassungsdekorator" />
 
     <telerik:RadGrid OnEditCommand="EditButton_Clicked" OnDetailTableDataBind="RadGridZulOffen_DetailTableDataBind" AutoGenerateColumns="false" ID="RadGridOffNeuzulassung"
