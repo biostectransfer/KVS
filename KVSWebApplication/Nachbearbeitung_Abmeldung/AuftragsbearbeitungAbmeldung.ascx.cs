@@ -13,6 +13,7 @@ using System.Configuration;
 using System.Transactions;
 using KVSCommon.Enums;
 using KVSWebApplication.BasePages;
+using FlexCel.XlsAdapter;
 
 namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 {
@@ -31,6 +32,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         protected override OrderTypes OrderType { get { return OrderTypes.Cancellation; } }
         protected override OrderStatusTypes OrderStatusType { get { return OrderStatusTypes.Open; } }
         protected override string OrderStatusSearch { get { return "Offen"; } }
+
+        private const int RowCount = 1000;
         #endregion
 
         #region Event handlers
@@ -549,8 +552,228 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 
         #endregion
 
+        #region Import
+
+        protected void FPUpload_FileUploaded(object sender, FileUploadedEventArgs e)
+        {
+            try
+            {
+                using (Stream stream = e.File.InputStream)
+                {
+                    byte[] data = new byte[stream.Length];
+
+                    stream.Read(data, 0, data.Length);
+                    stream.Position = 0;
+
+                    string line;
+                    var file = new StreamReader(stream);
+                    while ((line = file.ReadLine()) != null)
+                    {
+                        if (!String.IsNullOrEmpty(line))
+                        {
+                            var parts = line.Split(',');
+                            if (parts.Length == 6)
+                            {
+                                var licenceNumber = String.Empty;
+                                if (parts[2].Length >= 9)
+                                {
+                                    licenceNumber = parts[2].Substring(0, 9);
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+
+                                var fin = String.Empty;
+                                if (parts[0].Length == 10 && parts[1].Length == 7)
+                                {
+                                    fin = parts[0] + parts[1];
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+
+                                var newAbmeldeDatum = DateTime.Now;
+                                if (DateTime.TryParse(parts[4], out newAbmeldeDatum))
+                                {
+                                    CreateDeregistrationOrder(licenceNumber, fin, newAbmeldeDatum, ConfigurationManager.AppSettings["ImportFPLocationId"],
+                                        ConfigurationManager.AppSettings["ImportFPProductId"]);
+                                }
+                            }
+                        }
+                    }
+
+                    file.Close();                   
+
+                    RadGridAbmeldung.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        protected void MMUpload_FileUploaded(object sender, FileUploadedEventArgs e)
+        {
+            try
+            {
+                using (Stream stream = e.File.InputStream)
+                {
+                    byte[] data = new byte[stream.Length];
+
+                    stream.Read(data, 0, data.Length);
+                    stream.Position = 0;
+
+                    string line;
+                    var file = new StreamReader(stream);
+                    while ((line = file.ReadLine()) != null)
+                    {
+                        if (!String.IsNullOrEmpty(line))
+                        {
+                            var parts = line.Split(',');
+                            if (parts.Length == 6)
+                            {
+                                var licenceNumber = String.Empty;
+                                if (parts[2].Length >= 9)
+                                {
+                                    licenceNumber = parts[2].Substring(0, 9);
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+
+                                var fin = String.Empty;
+                                if (parts[0].Length == 10 && parts[1].Length == 7)
+                                {
+                                    fin = parts[0] + parts[1];
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+
+                                var newAbmeldeDatum = DateTime.Now;
+                                if (DateTime.TryParse(parts[4], out newAbmeldeDatum))
+                                {
+                                    CreateDeregistrationOrder(licenceNumber, fin, newAbmeldeDatum, ConfigurationManager.AppSettings["ImportMMLocationId"],
+                                        ConfigurationManager.AppSettings["ImportMMProductId"]);
+                                }
+                            }
+                        }
+                    }
+
+                    file.Close();
+
+                    RadGridAbmeldung.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        protected void RentUpload_FileUploaded(object sender, FileUploadedEventArgs e)
+        {
+            try
+            {
+                using (Stream stream = e.File.InputStream)
+                {
+                    byte[] data = new byte[stream.Length];
+
+                    stream.Read(data, 0, data.Length);
+                    stream.Position = 0;
+
+                    var xlsFile = new XlsFile();
+
+                    xlsFile.Open(stream);
+
+                    for (int rowIndex = 2; rowIndex < RowCount; rowIndex++)
+                    {
+                        var licenceNumber = String.Empty;
+                        var cellValue = xlsFile.GetCellValue(rowIndex, 3);
+                        if (cellValue != null && !String.IsNullOrEmpty(cellValue.ToString()))
+                        {
+                            licenceNumber = cellValue.ToString();
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                        var fin = String.Empty;
+                        cellValue = xlsFile.GetCellValue(rowIndex, 4);
+                        if (cellValue != null && !String.IsNullOrEmpty(cellValue.ToString()) &&
+                            cellValue.ToString().Length == 17)
+                        {
+                            fin = cellValue.ToString();
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+
+                        var newAbmeldeDatum = DateTime.Now;
+                        var cellValueStr = xlsFile.GetStringFromCell(rowIndex, 9);
+                        if (cellValueStr != null)
+                        {
+                            DateTime.TryParse(cellValueStr.ToString(), out newAbmeldeDatum);
+                        }
+
+                        CreateDeregistrationOrder(licenceNumber, fin, newAbmeldeDatum, ConfigurationManager.AppSettings["ImportRentLocationId"],
+                            ConfigurationManager.AppSettings["ImportRentProductId"]);
+                    }
+
+                    RadGridAbmeldung.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void CreateDeregistrationOrder(string licenceNumber, string fin, DateTime newAbmeldeDatum,
+            string location, string product)
+        {
+            var vehicle = VehicleManager.CreateVehicle(fin, String.Empty, String.Empty, String.Empty, null, null);
+            
+            var carOwner = CarOwnerManager.GetById(Int32.Parse(ConfigurationManager.AppSettings["ImportCarOwnerId"]));
+            var newRegistration = RegistrationManager.CreateRegistration(carOwner, vehicle, licenceNumber, String.Empty,
+                newAbmeldeDatum, newAbmeldeDatum, String.Empty, String.Empty);
+
+
+            var costCenter = CostCenterManager.GetById(Int32.Parse(ConfigurationManager.AppSettings["ImportCostCenterId"]));
+            var locationId = Int32.Parse(location);
+
+            //neues DeregistrationOrder erstellen
+            var newDeregOrder = DeregistrationOrderManager.CreateDeregistrationOrder(
+                Int32.Parse(ConfigurationManager.AppSettings["ImportCustomerId"]),
+                vehicle, newRegistration, locationId, null/*TODO?*/);
+
+            var productId = Int32.Parse(product);
+            //adding new Deregestrationorder Items
+
+            var price = PriceManager.GetEntities(q => q.ProductId == productId && q.LocationId == locationId).FirstOrDefault();
+            var newOrderItem1 = OrderManager.AddOrderItem(newDeregOrder.Order, productId,
+                price.Amount, 1, costCenter, null, false);
+            if (price.AuthorativeCharge.HasValue)
+            {
+                var newOrderItem2 = OrderManager.AddOrderItem(newDeregOrder.Order, productId,
+                    price.AuthorativeCharge.Value, 1, costCenter, newOrderItem1.Id, true);
+            }
+
+            OrderManager.SaveChanges();
+        }
+
+        #endregion
+
         #region Methods
-        
+
         public void HideExpandColumnRecursive(GridTableView tableView)
         {
             GridItem[] nestedViewItems = tableView.GetItems(GridItemType.NestedView);

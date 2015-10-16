@@ -3,20 +3,28 @@
     <script type="text/javascript">
         function openRadWindowPos() {
             $find("<%=RadWindow_Product.ClientID %>").show();
-    }
-    function MyValueChanging(sender, args) {
-        args.set_newValue(args.get_newValue().toUpperCase());
-    }
-    function RowSelecting(sender, args) {
-        if (args.get_tableView().get_name() != "MasterTableViewAbmeldung") {
-            args.set_cancel(true);
         }
-    }
-    function GoToToday() {
-        var datepicker = $find("<%=ZulassungsDatumPicker.ClientID%>");
+        function MyValueChanging(sender, args) {
+            args.set_newValue(args.get_newValue().toUpperCase());
+        }
+
+        function RowSelecting(sender, args) {
+            if (args.get_tableView().get_name() != "MasterTableViewAbmeldung") {
+                args.set_cancel(true);
+            }
+        }
+
+        function GoToToday() {
+            var datepicker = $find("<%=ZulassungsDatumPicker.ClientID%>");
         var dt = new Date();
         datepicker.set_selectedDate(dt);
         datepicker.hidePopup();
+    }
+
+    function OnClientFilesUploaded(sender, args) {
+
+        $find("<%=UploadRadAjaxManager.ClientID%>").ajaxRequest();
+
     }
     </script>
 </telerik:RadCodeBlock>
@@ -121,6 +129,53 @@
     <br />
     <asp:Label runat="server" ID="StornierungErfolgLabel" Text="Auftrag ist erfolgreich storniert" Visible="false" ForeColor="Green"></asp:Label>
     <telerik:RadFormDecorator runat="server" ID="AbmeldungDekorator" />
+
+
+
+    <telerik:RadAjaxManager ID="UploadRadAjaxManager" runat="server" EnablePageHeadUpdate="false">
+        <AjaxSettings>
+            <telerik:AjaxSetting AjaxControlID="UploadRadAjaxManager">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="FPUpload" />
+                    <telerik:AjaxUpdatedControl ControlID="MMUpload" />
+                    <telerik:AjaxUpdatedControl ControlID="RentUpload" />
+                    <telerik:AjaxUpdatedControl ControlID="RadGridAbmeldung" />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+        </AjaxSettings>
+    </telerik:RadAjaxManager>
+
+    <table style="padding-left: 5px;">
+        <tr>
+            <td><asp:Label ID="FPLabel" Text="FP Datei: " runat="server"></asp:Label></td>
+            <td>
+                <telerik:RadAsyncUpload ID="FPUpload" runat="server"
+                    OnClientFilesUploaded="OnClientFilesUploaded" OnFileUploaded="FPUpload_FileUploaded"
+                    MaxFileSize="2097152" AllowedFileExtensions="csv"
+                    AutoAddFileInputs="false" Localization-Select="Import" />
+            </td>
+        </tr>
+        <tr>
+            <td><asp:Label ID="MMLabel" Text="MM Datei: " runat="server"></asp:Label></td>
+            <td>
+                <telerik:RadAsyncUpload ID="MMUpload" runat="server"
+                    OnClientFilesUploaded="OnClientFilesUploaded" OnFileUploaded="MMUpload_FileUploaded"
+                    MaxFileSize="2097152" AllowedFileExtensions="csv"
+                    AutoAddFileInputs="false" Localization-Select="Import" />
+            </td>
+        </tr>
+        <tr>
+            <td><asp:Label ID="RentLabel" Text="Rent Datei: " runat="server"></asp:Label></td>
+            <td>
+                <telerik:RadAsyncUpload ID="RentUpload" runat="server"
+                    OnClientFilesUploaded="OnClientFilesUploaded" OnFileUploaded="RentUpload_FileUploaded"
+                    MaxFileSize="2097152" AllowedFileExtensions="xls,xlsx"
+                    AutoAddFileInputs="false" Localization-Select="Import" />
+            </td>
+        </tr>
+    </table>
+    
+
     <telerik:RadGrid AutoGenerateColumns="false" ID="RadGridAbmeldung" OnDetailTableDataBind="RadGridOffen_DetailTableDataBind" DataSourceID="LinqDataSourceAbmeldung"
         AllowFilteringByColumn="True" AllowSorting="True" PageSize="10" EnableHeaderContextMenu="true" OnItemCommand="OnItemCommand_Fired"
         ShowFooter="True" AllowPaging="True" Enabled="true" runat="server" OnEditCommand="EditButton_Clicked" GridLines="None"
@@ -174,7 +229,7 @@
             <Columns>
                 <telerik:GridEditCommandColumn ButtonType="PushButton" EditText="Ändern" UniqueName="EditOffenColumn" />
                 <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderNumber" HeaderText="Auftragsnummer"
-                    SortExpression="OrderNumber"   UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
+                    SortExpression="OrderNumber" UniqueName="OrderNumber" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
                 </telerik:GridBoundColumn>
                 <telerik:GridBoundColumn FilterControlWidth="105px" DataField="locationId" HeaderText="locationId"

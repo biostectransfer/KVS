@@ -184,24 +184,6 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung {
         protected global::System.Web.UI.WebControls.Label ZulassungOkLabel;
         
         /// <summary>
-        /// UploadRadAjaxManager control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Telerik.Web.UI.RadAjaxManager UploadRadAjaxManager;
-        
-        /// <summary>
-        /// AsyncUpload1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Telerik.Web.UI.RadAsyncUpload AsyncUpload1;
-        
-        /// <summary>
         /// Zulassungsdekorator control.
         /// </summary>
         /// <remarks>

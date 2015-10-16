@@ -54,7 +54,7 @@
                         <asp:Label ID="lblLoginUsername" Text="Gast" runat="server" ForeColor="Blue"></asp:Label>
                     </td>
                     <td style="text-align: right; width: 370px;">
-                        <a href="~/Search/search.aspx" runat="server"><asp:Image ID="Image6" runat="server" ImageUrl="~/Pictures/Logo.png" Height="70px" Width="370px" ImageAlign="Right" BorderWidth="0" /></a>
+                        <a href="~/Search/search.aspx" runat="server"><asp:Image ID="Image6" runat="server" ImageUrl="~/Pictures/Logo.png" Height="104px" Width="167px" ImageAlign="Right" BorderWidth="0" /></a>
                     </td>
                 </tr>
             </table>
@@ -158,8 +158,8 @@
     
     <%--End Left Content--%>
     <div class="footer">
-        Copyright © <a href="http://www.kfz-voll-service.de" target="_blank"
-            title="KFZ-Voll-Service Thomas Fischer e.K">KFZ-Voll-Service Thomas Fischer e.K </a>
+        Copyright © <a href="http://www.topzulassungsservice.de" target="_blank"
+            title="Top Zulassungsservice GmbH Dachau">Top Zulassungsservice GmbH Dachau</a>
     </div>
 </body>
 </html>

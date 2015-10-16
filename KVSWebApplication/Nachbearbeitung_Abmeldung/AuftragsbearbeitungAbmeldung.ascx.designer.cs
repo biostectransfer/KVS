@@ -193,6 +193,69 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung {
         protected global::Telerik.Web.UI.RadFormDecorator AbmeldungDekorator;
         
         /// <summary>
+        /// UploadRadAjaxManager control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Telerik.Web.UI.RadAjaxManager UploadRadAjaxManager;
+        
+        /// <summary>
+        /// FPLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label FPLabel;
+        
+        /// <summary>
+        /// FPUpload control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Telerik.Web.UI.RadAsyncUpload FPUpload;
+        
+        /// <summary>
+        /// MMLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label MMLabel;
+        
+        /// <summary>
+        /// MMUpload control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Telerik.Web.UI.RadAsyncUpload MMUpload;
+        
+        /// <summary>
+        /// RentLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label RentLabel;
+        
+        /// <summary>
+        /// RentUpload control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Telerik.Web.UI.RadAsyncUpload RentUpload;
+        
+        /// <summary>
         /// RadGridAbmeldung control.
         /// </summary>
         /// <remarks>

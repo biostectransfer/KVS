@@ -18,6 +18,6 @@ namespace KVSCommon.Managers
         /// <param name="locationId">Id des Kundenstandorts.</param>
         /// <returns>Den neuen Abmeldeauftrag.</returns>
         /// <remarks>Erstellt auch gleichzeitig den Order-Datensatz.</remarks>
-        DeregistrationOrder CreateDeregistrationOrder(int customerId, Vehicle vehicle, Registration registration, int? locationId, int zulassungsstelleId);
+        DeregistrationOrder CreateDeregistrationOrder(int customerId, Vehicle vehicle, Registration registration, int? locationId, int? zulassungsstelleId);
     }
 }

@@ -25,7 +25,7 @@ namespace KVSDataAccess.Managers
         /// <param name="dbContext">Datenbankkontext für die Transaktion.</param>
         /// <returns>Den neuen Abmeldeauftrag.</returns>
         /// <remarks>Erstellt auch gleichzeitig den Order-Datensatz.</remarks>
-        public DeregistrationOrder CreateDeregistrationOrder(int customerId, Vehicle vehicle, Registration registration, int? locationId, int zulassungsstelleId)
+        public DeregistrationOrder CreateDeregistrationOrder(int customerId, Vehicle vehicle, Registration registration, int? locationId, int? zulassungsstelleId)
         {
             var orderTypeId = (int)OrderTypes.Cancellation;
 
