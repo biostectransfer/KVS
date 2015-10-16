@@ -2973,6 +2973,8 @@ namespace KVSCommon.Database
 		
 		private System.DateTime _ChangeDate;
 		
+		private System.Nullable<System.DateTime> _ExportDate;
+		
 		private EntityRef<Registration> _Registration;
 		
 		private EntityRef<Vehicle> _Vehicle;
@@ -2995,6 +2997,8 @@ namespace KVSCommon.Database
     partial void OnDeleteDateChanged();
     partial void OnChangeDateChanging(System.DateTime value);
     partial void OnChangeDateChanged();
+    partial void OnExportDateChanging(System.Nullable<System.DateTime> value);
+    partial void OnExportDateChanged();
     #endregion
 		
 		public DeregistrationOrder()
@@ -3129,6 +3133,26 @@ namespace KVSCommon.Database
 					this._ChangeDate = value;
 					this.SendPropertyChanged("ChangeDate");
 					this.OnChangeDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ExportDate", DbType="datetime2(2)")]
+		public System.Nullable<System.DateTime> ExportDate
+		{
+			get
+			{
+				return this._ExportDate;
+			}
+			set
+			{
+				if ((this._ExportDate != value))
+				{
+					this.OnExportDateChanging(value);
+					this.SendPropertyChanging();
+					this._ExportDate = value;
+					this.SendPropertyChanged("ExportDate");
+					this.OnExportDateChanged();
 				}
 			}
 		}

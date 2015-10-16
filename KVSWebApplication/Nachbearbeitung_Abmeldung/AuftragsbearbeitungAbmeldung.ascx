@@ -177,11 +177,11 @@
         </tr>
     </table>
     
-    <telerik:RadAjaxPanel ID="RadAjaxPanelCostCenter" runat="server" Width="1600px" LoadingPanelID="RadAjaxLoadingPanelExports">
+    <%--<telerik:RadAjaxPanel ID="RadAjaxPanelCostCenter" runat="server" Width="1600px" LoadingPanelID="RadAjaxLoadingPanelExports">--%>
     <asp:Button runat="server" ID="btnExport" Text="Export" OnClick="Export_Button_Clicked" />
-    </telerik:RadAjaxPanel>
+    <%--</telerik:RadAjaxPanel>
     <telerik:RadAjaxLoadingPanel ID="RadAjaxLoadingPanelExports" BackgroundTransparency="100" runat="server">
-    </telerik:RadAjaxLoadingPanel>
+    </telerik:RadAjaxLoadingPanel>--%>
     <br />
     <br />
 

@@ -788,40 +788,56 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                            o.Status == (int)OrderStatusTypes.Open &&
                            o.OrderTypeId == (int)OrderTypes.Cancellation &&
                            o.HasError.GetValueOrDefault(false) != true &&
-                           o.DeregistrationOrder != null).ToList();
+                           o.DeregistrationOrder != null &&
+                           !o.DeregistrationOrder.ExportDate.HasValue).ToList();
 
-                var dataDirectory = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data");
-                var path = Path.Combine(dataDirectory, ConfigurationManager.AppSettings["ExportOrdersFileName"]);
-                var xlsFile = new XlsFile(path);
-                int rowNumber = 2;
-                foreach(var order in orders)
+                if (orders.Count != 0)
                 {
-                    xlsFile.SetCellValue(rowNumber, 1, order.DeregistrationOrder.Registration.RegistrationDate.HasValue ?
-                        order.DeregistrationOrder.Registration.RegistrationDate.Value.ToShortDateString() : String.Empty);
-                    xlsFile.SetCellValue(rowNumber, 3, order.DeregistrationOrder.Registration.Licencenumber);
-                    xlsFile.SetCellValue(rowNumber, 4, order.DeregistrationOrder.Registration.Vehicle.VIN);
+                    var dataDirectory = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data");
+                    var path = Path.Combine(dataDirectory, ConfigurationManager.AppSettings["ExportOrdersFileName"]);
+                    var xlsFile = new XlsFile(path);
+                    int rowNumber = 2;
+                    foreach (var order in orders)
+                    {
+                        xlsFile.SetCellValue(rowNumber, 1, order.DeregistrationOrder.Registration.RegistrationDate.HasValue ?
+                            order.DeregistrationOrder.Registration.RegistrationDate.Value.ToShortDateString() : String.Empty);
+                        xlsFile.SetCellValue(rowNumber, 3, order.DeregistrationOrder.Registration.Licencenumber);
+                        xlsFile.SetCellValue(rowNumber, 4, order.DeregistrationOrder.Registration.Vehicle.VIN);
 
-                    rowNumber++;
+                        rowNumber++;
+
+                        order.DeregistrationOrder.ExportDate = DateTime.Now;
+                    }
+
+                    OrderManager.SaveChanges();
+
+                    var filePath = Path.Combine(Path.Combine(HttpRuntime.AppDomainAppPath, "UserData\\Exports\\"),
+                        String.Format("Export_{0}.xls", DateTime.Now.ToString().Replace(':', '_')));
+                    xlsFile.Save(filePath);
+
+
+                    var auftragNeu = Page as NachbearbeitungAbmeldung;
+                    script = auftragNeu.getScriptManager() as RadScriptManager;
+
+                    script.RegisterPostBackControl(btnExport);
+
+                    Response.Clear();
+                    Response.ClearHeaders();
+                    Response.ClearContent();
+
+                    Response.AddHeader("Content-Disposition", "attachment; filename=" + "Export.xls");
+                    Response.AddHeader("Content-Length", new FileInfo(filePath).Length.ToString());
+                    Response.ContentType = "application/vnd.ms-excel";
+
+                    Response.TransmitFile(filePath);
+                    Response.Flush();
+                    Response.End();
                 }
-
-
-                var filePath = Path.Combine(Path.Combine(HttpRuntime.AppDomainAppPath, "UserData\\Exports\\"), 
-                    String.Format("Export_{0}.xls", DateTime.Now.ToString().Replace(':', '_')));
-                xlsFile.Save(filePath);
-
-                
-                Response.Clear();
-                Response.ClearHeaders();
-                Response.ClearContent();
-
-                Response.AddHeader("Content-Disposition", "attachment; filename=" + "Export.xls");
-                Response.AddHeader("Content-Length", new FileInfo(filePath).Length.ToString());
-                Response.ContentType = "application/vnd.ms-excel";
-
-                Response.TransmitFile(filePath);
-                Response.Flush();
-                Response.End();
-                //Response.Close();
+                else
+                {
+                    AbmeldungErrLabel.Visible = true;
+                    AbmeldungErrLabel.Text = "Keine Aufträge vorhanden";
+                }
             }
             catch (Exception ex)
             {

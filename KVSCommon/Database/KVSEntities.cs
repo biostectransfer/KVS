@@ -5,6 +5,13 @@ using KVSCommon.Entities;
 using System.Linq;
 using KVSCommon.SaveActors;
 
+namespace KVSCommon
+{
+    partial class KVSEntities
+    {
+    }
+}
+
 namespace KVSCommon.Database
 {
     public partial class KVSEntities : IKVSEntities

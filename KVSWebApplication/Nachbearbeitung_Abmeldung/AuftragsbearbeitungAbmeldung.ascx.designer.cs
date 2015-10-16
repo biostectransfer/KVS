@@ -256,15 +256,6 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung {
         protected global::Telerik.Web.UI.RadAsyncUpload RentUpload;
         
         /// <summary>
-        /// RadAjaxPanelCostCenter control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Telerik.Web.UI.RadAjaxPanel RadAjaxPanelCostCenter;
-        
-        /// <summary>
         /// btnExport control.
         /// </summary>
         /// <remarks>
@@ -272,15 +263,6 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnExport;
-        
-        /// <summary>
-        /// RadAjaxLoadingPanelExports control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Telerik.Web.UI.RadAjaxLoadingPanel RadAjaxLoadingPanelExports;
         
         /// <summary>
         /// RadGridAbmeldung control.
