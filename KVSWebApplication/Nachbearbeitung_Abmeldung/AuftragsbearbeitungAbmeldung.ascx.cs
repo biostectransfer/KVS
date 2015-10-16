@@ -52,6 +52,9 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             var auftragNeu = Page as NachbearbeitungAbmeldung;
             script = auftragNeu.getScriptManager() as RadScriptManager;
             script.RegisterPostBackControl(ZulassungsstelleLieferscheineButton);
+
+            script.RegisterPostBackControl(btnExport);
+
             string target = Request["__EVENTTARGET"] == null ? "" : Request["__EVENTTARGET"];
 
             if (String.IsNullOrEmpty(target) && Session["orderNumberSearch"] != null && !String.IsNullOrEmpty(Session["orderNumberSearch"].ToString()))
@@ -391,7 +394,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
             }
         }
-
+        
         private void UpdateOrderAfterZulassungsstelle(int customerIdToUpdate, int orderIdToUpdate)
         {
             var customerID = customerIdToUpdate;
@@ -611,7 +614,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             }
             catch (Exception ex)
             {
-
+                AbmeldungErrLabel.Visible = true;
+                AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
             }
         }
 
@@ -672,7 +676,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             }
             catch (Exception ex)
             {
-
+                AbmeldungErrLabel.Visible = true;
+                AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
             }
         }
 
@@ -733,7 +738,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             }
             catch (Exception ex)
             {
-
+                AbmeldungErrLabel.Visible = true;
+                AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
             }
         }
 
@@ -768,6 +774,60 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             }
 
             OrderManager.SaveChanges();
+        }
+
+        #endregion
+
+        #region Export
+
+        protected void Export_Button_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                var orders = OrderManager.GetEntities(o =>
+                           o.Status == (int)OrderStatusTypes.Open &&
+                           o.OrderTypeId == (int)OrderTypes.Cancellation &&
+                           o.HasError.GetValueOrDefault(false) != true &&
+                           o.DeregistrationOrder != null).ToList();
+
+                var dataDirectory = Path.Combine(HttpRuntime.AppDomainAppPath, "App_Data");
+                var path = Path.Combine(dataDirectory, ConfigurationManager.AppSettings["ExportOrdersFileName"]);
+                var xlsFile = new XlsFile(path);
+                int rowNumber = 2;
+                foreach(var order in orders)
+                {
+                    xlsFile.SetCellValue(rowNumber, 1, order.DeregistrationOrder.Registration.RegistrationDate.HasValue ?
+                        order.DeregistrationOrder.Registration.RegistrationDate.Value.ToShortDateString() : String.Empty);
+                    xlsFile.SetCellValue(rowNumber, 3, order.DeregistrationOrder.Registration.Licencenumber);
+                    xlsFile.SetCellValue(rowNumber, 4, order.DeregistrationOrder.Registration.Vehicle.VIN);
+
+                    rowNumber++;
+                }
+
+
+                var filePath = Path.Combine(Path.Combine(HttpRuntime.AppDomainAppPath, "UserData\\Exports\\"), 
+                    String.Format("Export_{0}.xls", DateTime.Now.ToString().Replace(':', '_')));
+                xlsFile.Save(filePath);
+
+                
+                Response.Clear();
+                Response.ClearHeaders();
+                Response.ClearContent();
+
+                Response.AddHeader("Content-Disposition", "attachment; filename=" + "Export.xls");
+                Response.AddHeader("Content-Length", new FileInfo(filePath).Length.ToString());
+                Response.ContentType = "application/vnd.ms-excel";
+
+                Response.TransmitFile(filePath);
+                Response.Flush();
+                Response.End();
+                //Response.Close();
+            }
+            catch (Exception ex)
+            {
+                AbmeldungErrLabel.Visible = true;
+                AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
+            }
         }
 
         #endregion

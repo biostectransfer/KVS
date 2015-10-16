@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="AuftragsbearbeitungAbmeldung.ascx.cs" Inherits="KVSWebApplication.Nachbearbeitung_Abmeldung.AuftragsbearbeitungAbmeldung" %>
 <telerik:RadCodeBlock runat="server">
     <script type="text/javascript">
+
         function openRadWindowPos() {
             $find("<%=RadWindow_Product.ClientID %>").show();
         }
@@ -45,6 +46,7 @@
         display: inline !important;
     }
 </style>
+
 <asp:Panel ID="PanelOffAbm1" runat="server">
     <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Sofort- oder Großkunde: " ID="RadTextBox2" Width="240px"></telerik:RadTextBox>
     <telerik:RadComboBox ID="RadComboBoxCustomerAbmeldungOffen" runat="server" OnSelectedIndexChanged="SmallLargeCustomerIndex_Changed"
@@ -175,6 +177,13 @@
         </tr>
     </table>
     
+    <telerik:RadAjaxPanel ID="RadAjaxPanelCostCenter" runat="server" Width="1600px" LoadingPanelID="RadAjaxLoadingPanelExports">
+    <asp:Button runat="server" ID="btnExport" Text="Export" OnClick="Export_Button_Clicked" />
+    </telerik:RadAjaxPanel>
+    <telerik:RadAjaxLoadingPanel ID="RadAjaxLoadingPanelExports" BackgroundTransparency="100" runat="server">
+    </telerik:RadAjaxLoadingPanel>
+    <br />
+    <br />
 
     <telerik:RadGrid AutoGenerateColumns="false" ID="RadGridAbmeldung" OnDetailTableDataBind="RadGridOffen_DetailTableDataBind" DataSourceID="LinqDataSourceAbmeldung"
         AllowFilteringByColumn="True" AllowSorting="True" PageSize="10" EnableHeaderContextMenu="true" OnItemCommand="OnItemCommand_Fired"
