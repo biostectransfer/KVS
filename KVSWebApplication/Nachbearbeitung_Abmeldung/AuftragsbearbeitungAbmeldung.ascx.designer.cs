@@ -256,13 +256,22 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung {
         protected global::Telerik.Web.UI.RadAsyncUpload RentUpload;
         
         /// <summary>
-        /// btnExport control.
+        /// MergeLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnExport;
+        protected global::System.Web.UI.WebControls.Label MergeLabel;
+        
+        /// <summary>
+        /// MergeUpload control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Telerik.Web.UI.RadAsyncUpload MergeUpload;
         
         /// <summary>
         /// RadGridAbmeldung control.

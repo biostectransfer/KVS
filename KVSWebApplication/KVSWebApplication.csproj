@@ -698,7 +698,6 @@
     <Content Include="Pictures\Delete.gif" />
     <Content Include="Pictures\ImageLeft.png" />
     <Content Include="Pictures\imageMiddle.jpg" />
-    <Content Include="Pictures\kfz-voll-mit-raste .tif" />
     <Content Include="Pictures\logo.jpg" />
     <Content Include="Pictures\Logo.png" />
     <Content Include="Pictures\LogoForPrinting.png" />
@@ -808,7 +807,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties UseAjaxifiedTemplates="True" UseJQuerySupport="True" />
+      <UserProperties UseJQuerySupport="True" UseAjaxifiedTemplates="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

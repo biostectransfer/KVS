@@ -284,5 +284,17 @@ namespace KVSCommon.Database
         //        return (OrderStatusTypes)this.Status;
         //    }
         //}
+
+        public OrderCreationTypes OrderCreationType
+        {
+            get
+            {
+                return (OrderCreationTypes)this.OrderCreationTypeId;
+            }
+            set
+            {
+                this.OrderCreationTypeId = (int)value;
+            }
+        }
     }
 }

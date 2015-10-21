@@ -136,6 +136,7 @@
     <Compile Include="Entities\ISystemFields.cs" />
     <Compile Include="Entities\move_to_DataAccess\EntitiesBase.cs" />
     <Compile Include="Enums\InvoiceType.cs" />
+    <Compile Include="Enums\OrderCreationTypes.cs" />
     <Compile Include="Enums\PermissionTypes.cs" />
     <Compile Include="Enums\MailingListTypes.cs" />
     <Compile Include="Enums\OrderItemStatusTypes.cs" />

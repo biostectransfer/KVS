@@ -53,7 +53,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             script = auftragNeu.getScriptManager() as RadScriptManager;
             script.RegisterPostBackControl(ZulassungsstelleLieferscheineButton);
 
-            script.RegisterPostBackControl(btnExport);
+            //TODO script.RegisterPostBackControl(btnExport);
 
             string target = Request["__EVENTTARGET"] == null ? "" : Request["__EVENTTARGET"];
 
@@ -303,16 +303,17 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                            o.DeregistrationOrder != null &&
                            o.DeregistrationOrder.Registration.RegistrationDate <= ZulassungsDatumPicker.SelectedDate).ToList();
 
-                    var grouptedOrders = orders.GroupBy(q => q.Zulassungsstelle.Value);
+                    var grouptedOrders = orders.GroupBy(q => q.Zulassungsstelle);
                     foreach (var location in grouptedOrders)
                     {
                         var docketList = new DocketList();
                         var ms = new MemoryStream();
                         if (location.Count() > 0)
                         {
+                            var registrationLocation = location.First().RegistrationLocation;
                             docketList = DocketListManager.CreateDocketList(
-                                location.First().RegistrationLocation.RegistrationLocationName,
-                                location.First().RegistrationLocation.Adress);
+                                registrationLocation != null ? registrationLocation.RegistrationLocationName : String.Empty,
+                                registrationLocation != null ? registrationLocation.Adress : null);
 
                             docketList.IsSelfDispatch = true;
                         }
@@ -601,7 +602,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                 if (DateTime.TryParse(parts[4], out newAbmeldeDatum))
                                 {
                                     CreateDeregistrationOrder(licenceNumber, fin, newAbmeldeDatum, ConfigurationManager.AppSettings["ImportFPLocationId"],
-                                        ConfigurationManager.AppSettings["ImportFPProductId"]);
+                                        ConfigurationManager.AppSettings["ImportFPProductId"], OrderCreationTypes.FP);
                                 }
                             }
                         }
@@ -663,7 +664,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                 if (DateTime.TryParse(parts[4], out newAbmeldeDatum))
                                 {
                                     CreateDeregistrationOrder(licenceNumber, fin, newAbmeldeDatum, ConfigurationManager.AppSettings["ImportMMLocationId"],
-                                        ConfigurationManager.AppSettings["ImportMMProductId"]);
+                                        ConfigurationManager.AppSettings["ImportMMProductId"], OrderCreationTypes.MM);
                                 }
                             }
                         }
@@ -730,7 +731,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         }
 
                         CreateDeregistrationOrder(licenceNumber, fin, newAbmeldeDatum, ConfigurationManager.AppSettings["ImportRentLocationId"],
-                            ConfigurationManager.AppSettings["ImportRentProductId"]);
+                            ConfigurationManager.AppSettings["ImportRentProductId"], OrderCreationTypes.Rent);
                     }
 
                     RadGridAbmeldung.DataBind();
@@ -743,8 +744,119 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             }
         }
 
+        protected void MergeUpload_FileUploaded(object sender, FileUploadedEventArgs e)
+        {
+            try
+            {
+                using (Stream stream = e.File.InputStream)
+                {
+                    byte[] data = new byte[stream.Length];
+
+                    stream.Read(data, 0, data.Length);
+                    stream.Position = 0;
+
+                    var xlsFile = new XlsFile();
+                    xlsFile.Open(stream);
+
+
+                    var orders = OrderManager.GetEntities(o =>
+                       o.Status == (int)OrderStatusTypes.Open &&
+                       o.OrderTypeId == (int)OrderTypes.Cancellation &&
+                       o.HasError.GetValueOrDefault(false) != true &&
+                       o.DeregistrationOrder != null &&
+                       String.IsNullOrEmpty(o.LetterNumber)).ToList();
+
+
+                    for (int rowIndex = 1; rowIndex < RowCount; rowIndex++)
+                    {
+                        var letterNumber = String.Empty;
+                        var cellValue = xlsFile.GetCellValue(rowIndex, 2);
+                        if (cellValue != null && !String.IsNullOrEmpty(cellValue.ToString()))
+                        {
+                            letterNumber = cellValue.ToString();
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                        var keyNumber = String.Empty;
+                        cellValue = xlsFile.GetCellValue(rowIndex, 5);
+                        if (cellValue != null && !String.IsNullOrEmpty(cellValue.ToString()))
+                        {
+                            keyNumber = cellValue.ToString();
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                        var fin = String.Empty;
+                        cellValue = xlsFile.GetCellValue(rowIndex, 1);
+                        if (cellValue != null && !String.IsNullOrEmpty(cellValue.ToString()) &&
+                            cellValue.ToString().Length == 7)
+                        {
+                            fin = cellValue.ToString();
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+
+                        if (orders.Count != 0)
+                        {
+                            var matchOrders = orders.Where(o => o.DeregistrationOrder.Vehicle.VIN.Contains(fin)).ToList();
+
+                            if (matchOrders.Count == 1)
+                            {
+                                var order = matchOrders.FirstOrDefault();
+                                order.LetterNumber = letterNumber;
+                                order.KeyNumber = keyNumber;
+
+                                if (order.OrderCreationType == OrderCreationTypes.FP && keyNumber == ConfigurationManager.AppSettings["MMKeyNumber"])
+                                {
+                                    var productId = Int32.Parse(ConfigurationManager.AppSettings["ImportMMProductId"]);
+                                    var price = PriceManager.GetEntities(q => q.ProductId == productId
+                                        && q.LocationId == Int32.Parse(ConfigurationManager.AppSettings["ImportMMLocationId"])).FirstOrDefault();
+
+                                    foreach (var item in order.OrderItem)
+                                    {
+                                        if (item.ProductId == productId)
+                                        {
+                                            if (!item.IsAuthorativeCharge)
+                                            {
+                                                item.Amount = price.Amount;
+                                            }
+                                            else if (item.IsAuthorativeCharge && price.AuthorativeCharge.HasValue)
+                                            {
+                                                item.Amount = price.AuthorativeCharge.Value;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    //TODO
+                                }
+                            }
+                        }
+                    }
+
+                    OrderManager.SaveChanges();
+
+                    RadGridAbmeldung.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+                AbmeldungErrLabel.Visible = true;
+                AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
+            }
+        }
+
         private void CreateDeregistrationOrder(string licenceNumber, string fin, DateTime newAbmeldeDatum,
-            string location, string product)
+            string location, string product, OrderCreationTypes orderCreationType)
         {
             var vehicle = VehicleManager.CreateVehicle(fin, String.Empty, String.Empty, String.Empty, null, null);
             
@@ -759,7 +871,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             //neues DeregistrationOrder erstellen
             var newDeregOrder = DeregistrationOrderManager.CreateDeregistrationOrder(
                 Int32.Parse(ConfigurationManager.AppSettings["ImportCustomerId"]),
-                vehicle, newRegistration, locationId, null/*TODO?*/);
+                vehicle, newRegistration, locationId, 
+                Int32.Parse(ConfigurationManager.AppSettings["ImportRegistrationLocationId"]));
 
             var productId = Int32.Parse(product);
             //adding new Deregestrationorder Items
@@ -772,6 +885,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 var newOrderItem2 = OrderManager.AddOrderItem(newDeregOrder.Order, productId,
                     price.AuthorativeCharge.Value, 1, costCenter, newOrderItem1.Id, true);
             }
+
+            newDeregOrder.Order.OrderCreationType = orderCreationType;
 
             OrderManager.SaveChanges();
         }
@@ -816,10 +931,10 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     xlsFile.Save(filePath);
 
 
-                    var auftragNeu = Page as NachbearbeitungAbmeldung;
-                    script = auftragNeu.getScriptManager() as RadScriptManager;
+                    //var auftragNeu = Page as NachbearbeitungAbmeldung;
+                    //script = auftragNeu.getScriptManager() as RadScriptManager;
 
-                    script.RegisterPostBackControl(btnExport);
+                    //script.RegisterPostBackControl(btnExport);
 
                     Response.Clear();
                     Response.ClearHeaders();

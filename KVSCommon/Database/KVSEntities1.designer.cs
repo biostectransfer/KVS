@@ -11822,6 +11822,12 @@ namespace KVSCommon.Database
 		
 		private System.Nullable<System.DateTime> _DeleteDate;
 		
+		private string _LetterNumber;
+		
+		private int _OrderCreationTypeId;
+		
+		private string _KeyNumber;
+		
 		private EntityRef<DeregistrationOrder> _DeregistrationOrder;
 		
 		private EntitySet<OrderInvoice> _OrderInvoice;
@@ -11890,6 +11896,12 @@ namespace KVSCommon.Database
     partial void OnChangeDateChanged();
     partial void OnDeleteDateChanging(System.Nullable<System.DateTime> value);
     partial void OnDeleteDateChanged();
+    partial void OnLetterNumberChanging(string value);
+    partial void OnLetterNumberChanged();
+    partial void OnOrderCreationTypeIdChanging(int value);
+    partial void OnOrderCreationTypeIdChanged();
+    partial void OnKeyNumberChanging(string value);
+    partial void OnKeyNumberChanged();
     #endregion
 		
 		public Order()
@@ -12337,6 +12349,66 @@ namespace KVSCommon.Database
 					this._DeleteDate = value;
 					this.SendPropertyChanged("DeleteDate");
 					this.OnDeleteDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LetterNumber", DbType="nvarchar(20)")]
+		public string LetterNumber
+		{
+			get
+			{
+				return this._LetterNumber;
+			}
+			set
+			{
+				if ((this._LetterNumber != value))
+				{
+					this.OnLetterNumberChanging(value);
+					this.SendPropertyChanging();
+					this._LetterNumber = value;
+					this.SendPropertyChanged("LetterNumber");
+					this.OnLetterNumberChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_OrderCreationTypeId", DbType="int")]
+		public int OrderCreationTypeId
+		{
+			get
+			{
+				return this._OrderCreationTypeId;
+			}
+			set
+			{
+				if ((this._OrderCreationTypeId != value))
+				{
+					this.OnOrderCreationTypeIdChanging(value);
+					this.SendPropertyChanging();
+					this._OrderCreationTypeId = value;
+					this.SendPropertyChanged("OrderCreationTypeId");
+					this.OnOrderCreationTypeIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_KeyNumber", DbType="nvarchar(10)")]
+		public string KeyNumber
+		{
+			get
+			{
+				return this._KeyNumber;
+			}
+			set
+			{
+				if ((this._KeyNumber != value))
+				{
+					this.OnKeyNumberChanging(value);
+					this.SendPropertyChanging();
+					this._KeyNumber = value;
+					this.SendPropertyChanged("KeyNumber");
+					this.OnKeyNumberChanged();
 				}
 			}
 		}

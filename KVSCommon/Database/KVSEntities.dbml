@@ -515,6 +515,9 @@
       <Column Name="DocketListNumber" Storage="_DocketListId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
       <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
+      <Column Name="LetterNumber" Type="System.String" DbType="nvarchar(20)" CanBeNull="true" />
+      <Column Name="OrderCreationTypeId" Type="System.Int32" DbType="int" CanBeNull="false" />
+      <Column Name="KeyNumber" Type="System.String" DbType="nvarchar(10)" CanBeNull="true" />
       <Association Name="Order_DeregistrationOrder" Member="DeregistrationOrder" ThisKey="Id" OtherKey="Id" Type="DeregistrationOrder" Cardinality="One" />
       <Association Name="Order_OrderInvoice" Member="OrderInvoice" ThisKey="Id" OtherKey="OrderNumber" Type="OrderInvoice" />
       <Association Name="Order_OrderItem" Member="OrderItem" ThisKey="Id" OtherKey="OrderNumber" Type="OrderItem" />

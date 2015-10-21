@@ -141,6 +141,7 @@
                     <telerik:AjaxUpdatedControl ControlID="FPUpload" />
                     <telerik:AjaxUpdatedControl ControlID="MMUpload" />
                     <telerik:AjaxUpdatedControl ControlID="RentUpload" />
+                    <telerik:AjaxUpdatedControl ControlID="MergeUpload" />
                     <telerik:AjaxUpdatedControl ControlID="RadGridAbmeldung" />
                 </UpdatedControls>
             </telerik:AjaxSetting>
@@ -175,10 +176,19 @@
                     AutoAddFileInputs="false" Localization-Select="Import" />
             </td>
         </tr>
+        <tr>
+            <td><asp:Label ID="MergeLabel" Text="Briefnummer Datei: " runat="server"></asp:Label></td>
+            <td>
+                <telerik:RadAsyncUpload ID="MergeUpload" runat="server"
+                    OnClientFilesUploaded="OnClientFilesUploaded" OnFileUploaded="MergeUpload_FileUploaded"
+                    MaxFileSize="2097152" AllowedFileExtensions="xls,xlsx"
+                    AutoAddFileInputs="false" Localization-Select="Import" />
+            </td>
+        </tr>
     </table>
     
     <%--<telerik:RadAjaxPanel ID="RadAjaxPanelCostCenter" runat="server" Width="1600px" LoadingPanelID="RadAjaxLoadingPanelExports">--%>
-    <asp:Button runat="server" ID="btnExport" Text="Export" OnClick="Export_Button_Clicked" />
+    <%--<asp:Button runat="server" ID="btnExport" Text="Export" OnClick="Export_Button_Clicked" />--%>
     <%--</telerik:RadAjaxPanel>
     <telerik:RadAjaxLoadingPanel ID="RadAjaxLoadingPanelExports" BackgroundTransparency="100" runat="server">
     </telerik:RadAjaxLoadingPanel>--%>
