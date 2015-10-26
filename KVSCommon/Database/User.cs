@@ -342,7 +342,7 @@ namespace KVSCommon.Database
         {
             if (this.Id != 0)
             {
-                this.LogDBContext.WriteLogItem("Passwort wurde geändert.", LogTypes.UPDATE, this.Id, "User");
+                //this.LogDBContext.WriteLogItem("Passwort wurde geändert.", LogTypes.UPDATE, this.Id, "User");
             }
         }
         /// <summary>
@@ -350,7 +350,7 @@ namespace KVSCommon.Database
         /// </summary>
         partial void OnIsLockedChanging(bool value)
         {
-            this.WriteUpdateLogItem("Gesperrt", this.IsLocked, value);
+            //this.WriteUpdateLogItem("Gesperrt", this.IsLocked, value);
         }
     }
 }

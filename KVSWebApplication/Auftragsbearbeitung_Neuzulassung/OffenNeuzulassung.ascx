@@ -39,7 +39,12 @@
         datepicker.set_selectedDate(dt);
         datepicker.hidePopup();
     }
+        
+    function OnClientFilesUploaded(sender, args) {
 
+        $find("<%=UploadRadAjaxManager.ClientID%>").ajaxRequest();
+
+    }
     </script>
 </telerik:RadCodeBlock>
 
@@ -163,6 +168,52 @@
     <br />
 
     <telerik:RadFormDecorator runat="server" ID="Zulassungsdekorator" />
+
+
+
+    <telerik:RadAjaxManager ID="UploadRadAjaxManager" runat="server" EnablePageHeadUpdate="false">
+        <AjaxSettings>
+            <telerik:AjaxSetting AjaxControlID="UploadRadAjaxManager">
+                <UpdatedControls>
+                    <telerik:AjaxUpdatedControl ControlID="FPUpload" />
+                    <telerik:AjaxUpdatedControl ControlID="MMUpload" />
+                    <telerik:AjaxUpdatedControl ControlID="RentUpload" />
+                    <telerik:AjaxUpdatedControl ControlID="RadGridOffNeuzulassung" />
+                </UpdatedControls>
+            </telerik:AjaxSetting>
+        </AjaxSettings>
+    </telerik:RadAjaxManager>
+
+    <table style="padding-left: 5px;">
+        <tr>
+            <td><asp:Label ID="FPLabel" Text="FP Datei: " runat="server"></asp:Label></td>
+            <td>
+                <telerik:RadAsyncUpload ID="FPUpload" runat="server"
+                    OnClientFilesUploaded="OnClientFilesUploaded" OnFileUploaded="FPUpload_FileUploaded"
+                    MaxFileSize="2097152" AllowedFileExtensions="csv"
+                    AutoAddFileInputs="false" Localization-Select="Import" />
+            </td>
+        </tr>
+        <tr>
+            <td><asp:Label ID="MMLabel" Text="MM Datei: " runat="server"></asp:Label></td>
+            <td>
+                <telerik:RadAsyncUpload ID="MMUpload" runat="server"
+                    OnClientFilesUploaded="OnClientFilesUploaded" OnFileUploaded="MMUpload_FileUploaded"
+                    MaxFileSize="2097152" AllowedFileExtensions="csv"
+                    AutoAddFileInputs="false" Localization-Select="Import" />
+            </td>
+        </tr>
+        <tr>
+            <td><asp:Label ID="RentLabel" Text="Rent Datei: " runat="server"></asp:Label></td>
+            <td>
+                <telerik:RadAsyncUpload ID="RentUpload" runat="server"
+                    OnClientFilesUploaded="OnClientFilesUploaded" OnFileUploaded="RentUpload_FileUploaded"
+                    MaxFileSize="2097152" AllowedFileExtensions="xls,xlsx"
+                    AutoAddFileInputs="false" Localization-Select="Import" />
+            </td>
+        </tr>
+    </table>
+
 
     <telerik:RadGrid OnEditCommand="EditButton_Clicked" OnDetailTableDataBind="RadGridZulOffen_DetailTableDataBind" AutoGenerateColumns="false" ID="RadGridOffNeuzulassung"
         DataSourceID="LinqDataSourceAbmeldung"
