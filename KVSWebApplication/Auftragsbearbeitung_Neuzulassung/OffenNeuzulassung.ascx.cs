@@ -16,6 +16,8 @@ using KVSWebApplication.BasePages;
 using KVSWebApplication.PrintServiceReference;
 using Neodynamic.SDK.Web;
 using FlexCel.XlsAdapter;
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
 
 namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 {
@@ -783,14 +785,18 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     stream.Read(data, 0, data.Length);
                     stream.Position = 0;
 
-                    var xlsFile = new XlsFile();
+                    //var xlsFile = new XlsFile();
+                    //xlsFile.Open(stream);
 
-                    xlsFile.Open(stream);
+                    var workbook = new XSSFWorkbook(stream);
+                    var sheet = workbook.GetSheetAt(0);
 
-                    for (int rowIndex = 2; rowIndex < RowCount; rowIndex++)
+                    for (int rowIndex = 1; rowIndex < RowCount; rowIndex++)
                     {
                         var licenceNumber = String.Empty;
-                        var cellValue = xlsFile.GetCellValue(rowIndex, 3);
+                        //var cellValue = xlsFile.GetCellValue(rowIndex, 3);
+                        var row = sheet.GetRow(rowIndex);
+                        var cellValue = GetStringCellValue(row, 2);
                         if (cellValue != null && !String.IsNullOrEmpty(cellValue.ToString()))
                         {
                             licenceNumber = cellValue.ToString();
@@ -801,7 +807,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         }
 
                         var fin = String.Empty;
-                        cellValue = xlsFile.GetCellValue(rowIndex, 4);
+                        //cellValue = xlsFile.GetCellValue(rowIndex, 4);
+                        cellValue = GetStringCellValue(row, 3);
                         if (cellValue != null && !String.IsNullOrEmpty(cellValue.ToString()) &&
                             cellValue.ToString().Length == 17)
                         {
@@ -814,7 +821,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
 
 
                         var newZulassungsDatum = DateTime.Now;
-                        var cellValueStr = xlsFile.GetStringFromCell(rowIndex, 9);
+                        //var cellValueStr = xlsFile.GetStringFromCell(rowIndex, 9);
+                        var cellValueStr = GetStringCellValue(row, 8);
                         if (cellValueStr != null)
                         {
                             DateTime.TryParse(cellValueStr.ToString(), out newZulassungsDatum);
@@ -870,6 +878,11 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             newRegistrationOrder.Order.OrderCreationType = orderCreationType;
 
             OrderManager.SaveChanges();
+        }
+
+        private string GetStringCellValue(IRow row, int cellNumber)
+        {
+            return row != null && row.GetCell(cellNumber) != null ? row.GetCell(cellNumber).ToString() : null;
         }
 
         #endregion

@@ -102,3 +102,8 @@ G:\Escoda\KVSWebApplication\obj\Debug\KVSWebApplication.dll
 G:\Escoda\KVSWebApplication\obj\Debug\KVSWebApplication.pdb
 G:\Escoda\KVSWebApplication\bin\Microsoft.Practices.ServiceLocation.dll
 G:\Escoda\KVSWebApplication\bin\FlexCel.dll
+G:\Escoda\KVSWebApplication\bin\ICSharpCode.SharpZipLib.dll
+G:\Escoda\KVSWebApplication\bin\NPOI.dll
+G:\Escoda\KVSWebApplication\bin\NPOI.OOXML.dll
+G:\Escoda\KVSWebApplication\bin\NPOI.OpenXml4Net.dll
+G:\Escoda\KVSWebApplication\bin\NPOI.OpenXmlFormats.dll

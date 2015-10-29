@@ -14,6 +14,8 @@ using System.Transactions;
 using KVSCommon.Enums;
 using KVSWebApplication.BasePages;
 using FlexCel.XlsAdapter;
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
 
 namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 {
@@ -693,14 +695,19 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     stream.Read(data, 0, data.Length);
                     stream.Position = 0;
 
-                    var xlsFile = new XlsFile();
+                    //var xlsFile = new XlsFile();
+                    //xlsFile.Open(stream);
 
-                    xlsFile.Open(stream);
+                    var workbook = new XSSFWorkbook(stream);
+                    var sheet = workbook.GetSheetAt(0);
 
-                    for (int rowIndex = 2; rowIndex < RowCount; rowIndex++)
+                    for (int rowIndex = 1; rowIndex < RowCount; rowIndex++)
                     {
                         var licenceNumber = String.Empty;
-                        var cellValue = xlsFile.GetCellValue(rowIndex, 3);
+                        //var cellValue = xlsFile.GetCellValue(rowIndex, 3);
+                        var row = sheet.GetRow(rowIndex);
+                        var cellValue = GetStringCellValue(row, 2);
+
                         if (cellValue != null && !String.IsNullOrEmpty(cellValue.ToString()))
                         {
                             licenceNumber = cellValue.ToString();
@@ -711,7 +718,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         }
 
                         var fin = String.Empty;
-                        cellValue = xlsFile.GetCellValue(rowIndex, 4);
+                        //cellValue = xlsFile.GetCellValue(rowIndex, 4);
+                        cellValue = GetStringCellValue(row, 3);
                         if (cellValue != null && !String.IsNullOrEmpty(cellValue.ToString()) &&
                             cellValue.ToString().Length == 17)
                         {
@@ -724,7 +732,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
 
 
                         var newAbmeldeDatum = DateTime.Now;
-                        var cellValueStr = xlsFile.GetStringFromCell(rowIndex, 9);
+                        //var cellValueStr = xlsFile.GetStringFromCell(rowIndex, 9);
+                        var cellValueStr = GetStringCellValue(row, 8);
                         if (cellValueStr != null)
                         {
                             DateTime.TryParse(cellValueStr.ToString(), out newAbmeldeDatum);
@@ -755,9 +764,11 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     stream.Read(data, 0, data.Length);
                     stream.Position = 0;
 
-                    var xlsFile = new XlsFile();
-                    xlsFile.Open(stream);
+                    //var xlsFile = new XlsFile();
+                    //xlsFile.Open(stream);
 
+                    var workbook = new XSSFWorkbook(stream);
+                    var sheet = workbook.GetSheetAt(0);
 
                     var orders = OrderManager.GetEntities(o =>
                        o.Status == (int)OrderStatusTypes.Open &&
@@ -767,10 +778,14 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                        String.IsNullOrEmpty(o.LetterNumber)).ToList();
 
 
-                    for (int rowIndex = 1; rowIndex < RowCount; rowIndex++)
+                    for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
                     {
                         var letterNumber = String.Empty;
-                        var cellValue = xlsFile.GetCellValue(rowIndex, 2);
+                        //var cellValue = xlsFile.GetCellValue(rowIndex, 2);
+
+                        var row = sheet.GetRow(rowIndex);
+                        var cellValue = GetStringCellValue(row, 1);
+
                         if (cellValue != null && !String.IsNullOrEmpty(cellValue.ToString()))
                         {
                             letterNumber = cellValue.ToString();
@@ -781,7 +796,9 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         }
 
                         var keyNumber = String.Empty;
-                        cellValue = xlsFile.GetCellValue(rowIndex, 5);
+                        //cellValue = xlsFile.GetCellValue(rowIndex, 5);
+                        cellValue = GetStringCellValue(row, 4);
+
                         if (cellValue != null && !String.IsNullOrEmpty(cellValue.ToString()))
                         {
                             keyNumber = cellValue.ToString();
@@ -792,7 +809,9 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                         }
 
                         var fin = String.Empty;
-                        cellValue = xlsFile.GetCellValue(rowIndex, 1);
+                        //cellValue = xlsFile.GetCellValue(rowIndex, 1);
+                        cellValue = GetStringCellValue(row, 0);
+
                         if (cellValue != null && !String.IsNullOrEmpty(cellValue.ToString()) &&
                             cellValue.ToString().Length == 7)
                         {
@@ -851,8 +870,13 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             catch (Exception ex)
             {
                 AbmeldungErrLabel.Visible = true;
-                AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
+                AbmeldungErrLabel.Text = "Fehler: " + ex.Message + "; Stacktrace: " + ex.StackTrace;
             }
+        }
+
+        private string GetStringCellValue(IRow row, int cellNumber)
+        {
+            return row != null && row.GetCell(cellNumber) != null ? row.GetCell(cellNumber).ToString() : null;
         }
 
         private void CreateDeregistrationOrder(string licenceNumber, string fin, DateTime newAbmeldeDatum,

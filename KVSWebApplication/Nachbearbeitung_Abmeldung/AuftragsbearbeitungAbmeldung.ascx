@@ -143,6 +143,7 @@
                     <telerik:AjaxUpdatedControl ControlID="RentUpload" />
                     <telerik:AjaxUpdatedControl ControlID="MergeUpload" />
                     <telerik:AjaxUpdatedControl ControlID="RadGridAbmeldung" />
+                    <telerik:AjaxUpdatedControl ControlID="AbmeldungErrLabel" />
                 </UpdatedControls>
             </telerik:AjaxSetting>
         </AjaxSettings>
@@ -172,7 +173,7 @@
             <td>
                 <telerik:RadAsyncUpload ID="RentUpload" runat="server"
                     OnClientFilesUploaded="OnClientFilesUploaded" OnFileUploaded="RentUpload_FileUploaded"
-                    MaxFileSize="2097152" AllowedFileExtensions="xls,xlsx"
+                    MaxFileSize="2097152" AllowedFileExtensions="xlsx"
                     AutoAddFileInputs="false" Localization-Select="Import" />
             </td>
         </tr>

@@ -48,7 +48,7 @@ namespace KVSDataAccess.PDF
         protected override void WriteContent()
         {
             var dt = this.GetPackingListDataTable();
-            var table = this.GetTableFromDataTable(dt, new List<int>() { 10, 60, 30, 60, 45, 25, 60 }, new List<int> { 0 }, true);
+            var table = this.GetTableFromDataTable(dt, new List<int>() { 10, 30, 60, 45, 25, 60 }, new List<int> { 0 }, true);
             this.Document.LastSection.Add(table);
         }
 
@@ -80,7 +80,7 @@ namespace KVSDataAccess.PDF
         /// <returns></returns>
         private DataTable GetPackingListDataTable()
         {
-            List<string> headers = new List<string>() { "Pos.", "Kunde", "Kennzeichen", "FIN", "Halter", "A.Gebühr", "Bemerkung" };
+            List<string> headers = new List<string>() { "Pos.", "Kennzeichen", "FIN", "Briefnummer", "Abmeldedatum", "Bemerkung" };
             DataTable dt = new DataTable();
             foreach (var header in headers)
             {
@@ -96,6 +96,8 @@ namespace KVSDataAccess.PDF
                 string vin = string.Empty;
                 string carOwnerName = string.Empty;
                 string kunde = string.Empty;
+                string letterNumber = order.LetterNumber ?? string.Empty;
+                string registrationDate = string.Empty;
 
                 if (order.RegistrationOrder != null)
                 {
@@ -105,6 +107,9 @@ namespace KVSDataAccess.PDF
                     carOwnerName = order.RegistrationOrder.Registration.CarOwner.FullName;
                     kunde = (order.Customer.SmallCustomer != null && order.Customer.SmallCustomer.Person != null) ? order.Customer.SmallCustomer.Person.Name + " " +
                         order.Customer.SmallCustomer.Person.FirstName : order.Customer.Name;
+
+                    if (order.RegistrationOrder.Registration.RegistrationDate.HasValue)
+                        registrationDate = order.RegistrationOrder.Registration.RegistrationDate.Value.ToShortDateString();
                 }
                 else if (order.DeregistrationOrder != null)
                 {
@@ -114,6 +119,9 @@ namespace KVSDataAccess.PDF
                     carOwnerName = order.DeregistrationOrder.Registration.CarOwner.FullName;
                     kunde = (order.Customer.SmallCustomer != null && order.Customer.SmallCustomer.Person != null) ? order.Customer.SmallCustomer.Person.Name + " " +
                         order.Customer.SmallCustomer.Person.FirstName : order.Customer.Name;
+                    
+                    if (order.DeregistrationOrder.Registration.RegistrationDate.HasValue)
+                        registrationDate = order.DeregistrationOrder.Registration.RegistrationDate.Value.ToShortDateString();
                 }
                 if (licencenumber.Split('-').Count() > 2)
                 {
@@ -123,10 +131,10 @@ namespace KVSDataAccess.PDF
 
                 dt.Rows.Add(
                         i,
-                        kunde,
                         licencenumber,
                         vin,
-                        carOwnerName);
+                        letterNumber,
+                        registrationDate);
                 i++;
             }
 
