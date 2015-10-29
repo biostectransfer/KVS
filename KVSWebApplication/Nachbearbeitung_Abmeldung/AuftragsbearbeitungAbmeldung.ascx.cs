@@ -753,6 +753,143 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             }
         }
 
+        protected void HNumberUpload_FileUploaded(object sender, FileUploadedEventArgs e)
+        {
+            try
+            {
+                using (Stream stream = e.File.InputStream)
+                {
+                    byte[] data = new byte[stream.Length];
+
+                    stream.Read(data, 0, data.Length);
+                    stream.Position = 0;
+
+                    //var xlsFile = new XlsFile();
+                    //xlsFile.Open(stream);
+
+                    var workbook = new XSSFWorkbook(stream);
+                    var sheet = workbook.GetSheetAt(0);
+
+                    for (int rowIndex = 1; rowIndex < RowCount; rowIndex++)
+                    {
+                        var licenceNumber = String.Empty;
+                        //var cellValue = xlsFile.GetCellValue(rowIndex, 3);
+                        var row = sheet.GetRow(rowIndex);
+                        var cellValue = GetStringCellValue(row, 1);
+
+                        if (cellValue != null && !String.IsNullOrEmpty(cellValue.ToString()))
+                        {
+                            licenceNumber = cellValue.ToString();
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                        var fin = String.Empty;
+                        //cellValue = xlsFile.GetCellValue(rowIndex, 4);
+                        cellValue = GetStringCellValue(row, 2);
+                        if (cellValue != null && !String.IsNullOrEmpty(cellValue.ToString()) &&
+                            cellValue.ToString().Length == 17)
+                        {
+                            fin = cellValue.ToString();
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+
+                        var newAbmeldeDatum = DateTime.Now;
+                        //var cellValueStr = xlsFile.GetStringFromCell(rowIndex, 9);
+                        var cellValueStr = GetStringCellValue(row, 4);
+                        if (cellValueStr != null)
+                        {
+                            DateTime.TryParse(cellValueStr.ToString(), out newAbmeldeDatum);
+                        }
+
+                        CreateDeregistrationOrder(licenceNumber, fin, newAbmeldeDatum, ConfigurationManager.AppSettings["ImportHNumberLocationId"],
+                            ConfigurationManager.AppSettings["ImportHNumberProductId"], OrderCreationTypes.HNumber);
+                    }
+
+                    RadGridAbmeldung.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+                AbmeldungErrLabel.Visible = true;
+                AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
+            }
+        }
+
+        protected void MotorcycleUpload_FileUploaded(object sender, FileUploadedEventArgs e)
+        {
+            try
+            {
+                using (Stream stream = e.File.InputStream)
+                {
+                    byte[] data = new byte[stream.Length];
+
+                    stream.Read(data, 0, data.Length);
+                    stream.Position = 0;
+
+                    string line;
+                    var file = new StreamReader(stream);
+                    while ((line = file.ReadLine()) != null)
+                    {
+                        if (!String.IsNullOrEmpty(line))
+                        {
+                            var parts = line.Split(';');
+                            if (parts.Length == 4)
+                            {
+                                var licenceNumber = String.Empty;
+                                if (parts[1].Length == 8)
+                                {
+                                    licenceNumber = parts[1];
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+
+                                var fin = String.Empty;
+                                if (parts[0].Length == 17)
+                                {
+                                    fin = parts[0];
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+
+                                var letterNummber = parts[3];
+
+                                var newAbmeldeDatum = DateTime.Now;
+                                if (DateTime.TryParse(parts[2], out newAbmeldeDatum))
+                                {
+                                    var deregOrder = CreateDeregistrationOrder(licenceNumber, fin, newAbmeldeDatum, ConfigurationManager.AppSettings["ImportMotorcycleLocationId"],
+                                        ConfigurationManager.AppSettings["ImportMotorcycleProductId"], OrderCreationTypes.Motorcycle);
+
+                                    deregOrder.Order.LetterNumber = letterNummber;
+                                }
+                            }
+                        }
+                    }
+
+                    OrderManager.SaveChanges();
+
+                    file.Close();
+
+                    RadGridAbmeldung.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+                AbmeldungErrLabel.Visible = true;
+                AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
+            }
+        }
+
         protected void MergeUpload_FileUploaded(object sender, FileUploadedEventArgs e)
         {
             try
@@ -879,7 +1016,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             return row != null && row.GetCell(cellNumber) != null ? row.GetCell(cellNumber).ToString() : null;
         }
 
-        private void CreateDeregistrationOrder(string licenceNumber, string fin, DateTime newAbmeldeDatum,
+        private DeregistrationOrder CreateDeregistrationOrder(string licenceNumber, string fin, DateTime newAbmeldeDatum,
             string location, string product, OrderCreationTypes orderCreationType)
         {
             var vehicle = VehicleManager.CreateVehicle(fin, String.Empty, String.Empty, String.Empty, null, null);
@@ -913,6 +1050,8 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             newDeregOrder.Order.OrderCreationType = orderCreationType;
 
             OrderManager.SaveChanges();
+
+            return newDeregOrder;
         }
 
         #endregion

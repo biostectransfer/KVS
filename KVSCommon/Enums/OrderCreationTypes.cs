@@ -29,5 +29,15 @@ namespace KVSCommon.Enums
         /// Rent 
         /// </summary>
         Rent = 3,
+
+        /// <summary>
+        /// H-Number 
+        /// </summary>
+        HNumber = 4,
+
+        /// <summary>
+        /// Motorcycle 
+        /// </summary>
+        Motorcycle = 5,
     }
 }

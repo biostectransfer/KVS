@@ -141,6 +141,8 @@
                     <telerik:AjaxUpdatedControl ControlID="FPUpload" />
                     <telerik:AjaxUpdatedControl ControlID="MMUpload" />
                     <telerik:AjaxUpdatedControl ControlID="RentUpload" />
+                    <telerik:AjaxUpdatedControl ControlID="HNumberUpload" />
+                    <telerik:AjaxUpdatedControl ControlID="MotorcycleUpload" />
                     <telerik:AjaxUpdatedControl ControlID="MergeUpload" />
                     <telerik:AjaxUpdatedControl ControlID="RadGridAbmeldung" />
                     <telerik:AjaxUpdatedControl ControlID="AbmeldungErrLabel" />
@@ -174,6 +176,24 @@
                 <telerik:RadAsyncUpload ID="RentUpload" runat="server"
                     OnClientFilesUploaded="OnClientFilesUploaded" OnFileUploaded="RentUpload_FileUploaded"
                     MaxFileSize="2097152" AllowedFileExtensions="xlsx"
+                    AutoAddFileInputs="false" Localization-Select="Import" />
+            </td>
+        </tr>
+        <tr>
+            <td><asp:Label ID="HNumberLabel" Text="H-Nummer Datei: " runat="server"></asp:Label></td>
+            <td>
+                <telerik:RadAsyncUpload ID="HNumberUpload" runat="server"
+                    OnClientFilesUploaded="OnClientFilesUploaded" OnFileUploaded="HNumberUpload_FileUploaded"
+                    MaxFileSize="2097152" AllowedFileExtensions="xlsx"
+                    AutoAddFileInputs="false" Localization-Select="Import" />
+            </td>
+        </tr>
+        <tr>
+            <td><asp:Label ID="MotorcycleLabel" Text="Motorrad Datei: " runat="server"></asp:Label></td>
+            <td>
+                <telerik:RadAsyncUpload ID="MotorcycleUpload" runat="server"
+                    OnClientFilesUploaded="OnClientFilesUploaded" OnFileUploaded="MotorcycleUpload_FileUploaded"
+                    MaxFileSize="2097152" AllowedFileExtensions="csv"
                     AutoAddFileInputs="false" Localization-Select="Import" />
             </td>
         </tr>
