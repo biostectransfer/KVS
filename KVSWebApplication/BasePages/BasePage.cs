@@ -230,6 +230,8 @@ namespace KVSWebApplication.BasePages
 
         protected IEnumerable<OrderViewModel> GetLargeCustomerOrders()
         {
+            var documents = DocumentManager.GetEntities().ToList();
+
             return OrderManager.GetEntities(o => o.Customer.LargeCustomer != null &&
                 (o.RegistrationOrder != null || o.DeregistrationOrder != null)).Select(ord =>
                 {
@@ -255,7 +257,7 @@ namespace KVSWebApplication.BasePages
                     var postBackUrl = String.Empty;
                     if (ord.DocketList != null && ord.DocketList.DocumentId.HasValue)
                     {
-                        var document = DocumentManager.GetEntities(o => o.Id == ord.DocketList.DocumentId.Value).FirstOrDefault();
+                        var document = documents.Where(o => o.Id == ord.DocketList.DocumentId.Value).FirstOrDefault();
                         if (document != null)
                         {
                             postBackUrl = String.Format("<a href={0}{1}{0} target={0}_blank{0}> Laufzettel öffnen</a>",
