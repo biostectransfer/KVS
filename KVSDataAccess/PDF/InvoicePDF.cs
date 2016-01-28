@@ -560,6 +560,31 @@ namespace KVSDataAccess.PDF
         }
 
         /// <summary>
+        /// Schreibt den Standort-spezifischen Text direkt unter der überschrift.
+        /// </summary>
+        protected override void WriteHeadline2()
+        {
+            if (this.Invoice.Customer.LargeCustomer != null && this.Invoice.Customer.LargeCustomer.Location1 != null)
+            {
+                var location = this.Invoice.Customer.LargeCustomer.Location1;
+                if (!String.IsNullOrEmpty(location.InvoiceText))
+                {
+                    var text = location.InvoiceText;
+                    if (text.Contains("#InvoicePeriod"))
+                    {
+                        var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                        var endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+                        text = text.Replace("#InvoicePeriod", String.Format("{0} bis {1}", startDate.ToShortDateString(), endDate.ToShortDateString()));
+                    }
+
+                    var par = this.Document.LastSection.AddParagraph(text, "Heading2");
+                    par.Format.SpaceAfter = this.spaceAfterHeading;
+                    par.Format.Font.Bold = false;
+                }
+            }
+        }
+
+        /// <summary>
         /// Erstelle die Infobox in der Rechnung
         /// </summary>
         protected override void WriteInfoBox()
@@ -593,19 +618,19 @@ namespace KVSDataAccess.PDF
             par.AddText("Datum:");
             par.AddTab();
             par.AddText(this.Invoice.PrintDate.HasValue ? this.Invoice.PrintDate.Value.ToShortDateString() : DateTime.Now.ToShortDateString());
-            par.AddLineBreak();
-            par.AddText("Kostenstelle:");
-            par.AddTab();
-            if (this.Invoice != null)
-            {
-                if (this.Invoice.InvoiceItem != null)
-                {
-                    if (this.Invoice.InvoiceItem.First().CostCenter != null)
-                    {
-                        par.AddText(this.Invoice.InvoiceItem.First().CostCenter.CostcenterNumber);
-                    }
-                }
-            }
+            //par.AddLineBreak();
+            //par.AddText("Kostenstelle:");
+            //par.AddTab();
+            //if (this.Invoice != null)
+            //{
+            //    if (this.Invoice.InvoiceItem != null)
+            //    {
+            //        if (this.Invoice.InvoiceItem.First().CostCenter != null)
+            //        {
+            //            par.AddText(this.Invoice.InvoiceItem.First().CostCenter.CostcenterNumber);
+            //        }
+            //    }
+            //}
            
         }
     }

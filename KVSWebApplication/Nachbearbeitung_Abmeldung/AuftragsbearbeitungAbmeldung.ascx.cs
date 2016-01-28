@@ -770,7 +770,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                     var workbook = new XSSFWorkbook(stream);
                     var sheet = workbook.GetSheetAt(0);
 
-                    for (int rowIndex = 1; rowIndex < RowCount; rowIndex++)
+                    for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
                     {
                         var licenceNumber = String.Empty;
                         //var cellValue = xlsFile.GetCellValue(rowIndex, 3);
@@ -818,7 +818,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             catch (Exception ex)
             {
                 AbmeldungErrLabel.Visible = true;
-                AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
+                AbmeldungErrLabel.Text = "Fehler: " + ex.Message + "; Stacktrace: " + ex.StackTrace;
             }
         }
 
@@ -886,7 +886,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             catch (Exception ex)
             {
                 AbmeldungErrLabel.Visible = true;
-                AbmeldungErrLabel.Text = "Fehler: " + ex.Message;
+                AbmeldungErrLabel.Text = "Fehler: " + ex.Message + "; Stacktrace: " + ex.StackTrace;
             }
         }
 
@@ -976,9 +976,11 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                                     var price = PriceManager.GetEntities(q => q.ProductId == productId
                                         && q.LocationId == Int32.Parse(ConfigurationManager.AppSettings["ImportMMLocationId"])).FirstOrDefault();
 
+                                    var originalProductId = Int32.Parse(ConfigurationManager.AppSettings["ImportFPProductId"]);
+
                                     foreach (var item in order.OrderItem)
                                     {
-                                        if (item.ProductId == productId)
+                                        if (item.ProductId == originalProductId)
                                         {
                                             if (!item.IsAuthorativeCharge)
                                             {

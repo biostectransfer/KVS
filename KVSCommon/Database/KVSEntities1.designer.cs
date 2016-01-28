@@ -3310,6 +3310,8 @@ namespace KVSCommon.Database
 		
 		private System.Nullable<System.DateTime> _DeleteDate;
 		
+		private string _InvoiceText;
+		
 		private EntitySet<Mailinglist> _Mailinglist;
 		
 		private EntitySet<Order> _Order;
@@ -3356,6 +3358,8 @@ namespace KVSCommon.Database
     partial void OnChangeDateChanged();
     partial void OnDeleteDateChanging(System.Nullable<System.DateTime> value);
     partial void OnDeleteDateChanged();
+    partial void OnInvoiceTextChanging(string value);
+    partial void OnInvoiceTextChanged();
     #endregion
 		
 		public Location()
@@ -3628,6 +3632,26 @@ namespace KVSCommon.Database
 					this._DeleteDate = value;
 					this.SendPropertyChanged("DeleteDate");
 					this.OnDeleteDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_InvoiceText", DbType="nvarchar(512)")]
+		public string InvoiceText
+		{
+			get
+			{
+				return this._InvoiceText;
+			}
+			set
+			{
+				if ((this._InvoiceText != value))
+				{
+					this.OnInvoiceTextChanging(value);
+					this.SendPropertyChanging();
+					this._InvoiceText = value;
+					this.SendPropertyChanged("InvoiceText");
+					this.OnInvoiceTextChanged();
 				}
 			}
 		}

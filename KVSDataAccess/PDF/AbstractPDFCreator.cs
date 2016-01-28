@@ -397,6 +397,14 @@ namespace KVSDataAccess.PDF
         }
 
         /// <summary>
+        /// Schreibt den Standort-spezifischen Text direkt unter der überschrift.
+        /// </summary>
+        protected virtual void WriteHeadline2()
+        {
+
+        }
+
+        /// <summary>
         /// Schreibt den Inhalt des Dokuments.
         /// </summary>
         protected abstract void WriteContent();
@@ -429,6 +437,7 @@ namespace KVSDataAccess.PDF
             this.WriteInfoBox();
             this.WriteHeadline(this.Headline);
             this.WriteHeadline1(this.Headline2);
+            this.WriteHeadline2();
             this.WriteContent();
             this.WriteAppendix();
             PdfDocumentRenderer renderer = new PdfDocumentRenderer(true, PdfSharp.Pdf.PdfFontEmbedding.Always);

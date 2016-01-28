@@ -122,6 +122,7 @@
       <Column Name="CreateDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
       <Column Name="ChangeDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="false" />
       <Column Name="DeleteDate" Type="System.DateTime" DbType="datetime2(2)" CanBeNull="true" />
+      <Column Name="InvoiceText" Type="System.String" DbType="nvarchar(512)" CanBeNull="true" />
       <Association Name="Location_Mailinglist" Member="Mailinglist" ThisKey="Id" OtherKey="LocationId" Type="Mailinglist" />
       <Association Name="Location_Order" Member="Order" ThisKey="Id" OtherKey="LocationId" Type="Order" />
       <Association Name="Location_Price" Member="Price" ThisKey="Id" OtherKey="LocationId" Type="Price" />
