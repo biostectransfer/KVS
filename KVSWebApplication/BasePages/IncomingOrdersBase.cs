@@ -860,7 +860,8 @@ namespace KVSWebApplication.BasePages
         {
             using (var stream = new MemoryStream())
             {
-                InvoiceItemAccountItemManager.CreateAccounts(newInvoice);
+                InvoiceItemAccountItemManager.CreateAccountsForSmallCustomers(newInvoice, ConfigurationManager.AppSettings["DefaultAccountNumberForSmallCustomers"]);
+                
                 InvoiceManager.Print(newInvoice, stream, "", ConfigurationManager.AppSettings["DefaultAccountNumber"]);
 
                 string fileName = "Rechnung_" + newInvoice.InvoiceNumber.Number + "_" +

@@ -278,7 +278,7 @@ namespace KVSWebApplication.Product
                 cmbErloeskonten.Text = "";
                 cmbErloeskonten.DataBind();
 
-                var selectedItem = accounts.SingleOrDefault(q => q.AccountSelected == true);
+                var selectedItem = accounts.FirstOrDefault(q => q.AccountSelected == true);
 
                 if (selectedItem != null)
                     cmbErloeskonten.FindItemByValue(Convert.ToString(selectedItem.AccountId)).Selected = true;

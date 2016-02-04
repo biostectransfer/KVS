@@ -94,6 +94,7 @@
 <asp:Button runat="server" ID="ShowAllButton" OnClick="ShowAllButton_Click" Text="Alles anzeigen"></asp:Button>
 <asp:Button runat="server" ID="NewPositionZulButton" Text="Neue Position hinzufügen" OnClientClick="openRadWindowZulNeuzulassungPos(); return false;" />
 <asp:Button runat="server" ID="StornierenButton" OnClick="StornierenButton_Clicked" Text="Auftrag stornieren" />
+<asp:Button runat="server" ID="AlleFertigStellenButton" OnClick="AlleFertigStellenButton_Clicked" Text="Alle fertigstellen" />
 <br />
 <asp:Label ID="ZulassungErfolgtLabel" Visible="false" Text="Auftrag ist erfoglreich zugelassen!" ForeColor="Green" runat="server" />
 <asp:Label runat="server" ID="ZulassungErrLabel" Text="Sie haben keinen Auftrag ausgewählt!" ForeColor="Red" Visible="false"></asp:Label>

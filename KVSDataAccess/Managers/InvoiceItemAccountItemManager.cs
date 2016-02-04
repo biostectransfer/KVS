@@ -52,6 +52,34 @@ namespace KVSDataAccess.Managers
         }
 
         /// <summary>
+        /// Erstelle zu der jeweiligen Rechnung ein neues Erlöskonto
+        /// </summary>
+        /// <param name="invoice">Rechnungsobjekt</param>
+        public void CreateAccountsForSmallCustomers(Invoice invoice, string accountNumber)
+        {
+            foreach (var item in invoice.InvoiceItem)
+            {
+                var newAccount = new InvoiceItemAccountItem
+                {
+                    InvoiceItemId = item.Id,
+                    RevenueAccountText = accountNumber
+                };
+                var accountInDb = GetEntities(q => q.InvoiceItemId ==
+                    item.Id && q.RevenueAccountText == item.AccountNumber.Trim()).FirstOrDefault();
+
+                if (accountInDb != null)
+                {
+                    accountInDb.RevenueAccountText = item.AccountNumber.Trim();
+                }
+                else
+                {
+                    DataContext.AddObject(newAccount);
+                }
+                DataContext.SaveChanges();
+            }
+        }
+
+        /// <summary>
         /// Gibt Erloeskonten als Liste zurück
         /// </summary>
         /// <param name="invoiceId">Rechnungspositionsid</param>

@@ -130,6 +130,15 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung {
         protected global::System.Web.UI.WebControls.Button StornierenButton;
         
         /// <summary>
+        /// AlleFertigStellenButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button AlleFertigStellenButton;
+        
+        /// <summary>
         /// StornierungErfolgLabel control.
         /// </summary>
         /// <remarks>

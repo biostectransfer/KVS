@@ -564,6 +564,40 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             }
         }
 
+        protected void AlleFertigStellenButton_Clicked(object sender, EventArgs e)
+        {
+            var allOrderIds = new List<int>(GetSmallCustomerOrders().Select(o => o.OrderNumber).ToList());
+            allOrderIds.AddRange(GetLargeCustomerOrders().Select(o => o.OrderNumber).ToList());
+
+            var allOrders = OrderManager.GetEntities(o => allOrderIds.Contains(o.Id));
+
+            foreach (var order in allOrders)
+            {
+                //updating order status
+                order.Status = (int)OrderStatusTypes.Closed;
+                order.ExecutionDate = DateTime.Now;
+                //updating orderitems status                          
+                foreach (OrderItem ordItem in order.OrderItem)
+                {
+                    if (ordItem.Status != (int)OrderItemStatusTypes.Cancelled)
+                    {
+                        ordItem.Status = (int)OrderItemStatusTypes.Closed;
+                    }
+                }
+            }
+
+            OrderManager.SaveChanges();
+
+            if (Session["orderNumberSearch"] != null)
+                Session["orderNumberSearch"] = string.Empty; //after search should be empty
+
+            RadGridNeuzulassung.MasterTableView.ClearChildEditItems();
+            RadGridNeuzulassung.MasterTableView.ClearEditItems();
+            RadGridNeuzulassung.Rebind();
+
+            CheckOpenedOrders();
+        }
+
         #endregion
 
         #region Methods

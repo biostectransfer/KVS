@@ -91,6 +91,7 @@
     <asp:Button runat="server" ID="ShowAllButton" OnClick="ShowAllButton_Click" Text="Alles anzeigen"></asp:Button>
     <asp:Button runat="server" ID="NewPositionZulButton" Text="Neue Position hinzufügen" OnClientClick="openRadWindowZulPos(); return false;" />
     <asp:Button runat="server" ID="StornierenButton" OnClick="StornierenButton_Clicked" Text="Auftrag stornieren" />
+    <asp:Button runat="server" ID="AlleFertigStellenButton" OnClick="AlleFertigStellenButton_Clicked" Text="Alle fertigstellen" />
     <br />
     <asp:Label runat="server" ID="StornierungErfolgLabel" Text="Auftrag ist erfolgreich storniert" Visible="false" ForeColor="Green"></asp:Label>
     <asp:Label Visible="false" ForeColor="Red" ID="ErrorZulLabel" Text="Fahrzeugdaten oder amtliche Gebühr oder die Dienstleistung sind nicht vorhanden!" runat="server"></asp:Label>

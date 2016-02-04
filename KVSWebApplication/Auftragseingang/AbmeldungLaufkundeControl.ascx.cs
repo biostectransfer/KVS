@@ -185,6 +185,7 @@ namespace KVSWebApplication.Auftragseingang
 
         protected void btnClearSelection_Click(object sender, EventArgs e)
         {
+            ShowControls();
             CustomerDropDownList.ClearSelection();
             MakeAllControlsEmpty();
             ClearAdressData(string.Empty);
@@ -482,7 +483,6 @@ namespace KVSWebApplication.Auftragseingang
             GetCustomerInfo();
             if (!String.IsNullOrEmpty(CustomerDropDownList.SelectedValue.ToString()))
             {
-                CheckFields();
                 CheckUmsatzForSmallCustomer();
             }
         }

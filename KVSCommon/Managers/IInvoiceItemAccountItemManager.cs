@@ -16,6 +16,12 @@ namespace KVSCommon.Managers
         void CreateAccounts(Invoice invoice);
 
         /// <summary>
+        /// Erstelle zu der jeweiligen Rechnung ein neues Erlöskonto
+        /// </summary>
+        /// <param name="invoice">Rechnungsobjekt</param>
+        void CreateAccountsForSmallCustomers(Invoice invoice, string accountNumber);
+
+        /// <summary>
         /// Gibt Erloeskonten als Liste zurück
         /// </summary>
         /// <param name="invoiceId">Rechnungspositionsid</param>
