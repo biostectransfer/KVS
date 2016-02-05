@@ -56,8 +56,8 @@
             return false;
         }
         if (VINBox.get_value() == '') {
-            getMessage('Bitte geben Sie die FIN ein');
-            return false;
+            //getMessage('Bitte geben Sie die FIN ein');
+            //return false;
         }
         if (ZulassungsstelleComboBox.get_selectedIndex() == null) {
             getMessage('Bitte wählen Sie die Zulassungsstelle aus');
@@ -224,7 +224,7 @@
                     <telerik:RadTextBox runat="server" Enabled="false" Visible="True" DisabledStyle-ForeColor="Black" BorderColor="Transparent" DisabledStyle-BackColor="Transparent" Text="Rechnungserstellung: " ID="RadTextBox6" Width="240px"></telerik:RadTextBox>
                 </td>
                 <td>
-                    <asp:CheckBox ID="invoiceNow" runat="server" Text="Sofortrechnung" />
+                    <asp:CheckBox ID="invoiceNow" runat="server" Text="Sofortrechnung" Checked="true" />
                 </td>
                 <td></td>
                 <td>
@@ -665,7 +665,7 @@
         </asp:Panel>
         <asp:Panel runat="server" Visible="false" ID="Vehicle_VIN">
             <telerik:RadTextBox ID="VINLabel" runat="server" BorderColor="Transparent"
-                DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="FIN: * "
+                DisabledStyle-BackColor="Transparent" DisabledStyle-ForeColor="Black" Enabled="false" Text="FIN: "
                 Visible="true" Width="240px">
             </telerik:RadTextBox>
             <telerik:RadTextBox Width="226px" MaxLength="17" AutoPostBack="false" ID="VINBox" runat="server">

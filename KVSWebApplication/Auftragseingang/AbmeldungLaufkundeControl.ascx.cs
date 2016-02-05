@@ -334,27 +334,7 @@ namespace KVSWebApplication.Auftragseingang
             {
                 return true;
             }
-            foreach (Control control in allControls)
-            {
-                if (control.Visible == true)
-                {
-                    foreach (Control subControl in control.Controls)
-                    {
-                        if (subControl is RadTextBox)
-                        {
-                            RadTextBox box = subControl as RadTextBox;
-                            if (box.Enabled == true && String.IsNullOrEmpty(box.Text) && (box.ID == "VINBox"))
-                            {
-                                box.BorderColor = System.Drawing.Color.Red;
-                                gibtsBoxenDieLeerSind = true;
-                            }
-                            else
-                            {
-                            }
-                        }
-                    }
-                }
-            }
+
             if (!PruefzifferBox.Enabled)
                 PruefzifferBox.Enabled = true;
             return gibtsBoxenDieLeerSind;

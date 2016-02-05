@@ -303,12 +303,8 @@
                     SortExpression="VIN" UniqueName="VIN" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
                 </telerik:GridBoundColumn>
-                <telerik:GridBoundColumn FilterControlWidth="70px" DataField="HSN" HeaderText="HSN"
-                    SortExpression="HSN" UniqueName="HSN" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
-                    ShowFilterIcon="false">
-                </telerik:GridBoundColumn>
-                <telerik:GridBoundColumn FilterControlWidth="70px" DataField="TSN" HeaderText="TSN"
-                    SortExpression="TSN" UniqueName="TSN" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
+                <telerik:GridBoundColumn FilterControlWidth="70px" DataField="Kennzeichen" HeaderText="Kennzeichen"
+                    SortExpression="Kennzeichen" UniqueName="Kennzeichen" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
                 </telerik:GridBoundColumn>
                 <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderTyp" HeaderText="Auftragstyp"
