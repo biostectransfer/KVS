@@ -7314,6 +7314,8 @@ namespace KVSCommon.Database
 		
 		private bool _NeedsVAT;
 		
+		private string _Comment;
+		
 		private EntitySet<InvoiceItem> _InvoiceItem;
 		
 		private EntityRef<CostCenter> _CostCenter;
@@ -7350,6 +7352,8 @@ namespace KVSCommon.Database
     partial void OnIsAuthorativeChargeChanged();
     partial void OnNeedsVATChanging(bool value);
     partial void OnNeedsVATChanged();
+    partial void OnCommentChanging(string value);
+    partial void OnCommentChanged();
     #endregion
 		
 		public OrderItem()
@@ -7594,6 +7598,26 @@ namespace KVSCommon.Database
 					this._NeedsVAT = value;
 					this.SendPropertyChanged("NeedsVAT");
 					this.OnNeedsVATChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Comment", DbType="nvarchar(512) NULL")]
+		public string Comment
+		{
+			get
+			{
+				return this._Comment;
+			}
+			set
+			{
+				if ((this._Comment != value))
+				{
+					this.OnCommentChanging(value);
+					this.SendPropertyChanging();
+					this._Comment = value;
+					this.SendPropertyChanged("Comment");
+					this.OnCommentChanged();
 				}
 			}
 		}

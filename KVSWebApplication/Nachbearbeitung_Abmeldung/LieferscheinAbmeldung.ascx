@@ -44,9 +44,9 @@
 <asp:HiddenField runat = "server" ID="UserValueConfirm"/>
     <telerik:RadGrid ID="RadGridLieferscheine"  Width = "1450px" DataSourceID="LinqDataSourceLieferscheine" runat="server" PageSize="15"
         AllowSorting="True" AllowMultiRowSelection="True" AllowPaging="True" ShowGroupPanel="True"
-        AutoGenerateColumns="False" GridLines="none"  EnableLinqExpressions = "true">
+        AutoGenerateColumns="False" GridLines="none"  EnableLinqExpressions = "true" OnItemCommand="OnItemCommand_Fired">
         <PagerStyle Mode="NextPrevNumericAndAdvanced"></PagerStyle>
-        <MasterTableView CommandItemDisplay = "Top" ShowHeader = "true"  AutoGenerateColumns = "false" 
+        <MasterTableView CommandItemDisplay = "Top" ShowHeader = "true"  AutoGenerateColumns = "false" AllowFilteringByColumn="True"
         DataSourceID = "LinqDataSourceLieferscheine" GroupLoadMode = "Client" GroupsDefaultExpanded = "false">
             <CommandItemSettings ShowAddNewRecordButton="false"  ShowRefreshButton="true"  />
             <Columns>           
@@ -81,18 +81,17 @@
                     SortExpression="VIN" UniqueName="VIN" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
                 </telerik:GridBoundColumn>
-                <telerik:GridBoundColumn FilterControlWidth="105px" DataField="HSN" HeaderText="HSN"
-                    SortExpression="HSN" UniqueName="HSN" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
-                    ShowFilterIcon="false">
-                </telerik:GridBoundColumn>
-                  <telerik:GridBoundColumn FilterControlWidth="105px" DataField="TSN" HeaderText="TSN"
-                    SortExpression="TSN" UniqueName="TSN" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
+                <telerik:GridBoundColumn FilterControlWidth="105px" DataField="Kennzeichen" HeaderText="Kennzeichen"
+                    SortExpression="Kennzeichen" UniqueName="Kennzeichen" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
                 </telerik:GridBoundColumn>
                 <telerik:GridBoundColumn FilterControlWidth="105px" DataField="OrderTyp" HeaderText="Auftragstyp"
                     SortExpression="OrderTyp" UniqueName="OrderTyp" AutoPostBackOnFilter="true" CurrentFilterFunction="Contains"
                     ShowFilterIcon="false">
                 </telerik:GridBoundColumn>  
+                <telerik:GridButtonColumn HeaderStyle-Width="180px" ButtonType="PushButton" Text="zurück zur Zulassungstelle" UniqueName="ZurueckZullasungstelleButton" 
+                    Visible="true" CommandName="ZurueckZullasungstelle" ItemStyle-HorizontalAlign="Right">
+                </telerik:GridButtonColumn>
             </Columns>
         </MasterTableView>
         <ClientSettings  ReorderColumnsOnClient="True" AllowDragToGroup="True" AllowColumnsReorder="True">

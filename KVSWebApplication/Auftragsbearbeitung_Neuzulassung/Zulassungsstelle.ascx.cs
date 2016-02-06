@@ -208,6 +208,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             var tbEditPrice = editedItem["ColumnPrice"].FindControl("tbEditPrice") as RadTextBox;
             string itemId = editedItem["ItemIdColumn"].Text;
             var tbAuthPrice = editedItem["AuthCharge"].FindControl("tbAuthChargePrice") as RadTextBox;
+            var tbComment = editedItem["ColumnComment"].FindControl("tbComment") as RadTextBox;
 
             int? authChargeId = null;
             if (!String.IsNullOrEmpty(editedItem["AuthChargeId"].Text))
@@ -220,7 +221,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 tbAuthPrice.ForeColor = System.Drawing.Color.Green;
             }
 
-            var result = UpdatePosition(itemId, tbEditPrice.Text);
+            var result = UpdatePosition(itemId, tbEditPrice.Text, tbComment.Text);
 
             if (result)
             {
@@ -635,7 +636,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
         }
         
         // Updating ausgewählten OrderItem
-        protected bool UpdatePosition(string itemId, string amount)
+        protected bool UpdatePosition(string itemId, string amount, string comment)
         {
             var result = false;
 
@@ -653,7 +654,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             {
                 try
                 {
-                    OrderManager.UpdateOrderItemAmount(Int32.Parse(itemId), Convert.ToDecimal(amoutToSave));
+                    OrderManager.UpdateOrderItem(Int32.Parse(itemId), Convert.ToDecimal(amoutToSave), comment);
                     result = true;
                 }
                 catch (Exception ex)

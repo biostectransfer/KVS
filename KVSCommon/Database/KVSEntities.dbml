@@ -305,6 +305,7 @@
       <Column Name="SuperOrderItemId" Type="System.Int32" DbType="int" CanBeNull="true" />
       <Column Name="IsAuthorativeCharge" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="NeedsVAT" Type="System.Boolean" DbType="bit not null" CanBeNull="false" />
+      <Column Name="Comment" Type="System.String" DbType="nvarchar(512) NULL" CanBeNull="true" />
       <Association Name="OrderItem_InvoiceItem" Member="InvoiceItem" ThisKey="Id" OtherKey="OrderItemId" Type="InvoiceItem" />
       <Association Name="CostCenter_OrderItem" Member="CostCenter" ThisKey="CostCenterId" OtherKey="Id" Type="CostCenter" IsForeignKey="true" />
       <Association Name="OrderItemStatus_OrderItem" Member="OrderItemStatus" ThisKey="Status" OtherKey="Id" Type="OrderItemStatus" IsForeignKey="true" />

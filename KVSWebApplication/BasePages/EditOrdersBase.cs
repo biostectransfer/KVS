@@ -346,6 +346,7 @@ namespace KVSWebApplication.BasePages
                          AmtGebuhr = authCharge == null ? false : true,
                          AuthCharge = authCharge == null || authCharge.Amount == 0 ? "kein Preis" : (Math.Round(authCharge.Amount, 2, MidpointRounding.AwayFromZero)).ToString(),
                          AuthChargeId = authCharge == null ? (int?)null : authCharge.Id,
+                         Comment = ordItem.Comment ?? String.Empty
                      };
                  }).ToList();
         }

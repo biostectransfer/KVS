@@ -279,6 +279,12 @@
                                     </telerik:RadTextBox>
                                 </ItemTemplate>
                             </telerik:GridTemplateColumn>
+                            <telerik:GridTemplateColumn UniqueName="ColumnComment" SortExpression="Comment" HeaderText="Bemerkungen" HeaderStyle-Width="195px">
+                                <ItemTemplate>
+                                    <telerik:RadTextBox Width="99%" ID="tbComment" Text='<%# Bind("Comment") %>' runat="server">
+                                    </telerik:RadTextBox>
+                                </ItemTemplate>
+                            </telerik:GridTemplateColumn>
                             <telerik:GridBoundColumn HeaderStyle-Width="100px" Display="false" Visible="true" ForceExtractValue="Always"
                                 DataField="AuthChargeId" UniqueName="AuthChargeId">
                             </telerik:GridBoundColumn>

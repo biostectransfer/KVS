@@ -63,6 +63,20 @@ namespace KVSDataAccess.Managers
         }
 
         /// <summary>
+        ///  Update order item
+        /// </summary>
+        /// <param name="orderItemId"></param>
+        /// <param name="amount"></param>
+        /// <param name="comment"></param>
+        public void UpdateOrderItem(int orderItemId, decimal amount, string comment)
+        {
+            var orderItem = DataContext.GetSet<OrderItem>().FirstOrDefault(o => o.Id == orderItemId);
+            orderItem.Amount = amount;
+            orderItem.Comment = comment;
+            SaveChanges();
+        }
+
+        /// <summary>
         /// Erstellt die amtlichen Gebuehren
         /// </summary>
         /// <param name="authId">Amtliche Gebuehr ID</param>

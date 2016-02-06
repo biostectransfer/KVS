@@ -219,7 +219,7 @@ namespace KVSDataAccess.PDF
             this.WriteHeadline("Datum " + invoiceDate);
 
             //this.Document.LastSection.Add(this.GetTableFromDataTable(this.GetDetailDataTable(), new List<int>() { 10, 40, 20, 30, 15, 10, 10, 20 }, new List<int>() { 0, 7 }, true));
-            this.Document.LastSection.Add(this.GetTableFromDataTable(this.GetDetailDataTable(), new List<int>() { 25, 20, 25, 15, 10, 10, 10, 10,10 }, new List<int>() { 7, 8 }, true));
+            this.Document.LastSection.Add(this.GetTableFromDataTable(this.GetDetailDataTable(), new List<int>() { 25, 20, 25, 15, 10, 10, 12, 10,10,30 }, new List<int>() { 7, 8 }, true));
 
         }
         /// <summary>
@@ -229,7 +229,7 @@ namespace KVSDataAccess.PDF
         private DataTable GetDetailDataTable()
         {
            // List<string> headers = new List<string>() { "Pos.", "Bezeichnung", "Auftragsnummer", "FIN", "Einh.", "Menge", "MwSt. %", "Einzelpreis" };
-            List<string> headers = new List<string>() { "Bezeichnung", "Haltername", "FIN", "Kennzeichen", "E-Zul.", "Farbe", "AuftragsNr.", "Kosten", "Gebüren" };
+            List<string> headers = new List<string>() { "Bezeichnung", "Haltername", "FIN", "Kennzeichen", "E-Zul.", "Farbe", "AuftragsNr.", "Kosten", "Gebüren", "Bemerkungen" };
 
             DataTable dt = new DataTable();
             foreach (var header in headers)
@@ -317,7 +317,8 @@ namespace KVSDataAccess.PDF
                         OrderNumber = ordernumber,
                         Amount = item.Amount.ToString("C2"),
                         AuthorativeCharge = "",
-                        IsAuthorativeCharge = false
+                        IsAuthorativeCharge = false,
+                        Comment = item.OrderItem.Comment
                     };
                     grAppendixLine.Add(grLine);
 
@@ -336,7 +337,7 @@ namespace KVSDataAccess.PDF
                 if (price != null)
                 {
                     dt.Rows.Add(price.Bezeichnung, price.Halter, price.Vin, price.Kennzeichen, price.Zulassungsdatum, price.Farbe,
-                        price.OrderNumber, price.Amount, authPrice == null ? "0,00 €" : authPrice.AuthorativeCharge);
+                        price.OrderNumber, price.Amount, authPrice == null ? "0,00 €" : authPrice.AuthorativeCharge, price.Comment);
                     i++;
 
                 }
@@ -507,11 +508,11 @@ namespace KVSDataAccess.PDF
                         dispatchAdress.Country};
 
 
-                if (this.Invoice.Customer.LargeCustomer != null)
-                {
-                    this.WriteLetterHead(coverLetterHead);
-                    this.Document.LastSection.AddPageBreak();
-                }
+                //if (this.Invoice.Customer.LargeCustomer != null)
+                //{
+                //    this.WriteLetterHead(coverLetterHead);
+                //    this.Document.LastSection.AddPageBreak();
+                //}
             }
             //else
             //{

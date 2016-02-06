@@ -22,6 +22,7 @@ namespace KVSDataAccess.PDF
         public string OrderNumber;
         public string Amount;
         public string AuthorativeCharge;
-        public bool IsAuthorativeCharge; 
+        public bool IsAuthorativeCharge;
+        public string Comment;
     }
 }

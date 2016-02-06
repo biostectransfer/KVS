@@ -315,6 +315,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             var tbEditPrice = editedItem["ColumnPrice"].FindControl("tbEditPrice") as RadTextBox;
             string itemId = editedItem["ItemIdColumn"].Text;
             var tbAuthPrice = editedItem["AuthCharge"].FindControl("tbAuthChargePrice") as RadTextBox;
+            var tbComment = editedItem["ColumnComment"].FindControl("tbComment") as RadTextBox;
 
             int? authChargeId = null;
             if (!String.IsNullOrEmpty(editedItem["AuthChargeId"].Text))
@@ -327,7 +328,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
                 tbAuthPrice.ForeColor = System.Drawing.Color.Green;
             }
 
-            UpdatePosition(itemId, tbEditPrice.Text);
+            UpdatePosition(itemId, tbEditPrice.Text, tbComment.Text);
             tbEditPrice.ForeColor = System.Drawing.Color.Green;
         }
 
@@ -606,7 +607,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
         }
         
         // Updating ausgewählten OrderItem
-        protected void UpdatePosition(string itemId, string amount)
+        protected void UpdatePosition(string itemId, string amount, string comment)
         {
             string amoutToSave = amount;
             if (amoutToSave.Contains("."))
@@ -618,7 +619,7 @@ namespace KVSWebApplication.Nachbearbeitung_Abmeldung
             {
                 try
                 {
-                    OrderManager.UpdateOrderItemAmount(Int32.Parse(itemId), Convert.ToDecimal(amoutToSave));
+                    OrderManager.UpdateOrderItem(Int32.Parse(itemId), Convert.ToDecimal(amoutToSave), comment);
                 }
                 catch (Exception ex)
                 {

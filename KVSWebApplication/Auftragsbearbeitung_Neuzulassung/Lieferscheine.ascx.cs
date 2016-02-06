@@ -199,6 +199,32 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                 AllesIsOkeyBeiOffene.Visible = false;
             }
         }
+        protected void OnItemCommand_Fired(object sender, GridCommandEventArgs e)
+        {
+            try
+            {
+                if (e.CommandName == "ZurueckZullasungstelle")
+                {
+                    if (e.Item is GridDataItem)
+                    {
+                        GridDataItem dataItem = e.Item as GridDataItem;
+                        var order = OrderManager.GetById(Int32.Parse(dataItem["OrderNumber"].Text));
+                        order.Status = (int)OrderStatusTypes.AdmissionPoint;
+                        OrderManager.SaveChanges();
+                        RadGridLieferscheine.Rebind();
+                    }
+                }
+                else
+                {
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
 
         #endregion
 

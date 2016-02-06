@@ -30,6 +30,14 @@ namespace KVSCommon.Managers
         void UpdateOrderItemAmount(int orderItemId, decimal amount);
 
         /// <summary>
+        ///  Update order item
+        /// </summary>
+        /// <param name="orderItemId"></param>
+        /// <param name="amount"></param>
+        /// <param name="comment"></param>
+        void UpdateOrderItem(int orderItemId, decimal amount, string comment);
+
+        /// <summary>
         /// Erstellt die amtlichen Gebuehren
         /// </summary>
         /// <param name="authId">Amtliche Gebuehr ID</param>
