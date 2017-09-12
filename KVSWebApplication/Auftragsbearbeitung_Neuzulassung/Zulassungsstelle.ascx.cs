@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using KVSCommon.Database;
+using KVSCommon.Utility;
 using Telerik.Web.UI;
 using System.Collections;
 using System.Data.SqlClient;
@@ -467,6 +469,8 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         updateDataBase(kennzeichen, VIN, tsn, hsn, orderNumber, customerId);
                         UpdateOrderAndItemsStatus();
                         ZulassungErfolgtLabel.Visible = true;
+
+                        UploadOrderToFtp(orderNumber,customerId);
                     }
                     catch (Exception ex)
                     {
@@ -481,6 +485,28 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
             RadGridNeuzulassung.MasterTableView.ClearEditItems();
             RadGridNeuzulassung.Rebind();
             CheckOpenedOrders();
+        }
+
+        private void UploadOrderToFtp(int orderNumber, int customerId)
+        {
+            var content = "";
+            
+            using (var dbContext = new DataClasses1DataContext(Int32.Parse(Session["CurrentUserId"].ToString())))
+                {
+                                var newOrder =dbContext.Order.SingleOrDefault(
+                                    q => q.OrderNumber == orderNumber && q.CustomerId == customerId);
+                                if (newOrder == null)
+                                {
+                                    return;
+                                }
+
+                                content+=";"+newOrder.RegistrationOrder.Registration.Licencenumber;
+                                content+=";"+newOrder.RegistrationOrder.Vehicle.VIN;
+                                content+=";"+newOrder.RegistrationOrder.Vehicle.TSN;
+                                content+=";"+newOrder.RegistrationOrder.Vehicle.HSN;
+                }
+                   var ftpUtil=new FtpUtil();
+                ftpUtil.SendData(content);
         }
         //falls benötigt, wird der Status per Email gesendet
         protected void SendStatusByEmail(int customerId, Order orderToSend)
@@ -516,9 +542,9 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                         customerID = Int32.Parse(CustomerDropDownListZulassungsstelle.SelectedValue);
                     else
                         customerID = Int32.Parse(item["customerID"].Text);
-                    
+
                     var orderNumber = Int32.Parse(item["OrderNumber"].Text);
-                    
+
                     smallCustomerOrderHiddenField.Value = orderNumber.ToString();
                     CustomerIdHiddenField.Value = customerID.ToString();
                     try
@@ -640,7 +666,7 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     {
                         var newAdress = Adress.CreateAdress(street, streetNumber, zipcode, city, country, dbContext);
                         var myCustomer = dbContext.Customer.FirstOrDefault(q => q.Id == customerId);
-                        var newInvoice = Invoice.CreateInvoice(dbContext, Int32.Parse(Session["CurrentUserId"].ToString()), invoiceRecipient, newAdress, customerId, 
+                        var newInvoice = Invoice.CreateInvoice(dbContext, Int32.Parse(Session["CurrentUserId"].ToString()), invoiceRecipient, newAdress, customerId,
                             txbDiscount.Value, "Einzelrechnung");
                         InvoiceIdHidden.Value = newInvoice.Id.ToString();
                         //Submiting new Invoice and Adress
@@ -756,13 +782,13 @@ namespace KVSWebApplication.Auftragsbearbeitung_Neuzulassung
                     {
                         var orderNumber = Int32.Parse(item["OrderNumber"].Text);
                         KVSCommon.Database.Product newProduct = dbContext.Product.SingleOrDefault(q => q.Id == Int32.Parse(productDropDown.SelectedValue));
-                                                
+
                         if (!String.IsNullOrEmpty(item["locationId"].Text))
                         {
                             var locationId = Int32.Parse(item["locationId"].Text);
                             newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == locationId);
                         }
-                        
+
                         if (newPrice == null || String.IsNullOrEmpty(item["locationId"].Text))
                         {
                             newPrice = dbContext.Price.SingleOrDefault(q => q.ProductId == newProduct.Id && q.LocationId == null);
